@@ -1,0 +1,8 @@
+{
+  "avg_viewers_per_stream": 8.0,
+  "view_to_creator_rate": 0.05,
+  "creator_activation_rate": 0.6,
+  "streams_per_creator_per_day": 2.0,
+  "time_window_hours": 6.0,
+  "target_streams": 500
+}

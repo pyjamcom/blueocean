@@ -2,6 +2,7 @@
 .codex/
 config/github_token.txt
 config/ga_oauth.env
+config/client_secret_*.json
 scripts/__pycache__/
 __pycache__/
 reports/raw/

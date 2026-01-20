@@ -1,0 +1,37 @@
+{
+  "date": "2026-01-20",
+  "city": "Bangkok",
+  "waves": [
+    {
+      "wave_id": "wave-1",
+      "geo_cell_ids": [
+        "BKK-001",
+        "BKK-002",
+        "BKK-003"
+      ],
+      "target_seed_creators": 120,
+      "status": "pending"
+    },
+    {
+      "wave_id": "wave-2",
+      "geo_cell_ids": [
+        "BKK-004",
+        "BKK-005",
+        "BKK-006"
+      ],
+      "target_seed_creators": 160,
+      "status": "pending"
+    },
+    {
+      "wave_id": "wave-3",
+      "geo_cell_ids": [
+        "BKK-007",
+        "BKK-008",
+        "BKK-009"
+      ],
+      "target_seed_creators": 200,
+      "status": "pending"
+    }
+  ],
+  "activated_wave": null
+}

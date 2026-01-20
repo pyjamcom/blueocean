@@ -1,0 +1,6 @@
+{
+  "streams_per_hour": 20,
+  "unique_creators_per_hour": 8,
+  "sustained_window_minutes": 30,
+  "boost_duration_minutes": 15
+}

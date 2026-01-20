@@ -1,0 +1,30 @@
+{
+  "experiments": [
+    {
+      "id": "starter_pjm_vs_glow",
+      "description": "Compare starter reward variants: PJM+Glow vs Glow-only.",
+      "variants": [
+        {"id": "pjm_glow", "weight": 0.5},
+        {"id": "glow_only", "weight": 0.5}
+      ]
+    },
+    {
+      "id": "starter_solo_vs_duel",
+      "description": "Compare solo starter flow vs school-duel framing.",
+      "variants": [
+        {"id": "solo", "weight": 0.5},
+        {"id": "school_duel", "weight": 0.5}
+      ]
+    },
+    {
+      "id": "jasper_strength",
+      "description": "Launch-hour Jasper hack strength variants.",
+      "variants": [
+        {"id": "pjm_glow", "weight": 0.34},
+        {"id": "glow_only", "weight": 0.33},
+        {"id": "glow_trend_boost", "weight": 0.33}
+      ],
+      "metrics": ["activation", "d1_retention", "k_factor"]
+    }
+  ]
+}

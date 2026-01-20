@@ -1,0 +1,35 @@
+{
+  "date": "2026-01-20",
+  "inputs": {
+    "avg_viewers_per_stream": 8.0,
+    "view_to_creator_rate": 0.05,
+    "creator_activation_rate": 0.6,
+    "streams_per_creator_per_day": 2.0,
+    "time_window_hours": 6.0,
+    "target_streams": 500
+  },
+  "assumptions": {
+    "generation_cycle_hours": 24,
+    "sensitivity_pct": 0.2
+  },
+  "estimates": {
+    "low": {
+      "r0": 0.192,
+      "creator_multiplier": 1.0803286691652971,
+      "expected_streams_per_seed": 0.5401643345826486,
+      "seed_creators_required": 926
+    },
+    "base": {
+      "r0": 0.24,
+      "creator_multiplier": 1.0947598624264894,
+      "expected_streams_per_seed": 0.5473799312132447,
+      "seed_creators_required": 914
+    },
+    "high": {
+      "r0": 0.288,
+      "creator_multiplier": 1.108174620104608,
+      "expected_streams_per_seed": 0.554087310052304,
+      "seed_creators_required": 903
+    }
+  }
+}

@@ -2,25 +2,25 @@
   "tasks": [
     {
       "number": "1",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт генерации контента под новое позиционирование (подписка‑подарок, гурманский вкусовой набор, небольшое количество/ответственное потребление, игра и общение). Вход: JSON с профилем позиционирования и списком URL. Выход: JSON‑мэппинг полей (Meta Title, Hero / Content Notes, CTA / Modules, HTML).",
       "subtasks": [
         {
           "number": "1.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Определить формат входного JSON (profile, tone, pages[], key_points[]) и валидировать его в скрипте."
         },
         {
           "number": "1.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Реализовать шаблоны копирайта для 3 смысловых осей: subscription‑gift, gourmet‑tasting, small‑quantity/positive‑social."
         },
         {
           "number": "1.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Экспортировать мэппинг в JSON по URL с обязательными полями для обновления CSV."
         }
@@ -28,25 +28,25 @@
     },
     {
       "number": "2",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт применения JSON‑мэппинга к CSV (beer_subscription_structure.csv) с обновлением только указанных полей. Скрипт сохраняет порядок колонок и не трогает остальные данные.",
       "subtasks": [
         {
           "number": "2.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Считать CSV с сохранением порядка колонок и корректной кодировкой (UTF‑8/UTF‑8‑SIG)."
         },
         {
           "number": "2.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Найти строки по URL и обновить Meta Title, Hero / Content Notes, CTA / Modules, HTML."
         },
         {
           "number": "2.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Сохранить CSV и вывести summary: сколько URL обновлено и какие поля изменены."
         }
@@ -54,25 +54,25 @@
     },
     {
       "number": "3",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт генерации Google Ads RSA ассетов под позиционирование «подписка‑подарок». Выход: CSV с заголовками/описаниями + проверка лимитов символов.",
       "subtasks": [
         {
           "number": "3.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Задать шаблоны заголовков/описаний (gift, tasting, small‑quantity, social‑game) и правила вариаций."
         },
         {
           "number": "3.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Реализовать валидатор длины (Headlines <= 30, Descriptions <= 90) и удаление дубликатов."
         },
         {
           "number": "3.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Экспортировать ассеты в CSV/JSON для импорта в Google Ads."
         }
@@ -80,19 +80,19 @@
     },
     {
       "number": "4",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт генерации FAQ/обработки возражений (подписка, подарок, вкусовой набор, небольшое количество, возраст 21+). Выход: HTML‑фрагменты для вставки в CSV.",
       "subtasks": [
         {
           "number": "4.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Задать шаблоны вопросов/ответов и параметризуемые вставки (сезон, страна, количество банок)."
         },
         {
           "number": "4.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Экспортировать HTML‑фрагменты в JSON‑мэппинг по URL."
         }
@@ -100,19 +100,19 @@
     },
     {
       "number": "5",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт проверки комплаенса контента: наличие 21+ дисклеймера, отсутствие обещаний про «пользу здоровью», отсутствие призывов к злоупотреблению. Выход: JSON/CSV с нарушениями.",
       "subtasks": [
         {
           "number": "5.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Реализовать набор правил‑регэкспов для поиска дисклеймеров и рисковых формулировок."
         },
         {
           "number": "5.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Сформировать отчет по URL: missing_age_gate, risky_health_claims, promote_overconsumption."
         }
@@ -120,19 +120,19 @@
     },
     {
       "number": "6",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать CLI-скрипт архивирования CSV: копировать файл в архивную папку с таймстампом без изменения исходника.",
       "subtasks": [
         {
           "number": "6.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Реализовать аргументы --input, --archive-dir, --prefix (опционально)."
         },
         {
           "number": "6.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Сформировать имя архива с ISO‑таймстампом и безопасными символами."
         }
@@ -140,25 +140,25 @@
     },
     {
       "number": "7",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать Python-скрипт валидации структуры CSV: обязательные колонки, дубликаты URL, пустые значения в ключевых полях. Выход: JSON‑отчет.",
       "subtasks": [
         {
           "number": "7.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Автоопределение разделителя CSV и корректная обработка кодировок."
         },
         {
           "number": "7.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Проверка обязательных колонок: Published, Page, URL, Intent, Target Keywords, Meta Title, HTML."
         },
         {
           "number": "7.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Формирование JSON‑отчета по ошибкам и предупреждениям."
         }
@@ -166,19 +166,19 @@
     },
     {
       "number": "8",
-      "status": "pending",
+      "status": "completed",
       "notes": "",
       "description": "Создать генератор HTML‑отчета (Python) по итогам обновлений: список обновленных URL, новые Meta Title/CTA, список ад‑ассетов. Вход: JSON‑сводка.",
       "subtasks": [
         {
           "number": "8.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Сделать HTML‑шаблон с секциями: Copy Updates, FAQ Updates, Ad Assets, Compliance Issues."
         },
         {
           "number": "8.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "",
           "description": "Реализовать CLI‑параметры: --data-json, --out-html, --title, --date."
         }
@@ -1872,27 +1872,27 @@
     },
     {
       "number": "64",
-      "status": "pending",
+      "status": "completed",
       "notes": "Bind reports to real analytics sources (GA4). Do not hardcode secrets; use env vars.",
       "description": "Add analytics source configuration for GA4 (account 372664399, property 510154368) and a fetcher that stores raw metrics for report pipelines.",
       "subtasks": [
         {
           "number": "64.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "Config only; no secrets committed.",
           "description": "Create config/analytics_sources.json with GA4 account/property IDs and required env vars (GA_ACCESS_TOKEN, GA_PROJECT_ID).",
           "subtasks": []
         },
         {
           "number": "64.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "Script-only; uses GA Data API.",
           "description": "Implement scripts/fetch_ga4_metrics.py to pull daily totals (users, sessions, eventCount) into reports/raw/ga4_<date>.json.",
           "subtasks": []
         },
         {
           "number": "64.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "Mapping only.",
           "description": "Create config/event_mapping.json to map GA4 events to internal events used by AARRR and loop reports.",
           "subtasks": []
@@ -1930,29 +1930,167 @@
     },
     {
       "number": "66",
-      "status": "pending",
+      "status": "completed",
       "notes": "Dashboard generation; JSON + SVG outputs.",
       "description": "Generate a one-page Blue Ocean dashboard (JSON + SVG) that aggregates strategy canvas, buyer utility gaps, AARRR, and loop health metrics.",
       "subtasks": [
         {
           "number": "66.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "Schema only.",
           "description": "Define dashboard schema (cards: value_curve, utility_gaps, aarr, loops, budget, local_fame).",
           "subtasks": []
         },
         {
           "number": "66.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "Script-only.",
           "description": "Implement scripts/build_blue_ocean_dashboard.py to read reports/*.json and output reports/blue_ocean_dashboard.json.",
           "subtasks": []
         },
         {
           "number": "66.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "SVG-only.",
           "description": "Implement an SVG renderer that produces reports/blue_ocean_dashboard.svg from the dashboard JSON.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "67",
+      "status": "completed",
+      "notes": "Standalone model to estimate chain-reaction thresholds (Jasper loop).",
+      "description": "Implement a viral chain reaction simulator that estimates required seed creators per GeoCell to reach a target stream volume within a time window.",
+      "subtasks": [
+        {
+          "number": "67.1",
+          "status": "completed",
+          "notes": "Config only.",
+          "description": "Create viral_model_inputs.json with parameters: avg_viewers_per_stream, view_to_creator_rate, creator_activation_rate, streams_per_creator_per_day, time_window_hours, target_streams.",
+          "subtasks": []
+        },
+        {
+          "number": "67.2",
+          "status": "completed",
+          "notes": "Pure logic.",
+          "description": "Implement a branching-process estimator to compute R0 = avg_viewers_per_stream × view_to_creator_rate × creator_activation_rate.",
+          "subtasks": []
+        },
+        {
+          "number": "67.3",
+          "status": "completed",
+          "notes": "Pure logic.",
+          "description": "Compute required seed creators N0 for a target stream volume given R0 and streams_per_creator_per_day.",
+          "subtasks": []
+        },
+        {
+          "number": "67.4",
+          "status": "completed",
+          "notes": "Output-only.",
+          "description": "Generate reports/viral_seed_estimate_<date>.json with N0, R0, and sensitivity ranges.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "68",
+      "status": "completed",
+      "notes": "Standalone budget optimizer; uses PJM cost.",
+      "description": "Implement a launch budget optimizer that converts seed creator requirements into PJM and USD budgets for a one-day citywide launch.",
+      "subtasks": [
+        {
+          "number": "68.1",
+          "status": "completed",
+          "notes": "Config only.",
+          "description": "Create launch_budget_inputs.json with pjm_usd_rate, starter_reward_pjm, boost_reward_pjm_equivalent, and max_pjm_per_creator.",
+          "subtasks": []
+        },
+        {
+          "number": "68.2",
+          "status": "completed",
+          "notes": "Pure logic.",
+          "description": "Compute total PJM + USD required for N0 seed creators and apply safety margin multipliers (1.2x, 1.5x).",
+          "subtasks": []
+        },
+        {
+          "number": "68.3",
+          "status": "completed",
+          "notes": "Output-only.",
+          "description": "Generate reports/launch_budget_estimate_<date>.json with low/base/high budget scenarios.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "69",
+      "status": "completed",
+      "notes": "Standalone trend detector; event-driven.",
+      "description": "Implement a local trend detector that flags when a GeoCell crosses a stream-rate threshold and triggers map visibility boosts.",
+      "subtasks": [
+        {
+          "number": "69.1",
+          "status": "completed",
+          "notes": "Config only.",
+          "description": "Create trend_thresholds.json with streams_per_hour, unique_creators_per_hour, and sustained_window_minutes.",
+          "subtasks": []
+        },
+        {
+          "number": "69.2",
+          "status": "completed",
+          "notes": "Pure logic.",
+          "description": "Implement a detector that computes rolling stream rates and emits trend flags per GeoCell.",
+          "subtasks": []
+        },
+        {
+          "number": "69.3",
+          "status": "completed",
+          "notes": "Event-driven.",
+          "description": "Trigger a temporary boost and tag events with trend_id for post-analysis.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "70",
+      "status": "completed",
+      "notes": "Standalone seeding config; no external dependencies.",
+      "description": "Add a Bangkok pilot seeding map with GeoCell groups and launch waves to coordinate simultaneous activation.",
+      "subtasks": [
+        {
+          "number": "70.1",
+          "status": "completed",
+          "notes": "Config only.",
+          "description": "Create bangkok_launch_waves.json with wave_id, geo_cell_ids, and target_seed_creators.",
+          "subtasks": []
+        },
+        {
+          "number": "70.2",
+          "status": "completed",
+          "notes": "Pure logic.",
+          "description": "Implement a wave scheduler that activates starter-hack features by wave and logs activation timestamps.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "71",
+      "status": "completed",
+      "notes": "Standalone experiment pack for Jasper hack strength.",
+      "description": "Implement a Jasper-hack strength experiment comparing: (A) PJM+Glow, (B) Glow-only, (C) Glow+TrendBoost during launch hour.",
+      "subtasks": [
+        {
+          "number": "71.1",
+          "status": "completed",
+          "notes": "Config only.",
+          "description": "Extend experiments.json with jasper_strength variants and rollout weights.",
+          "subtasks": []
+        },
+        {
+          "number": "71.2",
+          "status": "completed",
+          "notes": "Analytics-only.",
+          "description": "Log activation, D1 retention, and k-factor per variant for launch-hour cohorts.",
           "subtasks": []
         }
       ]

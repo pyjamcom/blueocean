@@ -1,0 +1,33 @@
+{
+  "date": "2026-01-20",
+  "inputs": {
+    "pjm_usd_rate": 0.01,
+    "starter_reward_pjm": 10,
+    "boost_reward_pjm_equivalent": 5,
+    "max_pjm_per_creator": 20
+  },
+  "seed_report": "reports/viral_seed_estimate_2026-01-20.json",
+  "scenarios": {
+    "low": {
+      "seed_creators": 914,
+      "per_creator_pjm": 15.0,
+      "total_pjm": 13710.0,
+      "total_usd": 137.1,
+      "multiplier": 1.0
+    },
+    "base": {
+      "seed_creators": 914,
+      "per_creator_pjm": 15.0,
+      "total_pjm": 16452.0,
+      "total_usd": 164.52,
+      "multiplier": 1.2
+    },
+    "high": {
+      "seed_creators": 914,
+      "per_creator_pjm": 15.0,
+      "total_pjm": 20565.0,
+      "total_usd": 205.65,
+      "multiplier": 1.5
+    }
+  }
+}
