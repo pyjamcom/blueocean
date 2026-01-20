@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Blue Ocean Dashboard",
-    "generated_at": "2026-01-20T03:40:39Z",
+    "generated_at": "2026-01-20T03:53:37Z",
     "data_sources": [
       "reports"
     ]
@@ -29,7 +29,7 @@
     {
       "id": "aarr",
       "title": "AARRR Funnel",
-      "source": "/Users/admin/Documents/dev/blueocean/reports/normalized_metrics_2026-01-19.json",
+      "source": "reports/normalized_metrics_2026-01-19.json",
       "summary": {
         "acquisition": 25,
         "activation": 32,
