@@ -1,0 +1,36 @@
+{
+  "event_mappings": {
+    "stream_start": {
+      "ga4_events": ["stream_start", "live_start"],
+      "notes": "Map GA4 live stream start events to internal stream_start."
+    },
+    "quest_assigned": {
+      "ga4_events": ["quest_assigned"],
+      "notes": "Auto-quest assigned when stream has no viewers."
+    },
+    "quest_completed": {
+      "ga4_events": ["quest_completed", "quest_done"],
+      "notes": "Primary activation signal for creators."
+    },
+    "reward_granted": {
+      "ga4_events": ["reward_granted", "starter_bonus_awarded"],
+      "notes": "Reward issuance events (PJM/boost/badges)."
+    },
+    "glow_awarded": {
+      "ga4_events": ["glow_awarded", "map_boost_awarded"],
+      "notes": "Map visibility boost after first quest."
+    },
+    "invite_sent": {
+      "ga4_events": ["invite_sent", "share_sent"],
+      "notes": "Viral loop initiation."
+    },
+    "invite_joined": {
+      "ga4_events": ["invite_joined", "share_open"],
+      "notes": "Viral loop conversion."
+    },
+    "streak_updated": {
+      "ga4_events": ["streak_updated"],
+      "notes": "Retention milestone updates."
+    }
+  }
+}

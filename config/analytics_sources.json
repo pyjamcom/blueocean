@@ -1,0 +1,10 @@
+{
+  "ga4": {
+    "account_id": "372664399",
+    "property_id": "510154368",
+    "project_id": "theta-sunlight-474814-v0",
+    "access_token_env": "GA_ACCESS_TOKEN",
+    "user_project_env": "GA_USER_PROJECT",
+    "notes": "Uses GA4 Data API. Provide access token via env; do not commit secrets."
+  }
+}

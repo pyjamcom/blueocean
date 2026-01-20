@@ -3,39 +3,223 @@
     {
       "number": "1",
       "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт генерации контента под новое позиционирование (подписка‑подарок, гурманский вкусовой набор, небольшое количество/ответственное потребление, игра и общение). Вход: JSON с профилем позиционирования и списком URL. Выход: JSON‑мэппинг полей (Meta Title, Hero / Content Notes, CTA / Modules, HTML).",
+      "subtasks": [
+        {
+          "number": "1.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Определить формат входного JSON (profile, tone, pages[], key_points[]) и валидировать его в скрипте."
+        },
+        {
+          "number": "1.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Реализовать шаблоны копирайта для 3 смысловых осей: subscription‑gift, gourmet‑tasting, small‑quantity/positive‑social."
+        },
+        {
+          "number": "1.3",
+          "status": "pending",
+          "notes": "",
+          "description": "Экспортировать мэппинг в JSON по URL с обязательными полями для обновления CSV."
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт применения JSON‑мэппинга к CSV (beer_subscription_structure.csv) с обновлением только указанных полей. Скрипт сохраняет порядок колонок и не трогает остальные данные.",
+      "subtasks": [
+        {
+          "number": "2.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Считать CSV с сохранением порядка колонок и корректной кодировкой (UTF‑8/UTF‑8‑SIG)."
+        },
+        {
+          "number": "2.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Найти строки по URL и обновить Meta Title, Hero / Content Notes, CTA / Modules, HTML."
+        },
+        {
+          "number": "2.3",
+          "status": "pending",
+          "notes": "",
+          "description": "Сохранить CSV и вывести summary: сколько URL обновлено и какие поля изменены."
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт генерации Google Ads RSA ассетов под позиционирование «подписка‑подарок». Выход: CSV с заголовками/описаниями + проверка лимитов символов.",
+      "subtasks": [
+        {
+          "number": "3.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Задать шаблоны заголовков/описаний (gift, tasting, small‑quantity, social‑game) и правила вариаций."
+        },
+        {
+          "number": "3.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Реализовать валидатор длины (Headlines <= 30, Descriptions <= 90) и удаление дубликатов."
+        },
+        {
+          "number": "3.3",
+          "status": "pending",
+          "notes": "",
+          "description": "Экспортировать ассеты в CSV/JSON для импорта в Google Ads."
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт генерации FAQ/обработки возражений (подписка, подарок, вкусовой набор, небольшое количество, возраст 21+). Выход: HTML‑фрагменты для вставки в CSV.",
+      "subtasks": [
+        {
+          "number": "4.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Задать шаблоны вопросов/ответов и параметризуемые вставки (сезон, страна, количество банок)."
+        },
+        {
+          "number": "4.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Экспортировать HTML‑фрагменты в JSON‑мэппинг по URL."
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт проверки комплаенса контента: наличие 21+ дисклеймера, отсутствие обещаний про «пользу здоровью», отсутствие призывов к злоупотреблению. Выход: JSON/CSV с нарушениями.",
+      "subtasks": [
+        {
+          "number": "5.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Реализовать набор правил‑регэкспов для поиска дисклеймеров и рисковых формулировок."
+        },
+        {
+          "number": "5.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Сформировать отчет по URL: missing_age_gate, risky_health_claims, promote_overconsumption."
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать CLI-скрипт архивирования CSV: копировать файл в архивную папку с таймстампом без изменения исходника.",
+      "subtasks": [
+        {
+          "number": "6.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Реализовать аргументы --input, --archive-dir, --prefix (опционально)."
+        },
+        {
+          "number": "6.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Сформировать имя архива с ISO‑таймстампом и безопасными символами."
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать Python-скрипт валидации структуры CSV: обязательные колонки, дубликаты URL, пустые значения в ключевых полях. Выход: JSON‑отчет.",
+      "subtasks": [
+        {
+          "number": "7.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Автоопределение разделителя CSV и корректная обработка кодировок."
+        },
+        {
+          "number": "7.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Проверка обязательных колонок: Published, Page, URL, Intent, Target Keywords, Meta Title, HTML."
+        },
+        {
+          "number": "7.3",
+          "status": "pending",
+          "notes": "",
+          "description": "Формирование JSON‑отчета по ошибкам и предупреждениям."
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "status": "pending",
+      "notes": "",
+      "description": "Создать генератор HTML‑отчета (Python) по итогам обновлений: список обновленных URL, новые Meta Title/CTA, список ад‑ассетов. Вход: JSON‑сводка.",
+      "subtasks": [
+        {
+          "number": "8.1",
+          "status": "pending",
+          "notes": "",
+          "description": "Сделать HTML‑шаблон с секциями: Copy Updates, FAQ Updates, Ad Assets, Compliance Issues."
+        },
+        {
+          "number": "8.2",
+          "status": "pending",
+          "notes": "",
+          "description": "Реализовать CLI‑параметры: --data-json, --out-html, --title, --date."
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "status": "pending",
       "notes": "Standalone client feature; no dependency on other tasks.",
       "description": "Implement a self-contained Starter Quest flow in the client: load a local quest catalog, select one quest per session, run a 60-second timer, and expose a Done action that marks completion without requiring any viewers.",
       "subtasks": [
         {
-          "number": "1.1",
+          "number": "9.1",
           "status": "pending",
           "notes": "Data-only task; safe to do first or last.",
           "description": "Add a local quest catalog file (e.g., data/quests/starter_quests.json) with at least 20 entries. Each entry includes id, title, duration_sec, and safe_tags fields.",
           "subtasks": []
         },
         {
-          "number": "1.2",
+          "number": "9.2",
           "status": "pending",
           "notes": "Type definitions only.",
           "description": "Create quest type definitions (e.g., src/quests/types.ts) covering Quest, QuestCatalog, and QuestSelectionResult.",
           "subtasks": []
         },
         {
-          "number": "1.3",
+          "number": "9.3",
           "status": "pending",
           "notes": "Pure logic function; unit-testable.",
           "description": "Add a quest selection function (e.g., selectStarterQuest) that filters by safe_tags and randomizes results with a seedable RNG.",
           "subtasks": []
         },
         {
-          "number": "1.4",
+          "number": "9.4",
           "status": "pending",
           "notes": "No backend dependency; local state only.",
           "description": "Implement a hook/state machine (e.g., useStarterQuest) that starts a 60-second timer, tracks remaining seconds, and exposes completeQuest().",
           "subtasks": []
         },
         {
-          "number": "1.5",
+          "number": "9.5",
           "status": "pending",
           "notes": "UI overlay only.",
           "description": "Add a small in-stream overlay component that shows the active quest, a countdown, and a Done button.",
@@ -44,34 +228,34 @@
       ]
     },
     {
-      "number": "2",
+      "number": "10",
       "status": "pending",
       "notes": "Standalone UI feature; can be implemented without server changes.",
       "description": "Add a Glow Pin map overlay with a time-to-live (TTL) that visually highlights a streamer for a fixed duration.",
       "subtasks": [
         {
-          "number": "2.1",
+          "number": "10.1",
           "status": "pending",
           "notes": "Data model only.",
           "description": "Define a GlowPin model with fields: id, lat, lng, started_at, ttl_sec, and style_variant.",
           "subtasks": []
         },
         {
-          "number": "2.2",
+          "number": "10.2",
           "status": "pending",
           "notes": "UI-only task.",
           "description": "Create a GlowPin layer/component for the map with a pulse animation and style variants.",
           "subtasks": []
         },
         {
-          "number": "2.3",
+          "number": "10.3",
           "status": "pending",
           "notes": "Simple timer cleanup.",
           "description": "Add TTL expiry logic to remove Glow Pins after ttl_sec.",
           "subtasks": []
         },
         {
-          "number": "2.4",
+          "number": "10.4",
           "status": "pending",
           "notes": "Local demo only.",
           "description": "Add a dev-only toggle or mock data to preview Glow Pins on the map.",
@@ -80,27 +264,27 @@
       ]
     },
     {
-      "number": "3",
+      "number": "11",
       "status": "pending",
       "notes": "Standalone UI feature; no backend dependency required.",
       "description": "Implement an instant reward UI: a toast plus a shareable card generated on the client after quest completion.",
       "subtasks": [
         {
-          "number": "3.1",
+          "number": "11.1",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Create a RewardToast component that shows reward name, amount (optional), and a short confirmation.",
           "subtasks": []
         },
         {
-          "number": "3.2",
+          "number": "11.2",
           "status": "pending",
           "notes": "Pure client utility.",
           "description": "Add a share-card generator (canvas/SVG) that renders quest title, Glow Pin badge, and timestamp.",
           "subtasks": []
         },
         {
-          "number": "3.3",
+          "number": "11.3",
           "status": "pending",
           "notes": "No external integrations required.",
           "description": "Implement a client-only share flow that saves the card as an image file or opens a native share sheet when available.",
@@ -109,27 +293,27 @@
       ]
     },
     {
-      "number": "4",
+      "number": "12",
       "status": "pending",
       "notes": "Standalone shared module; safe to implement independently.",
       "description": "Create a local After-School Rush scheduler that determines whether the current time is within a configured daily window.",
       "subtasks": [
         {
-          "number": "4.1",
+          "number": "12.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Add a schedule config file (e.g., config/rush_schedule.json) with per-locale start/end times and timezone.",
           "subtasks": []
         },
         {
-          "number": "4.2",
+          "number": "12.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a function (e.g., isRushActive(now, locale)) that returns true/false and minutes remaining.",
           "subtasks": []
         },
         {
-          "number": "4.3",
+          "number": "12.3",
           "status": "pending",
           "notes": "Self-contained tests.",
           "description": "Add unit tests covering boundary times, daylight saving edge cases, and incorrect locale values.",
@@ -138,34 +322,34 @@
       ]
     },
     {
-      "number": "5",
+      "number": "13",
       "status": "pending",
       "notes": "Standalone persistence module; implement with local storage or a small DB table.",
       "description": "Implement streak tracking for creators: update streak on quest completion, compute current streak, and expose streak status for UI.",
       "subtasks": [
         {
-          "number": "5.1",
+          "number": "13.1",
           "status": "pending",
           "notes": "Data model only.",
           "description": "Add a Streak record model with fields: user_id, current_streak, last_completed_at.",
           "subtasks": []
         },
         {
-          "number": "5.2",
+          "number": "13.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement updateStreak(user_id, completed_at) with correct day-boundary handling.",
           "subtasks": []
         },
         {
-          "number": "5.3",
+          "number": "13.3",
           "status": "pending",
           "notes": "Optional feature; keep independent.",
           "description": "Add an optional streak-freeze flag that preserves streak for a single missed day.",
           "subtasks": []
         },
         {
-          "number": "5.4",
+          "number": "13.4",
           "status": "pending",
           "notes": "Thin API layer.",
           "description": "Expose a getStreakStatus(user_id) helper that returns current streak and next deadline.",
@@ -174,27 +358,27 @@
       ]
     },
     {
-      "number": "6",
+      "number": "14",
       "status": "pending",
       "notes": "Standalone aggregation module; no dependency on other features.",
       "description": "Implement a daily school leaderboard aggregator that ranks schools by completed quests within a time window.",
       "subtasks": [
         {
-          "number": "6.1",
+          "number": "14.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define a QuestCompletionEvent with fields: event_id, user_id, school_id, completed_at.",
           "subtasks": []
         },
         {
-          "number": "6.2",
+          "number": "14.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a daily aggregation function that counts completions per school for a given date.",
           "subtasks": []
         },
         {
-          "number": "6.3",
+          "number": "14.3",
           "status": "pending",
           "notes": "Simple API.",
           "description": "Add a read-only endpoint or function that returns Top-N schools with counts and rank.",
@@ -203,34 +387,34 @@
       ]
     },
     {
-      "number": "7",
+      "number": "15",
       "status": "pending",
       "notes": "Standalone backend guard; does not require UI changes.",
       "description": "Add an anti-fraud validator for quest completion that enforces minimum stream duration and basic rate limits.",
       "subtasks": [
         {
-          "number": "7.1",
+          "number": "15.1",
           "status": "pending",
           "notes": "Pure validation logic.",
           "description": "Implement min-duration validation (e.g., >= 45 seconds) before accepting quest completion.",
           "subtasks": []
         },
         {
-          "number": "7.2",
+          "number": "15.2",
           "status": "pending",
           "notes": "Local-only rate limit.",
           "description": "Add per-device or per-user daily cap for starter rewards (e.g., 1/day).",
           "subtasks": []
         },
         {
-          "number": "7.3",
+          "number": "15.3",
           "status": "pending",
           "notes": "Heuristic rule; no ML.",
           "description": "Add a duplicate-content heuristic that flags repeated completions with identical duration and metadata.",
           "subtasks": []
         },
         {
-          "number": "7.4",
+          "number": "15.4",
           "status": "pending",
           "notes": "Audit trail only.",
           "description": "Persist fraud flags to an audit log for later review.",
@@ -239,27 +423,27 @@
       ]
     },
     {
-      "number": "8",
+      "number": "16",
       "status": "pending",
       "notes": "Standalone analytics module; can be added without other features.",
       "description": "Add client and server event logging for quest start, quest completion, glow awarded, and streak updated.",
       "subtasks": [
         {
-          "number": "8.1",
+          "number": "16.1",
           "status": "pending",
           "notes": "Constants only.",
           "description": "Define event names and payload schemas in a shared constants file.",
           "subtasks": []
         },
         {
-          "number": "8.2",
+          "number": "16.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Implement a client event emitter with batching and a retry queue.",
           "subtasks": []
         },
         {
-          "number": "8.3",
+          "number": "16.3",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Implement a simple server endpoint to accept events and write them to storage.",
@@ -268,27 +452,27 @@
       ]
     },
     {
-      "number": "9",
+      "number": "17",
       "status": "pending",
       "notes": "Standalone config + pure calculation; no dependencies.",
       "description": "Add a reward budget configuration and calculator module that uses a fixed conversion rate (1 PJM = $0.01) to compute daily and monthly USD spend caps per school.",
       "subtasks": [
         {
-          "number": "9.1",
+          "number": "17.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create a reward budget config file (e.g., config/reward_budget.json) with fields: pjm_usd_rate, daily_cap_per_school_pjm, per_user_daily_cap_pjm, and category_allocations (starter, streak, referral, rush).",
           "subtasks": []
         },
         {
-          "number": "9.2",
+          "number": "17.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a calculator function that returns daily and monthly USD caps per school and total network cap for N schools.",
           "subtasks": []
         },
         {
-          "number": "9.3",
+          "number": "17.3",
           "status": "pending",
           "notes": "Self-contained tests.",
           "description": "Add unit tests for conversion accuracy and rounding rules using 1 PJM = $0.01.",
@@ -297,41 +481,41 @@
       ]
     },
     {
-      "number": "10",
+      "number": "18",
       "status": "pending",
       "notes": "Standalone allocation engine; pure functions.",
       "description": "Implement a reward allocation engine that computes PJM payouts per event type (starter quest, streak milestones, referral quality, rush pool).",
       "subtasks": [
         {
-          "number": "10.1",
+          "number": "18.1",
           "status": "pending",
           "notes": "Constants only.",
           "description": "Define reward event types and default payout values (starter_quest, streak_d1, streak_d3, streak_d7, referral_new_user, referral_retained, rush_ranked).",
           "subtasks": []
         },
         {
-          "number": "10.2",
+          "number": "18.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement allocation for Starter Quest with a fixed payout (default 10 PJM) and a one-per-day constraint enforced by caller context.",
           "subtasks": []
         },
         {
-          "number": "10.3",
+          "number": "18.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement allocation for streak milestones (D1=15 PJM, D3=25 PJM, D7=100 PJM) with milestone detection handled by caller context.",
           "subtasks": []
         },
         {
-          "number": "10.4",
+          "number": "18.4",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement referral allocation with two-stage payouts (new_user_completion and retained_day2) returning separate rewards.",
           "subtasks": []
         },
         {
-          "number": "10.5",
+          "number": "18.5",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement rush pool distribution for Top-N ranks using a configurable payout table and a fixed pool size.",
@@ -340,34 +524,34 @@
       ]
     },
     {
-      "number": "11",
+      "number": "19",
       "status": "pending",
       "notes": "Standalone budget guard; can wrap any allocator.",
       "description": "Add budget guard logic that enforces per-school daily caps, per-user daily caps, and soft throttling when spend reaches 80% of the daily cap.",
       "subtasks": [
         {
-          "number": "11.1",
+          "number": "19.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement per-school daily cap enforcement that rejects or reduces rewards once the cap is reached.",
           "subtasks": []
         },
         {
-          "number": "11.2",
+          "number": "19.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement per-user daily cap enforcement that blocks rewards after the user reaches the daily max.",
           "subtasks": []
         },
         {
-          "number": "11.3",
+          "number": "19.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement soft throttling: when school spend exceeds 80% of the daily cap, reduce rewards by a configurable factor.",
           "subtasks": []
         },
         {
-          "number": "11.4",
+          "number": "19.4",
           "status": "pending",
           "notes": "Self-contained tests.",
           "description": "Add unit tests covering cap enforcement and throttling behavior at 80% and 100% thresholds.",
@@ -376,27 +560,27 @@
       ]
     },
     {
-      "number": "12",
+      "number": "20",
       "status": "pending",
       "notes": "Standalone accounting module; no runtime dependency on other tasks.",
       "description": "Implement a reward payout ledger and daily rollups to track PJM spend per school and per user.",
       "subtasks": [
         {
-          "number": "12.1",
+          "number": "20.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define RewardPayoutEvent with fields: event_id, user_id, school_id, reward_type, pjm_amount, created_at.",
           "subtasks": []
         },
         {
-          "number": "12.2",
+          "number": "20.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement daily rollup functions to compute total PJM spent per school and per user for a given date.",
           "subtasks": []
         },
         {
-          "number": "12.3",
+          "number": "20.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a runway calculator that estimates remaining days given a treasury size and configured daily caps.",
@@ -405,20 +589,20 @@
       ]
     },
     {
-      "number": "13",
+      "number": "21",
       "status": "pending",
       "notes": "Standalone reporting module; can read from rollups only.",
       "description": "Create a daily budget report generator that outputs per-school spend (PJM and USD) and remaining budget for the day.",
       "subtasks": [
         {
-          "number": "13.1",
+          "number": "21.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a report builder that joins rollups with budget config to compute spent_pjm, spent_usd, remaining_pjm, and remaining_usd.",
           "subtasks": []
         },
         {
-          "number": "13.2",
+          "number": "21.2",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Add a serializer that writes the report as JSON (e.g., reports/budget_daily_<date>.json).",
@@ -427,34 +611,34 @@
       ]
     },
     {
-      "number": "14",
+      "number": "22",
       "status": "pending",
       "notes": "Standalone geo module to drive local network effects.",
       "description": "Implement geo-cell indexing and local feed ranking to surface nearby streams with a micro-local bias.",
       "subtasks": [
         {
-          "number": "14.1",
+          "number": "22.1",
           "status": "pending",
           "notes": "Data model only.",
           "description": "Define a GeoCell model (cell_id, lat, lng, radius_m) and attach it to stream metadata.",
           "subtasks": []
         },
         {
-          "number": "14.2",
+          "number": "22.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a cell-mapping function that buckets a stream into the nearest GeoCell.",
           "subtasks": []
         },
         {
-          "number": "14.3",
+          "number": "22.3",
           "status": "pending",
           "notes": "Query-only.",
           "description": "Add a local feed query that returns streams ordered by proximity and recency within a GeoCell.",
           "subtasks": []
         },
         {
-          "number": "14.4",
+          "number": "22.4",
           "status": "pending",
           "notes": "Unit-testable.",
           "description": "Add tests for cell mapping and proximity ranking with edge-case coordinates.",
@@ -463,34 +647,34 @@
       ]
     },
     {
-      "number": "15",
+      "number": "23",
       "status": "pending",
       "notes": "Standalone growth feature; no dependency on other tasks.",
       "description": "Implement local invite tokens (QR/deep link) that attribute new users to a GeoCell or school group.",
       "subtasks": [
         {
-          "number": "15.1",
+          "number": "23.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Create an invite token generator that encodes inviter_id, geo_cell_id, and expiration.",
           "subtasks": []
         },
         {
-          "number": "15.2",
+          "number": "23.2",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Add a token validation endpoint that returns attribution metadata for signup/join flows.",
           "subtasks": []
         },
         {
-          "number": "15.3",
+          "number": "23.3",
           "status": "pending",
           "notes": "Local storage only.",
           "description": "Persist invite attribution on device and attach it to the first quest completion event.",
           "subtasks": []
         },
         {
-          "number": "15.4",
+          "number": "23.4",
           "status": "pending",
           "notes": "Anti-abuse guard.",
           "description": "Add rate limits on invite generation and validation per user/day.",
@@ -499,34 +683,34 @@
       ]
     },
     {
-      "number": "16",
+      "number": "24",
       "status": "pending",
       "notes": "Standalone interaction module; can be implemented without rewards.",
       "description": "Implement a lightweight real-time challenge system where viewers issue micro-quests and streamers accept/complete them.",
       "subtasks": [
         {
-          "number": "16.1",
+          "number": "24.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define a Challenge model with fields: id, stream_id, issuer_id, text, status, created_at, expires_at.",
           "subtasks": []
         },
         {
-          "number": "16.2",
+          "number": "24.2",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Add endpoints to create, accept, and complete challenges with basic authorization.",
           "subtasks": []
         },
         {
-          "number": "16.3",
+          "number": "24.3",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Add a challenge queue UI for streamers to accept/complete a challenge within a time window.",
           "subtasks": []
         },
         {
-          "number": "16.4",
+          "number": "24.4",
           "status": "pending",
           "notes": "Anti-abuse.",
           "description": "Add per-viewer rate limits and a profanity/safety filter for challenge text.",
@@ -535,34 +719,34 @@
       ]
     },
     {
-      "number": "17",
+      "number": "25",
       "status": "pending",
       "notes": "Standalone economy module; can be used with or without crypto transfer.",
       "description": "Implement an internal reward wallet with locked/unlocked balances and delayed unlock rules.",
       "subtasks": [
         {
-          "number": "17.1",
+          "number": "25.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define WalletBalance with fields: user_id, available_pjm, locked_pjm, updated_at.",
           "subtasks": []
         },
         {
-          "number": "17.2",
+          "number": "25.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement applyReward(user_id, pjm_amount, locked_ratio) that splits rewards into available and locked amounts.",
           "subtasks": []
         },
         {
-          "number": "17.3",
+          "number": "25.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement unlockRules that release locked PJM after N quest completions or N active days.",
           "subtasks": []
         },
         {
-          "number": "17.4",
+          "number": "25.4",
           "status": "pending",
           "notes": "Simple API.",
           "description": "Add a balance endpoint or helper that returns available and locked PJM for the client UI.",
@@ -571,34 +755,34 @@
       ]
     },
     {
-      "number": "18",
+      "number": "26",
       "status": "pending",
       "notes": "Standalone safety module; deterministic rules only.",
       "description": "Implement a safety rules engine that flags streams and challenges based on configurable policy rules.",
       "subtasks": [
         {
-          "number": "18.1",
+          "number": "26.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create a safety rules config file with denylisted words, max message length, and quiet-hours rules.",
           "subtasks": []
         },
         {
-          "number": "18.2",
+          "number": "26.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a rules evaluator that returns flags and enforcement actions (warn, hide, throttle).",
           "subtasks": []
         },
         {
-          "number": "18.3",
+          "number": "26.3",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Add an enforcement hook that applies actions to streams/challenges based on rule flags.",
           "subtasks": []
         },
         {
-          "number": "18.4",
+          "number": "26.4",
           "status": "pending",
           "notes": "Audit trail only.",
           "description": "Persist rule hits and enforcement actions in a safety audit log.",
@@ -607,34 +791,34 @@
       ]
     },
     {
-      "number": "19",
+      "number": "27",
       "status": "pending",
       "notes": "Standalone analytics; reads from events only.",
       "description": "Add geo-scale health metrics: supply/demand ratio per GeoCell and creator retention by cell.",
       "subtasks": [
         {
-          "number": "19.1",
+          "number": "27.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define a GeoCellDailyMetrics record with fields: cell_id, date, streams_started, viewers, quests_completed.",
           "subtasks": []
         },
         {
-          "number": "19.2",
+          "number": "27.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement daily aggregation for supply/demand ratio (streams_started vs viewers) per GeoCell.",
           "subtasks": []
         },
         {
-          "number": "19.3",
+          "number": "27.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute creator retention by GeoCell (D1/D7) using quest completion events.",
           "subtasks": []
         },
         {
-          "number": "19.4",
+          "number": "27.4",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Add a JSON report generator for geo-scale metrics (e.g., reports/geo_metrics_<date>.json).",
@@ -643,27 +827,27 @@
       ]
     },
     {
-      "number": "20",
+      "number": "28",
       "status": "pending",
       "notes": "Standalone product strategy tooling; config + visualization.",
       "description": "Implement a Strategy Canvas tool that renders value curves for Pyjam vs competitors from a local config file.",
       "subtasks": [
         {
-          "number": "20.1",
+          "number": "28.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create a strategy_canvas.json file with factors (geo, interactivity, monetization, safety, entry_barrier, content_realness) and per-product scores.",
           "subtasks": []
         },
         {
-          "number": "20.2",
+          "number": "28.2",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Build a small chart renderer (SVG/Canvas) that visualizes value curves from the config.",
           "subtasks": []
         },
         {
-          "number": "20.3",
+          "number": "28.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Add an export-to-JSON snapshot for tracked changes in value curves over time.",
@@ -672,27 +856,27 @@
       ]
     },
     {
-      "number": "21",
+      "number": "29",
       "status": "pending",
       "notes": "Standalone config + validation; no runtime dependency.",
       "description": "Implement an ERRC (Eliminate-Reduce-Raise-Create) grid config and a linter that checks new feature flags against the grid.",
       "subtasks": [
         {
-          "number": "21.1",
+          "number": "29.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create errc_grid.json with arrays for eliminate, reduce, raise, create factors.",
           "subtasks": []
         },
         {
-          "number": "21.2",
+          "number": "29.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a linter script that reads feature flags and ensures each new flag maps to a grid factor.",
           "subtasks": []
         },
         {
-          "number": "21.3",
+          "number": "29.3",
           "status": "pending",
           "notes": "CI-only.",
           "description": "Wire the linter into CI to fail when a feature change is not aligned to the grid.",
@@ -701,27 +885,27 @@
       ]
     },
     {
-      "number": "22",
+      "number": "30",
       "status": "pending",
       "notes": "Standalone onboarding module; no dependency on rewards.",
       "description": "Implement a zero-friction 'Go Live in 1 Tap' entry that bypasses setup and starts a 60-second stream instantly.",
       "subtasks": [
         {
-          "number": "22.1",
+          "number": "30.1",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Add a QuickStart button on the map screen that launches the stream immediately with defaults.",
           "subtasks": []
         },
         {
-          "number": "22.2",
+          "number": "30.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Implement default stream settings (no title, no category) and auto-start the camera.",
           "subtasks": []
         },
         {
-          "number": "22.3",
+          "number": "30.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track conversion from map view to first live stream for QuickStart vs standard flow.",
@@ -730,27 +914,27 @@
       ]
     },
     {
-      "number": "23",
+      "number": "31",
       "status": "pending",
       "notes": "Standalone loop orchestrator; can run with mocks.",
       "description": "Implement a Klaus-loop orchestrator that guarantees the first quest, instant reward UI, and Glow Pin for first-time streamers.",
       "subtasks": [
         {
-          "number": "23.1",
+          "number": "31.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add an orchestrator that triggers: quest_assigned -> quest_completed -> reward_granted -> glow_applied.",
           "subtasks": []
         },
         {
-          "number": "23.2",
+          "number": "31.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Integrate the orchestrator with the stream UI using a local mock reward source.",
           "subtasks": []
         },
         {
-          "number": "23.3",
+          "number": "31.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Emit a single composite event that captures the full loop completion for funnel analysis.",
@@ -759,27 +943,27 @@
       ]
     },
     {
-      "number": "24",
+      "number": "32",
       "status": "pending",
       "notes": "Standalone noncustomer conversion module.",
       "description": "Implement a viewer-to-creator conversion flow that prompts passive viewers to try a 60-second stream with a safe quest.",
       "subtasks": [
         {
-          "number": "24.1",
+          "number": "32.1",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Add a modal or inline prompt that appears after a viewer watches N seconds of a nearby stream.",
           "subtasks": []
         },
         {
-          "number": "24.2",
+          "number": "32.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Preload a safe quest and show a one-tap action to start streaming immediately.",
           "subtasks": []
         },
         {
-          "number": "24.3",
+          "number": "32.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track conversion from viewer to creator for the prompt flow.",
@@ -788,27 +972,27 @@
       ]
     },
     {
-      "number": "25",
+      "number": "33",
       "status": "pending",
       "notes": "Standalone reward tapering; pure logic.",
       "description": "Implement a reward tapering engine that gradually shifts incentives from PJM to visibility/status as a creator becomes active.",
       "subtasks": [
         {
-          "number": "25.1",
+          "number": "33.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create reward_tapering.json with tiers (new, warm, habitual) and payout multipliers per tier.",
           "subtasks": []
         },
         {
-          "number": "25.2",
+          "number": "33.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a tier resolver that assigns a creator to a tier based on completed quests and active days.",
           "subtasks": []
         },
         {
-          "number": "25.3",
+          "number": "33.3",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Apply tapering to PJM payouts and substitute with Glow/Boost flags when payout is reduced.",
@@ -817,34 +1001,34 @@
       ]
     },
     {
-      "number": "26",
+      "number": "34",
       "status": "pending",
       "notes": "Standalone local fame layer; UI + aggregation.",
       "description": "Implement a local fame leaderboard and map overlays that highlight top creators per school/GeoCell.",
       "subtasks": [
         {
-          "number": "26.1",
+          "number": "34.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define LocalFameScore with fields: user_id, cell_id, score, date, rank.",
           "subtasks": []
         },
         {
-          "number": "26.2",
+          "number": "34.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement daily scoring rules for local fame (quests completed, streak milestones, viewer interactions).",
           "subtasks": []
         },
         {
-          "number": "26.3",
+          "number": "34.3",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Add a map overlay for Top-3 local creators with visible badges and pin styles.",
           "subtasks": []
         },
         {
-          "number": "26.4",
+          "number": "34.4",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Add a JSON leaderboard endpoint or report for local fame rankings.",
@@ -853,27 +1037,27 @@
       ]
     },
     {
-      "number": "27",
+      "number": "35",
       "status": "pending",
       "notes": "Standalone safety template module; no AI dependency.",
       "description": "Implement a safe challenge template library for avatar tasks with allowlist tags and automatic rejection of unsafe prompts.",
       "subtasks": [
         {
-          "number": "27.1",
+          "number": "35.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create safe_challenge_templates.json with template ids, text, safe_tags, and age_rating.",
           "subtasks": []
         },
         {
-          "number": "27.2",
+          "number": "35.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a validator that rejects challenges not matching allowlisted tags or exceeding max length.",
           "subtasks": []
         },
         {
-          "number": "27.3",
+          "number": "35.3",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Add an endpoint to serve safe templates and fallback to templates when user input is blocked.",
@@ -882,27 +1066,27 @@
       ]
     },
     {
-      "number": "28",
+      "number": "36",
       "status": "pending",
       "notes": "Standalone ritual scheduler; config-driven.",
       "description": "Implement a daily ritual calendar that assigns a themed local challenge window per GeoCell (e.g., after-school theme).",
       "subtasks": [
         {
-          "number": "28.1",
+          "number": "36.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create ritual_calendar.json with per-day themes, start/end times, and eligible GeoCells.",
           "subtasks": []
         },
         {
-          "number": "28.2",
+          "number": "36.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a scheduler that returns the active ritual theme for a given GeoCell and time.",
           "subtasks": []
         },
         {
-          "number": "28.3",
+          "number": "36.3",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Expose the active ritual theme as a map banner and filter for relevant quests.",
@@ -911,27 +1095,27 @@
       ]
     },
     {
-      "number": "29",
+      "number": "37",
       "status": "pending",
       "notes": "Standalone strategy guard; CI-integrated.",
       "description": "Implement a Strategic Sequence checker (utility → price → cost → adoption) as a config + linter for new features.",
       "subtasks": [
         {
-          "number": "29.1",
+          "number": "37.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create strategic_sequence.json defining required checks and thresholds per feature type.",
           "subtasks": []
         },
         {
-          "number": "29.2",
+          "number": "37.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a linter that validates each feature flag entry includes utility, price impact, cost impact, and adoption risk tags.",
           "subtasks": []
         },
         {
-          "number": "29.3",
+          "number": "37.3",
           "status": "pending",
           "notes": "CI-only.",
           "description": "Wire the sequence checker into CI to block changes missing strategic sequence metadata.",
@@ -940,27 +1124,27 @@
       ]
     },
     {
-      "number": "30",
+      "number": "38",
       "status": "pending",
       "notes": "Standalone noncustomer analytics.",
       "description": "Implement noncustomer tier tagging (soon-to-be, refusing, unexplored) and track conversion into creators.",
       "subtasks": [
         {
-          "number": "30.1",
+          "number": "38.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define NoncustomerTag with fields: user_id, tier, tagged_at, reason_code.",
           "subtasks": []
         },
         {
-          "number": "30.2",
+          "number": "38.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add tagging rules based on engagement signals (views only, no quests, no streams).",
           "subtasks": []
         },
         {
-          "number": "30.3",
+          "number": "38.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track conversion from each tier into first stream and first quest completion.",
@@ -969,27 +1153,27 @@
       ]
     },
     {
-      "number": "31",
+      "number": "39",
       "status": "pending",
       "notes": "Standalone trust loop safeguards; deterministic rules.",
       "description": "Implement anti-bullying throttles for repeated negative interactions within a GeoCell.",
       "subtasks": [
         {
-          "number": "31.1",
+          "number": "39.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define InteractionFlag with fields: user_id, target_id, flag_type, count, last_seen_at.",
           "subtasks": []
         },
         {
-          "number": "31.2",
+          "number": "39.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add throttling rules that reduce interaction privileges after repeated flags in a short window.",
           "subtasks": []
         },
         {
-          "number": "31.3",
+          "number": "39.3",
           "status": "pending",
           "notes": "Server-only.",
           "description": "Enforce throttles on challenge creation and commenting within the affected GeoCell.",
@@ -998,27 +1182,27 @@
       ]
     },
     {
-      "number": "32",
+      "number": "40",
       "status": "pending",
       "notes": "Standalone growth analytics; event-driven.",
       "description": "Implement an AARRR funnel pipeline that computes acquisition, activation, retention, referral, and revenue metrics per GeoCell and school.",
       "subtasks": [
         {
-          "number": "32.1",
+          "number": "40.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define a FunnelEvent schema with fields: user_id, event_type, cell_id, school_id, created_at.",
           "subtasks": []
         },
         {
-          "number": "32.2",
+          "number": "40.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement daily aggregation functions for AARRR stages based on event_type mappings.",
           "subtasks": []
         },
         {
-          "number": "32.3",
+          "number": "40.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate JSON funnel reports per GeoCell (e.g., reports/funnel_<date>_<cell>.json).",
@@ -1027,27 +1211,27 @@
       ]
     },
     {
-      "number": "33",
+      "number": "41",
       "status": "pending",
       "notes": "Standalone retention analytics; pure logic.",
       "description": "Implement cohort retention calculator (D1/D3/D7/D14) for creators and viewers.",
       "subtasks": [
         {
-          "number": "33.1",
+          "number": "41.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define CohortKey with fields: cohort_date, user_id, role_type (viewer|creator).",
           "subtasks": []
         },
         {
-          "number": "33.2",
+          "number": "41.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a retention calculator that outputs cohort tables for D1/D3/D7/D14.",
           "subtasks": []
         },
         {
-          "number": "33.3",
+          "number": "41.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Write cohort tables to JSON (e.g., reports/cohorts_<date>.json).",
@@ -1056,27 +1240,27 @@
       ]
     },
     {
-      "number": "34",
+      "number": "42",
       "status": "pending",
       "notes": "Standalone referral analytics; no dependency on rewards.",
       "description": "Implement k-factor computation and viral loop diagnostics using invite attribution events.",
       "subtasks": [
         {
-          "number": "34.1",
+          "number": "42.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute k-factor as (invites sent × invite conversion rate) per GeoCell and school.",
           "subtasks": []
         },
         {
-          "number": "34.2",
+          "number": "42.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add loop diagnostics: time-to-invite, time-to-first-quest for invited users.",
           "subtasks": []
         },
         {
-          "number": "34.3",
+          "number": "42.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a daily viral report JSON with k-factor and loop timings.",
@@ -1085,27 +1269,27 @@
       ]
     },
     {
-      "number": "35",
+      "number": "43",
       "status": "pending",
       "notes": "Standalone activation module; client-only.",
       "description": "Implement a first-action activation prompt that fires after map view with a single-tap 'Start 60s quest' CTA.",
       "subtasks": [
         {
-          "number": "35.1",
+          "number": "43.1",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Add a lightweight activation prompt banner on the map with one primary action.",
           "subtasks": []
         },
         {
-          "number": "35.2",
+          "number": "43.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Hook the banner to the Starter Quest flow to launch immediately.",
           "subtasks": []
         },
         {
-          "number": "35.3",
+          "number": "43.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track activation prompt impressions, clicks, and quest start rate.",
@@ -1114,27 +1298,27 @@
       ]
     },
     {
-      "number": "36",
+      "number": "44",
       "status": "pending",
       "notes": "Standalone revenue analytics; config-driven.",
       "description": "Implement revenue attribution for PJM rewards and compute ARPU/LTV proxies per cohort.",
       "subtasks": [
         {
-          "number": "36.1",
+          "number": "44.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define RevenueEvent with fields: user_id, event_type, pjm_amount, usd_equivalent, created_at.",
           "subtasks": []
         },
         {
-          "number": "36.2",
+          "number": "44.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute ARPU and LTV proxies per cohort using RevenueEvent and retention tables.",
           "subtasks": []
         },
         {
-          "number": "36.3",
+          "number": "44.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate daily revenue proxy reports in JSON (e.g., reports/revenue_<date>.json).",
@@ -1143,27 +1327,27 @@
       ]
     },
     {
-      "number": "37",
+      "number": "45",
       "status": "pending",
       "notes": "Standalone growth-loop mapping; event-driven.",
       "description": "Implement a growth-loop mapper that assigns events to UGC, Viewer, and Social loops and computes loop health metrics.",
       "subtasks": [
         {
-          "number": "37.1",
+          "number": "45.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create growth_loops.json mapping event types to loop stages (ugc_create, ugc_discover, viewer_watch, viewer_engage, social_invite, social_join).",
           "subtasks": []
         },
         {
-          "number": "37.2",
+          "number": "45.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a loop aggregator that computes cycle completion rate and average time per loop.",
           "subtasks": []
         },
         {
-          "number": "37.3",
+          "number": "45.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate daily loop health reports (e.g., reports/loops_<date>.json).",
@@ -1172,27 +1356,27 @@
       ]
     },
     {
-      "number": "38",
+      "number": "46",
       "status": "pending",
       "notes": "Standalone reward variability engine; pure logic.",
       "description": "Implement a variable reward scheduler that selects reward types within bounded ranges to support habit formation without overspending.",
       "subtasks": [
         {
-          "number": "38.1",
+          "number": "46.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create variable_rewards.json defining reward bundles (pjm_range, glow_duration_sec, badge_variant) and probabilities.",
           "subtasks": []
         },
         {
-          "number": "38.2",
+          "number": "46.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a scheduler that selects a bundle per completion and enforces per-user daily caps.",
           "subtasks": []
         },
         {
-          "number": "38.3",
+          "number": "46.3",
           "status": "pending",
           "notes": "Self-contained tests.",
           "description": "Add tests to verify probability weights, cap enforcement, and deterministic output with a seed.",
@@ -1201,27 +1385,27 @@
       ]
     },
     {
-      "number": "39",
+      "number": "47",
       "status": "pending",
       "notes": "Standalone ethics guard; client + config.",
       "description": "Implement notification budgets and quiet hours to prevent over-pressuring users.",
       "subtasks": [
         {
-          "number": "39.1",
+          "number": "47.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create notification_policy.json with max_per_day, quiet_hours, and priority tiers.",
           "subtasks": []
         },
         {
-          "number": "39.2",
+          "number": "47.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a notification budgeter that blocks or defers sends when limits are reached.",
           "subtasks": []
         },
         {
-          "number": "39.3",
+          "number": "47.3",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Add user controls to mute categories and set personal quiet hours.",
@@ -1230,27 +1414,27 @@
       ]
     },
     {
-      "number": "40",
+      "number": "48",
       "status": "pending",
       "notes": "Standalone experimentation framework; no dependency on other tasks.",
       "description": "Implement an A/B testing framework for reward amounts, glow duration, and quest types with assignment and exposure logging.",
       "subtasks": [
         {
-          "number": "40.1",
+          "number": "48.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create experiments.json defining experiment ids, variants, and rollout percentages.",
           "subtasks": []
         },
         {
-          "number": "40.2",
+          "number": "48.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement deterministic user assignment using user_id hashing and variant weights.",
           "subtasks": []
         },
         {
-          "number": "40.3",
+          "number": "48.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Log experiment exposures and variant outcomes to the event pipeline.",
@@ -1259,20 +1443,20 @@
       ]
     },
     {
-      "number": "41",
+      "number": "49",
       "status": "pending",
       "notes": "Standalone referral asset generator; client-only.",
       "description": "Implement a shareable local achievement card that embeds an invite link and GeoCell attribution.",
       "subtasks": [
         {
-          "number": "41.1",
+          "number": "49.1",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Extend the share-card generator to include a QR code or deep link token tied to a GeoCell.",
           "subtasks": []
         },
         {
-          "number": "41.2",
+          "number": "49.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Add a card variant for streak milestones and local fame ranks.",
@@ -1281,27 +1465,27 @@
       ]
     },
     {
-      "number": "42",
+      "number": "50",
       "status": "pending",
       "notes": "Standalone analytics; detects overjustification risk.",
       "description": "Implement an incentive-dependence monitor that tracks the ratio of reward-driven actions vs organic actions per user cohort.",
       "subtasks": [
         {
-          "number": "42.1",
+          "number": "50.1",
           "status": "pending",
           "notes": "Schema only.",
           "description": "Define IncentiveDependencyMetric with fields: cohort_date, reward_actions, organic_actions, ratio.",
           "subtasks": []
         },
         {
-          "number": "42.2",
+          "number": "50.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute daily ratios for new/warm/habitual tiers and flag high-dependence cohorts.",
           "subtasks": []
         },
         {
-          "number": "42.3",
+          "number": "50.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a daily incentive-dependence report JSON (e.g., reports/incentive_dependency_<date>.json).",
@@ -1310,27 +1494,27 @@
       ]
     },
     {
-      "number": "43",
+      "number": "51",
       "status": "pending",
       "notes": "Standalone starter bonus engine; server or client mock.",
       "description": "Implement a first-quest starter bonus rule that awards PJM instantly on the first completed quest per day.",
       "subtasks": [
         {
-          "number": "43.1",
+          "number": "51.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create starter_bonus.json with fields: pjm_amount, max_per_day, cooldown_hours.",
           "subtasks": []
         },
         {
-          "number": "43.2",
+          "number": "51.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a starter bonus validator that checks daily eligibility and returns awardable amount.",
           "subtasks": []
         },
         {
-          "number": "43.3",
+          "number": "51.3",
           "status": "pending",
           "notes": "Event-driven.",
           "description": "Emit a starter_bonus_awarded event on quest completion for analytics and budgeting.",
@@ -1339,27 +1523,27 @@
       ]
     },
     {
-      "number": "44",
+      "number": "52",
       "status": "pending",
       "notes": "Standalone auto-quest bootstrap; no viewer dependency.",
       "description": "Implement an auto-quest bootstrapper that assigns a safe quest when a stream starts and no viewers are present.",
       "subtasks": [
         {
-          "number": "44.1",
+          "number": "52.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a check that assigns a safe quest within the first N seconds of a new stream if viewer_count == 0.",
           "subtasks": []
         },
         {
-          "number": "44.2",
+          "number": "52.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Display the auto-assigned quest in the stream overlay with a one-tap Done action.",
           "subtasks": []
         },
         {
-          "number": "44.3",
+          "number": "52.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track auto-quest assignment rate and completion rate.",
@@ -1368,27 +1552,27 @@
       ]
     },
     {
-      "number": "45",
+      "number": "53",
       "status": "pending",
       "notes": "Standalone map visibility booster.",
       "description": "Implement a first-quest map boost that highlights new streamers for a short window after completion.",
       "subtasks": [
         {
-          "number": "45.1",
+          "number": "53.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create map_boost.json with fields: boost_duration_sec, boost_style_variant, eligible_event_types.",
           "subtasks": []
         },
         {
-          "number": "45.2",
+          "number": "53.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Trigger a Glow Pin or Boost flag when a first-quest completion event is received.",
           "subtasks": []
         },
         {
-          "number": "45.3",
+          "number": "53.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track boost impressions and downstream viewer joins.",
@@ -1397,27 +1581,27 @@
       ]
     },
     {
-      "number": "46",
+      "number": "54",
       "status": "pending",
       "notes": "Standalone pilot harness; config-driven.",
       "description": "Implement a school pilot gate that enables the starter bonus + auto-quest + boost only for selected GeoCells.",
       "subtasks": [
         {
-          "number": "46.1",
+          "number": "54.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create pilot_geo_cells.json listing enabled GeoCells and rollout percentages.",
           "subtasks": []
         },
         {
-          "number": "46.2",
+          "number": "54.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a feature gate that checks GeoCell eligibility before applying starter bonus or auto-quest.",
           "subtasks": []
         },
         {
-          "number": "46.3",
+          "number": "54.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Tag pilot events with geo_cell_id and rollout group for A/B evaluation.",
@@ -1426,27 +1610,27 @@
       ]
     },
     {
-      "number": "47",
+      "number": "55",
       "status": "pending",
       "notes": "Standalone viral add-on; client-only.",
       "description": "Implement a Fan Quest Chain prompt that appears after the first quest and encourages sharing for an extra visibility boost.",
       "subtasks": [
         {
-          "number": "47.1",
+          "number": "55.1",
           "status": "pending",
           "notes": "UI-only.",
           "description": "Add a post-quest modal with one-tap share CTA and a preview of the extra boost reward.",
           "subtasks": []
         },
         {
-          "number": "47.2",
+          "number": "55.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Implement a share action that attaches the user's GeoCell invite token to the share card/link.",
           "subtasks": []
         },
         {
-          "number": "47.3",
+          "number": "55.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Track share attempts, successful shares, and downstream joins attributed to the Fan Quest Chain.",
@@ -1455,27 +1639,27 @@
       ]
     },
     {
-      "number": "48",
+      "number": "56",
       "status": "pending",
       "notes": "Standalone A/B variants for the starter hack.",
       "description": "Add experiment variants that compare PJM vs Glow-only and solo vs school-duel modes for the first-quest flow.",
       "subtasks": [
         {
-          "number": "48.1",
+          "number": "56.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Extend experiments.json with variants: starter_pjm_vs_glow and starter_solo_vs_duel.",
           "subtasks": []
         },
         {
-          "number": "48.2",
+          "number": "56.2",
           "status": "pending",
           "notes": "Client-only.",
           "description": "Wire UI variants to show PJM reward vs Glow-only and solo vs school-duel banners.",
           "subtasks": []
         },
         {
-          "number": "48.3",
+          "number": "56.3",
           "status": "pending",
           "notes": "Analytics-only.",
           "description": "Log variant outcomes for activation, D1 creator retention, and streams per 1k users.",
@@ -1484,27 +1668,27 @@
       ]
     },
     {
-      "number": "49",
+      "number": "57",
       "status": "pending",
       "notes": "Standalone metric pack; output-only.",
       "description": "Implement a starter-hack KPI report covering first-stream rate, D1 creator retention, streams per 1k users, and boosted-to-organic ratio.",
       "subtasks": [
         {
-          "number": "49.1",
+          "number": "57.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute first-stream rate within 24 hours of signup per GeoCell.",
           "subtasks": []
         },
         {
-          "number": "49.2",
+          "number": "57.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute boosted-to-organic ratio: % of boosted streams that later occur without auto-quest or boost.",
           "subtasks": []
         },
         {
-          "number": "49.3",
+          "number": "57.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate JSON report (e.g., reports/starter_hack_kpis_<date>.json).",
@@ -1513,27 +1697,27 @@
       ]
     },
     {
-      "number": "50",
+      "number": "58",
       "status": "pending",
       "notes": "Standalone Blue Ocean analytics; config + scoring.",
       "description": "Implement a Buyer Utility Map tool (buyer experience cycle × utility levers) with scoring and gap detection.",
       "subtasks": [
         {
-          "number": "50.1",
+          "number": "58.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create buyer_utility_map.json defining experience stages (purchase, delivery, use, supplements, maintenance, disposal) and utility levers (productivity, simplicity, convenience, risk, fun, environmental).",
           "subtasks": []
         },
         {
-          "number": "50.2",
+          "number": "58.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Implement a scoring engine that assigns 1–5 scores per cell and detects low-scoring gaps.",
           "subtasks": []
         },
         {
-          "number": "50.3",
+          "number": "58.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a JSON gap report highlighting top 5 utility opportunities.",
@@ -1542,27 +1726,27 @@
       ]
     },
     {
-      "number": "51",
+      "number": "59",
       "status": "pending",
       "notes": "Standalone pricing tool; config + calculator.",
       "description": "Implement a Price Corridor of the Mass calculator that recommends a strategic price range based on alternatives and substitutes.",
       "subtasks": [
         {
-          "number": "51.1",
+          "number": "59.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create price_corridor.json with competitor/alternative prices, tiers (low/mid/high), and buyer segments.",
           "subtasks": []
         },
         {
-          "number": "51.2",
+          "number": "59.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute corridor bounds and recommend a strategic price point within the mass corridor.",
           "subtasks": []
         },
         {
-          "number": "51.3",
+          "number": "59.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a pricing recommendation report JSON with corridor bounds and rationale fields.",
@@ -1571,27 +1755,27 @@
       ]
     },
     {
-      "number": "52",
+      "number": "60",
       "status": "pending",
       "notes": "Standalone cost tool; config + calculator.",
       "description": "Implement a Target Costing calculator that derives target cost from strategic price and required margin.",
       "subtasks": [
         {
-          "number": "52.1",
+          "number": "60.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create target_costing.json with strategic_price, margin_target, and cost_components.",
           "subtasks": []
         },
         {
-          "number": "52.2",
+          "number": "60.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute target_cost and allowable per-component budgets.",
           "subtasks": []
         },
         {
-          "number": "52.3",
+          "number": "60.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a target-cost report JSON with component budgets and gap-to-current-cost fields.",
@@ -1600,27 +1784,27 @@
       ]
     },
     {
-      "number": "53",
+      "number": "61",
       "status": "pending",
       "notes": "Standalone adoption risk tooling; config + linter.",
       "description": "Implement an Adoption Hurdles checklist (cognitive, resource, motivational, political) and require each feature to declare mitigations.",
       "subtasks": [
         {
-          "number": "53.1",
+          "number": "61.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create adoption_hurdles.json with required mitigation fields per hurdle type.",
           "subtasks": []
         },
         {
-          "number": "53.2",
+          "number": "61.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a linter that validates feature flags include mitigations for each hurdle type.",
           "subtasks": []
         },
         {
-          "number": "53.3",
+          "number": "61.3",
           "status": "pending",
           "notes": "CI-only.",
           "description": "Wire the adoption-hurdle linter into CI to block features without mitigation metadata.",
@@ -1629,27 +1813,27 @@
       ]
     },
     {
-      "number": "54",
+      "number": "62",
       "status": "pending",
       "notes": "Standalone value innovation scoring; analytics-only.",
       "description": "Implement a Value Innovation Index that combines buyer utility gains, cost reductions, and differentiation signals.",
       "subtasks": [
         {
-          "number": "54.1",
+          "number": "62.1",
           "status": "pending",
           "notes": "Config only.",
           "description": "Create value_innovation_index.json defining weights for utility, cost, differentiation, and adoption friction.",
           "subtasks": []
         },
         {
-          "number": "54.2",
+          "number": "62.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute a composite score per feature or release from existing reports (utility gaps, cost targets, strategy canvas).",
           "subtasks": []
         },
         {
-          "number": "54.3",
+          "number": "62.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a value-innovation report JSON with ranked features and score deltas.",
@@ -1658,30 +1842,117 @@
       ]
     },
     {
-      "number": "55",
+      "number": "63",
       "status": "pending",
       "notes": "Standalone differentiation guard; analytics-only.",
       "description": "Implement Strategy Canvas diagnostics to enforce focus, divergence, and a compelling tagline signal.",
       "subtasks": [
         {
-          "number": "55.1",
+          "number": "63.1",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Compute focus and divergence scores from the strategy_canvas.json curves.",
           "subtasks": []
         },
         {
-          "number": "55.2",
+          "number": "63.2",
           "status": "pending",
           "notes": "Pure logic.",
           "description": "Add a tagline-fit checker that ensures at least one concise value statement can be derived from top curve peaks.",
           "subtasks": []
         },
         {
-          "number": "55.3",
+          "number": "63.3",
           "status": "pending",
           "notes": "Output-only.",
           "description": "Generate a differentiation report JSON with focus/divergence scores and tagline candidates.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "64",
+      "status": "pending",
+      "notes": "Bind reports to real analytics sources (GA4). Do not hardcode secrets; use env vars.",
+      "description": "Add analytics source configuration for GA4 (account 372664399, property 510154368) and a fetcher that stores raw metrics for report pipelines.",
+      "subtasks": [
+        {
+          "number": "64.1",
+          "status": "pending",
+          "notes": "Config only; no secrets committed.",
+          "description": "Create config/analytics_sources.json with GA4 account/property IDs and required env vars (GA_ACCESS_TOKEN, GA_PROJECT_ID).",
+          "subtasks": []
+        },
+        {
+          "number": "64.2",
+          "status": "pending",
+          "notes": "Script-only; uses GA Data API.",
+          "description": "Implement scripts/fetch_ga4_metrics.py to pull daily totals (users, sessions, eventCount) into reports/raw/ga4_<date>.json.",
+          "subtasks": []
+        },
+        {
+          "number": "64.3",
+          "status": "pending",
+          "notes": "Mapping only.",
+          "description": "Create config/event_mapping.json to map GA4 events to internal events used by AARRR and loop reports.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "65",
+      "status": "pending",
+      "notes": "Report adapter layer; reads raw GA4 data and internal event logs.",
+      "description": "Update report generators to consume real GA4 metrics + internal event mappings and persist normalized metrics for dashboards.",
+      "subtasks": [
+        {
+          "number": "65.1",
+          "status": "pending",
+          "notes": "Pure logic.",
+          "description": "Implement a normalization step that converts GA4 raw metrics into internal daily metrics (dau, wau, mau, activation_rate).",
+          "subtasks": []
+        },
+        {
+          "number": "65.2",
+          "status": "pending",
+          "notes": "Pure logic.",
+          "description": "Wire AARRR, cohort, and loop reports to read from normalized metrics plus event_mapping.json.",
+          "subtasks": []
+        },
+        {
+          "number": "65.3",
+          "status": "pending",
+          "notes": "Output-only.",
+          "description": "Write normalized metrics to reports/normalized_metrics_<date>.json for dashboard consumption.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "66",
+      "status": "pending",
+      "notes": "Dashboard generation; JSON + SVG outputs.",
+      "description": "Generate a one-page Blue Ocean dashboard (JSON + SVG) that aggregates strategy canvas, buyer utility gaps, AARRR, and loop health metrics.",
+      "subtasks": [
+        {
+          "number": "66.1",
+          "status": "pending",
+          "notes": "Schema only.",
+          "description": "Define dashboard schema (cards: value_curve, utility_gaps, aarr, loops, budget, local_fame).",
+          "subtasks": []
+        },
+        {
+          "number": "66.2",
+          "status": "pending",
+          "notes": "Script-only.",
+          "description": "Implement scripts/build_blue_ocean_dashboard.py to read reports/*.json and output reports/blue_ocean_dashboard.json.",
+          "subtasks": []
+        },
+        {
+          "number": "66.3",
+          "status": "pending",
+          "notes": "SVG-only.",
+          "description": "Implement an SVG renderer that produces reports/blue_ocean_dashboard.svg from the dashboard JSON.",
           "subtasks": []
         }
       ]

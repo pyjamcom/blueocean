@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Blue Ocean Dashboard",
+    "generated_at": "2026-01-20T01:31:36Z",
+    "data_sources": [
+      "reports"
+    ]
+  },
+  "cards": [
+    {
+      "id": "strategy_canvas",
+      "title": "Strategy Canvas",
+      "source": "",
+      "summary": {
+        "focus_score": null,
+        "divergence_score": null,
+        "tagline_candidate": null
+      }
+    },
+    {
+      "id": "buyer_utility",
+      "title": "Buyer Utility Map",
+      "source": "",
+      "summary": {
+        "top_gap": null,
+        "gap_score": null
+      }
+    },
+    {
+      "id": "aarr",
+      "title": "AARRR Funnel",
+      "source": "",
+      "summary": {
+        "acquisition": null,
+        "activation": null,
+        "retention": null,
+        "referral": null,
+        "revenue": null
+      }
+    },
+    {
+      "id": "loops",
+      "title": "Growth Loops",
+      "source": "",
+      "summary": {
+        "ugc_loop_completion": null,
+        "viewer_loop_completion": null,
+        "social_loop_completion": null
+      }
+    },
+    {
+      "id": "budget",
+      "title": "PJM Budget Health",
+      "source": "",
+      "summary": {
+        "daily_cap_pjm": null,
+        "spent_pjm": null,
+        "remaining_pjm": null
+      }
+    },
+    {
+      "id": "local_fame",
+      "title": "Local Fame",
+      "source": "",
+      "summary": {
+        "top_creator": null,
+        "top_cell": null
+      }
+    }
+  ]
+}
