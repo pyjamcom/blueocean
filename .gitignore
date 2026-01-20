@@ -6,3 +6,23 @@ config/client_secret_*.json
 scripts/__pycache__/
 __pycache__/
 reports/raw/
+# local artifacts / legacy drafts
+agents.md
+blue_ocean_game_tasks.json
+docs/
+entity_source_schengen_facts.txt
+report_blue_ocean.html
+reports/blue_ocean_plan_report.html
+scripts/archive_csv.py
+scripts/build_cc0_meme_galleries.py
+scripts/check_compliance.py
+scripts/fetch_openclipart_assets.py
+scripts/generate_emoji_icons_openai.py
+scripts/generate_faq_fragments.py
+scripts/generate_html_report.py
+scripts/generate_positioning_content.py
+scripts/generate_rsa_assets.py
+scripts/lint_errc_grid.py
+scripts/prepare_meme_webp_variants.py
+scripts/update_csv_from_mapping.py
+scripts/validate_csv_structure.py
