@@ -1,0 +1,62 @@
+{
+  "date": "2026-01-20",
+  "total_cost_delta": -0.08,
+  "factors": [
+    {
+      "factor": "eliminate_global_follower_race",
+      "drivers": [
+        {
+          "driver": "creator_incentives",
+          "impact": -0.1
+        },
+        {
+          "driver": "content_moderation",
+          "impact": -0.05
+        }
+      ],
+      "factor_impact": -0.15
+    },
+    {
+      "factor": "reduce_production_polish",
+      "drivers": [
+        {
+          "driver": "editorial_ops",
+          "impact": -0.1
+        },
+        {
+          "driver": "content_quality_review",
+          "impact": -0.05
+        }
+      ],
+      "factor_impact": -0.15
+    },
+    {
+      "factor": "raise_safety",
+      "drivers": [
+        {
+          "driver": "moderation_ops",
+          "impact": 0.08
+        },
+        {
+          "driver": "ml_model_costs",
+          "impact": 0.05
+        }
+      ],
+      "factor_impact": 0.13
+    },
+    {
+      "factor": "create_auto_quests",
+      "drivers": [
+        {
+          "driver": "product_engineering",
+          "impact": 0.06
+        },
+        {
+          "driver": "quest_content_ops",
+          "impact": 0.03
+        }
+      ],
+      "factor_impact": 0.09
+    }
+  ]
+}

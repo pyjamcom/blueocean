@@ -1,0 +1,26 @@
+{
+  "required_checks": [
+    {
+      "id": "utility",
+      "description": "Feature creates clear buyer utility gains."
+    },
+    {
+      "id": "price",
+      "description": "Feature supports a compelling price corridor."
+    },
+    {
+      "id": "cost",
+      "description": "Feature can be delivered within target cost."
+    },
+    {
+      "id": "adoption",
+      "description": "Adoption hurdles and mitigations are defined."
+    }
+  ],
+  "thresholds": {
+    "utility_score_min": 3,
+    "price_score_min": 3,
+    "cost_score_min": 3,
+    "adoption_readiness_min": 3
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "date": "2026-01-20",
+  "inputs": {
+    "utility_gain": 0.6,
+    "cost_reduction": 0.0,
+    "differentiation": 0.512
+  },
+  "weights": {
+    "utility_gain": 0.4,
+    "cost_reduction": 0.2,
+    "differentiation": 0.4
+  },
+  "value_innovation_index": 0.445,
+  "sources": {
+    "buyer_utility": "reports/buyer_utility_2026-01-20.json",
+    "differentiation": "reports/differentiation_2026-01-20.json",
+    "target_cost": "reports/target_cost_2026-01-20.json"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "strategic_price": 0.0,
+  "margin_target_pct": 0.6,
+  "current_cost_estimate": 0.4,
+  "cost_components": [
+    {"name": "streaming_infra", "current_cost": 0.2},
+    {"name": "moderation", "current_cost": 0.1},
+    {"name": "rewards", "current_cost": 0.1}
+  ],
+  "notes": "Draft target costing inputs; update with actual costs."
+}

@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Pyjam Strategy Canvas (draft)",
+    "scale": "1-5",
+    "source": "assumptions",
+    "notes": "Replace scores with real research/benchmarks."
+  },
+  "tagline_candidates": [
+    "Local fame, live and now",
+    "Geo-streams that spark neighborhoods"
+  ],
+  "factors": [
+    {"id": "geo_focus", "label": "Geo focus"},
+    {"id": "instant_go_live", "label": "Instant go live"},
+    {"id": "viewer_interactivity", "label": "Viewer interactivity"},
+    {"id": "map_visibility", "label": "Map visibility"},
+    {"id": "creator_rewards", "label": "Creator rewards"},
+    {"id": "safety_by_design", "label": "Safety by design"},
+    {"id": "local_fame", "label": "Local fame"},
+    {"id": "production_polish", "label": "Production polish"},
+    {"id": "global_reach", "label": "Global reach"}
+  ],
+  "profiles": [
+    {
+      "id": "pyjam",
+      "label": "Pyjam",
+      "scores": [5, 5, 5, 5, 4, 5, 5, 2, 2]
+    },
+    {
+      "id": "tiktok_live",
+      "label": "TikTok Live",
+      "scores": [1, 3, 3, 1, 3, 3, 2, 4, 5]
+    },
+    {
+      "id": "twitch",
+      "label": "Twitch",
+      "scores": [1, 2, 3, 1, 4, 2, 2, 5, 4]
+    },
+    {
+      "id": "telescope",
+      "label": "Telescope",
+      "scores": [1, 3, 2, 1, 2, 2, 1, 2, 2]
+    }
+  ]
+}

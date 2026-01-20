@@ -1,0 +1,8 @@
+{
+  "weights": {
+    "utility_gain": 0.4,
+    "cost_reduction": 0.2,
+    "differentiation": 0.4
+  },
+  "notes": "Draft weights; adjust by leadership preference."
+}

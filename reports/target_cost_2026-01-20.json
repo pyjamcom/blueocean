@@ -1,0 +1,22 @@
+{
+  "date": "2026-01-20",
+  "strategic_price": 0.0,
+  "margin_target_pct": 0.6,
+  "target_cost": 0.0,
+  "current_cost": 0.4,
+  "gap_to_target": 0.4,
+  "components": [
+    {
+      "name": "streaming_infra",
+      "current_cost": 0.2
+    },
+    {
+      "name": "moderation",
+      "current_cost": 0.1
+    },
+    {
+      "name": "rewards",
+      "current_cost": 0.1
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "Buyer Utility Map (draft)",
+    "scale": "1-5",
+    "source": "assumptions",
+    "notes": "Replace scores with real research/benchmarks."
+  },
+  "experience_stages": [
+    "purchase",
+    "delivery",
+    "use",
+    "supplements",
+    "maintenance",
+    "disposal"
+  ],
+  "utility_levers": [
+    "productivity",
+    "simplicity",
+    "convenience",
+    "risk_reduction",
+    "fun_image",
+    "environment"
+  ],
+  "scores": {
+    "purchase": {
+      "productivity": 3,
+      "simplicity": 3,
+      "convenience": 4,
+      "risk_reduction": 2,
+      "fun_image": 3,
+      "environment": 2
+    },
+    "delivery": {
+      "productivity": 4,
+      "simplicity": 4,
+      "convenience": 4,
+      "risk_reduction": 3,
+      "fun_image": 3,
+      "environment": 2
+    },
+    "use": {
+      "productivity": 4,
+      "simplicity": 4,
+      "convenience": 4,
+      "risk_reduction": 3,
+      "fun_image": 5,
+      "environment": 3
+    },
+    "supplements": {
+      "productivity": 3,
+      "simplicity": 3,
+      "convenience": 3,
+      "risk_reduction": 2,
+      "fun_image": 4,
+      "environment": 2
+    },
+    "maintenance": {
+      "productivity": 3,
+      "simplicity": 3,
+      "convenience": 3,
+      "risk_reduction": 3,
+      "fun_image": 3,
+      "environment": 2
+    },
+    "disposal": {
+      "productivity": 2,
+      "simplicity": 2,
+      "convenience": 2,
+      "risk_reduction": 2,
+      "fun_image": 2,
+      "environment": 3
+    }
+  }
+}

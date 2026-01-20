@@ -1,0 +1,67 @@
+{
+  "date": "2026-01-20",
+  "threshold": 2,
+  "gaps": [
+    {
+      "stage": "purchase",
+      "lever": "risk_reduction",
+      "score": 2,
+      "name": "purchase:risk_reduction"
+    },
+    {
+      "stage": "purchase",
+      "lever": "environment",
+      "score": 2,
+      "name": "purchase:environment"
+    },
+    {
+      "stage": "delivery",
+      "lever": "environment",
+      "score": 2,
+      "name": "delivery:environment"
+    },
+    {
+      "stage": "supplements",
+      "lever": "risk_reduction",
+      "score": 2,
+      "name": "supplements:risk_reduction"
+    },
+    {
+      "stage": "supplements",
+      "lever": "environment",
+      "score": 2,
+      "name": "supplements:environment"
+    },
+    {
+      "stage": "maintenance",
+      "lever": "environment",
+      "score": 2,
+      "name": "maintenance:environment"
+    },
+    {
+      "stage": "disposal",
+      "lever": "productivity",
+      "score": 2,
+      "name": "disposal:productivity"
+    },
+    {
+      "stage": "disposal",
+      "lever": "simplicity",
+      "score": 2,
+      "name": "disposal:simplicity"
+    },
+    {
+      "stage": "disposal",
+      "lever": "convenience",
+      "score": 2,
+      "name": "disposal:convenience"
+    },
+    {
+      "stage": "disposal",
+      "lever": "risk_reduction",
+      "score": 2,
+      "name": "disposal:risk_reduction"
+    }
+  ],
+  "total_gaps": 11
+}

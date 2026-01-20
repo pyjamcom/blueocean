@@ -1,0 +1,5 @@
+{
+  "focus_drop_threshold": 0.1,
+  "divergence_drop_threshold": 0.1,
+  "notes": "Thresholds for alerts when focus/divergence decline."
+}

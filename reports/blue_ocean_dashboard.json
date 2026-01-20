@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Blue Ocean Dashboard",
-    "generated_at": "2026-01-20T03:53:37Z",
+    "generated_at": "2026-01-20T12:38:39Z",
     "data_sources": [
       "reports"
     ]
@@ -10,20 +10,20 @@
     {
       "id": "strategy_canvas",
       "title": "Strategy Canvas",
-      "source": "",
+      "source": "reports/differentiation_2026-01-20.json",
       "summary": {
-        "focus_score": null,
-        "divergence_score": null,
-        "tagline_candidate": null
+        "focus_score": 0.78,
+        "divergence_score": 2.56,
+        "tagline_candidate": "Local fame, live and now"
       }
     },
     {
       "id": "buyer_utility",
       "title": "Buyer Utility Map",
-      "source": "",
+      "source": "reports/buyer_utility_2026-01-20.json",
       "summary": {
-        "top_gap": null,
-        "gap_score": null
+        "top_gap": "purchase:risk_reduction",
+        "gap_score": 2
       }
     },
     {

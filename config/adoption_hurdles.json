@@ -1,0 +1,26 @@
+{
+  "hurdles": {
+    "cognitive": [
+      "users_do_not_understand_geo_value",
+      "creators_assume_need_large_followers"
+    ],
+    "resource": [
+      "limited_creator_time",
+      "budget_for_rewards"
+    ],
+    "motivational": [
+      "fear_of_zero_viewers",
+      "social_risk_in_school"
+    ],
+    "political": [
+      "school_admin_resistance",
+      "parental_concerns"
+    ]
+  },
+  "mitigations_required": [
+    "clear_onboarding_value_prop",
+    "auto_quest_first_viewer",
+    "safety_by_design_controls",
+    "transparent_reward_caps"
+  ]
+}

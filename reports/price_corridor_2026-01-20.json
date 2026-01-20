@@ -1,0 +1,31 @@
+{
+  "date": "2026-01-20",
+  "currency": "USD",
+  "corridor": {
+    "low": 0,
+    "mid": 3.25,
+    "high": 8
+  },
+  "alternatives": [
+    {
+      "name": "TikTok Live",
+      "price": 0
+    },
+    {
+      "name": "Twitch",
+      "price": 0
+    },
+    {
+      "name": "Local events",
+      "price": 5
+    },
+    {
+      "name": "Paid streaming",
+      "price": 8
+    }
+  ],
+  "strategy": {
+    "strategy": "free_core_paid_boosts",
+    "recommended_price": 0
+  }
+}

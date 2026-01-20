@@ -1,0 +1,15 @@
+{
+  "date": "2026-01-20",
+  "current_report": "reports/strategy_canvas_2026-01-20.json",
+  "previous_report": "reports/strategy_canvas_snapshot.json",
+  "focus_drop": 0.0,
+  "divergence_drop": 0.0,
+  "thresholds": {
+    "focus_drop_threshold": 0.1,
+    "divergence_drop_threshold": 0.1
+  },
+  "alerts": {
+    "focus_drop": false,
+    "divergence_drop": false
+  }
+}

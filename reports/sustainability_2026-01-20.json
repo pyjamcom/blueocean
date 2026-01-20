@@ -1,0 +1,16 @@
+{
+  "date": "2026-01-20",
+  "imitation_barriers": {
+    "barrier_score": 2.35,
+    "barrier_strength": 0.47,
+    "imitation_risk": 0.53
+  },
+  "strategy_drift": {
+    "focus_drop": false,
+    "divergence_drop": false
+  },
+  "sources": {
+    "imitation_barriers": "reports/imitation_barriers_2026-01-20.json",
+    "strategy_drift": "reports/strategy_drift_2026-01-20.json"
+  }
+}

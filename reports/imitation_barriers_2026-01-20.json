@@ -1,0 +1,47 @@
+{
+  "date": "2026-01-20",
+  "scale": "1-5",
+  "factors": [
+    {
+      "id": "brand",
+      "label": "Brand/Community Loyalty",
+      "weight": 0.2,
+      "score": 3
+    },
+    {
+      "id": "network_effects",
+      "label": "Network Effects",
+      "weight": 0.25,
+      "score": 3
+    },
+    {
+      "id": "data_flywheel",
+      "label": "Data/AI Advantage",
+      "weight": 0.2,
+      "score": 2
+    },
+    {
+      "id": "cost_structure",
+      "label": "Cost Structure Advantage",
+      "weight": 0.15,
+      "score": 2
+    },
+    {
+      "id": "legal",
+      "label": "Legal/Regulatory Moats",
+      "weight": 0.1,
+      "score": 1
+    },
+    {
+      "id": "switching_costs",
+      "label": "Switching Costs",
+      "weight": 0.1,
+      "score": 2
+    }
+  ],
+  "summary": {
+    "barrier_score": 2.35,
+    "barrier_strength": 0.47,
+    "imitation_risk": 0.53
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "scale": "1-5",
+  "categories": [
+    {
+      "id": "search_risk",
+      "label": "Search risk",
+      "weight": 0.15,
+      "score": 2,
+      "mitigation": "Field validation + Six Paths evidence."
+    },
+    {
+      "id": "planning_risk",
+      "label": "Planning risk",
+      "weight": 0.15,
+      "score": 2,
+      "mitigation": "Strategy canvas + ERRC alignment."
+    },
+    {
+      "id": "scale_risk",
+      "label": "Scale risk",
+      "weight": 0.2,
+      "score": 3,
+      "mitigation": "Geo-wave rollout + budget caps."
+    },
+    {
+      "id": "business_model_risk",
+      "label": "Business model risk",
+      "weight": 0.2,
+      "score": 3,
+      "mitigation": "Price corridor + target costing."
+    },
+    {
+      "id": "organizational_risk",
+      "label": "Organizational risk",
+      "weight": 0.15,
+      "score": 2,
+      "mitigation": "Tipping Point + fair process."
+    },
+    {
+      "id": "management_risk",
+      "label": "Management risk",
+      "weight": 0.15,
+      "score": 2,
+      "mitigation": "Execution map + KPI governance."
+    }
+  ],
+  "notes": "Draft risk scores; update with leadership assessment."
+}

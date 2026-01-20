@@ -1,0 +1,108 @@
+{
+  "date": "2026-01-20",
+  "factors": [
+    {
+      "id": "geo_focus",
+      "label": "Geo focus"
+    },
+    {
+      "id": "instant_go_live",
+      "label": "Instant go live"
+    },
+    {
+      "id": "viewer_interactivity",
+      "label": "Viewer interactivity"
+    },
+    {
+      "id": "map_visibility",
+      "label": "Map visibility"
+    },
+    {
+      "id": "creator_rewards",
+      "label": "Creator rewards"
+    },
+    {
+      "id": "safety_by_design",
+      "label": "Safety by design"
+    },
+    {
+      "id": "local_fame",
+      "label": "Local fame"
+    },
+    {
+      "id": "production_polish",
+      "label": "Production polish"
+    },
+    {
+      "id": "global_reach",
+      "label": "Global reach"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "pyjam",
+      "label": "Pyjam",
+      "scores": [
+        5,
+        5,
+        5,
+        5,
+        4,
+        5,
+        5,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "tiktok_live",
+      "label": "TikTok Live",
+      "scores": [
+        1,
+        3,
+        3,
+        1,
+        3,
+        3,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "twitch",
+      "label": "Twitch",
+      "scores": [
+        1,
+        2,
+        3,
+        1,
+        4,
+        2,
+        2,
+        5,
+        4
+      ]
+    },
+    {
+      "id": "telescope",
+      "label": "Telescope",
+      "scores": [
+        1,
+        3,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ]
+    }
+  ],
+  "summary": {
+    "focus_score": 0.78,
+    "divergence_score": 2.56,
+    "tagline_candidate": "Local fame, live and now"
+  }
+}

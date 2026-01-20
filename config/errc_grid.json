@@ -1,0 +1,21 @@
+{
+  "eliminate": [
+    "global_follower_race",
+    "long_setup_flow"
+  ],
+  "reduce": [
+    "production_polish",
+    "viewer_passivity"
+  ],
+  "raise": [
+    "geo_visibility",
+    "instant_rewards",
+    "safety"
+  ],
+  "create": [
+    "auto_quests",
+    "glow_pins",
+    "local_fame"
+  ],
+  "notes": "Draft ERRC grid; validate against feature flags."
+}

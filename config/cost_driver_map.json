@@ -1,0 +1,33 @@
+{
+  "errc_factors": [
+    {
+      "factor": "eliminate_global_follower_race",
+      "cost_drivers": [
+        {"driver": "creator_incentives", "impact": -0.1},
+        {"driver": "content_moderation", "impact": -0.05}
+      ]
+    },
+    {
+      "factor": "reduce_production_polish",
+      "cost_drivers": [
+        {"driver": "editorial_ops", "impact": -0.1},
+        {"driver": "content_quality_review", "impact": -0.05}
+      ]
+    },
+    {
+      "factor": "raise_safety",
+      "cost_drivers": [
+        {"driver": "moderation_ops", "impact": 0.08},
+        {"driver": "ml_model_costs", "impact": 0.05}
+      ]
+    },
+    {
+      "factor": "create_auto_quests",
+      "cost_drivers": [
+        {"driver": "product_engineering", "impact": 0.06},
+        {"driver": "quest_content_ops", "impact": 0.03}
+      ]
+    }
+  ],
+  "notes": "Impact values represent relative cost delta proportions; update with finance."
+}

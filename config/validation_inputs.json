@@ -1,0 +1,28 @@
+{
+  "hypotheses": [
+    {
+      "id": "local_fame_drives_activation",
+      "statement": "Local fame signals increase first-stream activation."
+    },
+    {
+      "id": "auto_quest_reduces_zero_viewer_fear",
+      "statement": "Auto-quests reduce fear of zero viewers and improve D1 creator retention."
+    },
+    {
+      "id": "glow_pin_creates_peer_pressure",
+      "statement": "Glow pins create peer pressure and increase repeat streaming."
+    }
+  ],
+  "buyer_chain_targets": [
+    {"role": "teen_viewer", "sample_size": 30},
+    {"role": "teen_creator", "sample_size": 30},
+    {"role": "parent_guardian", "sample_size": 10},
+    {"role": "school_admin", "sample_size": 10}
+  ],
+  "complementors": [
+    {"type": "school_club", "sample_size": 5},
+    {"type": "local_events", "sample_size": 5},
+    {"type": "youth_brands", "sample_size": 5}
+  ],
+  "notes": "Draft validation targets; update with field plan."
+}
