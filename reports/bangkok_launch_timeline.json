@@ -1,0 +1,296 @@
+{
+  "timezone": "Asia/Bangkok",
+  "assumptions": {
+    "school_day_start": "08:00",
+    "school_day_end": "15:30",
+    "after_school_rush_start": "15:30",
+    "after_school_rush_end": "17:30",
+    "evening_rush_start": "18:00",
+    "evening_rush_end": "20:00",
+    "note": "Times are assumed; replace with actual school schedules per target districts."
+  },
+  "waves": [
+    {
+      "wave_id": "wave-1",
+      "geo_cell_ids": [
+        "BKK-001",
+        "BKK-002",
+        "BKK-003"
+      ],
+      "target_seed_creators": 120
+    },
+    {
+      "wave_id": "wave-2",
+      "geo_cell_ids": [
+        "BKK-004",
+        "BKK-005",
+        "BKK-006"
+      ],
+      "target_seed_creators": 160
+    },
+    {
+      "wave_id": "wave-3",
+      "geo_cell_ids": [
+        "BKK-007",
+        "BKK-008",
+        "BKK-009"
+      ],
+      "target_seed_creators": 200
+    }
+  ],
+  "timeline": [
+    {
+      "time": "08:00",
+      "phase": "Preflight",
+      "actions": [
+        "Verify auto-quest, Glow Pin, reward caps, anti-fraud",
+        "Check GA4/events pipeline health",
+        "Load Bangkok waves configuration"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2",
+        "wave-3"
+      ],
+      "plan_refs": [
+        "30",
+        "31",
+        "51",
+        "53",
+        "15",
+        "19"
+      ]
+    },
+    {
+      "time": "09:00",
+      "phase": "Seed Activation (Wave 1)",
+      "actions": [
+        "Activate seed creators for BKK-001..003",
+        "Distribute 60s Go Live instructions + safe quest list"
+      ],
+      "waves": [
+        "wave-1"
+      ],
+      "plan_refs": [
+        "70",
+        "72",
+        "52"
+      ]
+    },
+    {
+      "time": "10:00",
+      "phase": "Soft Launch",
+      "actions": [
+        "Run 10–20 test streams in Wave 1",
+        "Validate reward and map visibility"
+      ],
+      "waves": [
+        "wave-1"
+      ],
+      "plan_refs": [
+        "10",
+        "11",
+        "31"
+      ]
+    },
+    {
+      "time": "11:00",
+      "phase": "Engagement Priming",
+      "actions": [
+        "Enable Fan Quest Chain",
+        "Start low-stakes challenges to warm up engagement"
+      ],
+      "waves": [
+        "wave-1"
+      ],
+      "plan_refs": [
+        "55",
+        "24"
+      ]
+    },
+    {
+      "time": "12:00",
+      "phase": "Health Check",
+      "actions": [
+        "Review activation/quest completion rates",
+        "Adjust Glow or PJM if below thresholds"
+      ],
+      "waves": [
+        "wave-1"
+      ],
+      "plan_refs": [
+        "57",
+        "17",
+        "19"
+      ]
+    },
+    {
+      "time": "13:00",
+      "phase": "Rush Pre-Announcement",
+      "actions": [
+        "Push announcement for after-school rush",
+        "Prime Wave-2 creators"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2"
+      ],
+      "plan_refs": [
+        "36",
+        "47",
+        "70"
+      ]
+    },
+    {
+      "time": "14:00",
+      "phase": "Wave 2 Activation",
+      "actions": [
+        "Activate BKK-004..006 creators",
+        "Start pre-rush streams to build map density"
+      ],
+      "waves": [
+        "wave-2"
+      ],
+      "plan_refs": [
+        "70",
+        "72"
+      ]
+    },
+    {
+      "time": "15:00",
+      "phase": "Jasper Experiment Start",
+      "actions": [
+        "Enable jasper_strength variants",
+        "Seed creators go live at scale"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2"
+      ],
+      "plan_refs": [
+        "71",
+        "30",
+        "31"
+      ]
+    },
+    {
+      "time": "15:30-16:30",
+      "phase": "After-School Rush Peak",
+      "actions": [
+        "Auto-quests + Glow Pins at full intensity",
+        "Trend detector active",
+        "Strict anti-fraud monitoring"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2"
+      ],
+      "plan_refs": [
+        "52",
+        "53",
+        "69",
+        "15"
+      ]
+    },
+    {
+      "time": "16:30-17:30",
+      "phase": "Organic Transition",
+      "actions": [
+        "Reduce PJM, keep visibility boosts",
+        "Highlight Local Fame leaders"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2"
+      ],
+      "plan_refs": [
+        "33",
+        "34"
+      ]
+    },
+    {
+      "time": "18:00",
+      "phase": "Wave 3 Activation",
+      "actions": [
+        "Activate BKK-007..009",
+        "Evening challenges + school duels"
+      ],
+      "waves": [
+        "wave-3"
+      ],
+      "plan_refs": [
+        "70",
+        "56",
+        "24"
+      ]
+    },
+    {
+      "time": "19:00",
+      "phase": "External Amplification",
+      "actions": [
+        "Export trend payloads",
+        "Share cards to external channels"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2",
+        "wave-3"
+      ],
+      "plan_refs": [
+        "76",
+        "49"
+      ]
+    },
+    {
+      "time": "20:00",
+      "phase": "Cooldown",
+      "actions": [
+        "Lower reward intensity",
+        "Maintain Glow Pins for organic visibility"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2",
+        "wave-3"
+      ],
+      "plan_refs": [
+        "33",
+        "19"
+      ]
+    },
+    {
+      "time": "21:00",
+      "phase": "Winners & Recognition",
+      "actions": [
+        "Award Top-3 local fame",
+        "Finalize daily streak rewards"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2",
+        "wave-3"
+      ],
+      "plan_refs": [
+        "34",
+        "13"
+      ]
+    },
+    {
+      "time": "22:00",
+      "phase": "Reporting",
+      "actions": [
+        "Generate launch KPI blast report",
+        "Archive analytics + dashboard"
+      ],
+      "waves": [
+        "wave-1",
+        "wave-2",
+        "wave-3"
+      ],
+      "plan_refs": [
+        "77",
+        "66"
+      ]
+    }
+  ]
+}
