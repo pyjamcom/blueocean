@@ -3019,41 +3019,41 @@
     },
     {
       "number": "20",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: защита от фрикции/хаоса без усложнения. Context check: лёгкий пьяный юмор, быстрый вход, без текста.",
       "description": "Безопасность: rate‑limit WS, anti‑spam, защита комнат, защита от массового join, логирование инцидентов.",
       "subtasks": [
         {
           "number": "20.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: убирает хаос, не снижая веселья. Context check: быстрый старт.",
           "description": "Rate‑limit WS: лимиты по IP/room/user на join/answer/ping. Мягкие ограничения (grace) чтобы не ломать вечеринку.",
           "subtasks": []
         },
         {
           "number": "20.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: удерживает лёгкость, исключает злоупотребления. Context check: без токсичности.",
           "description": "Anti‑spam: защита от флуд‑сообщений и повторных ответов; silent‑cooldown вместо жёстких ошибок (без текстовых алертов).",
           "subtasks": []
         },
         {
           "number": "20.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: сохраняет ощущение «закрытой» вечеринки. Context check: друзья, свой круг.",
           "description": "Защита комнат: короткие токены + TTL, возможность закрыть комнату после старта, лимит участников по умолчанию.",
           "subtasks": []
         },
         {
           "number": "20.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: предотвращает массовый join‑атаки без риска для UX. Context check: без текста, без паники.",
           "description": "Защита от массового join: лимиты на частоту входов, защита от повторных IP‑скачков, авто‑задержка при всплеске.",
           "subtasks": []
         },
         {
           "number": "20.5",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: безопасность без видимой жёсткости. Context check: логирование скрыто от игрока.",
           "description": "Логирование инцидентов: фиксация rate‑limit/anti‑spam/аномалий; отдельные каналы мониторинга, без пользовательских текстовых сообщений.",
           "subtasks": []
