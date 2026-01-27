@@ -13,7 +13,7 @@
     "build:server": "npm run build --workspace apps/server",
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspace apps/web && npm run typecheck --workspace apps/server",
-    "test": "node tests/validate_questions.spec.js && node tests/ws_payloads.spec.js",
+    "test": "node tests/validate_questions.spec.js && node tests/ws_payloads.spec.js && node tests/validate_assets.spec.js && node tests/no_text_config.spec.js",
     "load:ws": "node scripts/load_simulator.js"
   },
   "devDependencies": {

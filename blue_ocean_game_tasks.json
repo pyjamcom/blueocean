@@ -3134,41 +3134,41 @@
     },
     {
       "number": "23",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: тесты поддерживают скорость и качество опыта без перегруза. Context check: визуально, без текста, простой пьяный юмор.",
       "description": "QA/Testing: unit/integration/e2e, нагрузочные тесты, тест‑план на визуальные сценарии.",
       "subtasks": [
         {
           "number": "23.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: минимальный набор для скорости. Context check: визуальные правила без текста.",
           "description": "Unit tests: схемы/валидаторы/таймеры/рандомизация; проверка отсутствия текста в UI‑конфиге.",
           "subtasks": []
         },
         {
           "number": "23.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: гарантирует бесшовный вечер. Context check: быстрый вход, без чтения.",
           "description": "Integration tests: WS‑контракты (join/start/answer/score), QR‑flow (d0.do/xxx), ассет‑манифест (валидные лицензии).",
           "subtasks": []
         },
         {
           "number": "23.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: подтверждает ценностную инновацию в реальном сценарии. Context check: смех/темп/простота.",
           "description": "E2E smoke: create room → scan/join → play 1 round → leaderboard → sharecard. Проверка Time‑to‑Smile <2 мин (ручной чек).",
           "subtasks": []
         },
         {
           "number": "23.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: нагрузка без деградации опыта. Context check: вечеринка не должна зависнуть.",
           "description": "Нагрузочные тесты: 8/16/32 игроков в комнате, burst‑join, пиковые ответы; лимиты WS/Redis/CPU.",
           "subtasks": []
         },
         {
           "number": "23.5",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: визуальные сценарии = ядро ценности. Context check: без текста, лёгкий юмор.",
           "description": "Тест‑план визуальных сценариев: 10 типов сцен, проверка анти‑red‑ocean guardrails, отсутствие брендов/персоналий, визуальная читаемость 21–55.",
           "subtasks": []
