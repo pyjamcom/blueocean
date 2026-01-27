@@ -1,0 +1,56 @@
+.view {
+  display: grid;
+  gap: 20px;
+  width: min(92vw, 520px);
+  margin: 0 auto;
+  padding: 24px 20px 32px;
+}
+
+.promptBlock {
+  width: 100%;
+  height: clamp(180px, 32vh, 320px);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 16px;
+  display: grid;
+}
+
+.doublePrompt {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.promptCell {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 12px;
+  display: grid;
+}
+
+.overlayRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: 8px;
+}
+
+.overlayTile {
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px;
+}
+
+.silhouette {
+  filter: grayscale(1) contrast(1.2) brightness(0.7);
+}
+
+.trophyZone {
+  width: 100%;
+  height: clamp(160px, 28vh, 260px);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+}

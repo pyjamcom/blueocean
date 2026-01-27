@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import RoundGallery from "./views/RoundGallery";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -29,7 +30,7 @@ export default function App() {
         <Routes>
           <Route path="/join" element={<Scene variant="join" />} />
           <Route path="/lobby" element={<Scene variant="lobby" />} />
-          <Route path="/game" element={<Scene variant="game" />} />
+          <Route path="/game" element={<RoundGallery />} />
           <Route path="/result" element={<Scene variant="result" />} />
           <Route path="*" element={<Navigate to="/join" replace />} />
         </Routes>

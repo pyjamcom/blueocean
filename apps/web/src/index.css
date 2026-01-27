@@ -115,6 +115,41 @@ body {
   animation: stamp 7s ease-in-out infinite;
 }
 
+.prompt-image {
+  display: block;
+}
+
+.prompt-image--contain {
+  object-fit: contain;
+}
+
+.prompt-image--cover {
+  object-fit: cover;
+}
+
+.answer-grid {
+  width: 100%;
+}
+
+.answer-tile {
+  touch-action: manipulation;
+}
+
+.answer-tile--selected,
+.answer-tile--correct,
+.answer-tile--wrong,
+.answer-tile--locked {
+}
+
+.ring {
+}
+
+.ringActive {
+}
+
+.ringDone {
+}
+
 @keyframes float {
   0%,
   100% {

@@ -1,0 +1,11 @@
+.ring {
+  display: block;
+}
+
+.ringActive {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+}
+
+.ringDone {
+  opacity: 0.4;
+}
