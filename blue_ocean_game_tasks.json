@@ -2948,28 +2948,28 @@
     {
       "number": "18",
       "status": "pending",
-      "notes": "BO check: быстрый запуск и масштабирование без тяжёлой инфраструктуры. Context check: скорость старта важнее сложности.",
+      "notes": "BO check: быстрый запуск и масштабирование без тяжёлой инфраструктуры. Context check: скорость старта важнее сложности. Decision: AWS US (us-east-1), PWA через S3+CloudFront+ACM+Route53, WS через ECS Fargate+ALB, Redis (ElastiCache).",
       "description": "Архитектура/Инфра: DB/Redis, хостинг, домены, CDN, storage, окружения dev/stage/prod (escapers.app).",
       "subtasks": [
         {
           "number": "18.1",
           "status": "pending",
           "notes": "BO check: снижает трение и удерживает скорость. Context check: быстрый старт комнат.",
-          "description": "Схема хранения: \n- Redis: оперативное состояние комнат/раундов/таймеров (TTL).\n- Postgres: долговременные данные (сессии, метрики, ассет‑манифест).\n- Object Storage (S3‑compatible): ассеты сцен (PNG/JPG/GIF), версии и контроль лицензий.",
+          "description": "Схема хранения: \n- Redis (ElastiCache): оперативное состояние комнат/раундов/таймеров (TTL).\n- Postgres (RDS) или DynamoDB: долговременные данные (сессии, метрики).\n- Object Storage (S3): ассеты сцен (PNG/JPG/SVG), версии и контроль лицензий.",
           "subtasks": []
         },
         {
           "number": "18.2",
           "status": "pending",
           "notes": "BO check: минимальная инфраструктура, максимальная доступность. Context check: мобильный фокус.",
-          "description": "Хостинг и домены: \n- escapers.app: основной PWA домен.\n- d0.do: короткий домен для QR (Version 1).\n- WebSocket сервер: отдельный сервис (реал‑тайм комнаты).\n- CDN (например Cloudflare) для статических ассетов и кеша.",
+          "description": "Хостинг и домены (AWS): \n- escapers.app: CloudFront (origin S3 private).\n- ws.escapers.app: ALB → ECS Fargate (WebSocket).\n- ACM сертификаты: для CloudFront в us-east-1; для ALB в рабочем регионе.\n- Route53 Alias A/AAAA на CloudFront и ALB.\n- WAF (по необходимости) на CloudFront/ALB.",
           "subtasks": []
         },
         {
           "number": "18.3",
           "status": "pending",
           "notes": "BO check: безопасные эксперименты без риска продакшна. Context check: простая структура окружений.",
-          "description": "Окружения: \n- dev: dev.escapers.app\n- stage: stage.escapers.app (контроль перед релизом)\n- prod: escapers.app\n- отдельные ключи/конфиги, фичефлаги для экспериментов.",
+          "description": "Окружения: \n- dev: dev.escapers.app (CloudFront + отдельный S3), ws-dev.escapers.app.\n- stage: stage.escapers.app, ws-stage.escapers.app.\n- prod: escapers.app, ws.escapers.app.\n- отдельные ключи/конфиги, фичефлаги, изоляция данных.",
           "subtasks": []
         }
       ]
@@ -3387,6 +3387,28 @@
           "status": "pending",
           "notes": "BO check: итерации не должны втаскивать red ocean. Context check: простота и веселье.",
           "description": "Анти‑red‑ocean фильтр итераций: не добавлять чтение/викторины/сложные правила/оценку «по вкусу».",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "30",
+      "status": "pending",
+      "notes": "BO check: финальный контроль без усложнения. Context check: быстрый смех и стабильность.",
+      "description": "Release checklist / Go‑No‑Go: минимальная проверка перед продом.",
+      "subtasks": [
+        {
+          "number": "30.1",
+          "status": "pending",
+          "notes": "BO check: опыт не должен ломаться. Context check: быстрый старт.",
+          "description": "Go/No‑Go: create room → QR join (d0.do/xxx) → 1 round → leaderboard → sharecard. Всё без текста.",
+          "subtasks": []
+        },
+        {
+          "number": "30.2",
+          "status": "pending",
+          "notes": "BO check: доверие и доступность. Context check: статус вне игры.",
+          "description": "Проверка статуса сервисов: web/WS/QR на escapers.app/status перед релизом.",
           "subtasks": []
         }
       ]
