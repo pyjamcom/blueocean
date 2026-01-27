@@ -1,0 +1,65 @@
+import { useEffect, useMemo, useState } from "react";
+import QRCode from "qrcode";
+import { useLocation } from "react-router-dom";
+import { useJoinRoom } from "../hooks/useJoinRoom";
+import styles from "./JoinView.module.css";
+
+type PulseVariant = "fast" | "mid" | "slow";
+
+function resolveVariant(age?: number): PulseVariant {
+  if (!age) {
+    return "mid";
+  }
+  if (age <= 30) {
+    return "fast";
+  }
+  if (age <= 40) {
+    return "mid";
+  }
+  return "slow";
+}
+
+export default function JoinView() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const age = params.get("age") ? Number(params.get("age")) : undefined;
+  const codeParam = params.get("code")?.toUpperCase();
+  const { roomCode } = useJoinRoom({ roomCode: codeParam ?? undefined });
+  const variant = resolveVariant(age);
+
+  const joinUrl = useMemo(() => `https://d0.do/${roomCode}`, [roomCode]);
+  const [qrSrc, setQrSrc] = useState<string>("");
+
+  useEffect(() => {
+    let active = true;
+    QRCode.toDataURL(joinUrl, {
+      width: 320,
+      margin: 1,
+      color: {
+        dark: "#111111",
+        light: "#ffffff",
+      },
+    }).then((url) => {
+      if (active) {
+        setQrSrc(url);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [joinUrl]);
+
+  return (
+    <div className={`${styles.join} ${styles[variant]}`}>
+      <div className={styles.pulse} />
+      <div className={styles.qrFrame}>
+        {qrSrc ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
+      </div>
+      <div className={styles.iconRow}>
+        <div className={styles.iconBubble} />
+        <div className={styles.iconBubble} />
+        <div className={styles.iconBubble} />
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import RoundGallery from "./views/RoundGallery";
-import { useJoinRoom } from "./hooks/useJoinRoom";
+import JoinView from "./views/JoinView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -24,20 +24,12 @@ function Scene({ variant }: { variant: keyof typeof sceneStyles }) {
   );
 }
 
-function JoinScene() {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const code = params.get("code")?.toUpperCase();
-  useJoinRoom({ roomCode: code ?? undefined });
-  return <Scene variant="join" />;
-}
-
 export default function App() {
   return (
     <BrowserRouter>
       <div className="app">
         <Routes>
-          <Route path="/join" element={<JoinScene />} />
+          <Route path="/join" element={<JoinView />} />
           <Route path="/lobby" element={<Scene variant="lobby" />} />
           <Route path="/game" element={<RoundGallery />} />
           <Route path="/result" element={<Scene variant="result" />} />
