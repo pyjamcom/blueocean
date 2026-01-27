@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "license_policy": {
+    "allowed": ["CC0", "PublicDomain", "PixabayLicense"],
+    "disallowed": ["AllRightsReserved", "Editorial", "Unknown"]
+  },
+  "sources": [
+    {
+      "id": "pixabay",
+      "name": "Pixabay",
+      "license": "PixabayLicense",
+      "notes": "Use only safe, non-editorial assets. No brands or people." 
+    },
+    {
+      "id": "openclipart",
+      "name": "Openclipart",
+      "license": "PublicDomain",
+      "notes": "Prefer simple vector icons with clear silhouettes." 
+    },
+    {
+      "id": "public_domain_misc",
+      "name": "Public Domain Misc",
+      "license": "PublicDomain",
+      "notes": "Manual review required, no IP or sensitive topics." 
+    }
+  ],
+  "pool_classes": [
+    {
+      "id": "reaction",
+      "description": "Facial reactions and expressive icons.",
+      "allowed_tags": ["smile", "laugh", "wow", "face", "emoji", "mood"],
+      "disallowed_tags": ["brand", "logo", "celebrity", "politics", "religion"]
+    },
+    {
+      "id": "animals",
+      "description": "Animals in humorous or cute poses.",
+      "allowed_tags": ["cat", "dog", "penguin", "llama", "sloth"],
+      "disallowed_tags": ["zoo", "cruelty", "violence", "brand"]
+    },
+    {
+      "id": "food",
+      "description": "Food items with playful styling.",
+      "allowed_tags": ["pizza", "taco", "banana", "donut"],
+      "disallowed_tags": ["brand", "logo", "alcohol_label"]
+    },
+    {
+      "id": "objects",
+      "description": "Simple objects with clear silhouettes.",
+      "allowed_tags": ["cup", "bell", "hat", "glasses", "rocket"],
+      "disallowed_tags": ["weapon", "logo", "brand"]
+    },
+    {
+      "id": "abstract",
+      "description": "Abstract shapes, confetti, fireworks, motion lines.",
+      "allowed_tags": ["confetti", "sparkle", "burst", "swirl"],
+      "disallowed_tags": ["text", "slogan"]
+    },
+    {
+      "id": "party",
+      "description": "Celebration scenes without text or logos.",
+      "allowed_tags": ["party", "cheers", "clink", "dance"],
+      "disallowed_tags": ["brand", "logo", "explicit"]
+    }
+  ],
+  "global_disallowed_tags": [
+    "brand",
+    "logo",
+    "celebrity",
+    "politics",
+    "religion",
+    "violence",
+    "hate",
+    "explicit",
+    "drug",
+    "weapon"
+  ]
+}

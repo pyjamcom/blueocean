@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "avatars": [
+    {
+      "id": "avatar_disco_sloth",
+      "description": "Sloth with disco jacket and sparkle aura, big smile.",
+      "tags": ["animal", "party", "funny"]
+    },
+    {
+      "id": "avatar_laughing_llama",
+      "description": "Llama laughing with cheeks puffed, colorful scarf.",
+      "tags": ["animal", "silly", "party"]
+    },
+    {
+      "id": "avatar_pizza_hero",
+      "description": "Pizza slice with cape and heroic pose.",
+      "tags": ["food", "hero", "absurd"]
+    },
+    {
+      "id": "avatar_wild_toucan",
+      "description": "Toucan with oversized beak, wink and head tilt.",
+      "tags": ["animal", "silly", "colorful"]
+    },
+    {
+      "id": "avatar_party_octopus",
+      "description": "Octopus juggling cups with happy eyes.",
+      "tags": ["animal", "party", "absurd"]
+    },
+    {
+      "id": "avatar_space_cactus",
+      "description": "Cactus in bubble helmet, floating pose.",
+      "tags": ["absurd", "space", "funny"]
+    },
+    {
+      "id": "avatar_raccoon_sneak",
+      "description": "Raccoon with mask and sneaky grin.",
+      "tags": ["animal", "mischief", "funny"]
+    },
+    {
+      "id": "avatar_penguin_chef",
+      "description": "Penguin with chef hat and spatula, playful stance.",
+      "tags": ["animal", "food", "silly"]
+    },
+    {
+      "id": "avatar_banana_king",
+      "description": "Banana wearing crown, royal pose.",
+      "tags": ["food", "absurd", "funny"]
+    },
+    {
+      "id": "avatar_rocket_snail",
+      "description": "Snail with tiny rocket booster, surprised face.",
+      "tags": ["animal", "absurd", "cute"]
+    },
+    {
+      "id": "avatar_bubble_fish",
+      "description": "Fish inside bubble helmet, wide eyes.",
+      "tags": ["animal", "water", "funny"]
+    },
+    {
+      "id": "avatar_toaster_bot",
+      "description": "Toaster with tiny arms and happy face.",
+      "tags": ["object", "robot", "funny"]
+    },
+    {
+      "id": "avatar_cloud_rider",
+      "description": "Smiling cloud riding a tiny skateboard.",
+      "tags": ["absurd", "funny", "party"]
+    },
+    {
+      "id": "avatar_donut_knight",
+      "description": "Donut with helmet and small shield.",
+      "tags": ["food", "hero", "absurd"]
+    }
+  ],
+  "accessories": [
+    {
+      "id": "acc_party_hat",
+      "description": "Cone party hat with pom, bright colors.",
+      "tags": ["hat", "party"]
+    },
+    {
+      "id": "acc_top_hat",
+      "description": "Tall top hat, classic silhouette.",
+      "tags": ["hat", "classic"]
+    },
+    {
+      "id": "acc_bucket_hat",
+      "description": "Bucket hat, rounded brim.",
+      "tags": ["hat", "casual"]
+    },
+    {
+      "id": "acc_wizard_hat",
+      "description": "Pointy wizard hat with star pattern.",
+      "tags": ["hat", "absurd"]
+    },
+    {
+      "id": "acc_sunglasses",
+      "description": "Oversized sunglasses, simple frame.",
+      "tags": ["glasses", "cool"]
+    },
+    {
+      "id": "acc_goggles",
+      "description": "Round goggles with strap.",
+      "tags": ["glasses", "funny"]
+    },
+    {
+      "id": "acc_mustache",
+      "description": "Curly mustache sticker.",
+      "tags": ["face", "funny"]
+    },
+    {
+      "id": "acc_foam_finger",
+      "description": "Giant foam finger pointing up.",
+      "tags": ["party", "gesture"]
+    },
+    {
+      "id": "acc_confetti_crown",
+      "description": "Crown made of confetti pieces.",
+      "tags": ["party", "crown"]
+    },
+    {
+      "id": "acc_headphones",
+      "description": "Big headphones, simple shapes.",
+      "tags": ["music", "party"]
+    },
+    {
+      "id": "acc_cheek_stars",
+      "description": "Star stickers on cheeks.",
+      "tags": ["face", "funny"]
+    },
+    {
+      "id": "acc_cape",
+      "description": "Short cape for hero vibe.",
+      "tags": ["hero", "absurd"]
+    }
+  ]
+}
