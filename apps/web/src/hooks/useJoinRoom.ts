@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useWsClient } from "./useWsClient";
 import { randomId, randomPlayerId } from "../utils/ids";
+import { trackEvent } from "../utils/analytics";
 
 export interface UseJoinRoomOptions {
   roomCode?: string;
@@ -33,6 +34,7 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_disco_sloth" }: UseJo
         const payload = message.payload as { roomCode?: string } | undefined;
         if (payload?.roomCode) {
           setJoinedRoom(payload.roomCode);
+          trackEvent("join_room", { roomCode: payload.roomCode });
         }
       }
       if (message.type === "error") {

@@ -19,12 +19,24 @@ app.get("/health", (_req, res) => {
 });
 
 const complianceEvents: { at: number; accepted: boolean }[] = [];
+const analyticsEvents: { at: number; event: string; sessionId?: string; meta?: unknown }[] = [];
 
 app.post("/compliance/age", (req, res) => {
   const accepted = req.body?.accepted === true;
   complianceEvents.push({ at: Date.now(), accepted });
   if (complianceEvents.length > COMPLIANCE_LOG_LIMIT) {
     complianceEvents.shift();
+  }
+  res.json({ ok: true });
+});
+
+app.post("/analytics", (req, res) => {
+  const { event, at, sessionId, meta } = req.body ?? {};
+  if (typeof event === "string") {
+    analyticsEvents.push({ at: typeof at === "number" ? at : Date.now(), event, sessionId, meta });
+    if (analyticsEvents.length > 2000) {
+      analyticsEvents.shift();
+    }
   }
   res.json({ ok: true });
 });

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation } from "react-router-dom";
 import { useJoinRoom } from "../hooks/useJoinRoom";
+import { trackEvent } from "../utils/analytics";
 import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -31,6 +32,15 @@ export default function JoinView() {
   const [qrSrc, setQrSrc] = useState<string>("");
 
   useEffect(() => {
+    if (!codeParam) {
+      trackEvent("create_room", { roomCode });
+    } else {
+      trackEvent("qr_scan", { roomCode: codeParam });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     let active = true;
     QRCode.toDataURL(joinUrl, {
       width: 320,
@@ -48,6 +58,12 @@ export default function JoinView() {
       active = false;
     };
   }, [joinUrl]);
+
+  useEffect(() => {
+    if (qrSrc) {
+      trackEvent("qr_render", { roomCode });
+    }
+  }, [qrSrc, roomCode]);
 
   return (
     <div className={`${styles.join} ${styles[variant]}`}>

@@ -3177,41 +3177,41 @@
     },
     {
       "number": "24",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: измеряет ценность опыта (вечер/смех), не продукт. Context check: лёгкий пьяный юмор, друзья, море веселья.",
       "description": "Аналитика/Метрики: события, retention, time‑to‑start, session length, drop‑offs.",
       "subtasks": [
         {
           "number": "24.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: фокус на времени до смеха. Context check: быстрый старт.",
           "description": "События: create_room, qr_render, qr_scan, join_room, round_start, answer_select, round_end, leaderboard_view, sharecard_generate, replay_click.",
           "subtasks": []
         },
         {
           "number": "24.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: измеряет снижение трения. Context check: QR‑вход.",
           "description": "Time‑to‑Start: время от create_room до round_start; целевой порог ≤ 2 мин.",
           "subtasks": []
         },
         {
           "number": "24.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: удержание через эмоции. Context check: вечеринка должна доходить до финала.",
           "description": "Retention: % комнат, дошедших до финального раунда; повторный запуск в течение 7 дней (host‑repeat).",
           "subtasks": []
         },
         {
           "number": "24.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: длина сессии как показатель ценности. Context check: не утомлять.",
           "description": "Session Length: медиана длительности сессии (минуты) и число раундов на сессию.",
           "subtasks": []
         },
         {
           "number": "24.5",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: выявляет барьеры опыта. Context check: без текста, быстро.",
           "description": "Drop‑offs: где уходят (QR‑scan → join, join → round_start, round_end → next).",
           "subtasks": []

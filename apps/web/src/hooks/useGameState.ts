@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { calculateScore, ScoringMode } from "../utils/scoring";
+import { trackEvent } from "../utils/analytics";
 
 export type GamePhase = "lobby" | "round" | "reveal" | "leaderboard" | "end";
 
@@ -70,6 +71,7 @@ export function useGameState({
 
   const startRound = useCallback(() => {
     answersRef.current = {};
+    trackEvent("round_start");
     setState((prev) => ({
       ...prev,
       phase: "round",
@@ -78,6 +80,7 @@ export function useGameState({
   }, []);
 
   const endRound = useCallback(() => {
+    trackEvent("round_end");
     setState((prev) => {
       const updatedPlayers = prev.players.map((player) => {
         if (answersRef.current[player.id]) {
@@ -169,6 +172,7 @@ export function useGameState({
       timersRef.current.push(timerId);
     }
     if (state.phase === "leaderboard") {
+      trackEvent("leaderboard_view");
       const timerId = window.setTimeout(() => nextQuestion(), leaderboardDurationMs);
       timersRef.current.push(timerId);
     }

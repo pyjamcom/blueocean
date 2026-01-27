@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackEvent } from "../utils/analytics";
 import styles from "./AnswerGrid.module.css";
 
 export type RevealState = "idle" | "reveal";
@@ -42,6 +43,7 @@ export default function AnswerGrid({
     if (navigator.vibrate) {
       navigator.vibrate(20);
     }
+    trackEvent("answer_select", { index });
     onSelect(index);
   };
 

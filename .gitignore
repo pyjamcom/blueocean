@@ -22,6 +22,7 @@ docs/*
 !docs/release_process.md
 !docs/license_policy.md
 !docs/qa_test_plan.md
+!docs/analytics_events.md
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html

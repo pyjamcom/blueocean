@@ -1,8 +1,9 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import AnswerDistribution from "../components/AnswerDistribution";
 import Leaderboard from "../components/Leaderboard";
 import NextRoundButton from "../components/NextRoundButton";
 import ShareCard, { ShareCardHandle } from "../components/ShareCard";
+import { trackEvent } from "../utils/analytics";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
@@ -25,6 +26,11 @@ export default function ResultView() {
     ],
     [],
   );
+
+  useEffect(() => {
+    trackEvent("sharecard_generate");
+    trackEvent("leaderboard_view");
+  }, []);
 
   const handleShare = async () => {
     await shareRef.current?.share();
@@ -60,7 +66,7 @@ export default function ResultView() {
         <button className={styles.actionButton} onClick={handleSave} aria-label="save">
           <span className={styles.iconSave} />
         </button>
-        <NextRoundButton onClick={() => {}} />
+        <NextRoundButton onClick={() => trackEvent("replay_click")} />
       </div>
     </div>
   );
