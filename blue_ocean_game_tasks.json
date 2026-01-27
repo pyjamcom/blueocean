@@ -2360,6 +2360,13 @@
               "subtasks": []
             }
           ]
+        },
+        {
+          "number": "10.3",
+          "status": "pending",
+          "notes": "BO check: снижает трение для широкого спроса. Context check: 21–55, визуально, без текста.",
+          "description": "UX‑варианты 21–55 для QR‑входа: \n- 21–30: быстрый пульс‑анимации, высокая энергия.\n- 31–40: умеренная скорость, крупные иконки.\n- 41–55: максимальный контраст, медленный пульс, упрощённые шаги (scan → play).",
+          "subtasks": []
         }
       ]
     },
@@ -2684,13 +2691,27 @@
           "notes": "BO check: убирает чтение, оставляет только визуальные сигналы. Context check: простой пьяный юмор, хорошее настроение, друзья, море веселья, уйти от проблем, только визуал без текста. Context check: простой пьяный юмор, друзья, море веселья, уход от проблем, только визуал без текста.",
           "description": "BO‑проверка сценария: устранение чтения, максимизация веселья, коллективный «угар».",
           "subtasks": []
+        },
+        {
+          "number": "15.9",
+          "status": "pending",
+          "notes": "BO check: анти‑red‑ocean guardrails на уровне сцен; без конкуренции знаний/цены/вкуса. Context check: простой пьяный юмор, друзья, море веселья, без текста.",
+          "description": "Anti‑red‑ocean guardrails по сценам (10 типов):\n- visual_provocation: только эмоции/абсурд, без брендов/персоналий.\n- face_mimic: чистая мимика, без слов/цитат, без политических жестов.\n- sound_pantomime: только звуковые ассоциации, без песен/бренд‑аудио.\n- silhouette_guess: узнавание форм, но не логотипов/селебрити.\n- telepath_sync: выбор совпадений, без «правильных ответов».\n- icon_battle: иконки/символы без торговых марок.\n- absurd_sum: визуальный абсурд, без контента про новости/религию/политику.\n- absurd_toast: «тёплый тост» визуально, без текста и брендов.\n- drunk_reflex: чистая реакция, без токсичных/опасных сцен.\n- game_story: короткие визуальные истории без текста и без IP.\nОбщее: быстрые раунды, ноль чтения, эмоция важнее «правильности».",
+          "subtasks": []
+        },
+        {
+          "number": "15.10",
+          "status": "pending",
+          "notes": "BO check: расширяет спрос на 21–55, не усложняя продукт. Context check: визуально, без текста.",
+          "description": "Аудитория 21–55 в сценариях: \n- 21–30: темп быстрее, больше «угара»/динамики.\n- 31–40: баланс темпа и ясности, меньше хаоса.\n- 41–55: спокойный темп, крупные визуальные подсказки, минимум перегруза.\nВо всех режимах: правила скрыты, обучение через визуальные подсказки.",
+          "subtasks": []
         }
       ]
     },
     {
       "number": "16",
       "status": "pending",
-      "notes": "BO check: усиливает социальный ритуал и мгновенный смех без трения. Context check: всё без текста, быстрые визуальные реакции, простой пьяный юмор, друзья, море веселья, уход от проблем.",
+      "notes": "BO check: усиливает социальный ритуал и мгновенный смех без трения. Context check: всё без текста, быстрые визуальные реакции, простой пьяный юмор, друзья, море веселья, уход от проблем. Audience: 21–55.",
       "description": "UX/Flow/Rewards (Kahoot‑like паттерны, без текста).",
       "subtasks": [
         {
@@ -2857,6 +2878,408 @@
               "subtasks": []
             }
           ]
+        },
+        {
+          "number": "16.15",
+          "status": "pending",
+          "notes": "BO check: удержание в разных возрастах без усложнения. Context check: визуально, без текста.",
+          "description": "Аудитория 21–55 в UX/Rewards: \n- 21–30: яркие эффекты, быстрые награды.\n- 31–40: умеренные эффекты, фокус на «совместный смех».\n- 41–55: мягкие эффекты, спокойные цвета, тот же ритуал награды.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "17",
+      "status": "pending",
+      "notes": "BO check: фокус/дивергенция/ценностная инновация, опыт > продукт. Context check: простой пьяный умор, друзья, море веселья, уход от проблем; визуально, без текста.",
+      "description": "Discovery/Scope: целевые сценарии, out‑of‑scope, MVP vs V1, KPI, user stories (BO‑aligned).",
+      "subtasks": [
+        {
+          "number": "17.1",
+          "status": "pending",
+          "notes": "BO check: закрепляет новый рынок «evening‑box/party‑game», не конкурируем вкусом/ценой. Context check: совместный смех, без сценариев, визуально.",
+          "description": "Целевые сценарии (primary):\n- Домашняя вечеринка 3–8 друзей: быстрый старт по QR, 1–2 минуты до первого смеха.\n- Подарок‑впечатление: коробка Schengen + игра = готовый вечер без подготовки.\n- Game‑night без ведущего: «открыли коробку — вечер начался», минимум шагов.\n- Корпоративный relaxed‑ивент (21+): лёгкий формат, без текста, без сложных правил.",
+          "subtasks": []
+        },
+        {
+          "number": "17.2",
+          "status": "pending",
+          "notes": "BO check: убирает красный океан (конкуренция «по вкусу/цене», сложные квизы). Context check: только визуал, без токсичных тем.",
+          "description": "Out‑of‑scope (явно исключить):\n- Текстовые викторины/опросы/сложные правила.\n- Политика/новости/религия/персоналии/бренды в контенте.\n- «Пивной снобизм», дегустационные рейтинги, сравнение брендов.\n- Детская аудитория/семейные детские режимы (строго 21+).\n- Механики агрессивной соревновательности/токсичности.",
+          "subtasks": []
+        },
+        {
+          "number": "17.3",
+          "status": "pending",
+          "notes": "BO check: минимальный MVP, быстрый опыт и вирусность. Context check: визуально, без текста, 2–3 тапа до смеха.",
+          "description": "MVP vs V1:\nMVP (первый релиз):\n- Быстрый QR‑вход (d0.do/xxx), лобби, 2–3 типа сцен, минимальный пул визуальных заданий.\n- Таймер/рейтинги/подчёркнутый фидбек (иконки/цвет), без текста.\n- ShareCard с QR на новую игру.\n\nV1 (после проверки метрик):\n- 10 типов сцен, сезонные наборы, расширенный пул ассетов.\n- Доп. режимы (host‑free + optional host‑assist).\n- Лёгкие коллекционные награды (визуальные медали).",
+          "subtasks": []
+        },
+        {
+          "number": "17.4",
+          "status": "pending",
+          "notes": "BO check: измеряет ценностную инновацию (не «вкус», а «вечер»). Context check: веселый совместный опыт.",
+          "description": "KPI успеха (BO‑aligned):\n- Time‑to‑Smile: среднее время до первого смеха ≤ 2 мин.\n- QR‑Join Rate: ≥ 80% игроков вошли через QR за 60 сек.\n- Session Completion: ≥ 70% дошли до финала.\n- Replay Intent: ≥ 40% «ещё один раунд».\n- ShareCard Use: ≥ 30% сгенерировали карточку.\n- Gift/Host Share (если связка с коробкой): ≥ 60% как «вечер/подарок».",
+          "subtasks": []
+        },
+        {
+          "number": "17.5",
+          "status": "pending",
+          "notes": "BO check: истории вокруг опыта/дружбы/смеха. Context check: без текста в интерфейсе, сценарии визуальные.",
+          "description": "User Stories (без текста в UI):\n- Как host, хочу создать комнату и показать QR, чтобы друзья вошли за секунды.\n- Как игрок, хочу понять что делать без чтения, чтобы сразу начать смеяться.\n- Как компания друзей, хочу быстро сменить сцену и не терять темп.\n- Как победитель, хочу поделиться карточкой с QR новой игры.\n- Как даритель, хочу чтобы коробка сразу запускала вечер без инструкций.",
+          "subtasks": []
+        },
+        {
+          "number": "17.6",
+          "status": "pending",
+          "notes": "BO check: расширяет спрос на неклиентов (дарители/host/HR), не уходит в дегустационный red ocean. Context check: 21–55, простой пьяный умор, друзья, море веселья, уход от проблем.",
+          "description": "Аудитория 21–55 (детализация):\n- 21–30: шумные вечеринки, быстрый старт, визуальные реакции.\n- 31–40: встреча друзей/семьи, минимальные правила, легкий юмор.\n- 41–55: спокойный формат, понятные визуальные задания без текста.\n\nРоли‑неклиенты: даритель/host/HR — покупают опыт/вечер, а не «пиво как продукт».",
+          "subtasks": []
+        },
+        {
+          "number": "17.7",
+          "status": "pending",
+          "notes": "BO check: связывает discovery с UX/Flow/Rewards; фокус на ценностной инновации. Context check: визуально, без текста, быстрый смех.",
+          "description": "Связь Discovery → UX/Flow/Rewards (mapping):\n- Time‑to‑Smile ≤ 2 мин → раздел 10 (QR‑вход) + 16.11/16.12 (быстрый таймер/выбор).\n- QR‑Join Rate ≥ 80% → раздел 10 + 15.2 (d0.do/xxx, QR V1).\n- Session Completion ≥ 70% → раздел 16 (короткие раунды, визуальные награды).\n- Replay Intent ≥ 40% → 16.7 (Play‑again), 16.8 (ShareCard).\n- ShareCard Use ≥ 30% → 16.14 (ShareCard + QR).\n- Gift/Host Share ≥ 60% → 17.1 (сценарии подарка/host), 15 (flow).",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "18",
+      "status": "pending",
+      "notes": "BO check: быстрый запуск и масштабирование без тяжёлой инфраструктуры. Context check: скорость старта важнее сложности.",
+      "description": "Архитектура/Инфра: DB/Redis, хостинг, домены, CDN, storage, окружения dev/stage/prod (escapers.app).",
+      "subtasks": [
+        {
+          "number": "18.1",
+          "status": "pending",
+          "notes": "BO check: снижает трение и удерживает скорость. Context check: быстрый старт комнат.",
+          "description": "Схема хранения: \n- Redis: оперативное состояние комнат/раундов/таймеров (TTL).\n- Postgres: долговременные данные (сессии, метрики, ассет‑манифест).\n- Object Storage (S3‑compatible): ассеты сцен (PNG/JPG/GIF), версии и контроль лицензий.",
+          "subtasks": []
+        },
+        {
+          "number": "18.2",
+          "status": "pending",
+          "notes": "BO check: минимальная инфраструктура, максимальная доступность. Context check: мобильный фокус.",
+          "description": "Хостинг и домены: \n- escapers.app: основной PWA домен.\n- d0.do: короткий домен для QR (Version 1).\n- WebSocket сервер: отдельный сервис (реал‑тайм комнаты).\n- CDN (например Cloudflare) для статических ассетов и кеша.",
+          "subtasks": []
+        },
+        {
+          "number": "18.3",
+          "status": "pending",
+          "notes": "BO check: безопасные эксперименты без риска продакшна. Context check: простая структура окружений.",
+          "description": "Окружения: \n- dev: dev.escapers.app\n- stage: stage.escapers.app (контроль перед релизом)\n- prod: escapers.app\n- отдельные ключи/конфиги, фичефлаги для экспериментов.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "19",
+      "status": "pending",
+      "notes": "BO check: ускоряет итерации и удерживает фокус на опыте. Context check: быстрые релизы, без усложнения.",
+      "description": "CI/CD и релизы: сборка, автотесты, деплой, версионирование, changelog, rollback.",
+      "subtasks": [
+        {
+          "number": "19.1",
+          "status": "pending",
+          "notes": "BO check: минимальный трение‑цикл (ship fast). Context check: быстрый смех важнее перфекционизма.",
+          "description": "CI pipeline: lint + typecheck + tests (schema/validators) + build web/server; только обязательные проверки, чтобы не тормозить релизы.",
+          "subtasks": []
+        },
+        {
+          "number": "19.2",
+          "status": "pending",
+          "notes": "BO check: качество без усложнения. Context check: визуальный UX, без текста.",
+          "description": "Автотесты: приоритет на схемы/валидаторы, WS‑контракты и критичный UX (QR‑join). Лёгкий e2e smoke: create room → scan → join → start round.",
+          "subtasks": []
+        },
+        {
+          "number": "19.3",
+          "status": "pending",
+          "notes": "BO check: быстрый rollout без риска. Context check: вечер не должен ломаться.",
+          "description": "Деплой: dev → stage → prod, автоматический promote при зелёном CI. PWA assets через CDN, WS‑сервер отдельным релизом.",
+          "subtasks": []
+        },
+        {
+          "number": "19.4",
+          "status": "pending",
+          "notes": "BO check: стабильность впечатления. Context check: без текстовых патчей.",
+          "description": "Версионирование: semver для server/shared, тег релиза для web. Changelog — кратко, без технической перегрузки.",
+          "subtasks": []
+        },
+        {
+          "number": "19.5",
+          "status": "pending",
+          "notes": "BO check: снижение риска и стресс‑free вечера. Context check: не ломать опыт.",
+          "description": "Rollback: быстрый откат web (CDN cache purge) и server (previous container/image). Авто‑fallback на последнюю стабильную версию.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "20",
+      "status": "pending",
+      "notes": "BO check: защита от фрикции/хаоса без усложнения. Context check: лёгкий пьяный юмор, быстрый вход, без текста.",
+      "description": "Безопасность: rate‑limit WS, anti‑spam, защита комнат, защита от массового join, логирование инцидентов.",
+      "subtasks": [
+        {
+          "number": "20.1",
+          "status": "pending",
+          "notes": "BO check: убирает хаос, не снижая веселья. Context check: быстрый старт.",
+          "description": "Rate‑limit WS: лимиты по IP/room/user на join/answer/ping. Мягкие ограничения (grace) чтобы не ломать вечеринку.",
+          "subtasks": []
+        },
+        {
+          "number": "20.2",
+          "status": "pending",
+          "notes": "BO check: удерживает лёгкость, исключает злоупотребления. Context check: без токсичности.",
+          "description": "Anti‑spam: защита от флуд‑сообщений и повторных ответов; silent‑cooldown вместо жёстких ошибок (без текстовых алертов).",
+          "subtasks": []
+        },
+        {
+          "number": "20.3",
+          "status": "pending",
+          "notes": "BO check: сохраняет ощущение «закрытой» вечеринки. Context check: друзья, свой круг.",
+          "description": "Защита комнат: короткие токены + TTL, возможность закрыть комнату после старта, лимит участников по умолчанию.",
+          "subtasks": []
+        },
+        {
+          "number": "20.4",
+          "status": "pending",
+          "notes": "BO check: предотвращает массовый join‑атаки без риска для UX. Context check: без текста, без паники.",
+          "description": "Защита от массового join: лимиты на частоту входов, защита от повторных IP‑скачков, авто‑задержка при всплеске.",
+          "subtasks": []
+        },
+        {
+          "number": "20.5",
+          "status": "pending",
+          "notes": "BO check: безопасность без видимой жёсткости. Context check: логирование скрыто от игрока.",
+          "description": "Логирование инцидентов: фиксация rate‑limit/anti‑spam/аномалий; отдельные каналы мониторинга, без пользовательских текстовых сообщений.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "21",
+      "status": "pending",
+      "notes": "BO check: защита бренда и доверия, не ломая удовольствие. Context check: 21+, простой пьяный юмор, без текста в UI.",
+      "description": "Возрастной доступ 21+ / compliance: правила доступа, отказ от детей, возрастной гейт, юридический дисклеймер (алкоголь).",
+      "subtasks": [
+        {
+          "number": "21.1",
+          "status": "pending",
+          "notes": "BO check: минимальный трение‑гейт, без чтения. Context check: визуально, быстро.",
+          "description": "Возрастной гейт (21+): визуальный чек (иконка 21+) при первом входе, без текста; acknowledge‑tap для продолжения.",
+          "subtasks": []
+        },
+        {
+          "number": "21.2",
+          "status": "pending",
+          "notes": "BO check: соблюдение правил без агрессивного UX. Context check: не ломать атмосферу.",
+          "description": "Отказ для <21: мягкий экран‑стоп (иконка + закрытие), без текста, без негативных формулировок.",
+          "subtasks": []
+        },
+        {
+          "number": "21.3",
+          "status": "pending",
+          "notes": "BO check: юридическая чистота, без перегруза. Context check: минимум текста, только в юридическом блоке.",
+          "description": "Юридический дисклеймер (алкоголь): хранить отдельно в legal/terms (текст вне игрового UI). В интерфейсе — только иконка 21+.",
+          "subtasks": []
+        },
+        {
+          "number": "21.4",
+          "status": "pending",
+          "notes": "BO check: снижает риски и сохраняет доверие. Context check: без персонализации.",
+          "description": "Логи compliance: фиксировать факт подтверждения 21+ (без хранения персональных данных).",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "22",
+      "status": "pending",
+      "notes": "BO check: защищает бренд и снижает риски без усложнения. Context check: лёгкий юмор, визуально, без текста в UI.",
+      "description": "Лицензии/право: валидация лицензий, аудит контента, хранение доказательств лицензии.",
+      "subtasks": [
+        {
+          "number": "22.1",
+          "status": "pending",
+          "notes": "BO check: держит процесс быстрым и воспроизводимым. Context check: только безопасные источники.",
+          "description": "Процесс валидации лицензий: принимать только CC0/PD/Pixabay License; проверять страницу файла вручную; фиксировать тип лицензии и дату проверки.",
+          "subtasks": []
+        },
+        {
+          "number": "22.2",
+          "status": "pending",
+          "notes": "BO check: исключает правовые риски, не ломая темп. Context check: без брендов/персоналий.",
+          "description": "Аудит контента: авто‑blacklist IP/брендов/персоналий + ручная выборочная проверка. Запрещать политические/религиозные сюжеты.",
+          "subtasks": []
+        },
+        {
+          "number": "22.3",
+          "status": "pending",
+          "notes": "BO check: юридическая чистота без трения. Context check: хранение вне UI.",
+          "description": "Хранение доказательств лицензии: сохранять снимок страницы/лицензии (PDF/PNG) и ссылку на источник в ассет‑манифесте.",
+          "subtasks": []
+        },
+        {
+          "number": "22.4",
+          "status": "pending",
+          "notes": "BO check: поддерживает масштабирование ассетов. Context check: без текста в игре.",
+          "description": "Политика обновления: при каждом новом ассете — обязательная запись лицензии и повторная проверка при пере‑использовании.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "23",
+      "status": "pending",
+      "notes": "BO check: тесты поддерживают скорость и качество опыта без перегруза. Context check: визуально, без текста, простой пьяный юмор.",
+      "description": "QA/Testing: unit/integration/e2e, нагрузочные тесты, тест‑план на визуальные сценарии.",
+      "subtasks": [
+        {
+          "number": "23.1",
+          "status": "pending",
+          "notes": "BO check: минимальный набор для скорости. Context check: визуальные правила без текста.",
+          "description": "Unit tests: схемы/валидаторы/таймеры/рандомизация; проверка отсутствия текста в UI‑конфиге.",
+          "subtasks": []
+        },
+        {
+          "number": "23.2",
+          "status": "pending",
+          "notes": "BO check: гарантирует бесшовный вечер. Context check: быстрый вход, без чтения.",
+          "description": "Integration tests: WS‑контракты (join/start/answer/score), QR‑flow (d0.do/xxx), ассет‑манифест (валидные лицензии).",
+          "subtasks": []
+        },
+        {
+          "number": "23.3",
+          "status": "pending",
+          "notes": "BO check: подтверждает ценностную инновацию в реальном сценарии. Context check: смех/темп/простота.",
+          "description": "E2E smoke: create room → scan/join → play 1 round → leaderboard → sharecard. Проверка Time‑to‑Smile <2 мин (ручной чек).",
+          "subtasks": []
+        },
+        {
+          "number": "23.4",
+          "status": "pending",
+          "notes": "BO check: нагрузка без деградации опыта. Context check: вечеринка не должна зависнуть.",
+          "description": "Нагрузочные тесты: 8/16/32 игроков в комнате, burst‑join, пиковые ответы; лимиты WS/Redis/CPU.",
+          "subtasks": []
+        },
+        {
+          "number": "23.5",
+          "status": "pending",
+          "notes": "BO check: визуальные сценарии = ядро ценности. Context check: без текста, лёгкий юмор.",
+          "description": "Тест‑план визуальных сценариев: 10 типов сцен, проверка анти‑red‑ocean guardrails, отсутствие брендов/персоналий, визуальная читаемость 21–55.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "24",
+      "status": "pending",
+      "notes": "BO check: измеряет ценность опыта (вечер/смех), не продукт. Context check: лёгкий пьяный юмор, друзья, море веселья.",
+      "description": "Аналитика/Метрики: события, retention, time‑to‑start, session length, drop‑offs.",
+      "subtasks": [
+        {
+          "number": "24.1",
+          "status": "pending",
+          "notes": "BO check: фокус на времени до смеха. Context check: быстрый старт.",
+          "description": "События: create_room, qr_render, qr_scan, join_room, round_start, answer_select, round_end, leaderboard_view, sharecard_generate, replay_click.",
+          "subtasks": []
+        },
+        {
+          "number": "24.2",
+          "status": "pending",
+          "notes": "BO check: измеряет снижение трения. Context check: QR‑вход.",
+          "description": "Time‑to‑Start: время от create_room до round_start; целевой порог ≤ 2 мин.",
+          "subtasks": []
+        },
+        {
+          "number": "24.3",
+          "status": "pending",
+          "notes": "BO check: удержание через эмоции. Context check: вечеринка должна доходить до финала.",
+          "description": "Retention: % комнат, дошедших до финального раунда; повторный запуск в течение 7 дней (host‑repeat).",
+          "subtasks": []
+        },
+        {
+          "number": "24.4",
+          "status": "pending",
+          "notes": "BO check: длина сессии как показатель ценности. Context check: не утомлять.",
+          "description": "Session Length: медиана длительности сессии (минуты) и число раундов на сессию.",
+          "subtasks": []
+        },
+        {
+          "number": "24.5",
+          "status": "pending",
+          "notes": "BO check: выявляет барьеры опыта. Context check: без текста, быстро.",
+          "description": "Drop‑offs: где уходят (QR‑scan → join, join → round_start, round_end → next).",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "25",
+      "status": "pending",
+      "notes": "BO check: снижает барьеры и поддерживает лёгкий опыт. Context check: простой пьяный юмор, без токсичных тем.",
+      "description": "Модерация/Support: канал обратной связи, обработка проблем, правила контента.",
+      "subtasks": [
+        {
+          "number": "25.1",
+          "status": "pending",
+          "notes": "BO check: быстрый контакт без перегруза. Context check: минимальный текст, отдельно от игры.",
+          "description": "Канал обратной связи: отдельная support‑страница (outside game UI), короткая форма + email; в игре — только иконка помощи.",
+          "subtasks": []
+        },
+        {
+          "number": "25.2",
+          "status": "pending",
+          "notes": "BO check: проблемы решаются без разрушения вечера. Context check: без текстовых алертов.",
+          "description": "Обработка проблем: silent‑fallback (переподключение WS, повторная загрузка ассетов) без видимых ошибок; логирование инцидентов в фоне.",
+          "subtasks": []
+        },
+        {
+          "number": "25.3",
+          "status": "pending",
+          "notes": "BO check: сохраняет бренд и доверие, без морализаторства. Context check: лёгкий юмор, без токсичности.",
+          "description": "Правила контента: только нейтральные визуальные сцены; запрет политики/религии/персоналий/брендов/токсичности; без текста в игре.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "26",
+      "status": "pending",
+      "notes": "BO check: скорость = ценность опыта; без задержек. Context check: быстрый смех, мобильный фокус.",
+      "description": "Performance: оптимизация PWA, кеширование, lazy loading, лимиты по памяти/CPU.",
+      "subtasks": [
+        {
+          "number": "26.1",
+          "status": "pending",
+          "notes": "BO check: мгновенный старт. Context check: 2–3 тапа до игры.",
+          "description": "Оптимизация PWA: минимальный critical‑path, prefetch сцен следующего раунда, без тяжёлых шрифтов/текста.",
+          "subtasks": []
+        },
+        {
+          "number": "26.2",
+          "status": "pending",
+          "notes": "BO check: отсутствие лагов = больше смеха. Context check: мобильные устройства.",
+          "description": "Кеширование: service worker для ассетов, CDN‑cache, versioned assets; быстрый возврат в комнату.",
+          "subtasks": []
+        },
+        {
+          "number": "26.3",
+          "status": "pending",
+          "notes": "BO check: не перегружать устройство. Context check: лёгкие визуалы.",
+          "description": "Lazy loading: загружать ассеты по сценам; LQIP/placeholder; освобождение памяти после раунда.",
+          "subtasks": []
+        },
+        {
+          "number": "26.4",
+          "status": "pending",
+          "notes": "BO check: стабильность во время вечеринки. Context check: без зависаний.",
+          "description": "Лимиты CPU/Memory: ограничение одновременных анимаций, cap на размер ассета, fallback на статичный кадр.",
+          "subtasks": []
         }
       ]
     }
