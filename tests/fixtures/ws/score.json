@@ -1,0 +1,16 @@
+{
+  "type": "score",
+  "payload": {
+    "leaderboardTop5": [
+      {"playerId": "P-1", "avatarId": "avatar_a", "score": 1000, "rank": 1},
+      {"playerId": "P-2", "avatarId": "avatar_b", "score": 900, "rank": 2}
+    ],
+    "podiumTopN": [
+      {"playerId": "P-1", "avatarId": "avatar_a", "score": 1000, "rank": 1},
+      {"playerId": "P-2", "avatarId": "avatar_b", "score": 900, "rank": 2},
+      {"playerId": "P-3", "avatarId": "avatar_c", "score": 800, "rank": 3}
+    ],
+    "self": {"score": 500, "rank": 6, "correctCount": 2},
+    "mode": "speed"
+  }
+}

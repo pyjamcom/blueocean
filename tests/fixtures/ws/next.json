@@ -1,0 +1,7 @@
+{
+  "type": "next",
+  "payload": {
+    "roomCode": "ROOM1",
+    "nextQuestionId": "q_visual_provocation_02"
+  }
+}

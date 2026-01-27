@@ -1,0 +1,9 @@
+{
+  "type": "answer",
+  "payload": {
+    "roomCode": "ROOM1",
+    "playerId": "P-123456",
+    "answerIndex": 2,
+    "latencyMs": 230
+  }
+}

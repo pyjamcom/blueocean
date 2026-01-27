@@ -11,11 +11,13 @@
     "dev:all": "npm run dev:web & npm run dev:server",
     "build:web": "npm run build --workspace apps/web",
     "build:server": "npm run build --workspace apps/server",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "load:ws": "node scripts/load_simulator.js"
   },
   "devDependencies": {
     "ajv": "^8.12.0",
-    "ajv-formats": "^2.1.1"
+    "ajv-formats": "^2.1.1",
+    "ws": "^8.16.0"
   },
   "engines": {
     "node": ">=18"

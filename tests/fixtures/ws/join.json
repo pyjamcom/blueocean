@@ -1,0 +1,8 @@
+{
+  "type": "join",
+  "payload": {
+    "roomCode": "ROOM1",
+    "playerId": "P-123456",
+    "avatarId": "avatar_disco_sloth"
+  }
+}

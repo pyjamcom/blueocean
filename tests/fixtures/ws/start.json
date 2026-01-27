@@ -1,0 +1,7 @@
+{
+  "type": "start",
+  "payload": {
+    "roomCode": "ROOM1",
+    "seed": 12345
+  }
+}
