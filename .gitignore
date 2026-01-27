@@ -2,6 +2,9 @@
 .codex/
 config/github_token.txt
 config/ga_oauth.env
+config/*.env
+config/aws_credentials
+config/aws_config
 config/client_secret_*.json
 scripts/__pycache__/
 __pycache__/
