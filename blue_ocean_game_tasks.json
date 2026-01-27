@@ -2976,41 +2976,41 @@
     },
     {
       "number": "19",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: ускоряет итерации и удерживает фокус на опыте. Context check: быстрые релизы, без усложнения.",
       "description": "CI/CD и релизы: сборка, автотесты, деплой, версионирование, changelog, rollback.",
       "subtasks": [
         {
           "number": "19.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: минимальный трение‑цикл (ship fast). Context check: быстрый смех важнее перфекционизма.",
           "description": "CI pipeline: lint + typecheck + tests (schema/validators) + build web/server; только обязательные проверки, чтобы не тормозить релизы.",
           "subtasks": []
         },
         {
           "number": "19.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: качество без усложнения. Context check: визуальный UX, без текста.",
           "description": "Автотесты: приоритет на схемы/валидаторы, WS‑контракты и критичный UX (QR‑join). Лёгкий e2e smoke: create room → scan → join → start round.",
           "subtasks": []
         },
         {
           "number": "19.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: быстрый rollout без риска. Context check: вечер не должен ломаться.",
           "description": "Деплой: dev → stage → prod, автоматический promote при зелёном CI. PWA assets через CDN, WS‑сервер отдельным релизом.",
           "subtasks": []
         },
         {
           "number": "19.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: стабильность впечатления. Context check: без текстовых патчей.",
           "description": "Версионирование: semver для server/shared, тег релиза для web. Changelog — кратко, без технической перегрузки.",
           "subtasks": []
         },
         {
           "number": "19.5",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: снижение риска и стресс‑free вечера. Context check: не ломать опыт.",
           "description": "Rollback: быстрый откат web (CDN cache purge) и server (previous container/image). Авто‑fallback на последнюю стабильную версию.",
           "subtasks": []

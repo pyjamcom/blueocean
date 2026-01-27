@@ -19,6 +19,7 @@ docs/*
 !docs/schengen_game_flow.md
 !docs/schengen_discovery_scope.md
 !docs/infra_architecture.md
+!docs/release_process.md
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html
