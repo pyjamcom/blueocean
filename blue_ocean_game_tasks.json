@@ -3282,6 +3282,114 @@
           "subtasks": []
         }
       ]
+    },
+    {
+      "number": "27",
+      "status": "pending",
+      "notes": "BO check: стабильность опыта важнее технической сложности. Context check: вечеринка не должна зависать.",
+      "description": "Observability/Monitoring: логи, метрики, алерты (сервер/WS/клиент), статус‑страница.",
+      "subtasks": [
+        {
+          "number": "27.1",
+          "status": "pending",
+          "notes": "BO check: снижение риска провала вечера. Context check: быстрый восстановительный цикл.",
+          "description": "Логи: сервер/WS/клиентские ошибки (без персональных данных), агрегирование по room/session.",
+          "subtasks": []
+        },
+        {
+          "number": "27.2",
+          "status": "pending",
+          "notes": "BO check: контроль качества опыта. Context check: минимальная задержка.",
+          "description": "Метрики здоровья: latency WS, error rate join/answer, asset load time, room churn rate.",
+          "subtasks": []
+        },
+        {
+          "number": "27.3",
+          "status": "pending",
+          "notes": "BO check: алерты только на то, что ломает вечер. Context check: без лишнего шума.",
+          "description": "Алерты: рост error rate, spikes join failures, деградация TTS (time‑to‑start), падение room completion.",
+          "subtasks": []
+        },
+        {
+          "number": "27.4",
+          "status": "pending",
+          "notes": "BO check: доверие и прозрачность без перегруза. Context check: минималистичный статус.",
+          "description": "Статус‑страница (escapers.app/status): краткое состояние web/WS/QR, без текста внутри игры.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "28",
+      "status": "pending",
+      "notes": "BO check: доверие и минимальные данные, без барьеров. Context check: легкий опыт, без лишних форм.",
+      "description": "Data governance / Privacy: минимальная политика хранения данных (анонимизация, retention).",
+      "subtasks": [
+        {
+          "number": "28.1",
+          "status": "pending",
+          "notes": "BO check: не превращать игру в «форма‑сервис». Context check: минимум данных.",
+          "description": "Принцип минимальных данных: не хранить персональные данные; все идентификаторы комнат/игроков — случайные токены.",
+          "subtasks": []
+        },
+        {
+          "number": "28.2",
+          "status": "pending",
+          "notes": "BO check: защита доверия. Context check: только агрегированные метрики.",
+          "description": "Анонимизация: хранить только агрегаты (session length, completion, TTS). Без PII, без IP в долгом хранении.",
+          "subtasks": []
+        },
+        {
+          "number": "28.3",
+          "status": "pending",
+          "notes": "BO check: простая, понятная политика. Context check: не мешать веселью.",
+          "description": "Retention policy: оперативные логи/сессии ≤ 30 дней; агрегированные метрики ≤ 12 месяцев; ассеты хранятся до отзыва лицензии.",
+          "subtasks": []
+        },
+        {
+          "number": "28.4",
+          "status": "pending",
+          "notes": "BO check: прозрачность без перегруза. Context check: отдельный legal‑блок, не в UI.",
+          "description": "Privacy notice: отдельный документ (legal/privacy) с кратким описанием минимального сбора данных, без вывода в игровой UI.",
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "number": "29",
+      "status": "pending",
+      "notes": "BO check: непрерывное улучшение ценностной инновации. Context check: лёгкий юмор, быстрый цикл.",
+      "description": "Post‑launch iteration loop (Growth/Iteration): еженедельный review метрик → обновление контента → A/B тесты (без текста).",
+      "subtasks": [
+        {
+          "number": "29.1",
+          "status": "pending",
+          "notes": "BO check: держит фокус на опыте. Context check: смех и темп.",
+          "description": "Еженедельный review метрик (TTS, completion, replay, share) + топ‑dropoffs. Решения — только про улучшение опыта.",
+          "subtasks": []
+        },
+        {
+          "number": "29.2",
+          "status": "pending",
+          "notes": "BO check: обновление контента = свежесть рынка. Context check: визуальный юмор.",
+          "description": "Обновление контента: добавлять/заменять сцены и ассеты, не нарушая guardrails (без брендов/персоналий/текста).",
+          "subtasks": []
+        },
+        {
+          "number": "29.3",
+          "status": "pending",
+          "notes": "BO check: тестируем ценность без усложнения. Context check: A/B только визуальные.",
+          "description": "A/B тесты без текста: темп раунда, длительность таймера, порядок сцен, визуальный стиль наград.",
+          "subtasks": []
+        },
+        {
+          "number": "29.4",
+          "status": "pending",
+          "notes": "BO check: итерации не должны втаскивать red ocean. Context check: простота и веселье.",
+          "description": "Анти‑red‑ocean фильтр итераций: не добавлять чтение/викторины/сложные правила/оценку «по вкусу».",
+          "subtasks": []
+        }
+      ]
     }
   ]
 }
