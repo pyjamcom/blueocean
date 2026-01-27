@@ -28,6 +28,7 @@ function validateAssets(data, schema, baseDir) {
   const ids = new Set();
   const duplicates = [];
   const missingFiles = [];
+  const missingEvidence = [];
 
   assets.forEach((asset) => {
     const valid = validate(asset);
@@ -47,13 +48,26 @@ function validateAssets(data, schema, baseDir) {
         missingFiles.push({ id: asset.id, file: asset.file });
       }
     }
+    if (asset.evidence_file) {
+      const evidencePath = path.isAbsolute(asset.evidence_file)
+        ? asset.evidence_file
+        : path.join(baseDir, asset.evidence_file);
+      if (!fs.existsSync(evidencePath)) {
+        missingEvidence.push({ id: asset.id, evidence_file: asset.evidence_file });
+      }
+    }
   });
 
   return {
-    valid: errors.length === 0 && duplicates.length === 0 && missingFiles.length === 0,
+    valid:
+      errors.length === 0 &&
+      duplicates.length === 0 &&
+      missingFiles.length === 0 &&
+      missingEvidence.length === 0,
     errors,
     duplicates,
     missingFiles,
+    missingEvidence,
   };
 }
 
@@ -79,6 +93,9 @@ function run() {
     }
     if (result.missingFiles.length > 0) {
       console.error("Missing asset files:", result.missingFiles);
+    }
+    if (result.missingEvidence.length > 0) {
+      console.error("Missing license evidence files:", result.missingEvidence);
     }
     process.exit(1);
   }

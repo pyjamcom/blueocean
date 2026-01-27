@@ -1,0 +1,8 @@
+{
+  "brands": ["brand_placeholder"],
+  "persons": ["person_placeholder"],
+  "politics": ["politics"],
+  "religion": ["religion"],
+  "news": ["news"],
+  "ip": ["copyrighted_character"]
+}

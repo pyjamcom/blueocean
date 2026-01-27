@@ -3,10 +3,14 @@
   "$id": "assets.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "file", "tags"],
+  "required": ["id", "file", "tags", "license", "source_url", "evidence_file", "license_checked_at"],
   "properties": {
     "id": {"type": "string", "minLength": 1},
     "file": {"type": "string", "minLength": 1},
-    "tags": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+    "tags": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "license": {"type": "string", "enum": ["CC0", "PD", "PIXABAY"]},
+    "source_url": {"type": "string", "minLength": 1},
+    "evidence_file": {"type": "string", "minLength": 1},
+    "license_checked_at": {"type": "string", "format": "date"}
   }
 }
