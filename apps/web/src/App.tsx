@@ -1,7 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import RoundGallery from "./views/RoundGallery";
 import JoinView from "./views/JoinView";
-import SeasonSelectView from "./views/SeasonSelectView";
+import LobbyView from "./views/LobbyView";
+import JoinWaitView from "./views/JoinWaitView";
 import ResultView from "./views/ResultView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
@@ -32,9 +33,10 @@ export default function App() {
       <div className="app">
         <Routes>
           <Route path="/join" element={<JoinView />} />
-          <Route path="/lobby" element={<SeasonSelectView />} />
+          <Route path="/lobby" element={<LobbyView />} />
           <Route path="/game" element={<RoundGallery />} />
           <Route path="/result" element={<ResultView />} />
+          <Route path="/wait" element={<JoinWaitView />} />
           <Route path="*" element={<Navigate to="/join" replace />} />
         </Routes>
       </div>

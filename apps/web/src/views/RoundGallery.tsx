@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
+import ProgressDots from "../components/ProgressDots";
+import { shuffleArray } from "../utils/shuffle";
 import {
   AbsurdSumView,
   AbsurdToastView,
@@ -29,74 +31,131 @@ function useSampleAnswers(): [AnswerOption, AnswerOption, AnswerOption, AnswerOp
 }
 
 export default function RoundGallery() {
-  const answers = useSampleAnswers();
+  const baseAnswers = useSampleAnswers();
+  const answers = useMemo(() => shuffleArray(baseAnswers), [baseAnswers]);
   const noop = () => {};
-  const now = Date.now();
+  const now = useMemo(() => Date.now(), []);
+
+  const viewSequence = useMemo(
+    () =>
+      shuffleArray([
+        {
+          key: "visual",
+          element: (
+            <VisualProvocationView
+              promptSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "telepath",
+          element: (
+            <TelepathSyncView
+              promptSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "reflex",
+          element: (
+            <DrunkReflexView
+              triggerSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              timerStart={now}
+              durationMs={5000}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "absurd-sum",
+          element: (
+            <AbsurdSumView
+              leftSrc={sampleSrc}
+              rightSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "mimic",
+          element: (
+            <FaceMimicView
+              cameraSrc={sampleSrc}
+              overlaySrcs={[sampleSrc, sampleSrc]}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "icon-battle",
+          element: (
+            <IconBattleView
+              leftSrc={sampleSrc}
+              rightSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "sound",
+          element: (
+            <SoundPantomimeView
+              audioSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              timerStart={now}
+              durationMs={5000}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "toast",
+          element: (
+            <AbsurdToastView
+              moodSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        {
+          key: "silhouette",
+          element: (
+            <SilhouetteGuessView
+              silhouetteSrc={sampleSrc}
+              answers={answers}
+              onSelect={noop}
+              revealState="idle"
+            />
+          ),
+        },
+        { key: "trophy", element: <TrophyRewardView trophySrc={sampleSrc} /> },
+      ]),
+    [answers, now],
+  );
 
   return (
     <div className={styles.view}>
-      <VisualProvocationView
-        promptSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <TelepathSyncView
-        promptSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <DrunkReflexView
-        triggerSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        timerStart={now}
-        durationMs={5000}
-        revealState="idle"
-      />
-      <AbsurdSumView
-        leftSrc={sampleSrc}
-        rightSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <FaceMimicView
-        cameraSrc={sampleSrc}
-        overlaySrcs={[sampleSrc, sampleSrc]}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <IconBattleView
-        leftSrc={sampleSrc}
-        rightSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <SoundPantomimeView
-        audioSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        timerStart={now}
-        durationMs={5000}
-        revealState="idle"
-      />
-      <AbsurdToastView
-        moodSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <SilhouetteGuessView
-        silhouetteSrc={sampleSrc}
-        answers={answers}
-        onSelect={noop}
-        revealState="idle"
-      />
-      <TrophyRewardView trophySrc={sampleSrc} />
+      <ProgressDots total={10} activeIndex={3} />
+      {viewSequence.map((view) => (
+        <div key={view.key} className={styles.card}>{view.element}</div>
+      ))}
     </div>
   );
 }

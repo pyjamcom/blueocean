@@ -1,11 +1,18 @@
-.grid {
+.grid,
+:global(.answer-grid) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   width: 100%;
 }
 
-.tile {
+.gridShuffle,
+:global(.answer-grid--shuffle) {
+  animation: shufflePulse 0.6s ease;
+}
+
+.tile,
+:global(.answer-tile) {
   position: relative;
   border: none;
   padding: 0;
@@ -25,22 +32,26 @@
   pointer-events: none;
 }
 
-.tileSelected {
+.tileSelected,
+:global(.answer-tile--selected) {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
   transform: scale(0.98);
 }
 
-.tileCorrect {
+.tileCorrect,
+:global(.answer-tile--correct) {
   background: rgba(99, 230, 190, 0.25);
   box-shadow: 0 0 0 3px rgba(99, 230, 190, 0.7);
 }
 
-.tileWrong {
+.tileWrong,
+:global(.answer-tile--wrong) {
   background: rgba(255, 107, 107, 0.2);
   box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.6);
 }
 
-.tileLocked {
+.tileLocked,
+:global(.answer-tile--locked) {
   opacity: 0.85;
 }
 
@@ -49,4 +60,16 @@
   inset: 0;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes shufflePulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

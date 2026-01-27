@@ -1,0 +1,62 @@
+import styles from "./Leaderboard.module.css";
+
+export interface LeaderboardItem {
+  playerId: string;
+  avatarId: string;
+  rank: number;
+  score?: number;
+  correctCount?: number;
+}
+
+export interface LeaderboardProps {
+  items: LeaderboardItem[];
+  self?: { rank: number; score?: number; correctCount?: number } | null;
+  mode: "speed" | "accuracy";
+}
+
+function hashHue(value: string) {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) % 360;
+}
+
+function medalColor(rank: number) {
+  if (rank === 1) return "#ffd166";
+  if (rank === 2) return "#e9ecef";
+  if (rank === 3) return "#f4a261";
+  return "rgba(255,255,255,0.2)";
+}
+
+export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
+  const topItems = [...items].sort((a, b) => a.rank - b.rank).slice(0, 5);
+
+  return (
+    <div className={`leaderboard ${styles.board} ${styles[mode]}`}>
+      {topItems.map((item) => {
+        const isSelf = self?.rank === item.rank;
+        const hue = hashHue(item.avatarId);
+        return (
+          <div
+            key={item.playerId}
+            className={`leaderboard__item ${styles.item} ${isSelf ? `leaderboard__selfHighlight ${styles.self}` : ""}`}
+          >
+            <div
+              className={`leaderboard__rankBadge ${styles.rankBadge}`}
+              style={{ backgroundColor: medalColor(item.rank) }}
+              aria-label={`rank-${item.rank}`}
+            />
+            <div
+              className={`leaderboard__avatar ${styles.avatar}`}
+              style={{ background: `hsl(${hue} 70% 60%)` }}
+              aria-label={item.avatarId}
+            />
+            <span className={styles.spark} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}

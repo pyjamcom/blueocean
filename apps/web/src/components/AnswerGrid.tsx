@@ -16,6 +16,7 @@ export interface AnswerGridProps {
   revealState?: RevealState;
   locked?: boolean;
   correctIndex?: number | null;
+  shuffleHint?: boolean;
 }
 
 export default function AnswerGrid({
@@ -25,9 +26,12 @@ export default function AnswerGrid({
   revealState = "idle",
   locked = false,
   correctIndex,
+  shuffleHint = false,
 }: AnswerGridProps) {
   const [pressedIndex, setPressedIndex] = useState<number | null>(null);
+  const [autoShuffle, setAutoShuffle] = useState(false);
   const didVibrateReveal = useRef(false);
+  const shuffleTimer = useRef<number | null>(null);
 
   const lockInput = () => locked || selectedIndex !== null && selectedIndex !== undefined;
 
@@ -54,6 +58,19 @@ export default function AnswerGrid({
       didVibrateReveal.current = false;
     }
   }, [revealState, selectedIndex, correctIndex]);
+
+  useEffect(() => {
+    if (shuffleTimer.current) {
+      window.clearTimeout(shuffleTimer.current);
+    }
+    setAutoShuffle(true);
+    shuffleTimer.current = window.setTimeout(() => setAutoShuffle(false), 700);
+    return () => {
+      if (shuffleTimer.current) {
+        window.clearTimeout(shuffleTimer.current);
+      }
+    };
+  }, [answers]);
 
   const tiles = useMemo(() => {
     return answers.map((answer, index) => {
@@ -94,5 +111,15 @@ export default function AnswerGrid({
     });
   }, [answers, correctIndex, handleSelect, locked, pressedIndex, revealState, selectedIndex]);
 
-  return <div className={`answer-grid ${styles.grid}`}>{tiles}</div>;
+  const showShuffle = shuffleHint || autoShuffle;
+
+  return (
+    <div
+      className={`answer-grid ${styles.grid} ${
+        showShuffle ? `answer-grid--shuffle ${styles.gridShuffle}` : ""
+      }`}
+    >
+      {tiles}
+    </div>
+  );
 }

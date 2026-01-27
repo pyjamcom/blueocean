@@ -1,64 +1,40 @@
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import AnswerDistribution from "../components/AnswerDistribution";
+import Leaderboard from "../components/Leaderboard";
+import NextRoundButton from "../components/NextRoundButton";
+import ShareCard, { ShareCardHandle } from "../components/ShareCard";
 import styles from "./ResultView.module.css";
 
-const podiumColors = ["#ffd166", "#ff6b6b", "#4dabf7"];
-
-function drawPodium(ctx: CanvasRenderingContext2D, size: number) {
-  ctx.clearRect(0, 0, size, size);
-  ctx.fillStyle = "#0b0b10";
-  ctx.fillRect(0, 0, size, size);
-
-  const baseY = size * 0.72;
-  const widths = [size * 0.22, size * 0.22, size * 0.22];
-  const heights = [size * 0.32, size * 0.26, size * 0.22];
-  const positions = [size * 0.2, size * 0.39, size * 0.58];
-
-  positions.forEach((x, index) => {
-    ctx.fillStyle = podiumColors[index];
-    ctx.beginPath();
-    ctx.roundRect(x, baseY - heights[index], widths[index], heights[index], 18);
-    ctx.fill();
-  });
-
-  ctx.strokeStyle = "rgba(255,255,255,0.2)";
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.arc(size * 0.18, size * 0.22, size * 0.1, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(size * 0.82, size * 0.18, size * 0.12, 0, Math.PI * 2);
-  ctx.stroke();
-}
-
 export default function ResultView() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const size = 720;
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawPodium(ctx, size);
-    setImageUrl(canvas.toDataURL("image/png"));
-  }, []);
+  const shareRef = useRef<ShareCardHandle | null>(null);
+  const samplePodium = useMemo(
+    () => [
+      { avatarId: "avatar_party_octopus", rank: 1 },
+      { avatarId: "avatar_disco_sloth", rank: 2 },
+      { avatarId: "avatar_space_cactus", rank: 3 },
+    ],
+    [],
+  );
+  const sampleLeaderboard = useMemo(
+    () => [
+      { playerId: "p1", avatarId: "avatar_party_octopus", rank: 1 },
+      { playerId: "p2", avatarId: "avatar_disco_sloth", rank: 2 },
+      { playerId: "p3", avatarId: "avatar_space_cactus", rank: 3 },
+      { playerId: "p4", avatarId: "avatar_laughing_llama", rank: 4 },
+      { playerId: "p5", avatarId: "avatar_penguin_chef", rank: 5 },
+    ],
+    [],
+  );
 
   const handleShare = async () => {
-    if (!imageUrl) return;
-    const res = await fetch(imageUrl);
-    const blob = await res.blob();
-    const file = new File([blob], "escapers-win.png", { type: "image/png" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file] });
-      return;
-    }
+    await shareRef.current?.share();
   };
 
-  const handleSave = () => {
-    if (!imageUrl) return;
+  const handleSave = async () => {
+    const imageUrl = await shareRef.current?.toPng();
+    if (!imageUrl) {
+      return;
+    }
     const link = document.createElement("a");
     link.href = imageUrl;
     link.download = "escapers-win.png";
@@ -67,9 +43,16 @@ export default function ResultView() {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.card}>
-        <canvas ref={canvasRef} className={styles.canvas} />
-      </div>
+      <ShareCard
+        ref={shareRef}
+        podiumTop3={samplePodium}
+        winner={{ avatarId: "avatar_party_octopus" }}
+        stampId="stamp-fiesta"
+        medalSetId="medal-spark"
+        qrUrl="https://d0.do/ABCD"
+      />
+      <AnswerDistribution counts={[6, 2, 4, 1]} />
+      <Leaderboard items={sampleLeaderboard} self={{ rank: 2 }} mode="speed" />
       <div className={styles.actions}>
         <button className={styles.actionButton} onClick={handleShare} aria-label="share">
           <span className={styles.iconShare} />
@@ -77,6 +60,7 @@ export default function ResultView() {
         <button className={styles.actionButton} onClick={handleSave} aria-label="save">
           <span className={styles.iconSave} />
         </button>
+        <NextRoundButton onClick={() => {}} />
       </div>
     </div>
   );

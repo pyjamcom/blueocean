@@ -1,0 +1,18 @@
+.wrap {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dotActive {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.3);
+}

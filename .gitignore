@@ -14,7 +14,9 @@ reports/raw/
 # local artifacts / legacy drafts
 agents.md
 blue_ocean_game_tasks.json
-docs/
+docs/*
+!docs/
+!docs/schengen_game_flow.md
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html

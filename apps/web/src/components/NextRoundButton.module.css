@@ -1,0 +1,17 @@
+.button {
+  width: 84px;
+  height: 84px;
+  border-radius: 28px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.85);
+  clip-path: polygon(20% 10%, 90% 50%, 20% 90%, 20% 68%, 50% 50%, 20% 32%);
+}

@@ -1,0 +1,67 @@
+.card,
+:global(.shareCard) {
+  position: relative;
+  width: min(86vw, 420px);
+  aspect-ratio: 1 / 1;
+  border-radius: 32px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.podium,
+:global(.shareCard__podium) {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.podiumAvatar {
+  display: none;
+}
+
+.stamp,
+:global(.shareCard__stamp) {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  opacity: 0;
+}
+
+.medals,
+:global(.shareCard__medals) {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  width: 120px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+}
+
+.qr,
+:global(.shareCard__qr) {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  width: 96px;
+  height: 96px;
+  opacity: 0;
+}
+
+.qr img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

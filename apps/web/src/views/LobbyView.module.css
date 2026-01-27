@@ -1,0 +1,139 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  padding: 24px;
+  background: radial-gradient(circle at top, #1f1f2b, #0b0b10 70%);
+  position: relative;
+}
+
+.countRow {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.countDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.countDotActive {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.3);
+}
+
+.players {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 16px;
+}
+
+.player {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 68px;
+}
+
+.playerAvatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.readyRing {
+  position: absolute;
+  inset: 6px;
+  border-radius: 20px;
+  border: 2px solid rgba(99, 230, 190, 0.65);
+}
+
+.playerPulse {
+  animation: playerPulse 0.8s ease;
+}
+
+.selfAvatar {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 40px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+}
+
+.selfAvatarCore {
+  width: 92px;
+  height: 92px;
+  border-radius: 30px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.selfPulse {
+  position: absolute;
+  inset: 16px;
+  border-radius: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: selfPulse 2s ease-in-out infinite;
+}
+
+.countdown {
+  display: grid;
+  place-items: center;
+}
+
+.soundToggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.fast .selfPulse {
+  animation-duration: 1.6s;
+}
+
+.mid .selfPulse {
+  animation-duration: 2.2s;
+}
+
+.slow .selfPulse {
+  animation-duration: 3s;
+}
+
+@keyframes playerPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes selfPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0.4;
+  }
+}

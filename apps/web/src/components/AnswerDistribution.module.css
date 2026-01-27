@@ -1,0 +1,17 @@
+.wrap {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+  width: min(80vw, 420px);
+  height: 180px;
+}
+
+.bar {
+  width: 100%;
+  height: 100%;
+  border-radius: 22px 22px 16px 16px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}

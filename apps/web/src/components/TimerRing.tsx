@@ -7,6 +7,7 @@ export interface TimerRingProps {
   size?: number;
   strokeWidth?: number;
   onComplete?: () => void;
+  state?: "running" | "done";
 }
 
 export default function TimerRing({
@@ -15,6 +16,7 @@ export default function TimerRing({
   size = 96,
   strokeWidth = 8,
   onComplete,
+  state = "running",
 }: TimerRingProps) {
   const [progress, setProgress] = useState(1);
   const frameRef = useRef<number | null>(null);
@@ -36,6 +38,10 @@ export default function TimerRing({
 
   const startTimer = useCallback(() => {
     stopTimer();
+    if (state !== "running") {
+      setProgress(0);
+      return;
+    }
     const tick = () => {
       const elapsed = Date.now() - startAt;
       const ratio = Math.max(0, 1 - elapsed / durationMs);
@@ -48,23 +54,28 @@ export default function TimerRing({
       frameRef.current = requestAnimationFrame(tick);
     };
     frameRef.current = requestAnimationFrame(tick);
-  }, [durationMs, onComplete, startAt, stopTimer]);
+  }, [durationMs, onComplete, startAt, state, stopTimer]);
 
   useEffect(() => {
     startTimer();
     return () => stopTimer();
   }, [startTimer, stopTimer]);
 
+  const ringState = state === "done" || progress <= 0 ? "done" : "running";
+
   return (
     <svg
-      className={`ring ${styles.ring} ${
-        progress > 0 ? `ringActive ${styles.ringActive}` : `ringDone ${styles.ringDone}`
+      className={`timerRing ${styles.timerRing} ${
+        ringState === "running"
+          ? `timerRing--running ${styles.timerRingRunning}`
+          : `timerRing--done ${styles.timerRingDone}`
       }`}
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
     >
       <circle
+        className={`timerRing__track ${styles.track}`}
         cx={size / 2}
         cy={size / 2}
         r={radius}
@@ -73,6 +84,7 @@ export default function TimerRing({
         fill="none"
       />
       <circle
+        className={`timerRing__progress ${styles.progress}`}
         cx={size / 2}
         cy={size / 2}
         r={radius}

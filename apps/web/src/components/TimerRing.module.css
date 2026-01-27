@@ -1,11 +1,24 @@
-.ring {
+.timerRing,
+:global(.timerRing) {
   display: block;
 }
 
-.ringActive {
+.timerRingRunning,
+:global(.timerRing--running) {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
 }
 
-.ringDone {
+.timerRingDone,
+:global(.timerRing--done) {
   opacity: 0.4;
+}
+
+.track,
+:global(.timerRing__track) {
+  transition: stroke 0.2s ease;
+}
+
+.progress,
+:global(.timerRing__progress) {
+  transition: stroke-dashoffset 0.1s linear;
 }

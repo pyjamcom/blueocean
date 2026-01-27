@@ -1,0 +1,41 @@
+.button {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  position: relative;
+}
+
+.icon::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.enabled {
+  box-shadow: 0 0 0 2px rgba(99, 230, 190, 0.6), 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+.muted .icon {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.muted .icon::after {
+  border-color: rgba(255, 255, 255, 0.4);
+}

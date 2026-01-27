@@ -8,3 +8,5 @@ export { default as SoundPantomimeView } from "./SoundPantomimeView";
 export { default as AbsurdToastView } from "./AbsurdToastView";
 export { default as SilhouetteGuessView } from "./SilhouetteGuessView";
 export { default as TrophyRewardView } from "./TrophyRewardView";
+export { default as LobbyView } from "./LobbyView";
+export { default as JoinWaitView } from "./JoinWaitView";

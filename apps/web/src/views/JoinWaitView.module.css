@@ -1,0 +1,37 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #1f1f2b, #0b0b10 70%);
+}
+
+.orbit {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  animation: orbitSpin 3s linear infinite;
+}
+
+.orb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  top: 50%;
+  left: 50%;
+  transform-origin: -60px -60px;
+}
+
+.orb:nth-child(1) { transform: rotate(0deg) translate(70px); }
+.orb:nth-child(2) { transform: rotate(60deg) translate(70px); }
+.orb:nth-child(3) { transform: rotate(120deg) translate(70px); }
+.orb:nth-child(4) { transform: rotate(180deg) translate(70px); }
+.orb:nth-child(5) { transform: rotate(240deg) translate(70px); }
+.orb:nth-child(6) { transform: rotate(300deg) translate(70px); }
+
+@keyframes orbitSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
