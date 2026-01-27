@@ -12,6 +12,15 @@
     "ecmaVersion": 2022,
     "sourceType": "module"
   },
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "JSXText",
+        "message": "Текстовые узлы в UI запрещены"
+      }
+    ]
+  },
   "ignorePatterns": [
     "node_modules/",
     "dist/",
