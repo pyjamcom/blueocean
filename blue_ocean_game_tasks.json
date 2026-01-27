@@ -3062,34 +3062,34 @@
     },
     {
       "number": "21",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: защита бренда и доверия, не ломая удовольствие. Context check: 21+, простой пьяный юмор, без текста в UI.",
       "description": "Возрастной доступ 21+ / compliance: правила доступа, отказ от детей, возрастной гейт, юридический дисклеймер (алкоголь).",
       "subtasks": [
         {
           "number": "21.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: минимальный трение‑гейт, без чтения. Context check: визуально, быстро.",
           "description": "Возрастной гейт (21+): визуальный чек (иконка 21+) при первом входе, без текста; acknowledge‑tap для продолжения.",
           "subtasks": []
         },
         {
           "number": "21.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: соблюдение правил без агрессивного UX. Context check: не ломать атмосферу.",
           "description": "Отказ для <21: мягкий экран‑стоп (иконка + закрытие), без текста, без негативных формулировок.",
           "subtasks": []
         },
         {
           "number": "21.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: юридическая чистота, без перегруза. Context check: минимум текста, только в юридическом блоке.",
           "description": "Юридический дисклеймер (алкоголь): хранить отдельно в legal/terms (текст вне игрового UI). В интерфейсе — только иконка 21+.",
           "subtasks": []
         },
         {
           "number": "21.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: снижает риски и сохраняет доверие. Context check: без персонализации.",
           "description": "Логи compliance: фиксировать факт подтверждения 21+ (без хранения персональных данных).",
           "subtasks": []

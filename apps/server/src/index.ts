@@ -10,8 +10,22 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
+const COMPLIANCE_LOG_LIMIT = 1000;
+
+app.use(express.json({ limit: "4kb" }));
 
 app.get("/health", (_req, res) => {
+  res.json({ ok: true });
+});
+
+const complianceEvents: { at: number; accepted: boolean }[] = [];
+
+app.post("/compliance/age", (req, res) => {
+  const accepted = req.body?.accepted === true;
+  complianceEvents.push({ at: Date.now(), accepted });
+  if (complianceEvents.length > COMPLIANCE_LOG_LIMIT) {
+    complianceEvents.shift();
+  }
   res.json({ ok: true });
 });
 
