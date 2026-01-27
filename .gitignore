@@ -27,6 +27,7 @@ docs/*
 !docs/observability.md
 !docs/data_governance.md
 !docs/iteration_loop.md
+!docs/release_checklist.md
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html
