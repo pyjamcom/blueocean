@@ -44,6 +44,12 @@
       "minItems": 2,
       "items": {"$ref": "#/$defs/assetId"}
     },
+    "battle_pair_ids": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/assetId"}
+    },
+    "silhouette_base_id": {"$ref": "#/$defs/assetId"},
     "trigger_asset_id": {"$ref": "#/$defs/assetId"},
     "trophy_stamp_id": {"$ref": "#/$defs/assetId"}
   },
@@ -61,8 +67,16 @@
       "then": {"required": ["prompt_pair_ids"]}
     },
     {
+      "if": {"properties": {"category": {"const": "icon_battle"}}},
+      "then": {"required": ["battle_pair_ids"]}
+    },
+    {
       "if": {"properties": {"category": {"const": "drunk_reflex"}}},
       "then": {"required": ["trigger_asset_id"]}
+    },
+    {
+      "if": {"properties": {"category": {"const": "silhouette_guess"}}},
+      "then": {"required": ["silhouette_base_id"]}
     },
     {
       "if": {"properties": {"category": {"const": "trophy_rewards"}}},

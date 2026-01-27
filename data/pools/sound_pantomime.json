@@ -1,5 +1,8 @@
 {
   "type": "sound_pantomime",
+  "question_ids": [
+    "q_sound_pantomime_01"
+  ],
   "scene_ids": [
     "scene_sp_01_air_guitar",
     "scene_sp_02_soda_fizz"

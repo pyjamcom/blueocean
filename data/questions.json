@@ -1,0 +1,401 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "q_visual_provocation_01",
+      "category": "visual_provocation",
+      "prompt_image": "1201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1201",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1202",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1203",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1501",
+          "tags": [
+            "absurd"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "silly",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_telepath_sync_01",
+      "category": "telepath_sync",
+      "prompt_image": "1301",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1302",
+          "tags": [
+            "travel"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1101",
+          "tags": [
+            "food"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1001",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1201",
+          "tags": [
+            "party"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "social",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_icon_battle_01",
+      "category": "icon_battle",
+      "prompt_image": "1001",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1001",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1101",
+          "tags": [
+            "food"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1501",
+          "tags": [
+            "absurd"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1502",
+          "tags": [
+            "absurd"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "battle",
+      "duration_ms": 6000,
+      "battle_pair_ids": [
+        "1001",
+        "1101"
+      ]
+    },
+    {
+      "id": "q_absurd_toast_01",
+      "category": "absurd_toast",
+      "prompt_image": "1201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1201",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1301",
+          "tags": [
+            "travel"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1401",
+          "tags": [
+            "chaos"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1501",
+          "tags": [
+            "absurd"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "toast",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_drunk_reflex_01",
+      "category": "drunk_reflex",
+      "prompt_image": "1401",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1401",
+          "tags": [
+            "chaos"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1402",
+          "tags": [
+            "chaos"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1201",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1202",
+          "tags": [
+            "party"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "reflex",
+      "duration_ms": 6000,
+      "trigger_asset_id": "1401"
+    },
+    {
+      "id": "q_absurd_sum_01",
+      "category": "absurd_sum",
+      "prompt_image": "1101",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1501",
+          "tags": [
+            "absurd"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1502",
+          "tags": [
+            "absurd"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1503",
+          "tags": [
+            "absurd"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1101",
+          "tags": [
+            "food"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "absurd",
+      "duration_ms": 6000,
+      "prompt_pair_ids": [
+        "1101",
+        "1001"
+      ]
+    },
+    {
+      "id": "q_face_mimic_01",
+      "category": "face_mimic",
+      "prompt_image": "1201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1001",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1002",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1003",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1004",
+          "tags": [
+            "animal"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "mimic",
+      "duration_ms": 6000,
+      "face_overlay_ids": [
+        "1401",
+        "1402"
+      ]
+    },
+    {
+      "id": "q_sound_pantomime_01",
+      "category": "sound_pantomime",
+      "prompt_image": "1201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1101",
+          "tags": [
+            "food"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1102",
+          "tags": [
+            "food"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1001",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1002",
+          "tags": [
+            "animal"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "panto",
+      "duration_ms": 6000,
+      "audio_asset_id": "1201"
+    },
+    {
+      "id": "q_silhouette_guess_01",
+      "category": "silhouette_guess",
+      "prompt_image": "1001",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1001",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1002",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1003",
+          "tags": [
+            "animal"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1101",
+          "tags": [
+            "food"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "guess",
+      "duration_ms": 6000,
+      "silhouette_base_id": "1001"
+    },
+    {
+      "id": "q_trophy_rewards_01",
+      "category": "trophy_rewards",
+      "prompt_image": "1201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "1201",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "1202",
+          "tags": [
+            "party"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "1501",
+          "tags": [
+            "absurd"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "1502",
+          "tags": [
+            "absurd"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "reward",
+      "duration_ms": 6000,
+      "trophy_stamp_id": "1201"
+    }
+  ]
+}

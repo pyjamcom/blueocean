@@ -1,5 +1,8 @@
 {
   "type": "absurd_toast",
+  "question_ids": [
+    "q_absurd_toast_01"
+  ],
   "scene_ids": [
     "scene_at_01_toast_cloud",
     "scene_at_02_toast_globe"

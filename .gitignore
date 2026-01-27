@@ -1,4 +1,6 @@
 .DS_Store
+.node_modules/
+node_modules/
 .codex/
 config/github_token.txt
 config/ga_oauth.env

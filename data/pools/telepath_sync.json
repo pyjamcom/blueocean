@@ -1,5 +1,8 @@
 {
   "type": "telepath_sync",
+  "question_ids": [
+    "q_telepath_sync_01"
+  ],
   "scene_ids": [
     "scene_ts_01_same_hat",
     "scene_ts_02_mirror_toast"

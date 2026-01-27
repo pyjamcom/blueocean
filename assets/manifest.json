@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "1001",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1001.svg"
+    },
+    {
+      "id": "1002",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1002.svg"
+    },
+    {
+      "id": "1003",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1003.svg"
+    },
+    {
+      "id": "1004",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1004.svg"
+    },
+    {
+      "id": "1005",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1005.svg"
+    },
+    {
+      "id": "1006",
+      "tags": [
+        "animal"
+      ],
+      "file": "assets/1006.svg"
+    },
+    {
+      "id": "1101",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1101.svg"
+    },
+    {
+      "id": "1102",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1102.svg"
+    },
+    {
+      "id": "1103",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1103.svg"
+    },
+    {
+      "id": "1104",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1104.svg"
+    },
+    {
+      "id": "1105",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1105.svg"
+    },
+    {
+      "id": "1106",
+      "tags": [
+        "food"
+      ],
+      "file": "assets/1106.svg"
+    },
+    {
+      "id": "1201",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1201.svg"
+    },
+    {
+      "id": "1202",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1202.svg"
+    },
+    {
+      "id": "1203",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1203.svg"
+    },
+    {
+      "id": "1204",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1204.svg"
+    },
+    {
+      "id": "1205",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1205.svg"
+    },
+    {
+      "id": "1206",
+      "tags": [
+        "party"
+      ],
+      "file": "assets/1206.svg"
+    },
+    {
+      "id": "1301",
+      "tags": [
+        "travel"
+      ],
+      "file": "assets/1301.svg"
+    },
+    {
+      "id": "1302",
+      "tags": [
+        "travel"
+      ],
+      "file": "assets/1302.svg"
+    },
+    {
+      "id": "1303",
+      "tags": [
+        "travel"
+      ],
+      "file": "assets/1303.svg"
+    },
+    {
+      "id": "1304",
+      "tags": [
+        "travel"
+      ],
+      "file": "assets/1304.svg"
+    },
+    {
+      "id": "1401",
+      "tags": [
+        "chaos"
+      ],
+      "file": "assets/1401.svg"
+    },
+    {
+      "id": "1402",
+      "tags": [
+        "chaos"
+      ],
+      "file": "assets/1402.svg"
+    },
+    {
+      "id": "1403",
+      "tags": [
+        "chaos"
+      ],
+      "file": "assets/1403.svg"
+    },
+    {
+      "id": "1404",
+      "tags": [
+        "chaos"
+      ],
+      "file": "assets/1404.svg"
+    },
+    {
+      "id": "1501",
+      "tags": [
+        "absurd"
+      ],
+      "file": "assets/1501.svg"
+    },
+    {
+      "id": "1502",
+      "tags": [
+        "absurd"
+      ],
+      "file": "assets/1502.svg"
+    },
+    {
+      "id": "1503",
+      "tags": [
+        "absurd"
+      ],
+      "file": "assets/1503.svg"
+    },
+    {
+      "id": "1504",
+      "tags": [
+        "absurd"
+      ],
+      "file": "assets/1504.svg"
+    }
+  ]
+}

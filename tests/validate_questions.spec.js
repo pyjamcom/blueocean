@@ -40,9 +40,7 @@ function run() {
   const passCategories = [
     "visual_provocation",
     "telepath_sync",
-    "icon_battle",
     "absurd_toast",
-    "silhouette_guess",
   ];
 
   passCategories.forEach((category) => {
@@ -70,10 +68,20 @@ function run() {
   result = validateQuestions([baseQuestion({ category: "absurd_sum", prompt_pair_ids: ["50001", "50002"] })], schema);
   assert.strictEqual(result.valid, true, "absurd_sum passes with prompt_pair_ids");
 
+  result = validateQuestions([baseQuestion({ category: "icon_battle" })], schema);
+  assert.strictEqual(result.valid, false, "icon_battle needs battle_pair_ids");
+  result = validateQuestions([baseQuestion({ category: "icon_battle", battle_pair_ids: ["51001", "51002"] })], schema);
+  assert.strictEqual(result.valid, true, "icon_battle passes with battle_pair_ids");
+
   result = validateQuestions([baseQuestion({ category: "drunk_reflex" })], schema);
   assert.strictEqual(result.valid, false, "drunk_reflex needs trigger_asset_id");
   result = validateQuestions([baseQuestion({ category: "drunk_reflex", trigger_asset_id: "60001" })], schema);
   assert.strictEqual(result.valid, true, "drunk_reflex passes with trigger_asset_id");
+
+  result = validateQuestions([baseQuestion({ category: "silhouette_guess" })], schema);
+  assert.strictEqual(result.valid, false, "silhouette_guess needs silhouette_base_id");
+  result = validateQuestions([baseQuestion({ category: "silhouette_guess", silhouette_base_id: "61001" })], schema);
+  assert.strictEqual(result.valid, true, "silhouette_guess passes with silhouette_base_id");
 
   result = validateQuestions([baseQuestion({ category: "trophy_rewards" })], schema);
   assert.strictEqual(result.valid, false, "trophy_rewards needs trophy_stamp_id");

@@ -1,5 +1,8 @@
 {
   "type": "silhouette_guess",
+  "question_ids": [
+    "q_silhouette_guess_01"
+  ],
   "scene_ids": [
     "scene_sg_01_tall_hat",
     "scene_sg_02_cactus_dancer"

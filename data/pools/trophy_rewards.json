@@ -1,5 +1,8 @@
 {
   "type": "trophy_rewards",
+  "question_ids": [
+    "q_trophy_rewards_01"
+  ],
   "scene_ids": [
     "scene_tr_01_golden_sock",
     "scene_tr_02_tiny_trophy"

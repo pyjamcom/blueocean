@@ -1,5 +1,8 @@
 {
   "type": "visual_provocation",
+  "question_ids": [
+    "q_visual_provocation_01"
+  ],
   "scene_ids": [
     "scene_vp_01_cat_dj",
     "scene_vp_02_penguin_bartender"
