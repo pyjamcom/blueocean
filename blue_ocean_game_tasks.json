@@ -3321,34 +3321,34 @@
     },
     {
       "number": "28",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: доверие и минимальные данные, без барьеров. Context check: легкий опыт, без лишних форм.",
       "description": "Data governance / Privacy: минимальная политика хранения данных (анонимизация, retention).",
       "subtasks": [
         {
           "number": "28.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: не превращать игру в «форма‑сервис». Context check: минимум данных.",
           "description": "Принцип минимальных данных: не хранить персональные данные; все идентификаторы комнат/игроков — случайные токены.",
           "subtasks": []
         },
         {
           "number": "28.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: защита доверия. Context check: только агрегированные метрики.",
           "description": "Анонимизация: хранить только агрегаты (session length, completion, TTS). Без PII, без IP в долгом хранении.",
           "subtasks": []
         },
         {
           "number": "28.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: простая, понятная политика. Context check: не мешать веселью.",
           "description": "Retention policy: оперативные логи/сессии ≤ 30 дней; агрегированные метрики ≤ 12 месяцев; ассеты хранятся до отзыва лицензии.",
           "subtasks": []
         },
         {
           "number": "28.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: прозрачность без перегруза. Context check: отдельный legal‑блок, не в UI.",
           "description": "Privacy notice: отдельный документ (legal/privacy) с кратким описанием минимального сбора данных, без вывода в игровой UI.",
           "subtasks": []

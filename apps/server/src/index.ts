@@ -11,6 +11,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
 const COMPLIANCE_LOG_LIMIT = 1000;
+const LOG_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 
 app.use(express.json({ limit: "4kb" }));
 
@@ -392,4 +393,11 @@ setInterval(() => {
       metrics.roomsExpired += 1;
     }
   });
+  const cutoff = now - LOG_TTL_MS;
+  while (complianceEvents.length > 0 && complianceEvents[0].at < cutoff) {
+    complianceEvents.shift();
+  }
+  while (analyticsEvents.length > 0 && analyticsEvents[0].at < cutoff) {
+    analyticsEvents.shift();
+  }
 }, 1000 * 60 * 5);
