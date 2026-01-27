@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import RoundGallery from "./views/RoundGallery";
 import JoinView from "./views/JoinView";
+import SeasonSelectView from "./views/SeasonSelectView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -30,7 +31,7 @@ export default function App() {
       <div className="app">
         <Routes>
           <Route path="/join" element={<JoinView />} />
-          <Route path="/lobby" element={<Scene variant="lobby" />} />
+          <Route path="/lobby" element={<SeasonSelectView />} />
           <Route path="/game" element={<RoundGallery />} />
           <Route path="/result" element={<Scene variant="result" />} />
           <Route path="*" element={<Navigate to="/join" replace />} />
