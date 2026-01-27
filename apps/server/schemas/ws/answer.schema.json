@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ws/answer.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["roomCode", "playerId", "answerIndex", "latencyMs"],
+  "properties": {
+    "roomCode": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 6,
+      "pattern": "^[A-Z0-9]+$"
+    },
+    "playerId": {"type": "string", "minLength": 1},
+    "answerIndex": {"type": "integer", "minimum": 0, "maximum": 3},
+    "latencyMs": {"type": "integer", "minimum": 0}
+  }
+}

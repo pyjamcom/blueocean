@@ -4,3 +4,4 @@ export * from "./types/player";
 export * from "./types/question";
 export * from "./types/room";
 export * from "./types/ws";
+export * from "./types/ws_payloads";
