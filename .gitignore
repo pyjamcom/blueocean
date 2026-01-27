@@ -17,6 +17,7 @@ blue_ocean_game_tasks.json
 docs/*
 !docs/
 !docs/schengen_game_flow.md
+!docs/schengen_discovery_scope.md
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html
