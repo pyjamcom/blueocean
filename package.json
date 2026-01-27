@@ -13,6 +13,10 @@
     "build:server": "npm run build --workspace apps/server",
     "lint": "eslint ."
   },
+  "devDependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1"
+  },
   "engines": {
     "node": ">=18"
   }
