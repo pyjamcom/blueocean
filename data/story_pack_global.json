@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "generated_at": "2026-01-27T16:27:19.565868+00:00",
+  "scene_ids": [
+    "scene_vp_01_cat_dj",
+    "scene_vp_02_penguin_bartender",
+    "scene_ts_01_same_hat",
+    "scene_ts_02_mirror_toast",
+    "scene_dr_01_cup_flip",
+    "scene_dr_02_bell_slap",
+    "scene_as_01_pizza_crown",
+    "scene_as_02_banana_phone",
+    "scene_fm_01_wide_eyes",
+    "scene_fm_02_cheek_puff",
+    "scene_ib_01_rocket_vs_snail",
+    "scene_ib_02_shark_vs_taco",
+    "scene_sp_01_air_guitar",
+    "scene_sp_02_soda_fizz",
+    "scene_at_01_toast_cloud",
+    "scene_at_02_toast_globe",
+    "scene_sg_01_tall_hat",
+    "scene_sg_02_cactus_dancer",
+    "scene_tr_01_golden_sock",
+    "scene_tr_02_tiny_trophy"
+  ],
+  "scene_ids_by_type": {
+    "visual_provocation": [
+      "scene_vp_01_cat_dj",
+      "scene_vp_02_penguin_bartender"
+    ],
+    "telepath_sync": [
+      "scene_ts_01_same_hat",
+      "scene_ts_02_mirror_toast"
+    ],
+    "drunk_reflex": [
+      "scene_dr_01_cup_flip",
+      "scene_dr_02_bell_slap"
+    ],
+    "absurd_sum": [
+      "scene_as_01_pizza_crown",
+      "scene_as_02_banana_phone"
+    ],
+    "face_mimic": [
+      "scene_fm_01_wide_eyes",
+      "scene_fm_02_cheek_puff"
+    ],
+    "icon_battle": [
+      "scene_ib_01_rocket_vs_snail",
+      "scene_ib_02_shark_vs_taco"
+    ],
+    "sound_pantomime": [
+      "scene_sp_01_air_guitar",
+      "scene_sp_02_soda_fizz"
+    ],
+    "absurd_toast": [
+      "scene_at_01_toast_cloud",
+      "scene_at_02_toast_globe"
+    ],
+    "silhouette_guess": [
+      "scene_sg_01_tall_hat",
+      "scene_sg_02_cactus_dancer"
+    ],
+    "trophy_rewards": [
+      "scene_tr_01_golden_sock",
+      "scene_tr_02_tiny_trophy"
+    ]
+  }
+}

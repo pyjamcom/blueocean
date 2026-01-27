@@ -1,0 +1,417 @@
+{
+  "version": 1,
+  "types": [
+    "visual_provocation",
+    "telepath_sync",
+    "drunk_reflex",
+    "absurd_sum",
+    "face_mimic",
+    "icon_battle",
+    "sound_pantomime",
+    "absurd_toast",
+    "silhouette_guess",
+    "trophy_rewards"
+  ],
+  "scenes": [
+    {
+      "id": "scene_vp_01_cat_dj",
+      "type": "visual_provocation",
+      "prompt_asset_id": "prompt_cat_dj",
+      "answer_asset_ids": [
+        "ans_cat_dj",
+        "ans_dog_dj",
+        "ans_pizza_dj",
+        "ans_toaster_dj"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 3,
+      "humor_tag": "silly",
+      "question_ids": [
+        "q_vp_01"
+      ],
+      "linked_questions": [
+        "q_vp_01"
+      ]
+    },
+    {
+      "id": "scene_vp_02_penguin_bartender",
+      "type": "visual_provocation",
+      "prompt_asset_id": "prompt_penguin_bartender",
+      "answer_asset_ids": [
+        "ans_penguin_bartender",
+        "ans_penguin_waiter",
+        "ans_penguin_chef",
+        "ans_penguin_pilot"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "silly",
+      "question_ids": [
+        "q_vp_02"
+      ],
+      "linked_questions": [
+        "q_vp_02"
+      ]
+    },
+    {
+      "id": "scene_ts_01_same_hat",
+      "type": "telepath_sync",
+      "prompt_asset_id": "prompt_same_hat",
+      "answer_asset_ids": [
+        "ans_hat_top",
+        "ans_hat_bucket",
+        "ans_hat_party",
+        "ans_hat_none"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 2,
+      "humor_tag": "social",
+      "question_ids": [
+        "q_ts_01"
+      ],
+      "linked_questions": [
+        "q_ts_01"
+      ]
+    },
+    {
+      "id": "scene_ts_02_mirror_toast",
+      "type": "telepath_sync",
+      "prompt_asset_id": "prompt_mirror_toast",
+      "answer_asset_ids": [
+        "ans_toast_clink",
+        "ans_toast_wave",
+        "ans_toast_spin",
+        "ans_toast_silence"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 3,
+      "humor_tag": "social",
+      "question_ids": [
+        "q_ts_02"
+      ],
+      "linked_questions": [
+        "q_ts_02"
+      ]
+    },
+    {
+      "id": "scene_dr_01_cup_flip",
+      "type": "drunk_reflex",
+      "prompt_asset_id": "prompt_cup_flip",
+      "answer_asset_ids": [
+        "ans_flip_success",
+        "ans_flip_spin",
+        "ans_flip_miss",
+        "ans_flip_double"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 3,
+      "humor_tag": "reflex",
+      "question_ids": [
+        "q_dr_01"
+      ],
+      "linked_questions": [
+        "q_dr_01"
+      ]
+    },
+    {
+      "id": "scene_dr_02_bell_slap",
+      "type": "drunk_reflex",
+      "prompt_asset_id": "prompt_bell_slap",
+      "answer_asset_ids": [
+        "ans_bell_hit",
+        "ans_bell_fake",
+        "ans_bell_dodge",
+        "ans_bell_double"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 3,
+      "humor_tag": "reflex",
+      "question_ids": [
+        "q_dr_02"
+      ],
+      "linked_questions": [
+        "q_dr_02"
+      ]
+    },
+    {
+      "id": "scene_as_01_pizza_crown",
+      "type": "absurd_sum",
+      "prompt_asset_id": "prompt_pizza_crown",
+      "answer_asset_ids": [
+        "ans_pizza_crown",
+        "ans_pizza_mask",
+        "ans_pizza_shoe",
+        "ans_pizza_drone"
+      ],
+      "humor_level": 5,
+      "absurdity_level": 4,
+      "humor_tag": "absurd",
+      "question_ids": [
+        "q_as_01"
+      ],
+      "linked_questions": [
+        "q_as_01"
+      ]
+    },
+    {
+      "id": "scene_as_02_banana_phone",
+      "type": "absurd_sum",
+      "prompt_asset_id": "prompt_banana_phone",
+      "answer_asset_ids": [
+        "ans_banana_phone",
+        "ans_banana_camera",
+        "ans_banana_radio",
+        "ans_banana_mic"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "absurd",
+      "question_ids": [
+        "q_as_02"
+      ],
+      "linked_questions": [
+        "q_as_02"
+      ]
+    },
+    {
+      "id": "scene_fm_01_wide_eyes",
+      "type": "face_mimic",
+      "prompt_asset_id": "prompt_wide_eyes",
+      "answer_asset_ids": [
+        "ans_face_wide",
+        "ans_face_squint",
+        "ans_face_wink",
+        "ans_face_blank"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 2,
+      "humor_tag": "mimic",
+      "question_ids": [
+        "q_fm_01"
+      ],
+      "linked_questions": [
+        "q_fm_01"
+      ]
+    },
+    {
+      "id": "scene_fm_02_cheek_puff",
+      "type": "face_mimic",
+      "prompt_asset_id": "prompt_cheek_puff",
+      "answer_asset_ids": [
+        "ans_face_puff",
+        "ans_face_grin",
+        "ans_face_frown",
+        "ans_face_surprised"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 3,
+      "humor_tag": "mimic",
+      "question_ids": [
+        "q_fm_02"
+      ],
+      "linked_questions": [
+        "q_fm_02"
+      ]
+    },
+    {
+      "id": "scene_ib_01_rocket_vs_snail",
+      "type": "icon_battle",
+      "prompt_asset_id": "prompt_rocket_vs_snail",
+      "answer_asset_ids": [
+        "ans_rocket_win",
+        "ans_snail_win",
+        "ans_draw",
+        "ans_friendly"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 3,
+      "humor_tag": "battle",
+      "question_ids": [
+        "q_ib_01"
+      ],
+      "linked_questions": [
+        "q_ib_01"
+      ]
+    },
+    {
+      "id": "scene_ib_02_shark_vs_taco",
+      "type": "icon_battle",
+      "prompt_asset_id": "prompt_shark_vs_taco",
+      "answer_asset_ids": [
+        "ans_shark_win",
+        "ans_taco_win",
+        "ans_draw",
+        "ans_friendly"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "battle",
+      "question_ids": [
+        "q_ib_02"
+      ],
+      "linked_questions": [
+        "q_ib_02"
+      ]
+    },
+    {
+      "id": "scene_sp_01_air_guitar",
+      "type": "sound_pantomime",
+      "prompt_asset_id": "prompt_air_guitar",
+      "answer_asset_ids": [
+        "ans_air_guitar",
+        "ans_air_drums",
+        "ans_air_bass",
+        "ans_air_violin"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 3,
+      "humor_tag": "panto",
+      "question_ids": [
+        "q_sp_01"
+      ],
+      "linked_questions": [
+        "q_sp_01"
+      ]
+    },
+    {
+      "id": "scene_sp_02_soda_fizz",
+      "type": "sound_pantomime",
+      "prompt_asset_id": "prompt_soda_fizz",
+      "answer_asset_ids": [
+        "ans_fizz_open",
+        "ans_fizz_shake",
+        "ans_fizz_overflow",
+        "ans_fizz_flat"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 3,
+      "humor_tag": "panto",
+      "question_ids": [
+        "q_sp_02"
+      ],
+      "linked_questions": [
+        "q_sp_02"
+      ]
+    },
+    {
+      "id": "scene_at_01_toast_cloud",
+      "type": "absurd_toast",
+      "prompt_asset_id": "prompt_toast_cloud",
+      "answer_asset_ids": [
+        "ans_toast_cloud",
+        "ans_toast_rain",
+        "ans_toast_sun",
+        "ans_toast_thunder"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "toast",
+      "question_ids": [
+        "q_at_01"
+      ],
+      "linked_questions": [
+        "q_at_01"
+      ]
+    },
+    {
+      "id": "scene_at_02_toast_globe",
+      "type": "absurd_toast",
+      "prompt_asset_id": "prompt_toast_globe",
+      "answer_asset_ids": [
+        "ans_toast_globe",
+        "ans_toast_moon",
+        "ans_toast_ring",
+        "ans_toast_rocket"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "toast",
+      "question_ids": [
+        "q_at_02"
+      ],
+      "linked_questions": [
+        "q_at_02"
+      ]
+    },
+    {
+      "id": "scene_sg_01_tall_hat",
+      "type": "silhouette_guess",
+      "prompt_asset_id": "prompt_silhouette_tall_hat",
+      "answer_asset_ids": [
+        "ans_hat_top",
+        "ans_hat_cowboy",
+        "ans_hat_wizard",
+        "ans_hat_party"
+      ],
+      "humor_level": 2,
+      "absurdity_level": 2,
+      "humor_tag": "guess",
+      "question_ids": [
+        "q_sg_01"
+      ],
+      "linked_questions": [
+        "q_sg_01"
+      ]
+    },
+    {
+      "id": "scene_sg_02_cactus_dancer",
+      "type": "silhouette_guess",
+      "prompt_asset_id": "prompt_silhouette_cactus_dancer",
+      "answer_asset_ids": [
+        "ans_cactus_dancer",
+        "ans_cactus_static",
+        "ans_cactus_guitar",
+        "ans_cactus_splash"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 4,
+      "humor_tag": "guess",
+      "question_ids": [
+        "q_sg_02"
+      ],
+      "linked_questions": [
+        "q_sg_02"
+      ]
+    },
+    {
+      "id": "scene_tr_01_golden_sock",
+      "type": "trophy_rewards",
+      "prompt_asset_id": "prompt_golden_sock",
+      "answer_asset_ids": [
+        "ans_trophy_sock",
+        "ans_trophy_spoon",
+        "ans_trophy_cup",
+        "ans_trophy_tiny"
+      ],
+      "humor_level": 4,
+      "absurdity_level": 4,
+      "humor_tag": "reward",
+      "question_ids": [
+        "q_tr_01"
+      ],
+      "linked_questions": [
+        "q_tr_01"
+      ]
+    },
+    {
+      "id": "scene_tr_02_tiny_trophy",
+      "type": "trophy_rewards",
+      "prompt_asset_id": "prompt_tiny_trophy",
+      "answer_asset_ids": [
+        "ans_trophy_tiny",
+        "ans_trophy_big",
+        "ans_trophy_wobble",
+        "ans_trophy_hat"
+      ],
+      "humor_level": 3,
+      "absurdity_level": 3,
+      "humor_tag": "reward",
+      "question_ids": [
+        "q_tr_02"
+      ],
+      "linked_questions": [
+        "q_tr_02"
+      ]
+    }
+  ]
+}

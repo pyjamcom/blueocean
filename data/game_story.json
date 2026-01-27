@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "story": {
+    "theme_icons": [
+      "theme_borderless_travel",
+      "theme_fun_passport",
+      "theme_party_route",
+      "theme_stamp_collect",
+      "theme_escape_wave",
+      "theme_cheer_route"
+    ],
+    "mood_icons": [
+      "mood_laugh",
+      "mood_wild",
+      "mood_breezy",
+      "mood_friends",
+      "mood_confetti",
+      "mood_relief",
+      "mood_party",
+      "mood_splash"
+    ],
+    "roles": {
+      "borderless_travelers": "icon_traveler_borderless",
+      "fun_passport": "icon_passport_fun",
+      "victory_stamp": "icon_stamp_victory"
+    },
+    "passport_stamps": [
+      "stamp_smile",
+      "stamp_party",
+      "stamp_wave",
+      "stamp_star"
+    ],
+    "problem_escape_icons": [
+      "escape_chaos_swirl",
+      "escape_laugh_cloud",
+      "escape_confetti",
+      "escape_fireworks",
+      "escape_music_wave",
+      "escape_splash"
+    ],
+    "passport_stamp_ids": [
+      "stamp_smile",
+      "stamp_party",
+      "stamp_wave",
+      "stamp_star",
+      "stamp_cheers",
+      "stamp_rocket",
+      "stamp_sun",
+      "stamp_moon",
+      "stamp_firework",
+      "stamp_laugh"
+    ],
+    "victory_anim_assets": [
+      "anim_confetti_burst",
+      "anim_fireworks_pop",
+      "anim_laugh_rings",
+      "anim_party_spray",
+      "anim_starburst",
+      "anim_cheer_bubbles"
+    ],
+    "panic_mode_icons": [
+      "panic_swirl",
+      "panic_clapper",
+      "panic_laugh",
+      "panic_rocket",
+      "panic_whistle",
+      "panic_zigzag"
+    ]
+  }
+}

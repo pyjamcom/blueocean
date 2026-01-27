@@ -1,0 +1,7 @@
+{
+  "type": "icon_battle",
+  "scene_ids": [
+    "scene_ib_01_rocket_vs_snail",
+    "scene_ib_02_shark_vs_taco"
+  ]
+}
