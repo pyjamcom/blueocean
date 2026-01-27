@@ -19,6 +19,8 @@ export interface UseWsClientOptions {
 export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClose }: UseWsClientOptions) {
   const [status, setStatus] = useState<WsStatus>("idle");
   const socketRef = useRef<WebSocket | null>(null);
+  const retryRef = useRef(0);
+  const reconnectTimer = useRef<number | null>(null);
 
   const connect = useCallback(() => {
     if (socketRef.current) {
@@ -30,6 +32,7 @@ export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClos
 
     socket.addEventListener("open", () => {
       setStatus("open");
+      retryRef.current = 0;
       onOpen?.();
     });
 
@@ -46,14 +49,38 @@ export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClos
       setStatus("closed");
       socketRef.current = null;
       onClose?.();
+      if (autoConnect) {
+        const delay = Math.min(4000, 600 + retryRef.current * 500);
+        retryRef.current += 1;
+        if (reconnectTimer.current === null) {
+          reconnectTimer.current = window.setTimeout(() => {
+            reconnectTimer.current = null;
+            connect();
+          }, delay);
+        }
+      }
     });
 
     socket.addEventListener("error", () => {
       setStatus("error");
+      if (autoConnect && !socketRef.current) {
+        const delay = Math.min(4000, 600 + retryRef.current * 500);
+        retryRef.current += 1;
+        if (reconnectTimer.current === null) {
+          reconnectTimer.current = window.setTimeout(() => {
+            reconnectTimer.current = null;
+            connect();
+          }, delay);
+        }
+      }
     });
   }, [onClose, onMessage, onOpen, url]);
 
   const disconnect = useCallback(() => {
+    if (reconnectTimer.current !== null) {
+      window.clearTimeout(reconnectTimer.current);
+      reconnectTimer.current = null;
+    }
     socketRef.current?.close();
     socketRef.current = null;
   }, []);

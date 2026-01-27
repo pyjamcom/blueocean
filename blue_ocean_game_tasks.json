@@ -3220,27 +3220,27 @@
     },
     {
       "number": "25",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: снижает барьеры и поддерживает лёгкий опыт. Context check: простой пьяный юмор, без токсичных тем.",
       "description": "Модерация/Support: канал обратной связи, обработка проблем, правила контента.",
       "subtasks": [
         {
           "number": "25.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: быстрый контакт без перегруза. Context check: минимальный текст, отдельно от игры.",
           "description": "Канал обратной связи: отдельная support‑страница (outside game UI), короткая форма + email; в игре — только иконка помощи.",
           "subtasks": []
         },
         {
           "number": "25.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: проблемы решаются без разрушения вечера. Context check: без текстовых алертов.",
           "description": "Обработка проблем: silent‑fallback (переподключение WS, повторная загрузка ассетов) без видимых ошибок; логирование инцидентов в фоне.",
           "subtasks": []
         },
         {
           "number": "25.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: сохраняет бренд и доверие, без морализаторства. Context check: лёгкий юмор, без токсичности.",
           "description": "Правила контента: только нейтральные визуальные сцены; запрет политики/религии/персоналий/брендов/токсичности; без текста в игре.",
           "subtasks": []

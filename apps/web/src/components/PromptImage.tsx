@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./PromptImage.module.css";
 
 export interface PromptImageProps {
@@ -16,10 +16,12 @@ export default function PromptImage({
 }: PromptImageProps) {
   const [currentSrc, setCurrentSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
+  const retryRef = useRef(0);
 
   useEffect(() => {
     setCurrentSrc(src);
     setHasError(false);
+    retryRef.current = 0;
   }, [src]);
 
   const handleLoad = () => {
@@ -30,6 +32,13 @@ export default function PromptImage({
     if (fallbackSrc && !hasError) {
       setCurrentSrc(fallbackSrc);
       setHasError(true);
+      return;
+    }
+    if (retryRef.current < 1) {
+      retryRef.current += 1;
+      window.setTimeout(() => {
+        setCurrentSrc(`${src}?retry=${Date.now()}`);
+      }, 300);
     }
   };
 
