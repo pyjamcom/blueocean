@@ -3357,34 +3357,34 @@
     },
     {
       "number": "29",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: непрерывное улучшение ценностной инновации. Context check: лёгкий юмор, быстрый цикл.",
       "description": "Post‑launch iteration loop (Growth/Iteration): еженедельный review метрик → обновление контента → A/B тесты (без текста).",
       "subtasks": [
         {
           "number": "29.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: держит фокус на опыте. Context check: смех и темп.",
           "description": "Еженедельный review метрик (TTS, completion, replay, share) + топ‑dropoffs. Решения — только про улучшение опыта.",
           "subtasks": []
         },
         {
           "number": "29.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: обновление контента = свежесть рынка. Context check: визуальный юмор.",
           "description": "Обновление контента: добавлять/заменять сцены и ассеты, не нарушая guardrails (без брендов/персоналий/текста).",
           "subtasks": []
         },
         {
           "number": "29.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: тестируем ценность без усложнения. Context check: A/B только визуальные.",
           "description": "A/B тесты без текста: темп раунда, длительность таймера, порядок сцен, визуальный стиль наград.",
           "subtasks": []
         },
         {
           "number": "29.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: итерации не должны втаскивать red ocean. Context check: простота и веселье.",
           "description": "Анти‑red‑ocean фильтр итераций: не добавлять чтение/викторины/сложные правила/оценку «по вкусу».",
           "subtasks": []
