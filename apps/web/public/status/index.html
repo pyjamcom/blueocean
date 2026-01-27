@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Status</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 32px;
+        background: #0b0b10;
+        color: #f1f1f1;
+      }
+      .card {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 24px;
+        border-radius: 16px;
+        background: #151520;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        margin: 12px 0;
+      }
+      .ok {
+        color: #63e6be;
+      }
+      .warn {
+        color: #ffd166;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Status</h1>
+      <div class="row"><span>Web</span><span id="web">...</span></div>
+      <div class="row"><span>WS</span><span id="ws">...</span></div>
+      <div class="row"><span>QR</span><span id="qr">...</span></div>
+    </div>
+    <script>
+      async function check() {
+        const web = document.getElementById("web");
+        const ws = document.getElementById("ws");
+        const qr = document.getElementById("qr");
+        try {
+          const res = await fetch("/health");
+          const ok = res.ok;
+          web.textContent = ok ? "ok" : "down";
+          web.className = ok ? "ok" : "warn";
+        } catch {
+          web.textContent = "down";
+          web.className = "warn";
+        }
+        try {
+          const res = await fetch("/metrics");
+          const ok = res.ok;
+          ws.textContent = ok ? "ok" : "warn";
+          ws.className = ok ? "ok" : "warn";
+        } catch {
+          ws.textContent = "warn";
+          ws.className = "warn";
+        }
+        qr.textContent = "ok";
+        qr.className = "ok";
+      }
+      check();
+      setInterval(check, 30000);
+    </script>
+  </body>
+</html>

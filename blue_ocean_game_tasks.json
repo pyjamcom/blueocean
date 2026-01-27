@@ -3285,34 +3285,34 @@
     },
     {
       "number": "27",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: стабильность опыта важнее технической сложности. Context check: вечеринка не должна зависать.",
       "description": "Observability/Monitoring: логи, метрики, алерты (сервер/WS/клиент), статус‑страница.",
       "subtasks": [
         {
           "number": "27.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: снижение риска провала вечера. Context check: быстрый восстановительный цикл.",
           "description": "Логи: сервер/WS/клиентские ошибки (без персональных данных), агрегирование по room/session.",
           "subtasks": []
         },
         {
           "number": "27.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: контроль качества опыта. Context check: минимальная задержка.",
           "description": "Метрики здоровья: latency WS, error rate join/answer, asset load time, room churn rate.",
           "subtasks": []
         },
         {
           "number": "27.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: алерты только на то, что ломает вечер. Context check: без лишнего шума.",
           "description": "Алерты: рост error rate, spikes join failures, деградация TTS (time‑to‑start), падение room completion.",
           "subtasks": []
         },
         {
           "number": "27.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: доверие и прозрачность без перегруза. Context check: минималистичный статус.",
           "description": "Статус‑страница (escapers.app/status): краткое состояние web/WS/QR, без текста внутри игры.",
           "subtasks": []

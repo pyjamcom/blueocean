@@ -41,6 +41,29 @@ app.post("/analytics", (req, res) => {
   res.json({ ok: true });
 });
 
+app.post("/client-error", (req, res) => {
+  const { message, source, lineno, colno } = req.body ?? {};
+  if (typeof message === "string") {
+    analyticsEvents.push({
+      at: Date.now(),
+      event: "client_error",
+      meta: { message, source, lineno, colno },
+    });
+    if (analyticsEvents.length > 2000) {
+      analyticsEvents.shift();
+    }
+  }
+  res.json({ ok: true });
+});
+
+app.get("/metrics", (_req, res) => {
+  res.json({
+    ...metrics,
+    roomsActive: rooms.size,
+    uptimeSec: Math.floor(process.uptime()),
+  });
+});
+
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 
@@ -107,9 +130,21 @@ const incidents: Incident[] = [];
 const rateBuckets = new Map<string, RateBucket>();
 const socketState = new WeakMap<WebSocket, { ip: string; joinedRoom?: string; playerId?: string }>();
 const answerCooldowns = new Map<string, number>();
+const metrics = {
+  wsConnections: 0,
+  wsDisconnects: 0,
+  joinSuccess: 0,
+  joinFail: 0,
+  answerAccepted: 0,
+  answerRejected: 0,
+  roomsCreated: 0,
+  roomsExpired: 0,
+  incidents: 0,
+};
 
 function logIncident(incident: Incident) {
   incidents.push(incident);
+  metrics.incidents += 1;
   if (incidents.length > INCIDENT_LOG_LIMIT) {
     incidents.shift();
   }
@@ -170,6 +205,7 @@ function getOrCreateRoom(code?: string): Room {
     expiresAt: now + ROOM_TTL_MS,
     locked: false,
   };
+  metrics.roomsCreated += 1;
   rooms.set(newCode, room);
   return room;
 }
@@ -185,6 +221,7 @@ function send(ws: WebSocket, payload: unknown) {
 wss.on("connection", (socket, request) => {
   const ip = resolveIp(request);
   socketState.set(socket, { ip });
+  metrics.wsConnections += 1;
   console.log("ws:connect");
 
   socket.on("message", (data) => {
@@ -206,11 +243,13 @@ wss.on("connection", (socket, request) => {
         if (!validateJoin(payload)) {
           send(socket, { type: "error", errors: validateJoin.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "join" });
+          metrics.joinFail += 1;
           return;
         }
         const joinRate = checkRate(`join:ip:${state.ip}`, 10000, 5, 10);
         if (!joinRate.allowed) {
           logIncident({ at: Date.now(), type: "rate_limit", ip: state.ip, detail: "join" });
+          metrics.joinFail += 1;
           return;
         }
 
@@ -223,6 +262,7 @@ wss.on("connection", (socket, request) => {
           touchRoom(room);
           if (room.locked) {
             logIncident({ at: Date.now(), type: "room_locked", ip: state.ip, roomCode: room.code });
+            metrics.joinFail += 1;
             return;
           }
           const roomBurst = checkRate(`join:room:${room.code}`, 5000, 6, 12);
@@ -233,6 +273,7 @@ wss.on("connection", (socket, request) => {
               ip: state.ip,
               roomCode: room.code,
             });
+            metrics.joinFail += 1;
             return;
           }
           if (roomBurst.delayMs > 0) {
@@ -242,6 +283,7 @@ wss.on("connection", (socket, request) => {
           if (room.players.size >= MAX_ROOM_PLAYERS) {
             send(socket, { type: "error", errors: [{ message: "room full" }] });
             logIncident({ at: Date.now(), type: "room_full", ip: state.ip, roomCode: room.code });
+            metrics.joinFail += 1;
             return;
           }
           if (!room.players.has(payload.playerId)) {
@@ -256,6 +298,7 @@ wss.on("connection", (socket, request) => {
           state.joinedRoom = room.code;
           state.playerId = payload.playerId;
           send(socket, { type: "joined", payload: { roomCode: room.code } });
+          metrics.joinSuccess += 1;
         };
 
         if (joinRate.delayMs > 0) {
@@ -286,6 +329,7 @@ wss.on("connection", (socket, request) => {
         if (!validateAnswer(payload)) {
           send(socket, { type: "error", errors: validateAnswer.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "answer" });
+          metrics.answerRejected += 1;
           return;
         }
         const answerRate = checkRate(`answer:${payload.playerId}`, 2000, 5, 10);
@@ -298,6 +342,7 @@ wss.on("connection", (socket, request) => {
             playerId: payload.playerId,
             detail: "answer",
           });
+          metrics.answerRejected += 1;
           return;
         }
         const cooldownKey = `${payload.roomCode}:${payload.playerId}`;
@@ -310,6 +355,7 @@ wss.on("connection", (socket, request) => {
             roomCode: payload.roomCode,
             playerId: payload.playerId,
           });
+          metrics.answerRejected += 1;
           return;
         }
         answerCooldowns.set(cooldownKey, Date.now());
@@ -319,6 +365,7 @@ wss.on("connection", (socket, request) => {
           touchRoom(room);
         }
         send(socket, { type: "answer", payload });
+        metrics.answerAccepted += 1;
       }
     } catch (_err) {
       const state = socketState.get(socket);
@@ -329,6 +376,7 @@ wss.on("connection", (socket, request) => {
 
   socket.on("close", () => {
     console.log("ws:disconnect");
+    metrics.wsDisconnects += 1;
   });
 });
 
@@ -341,6 +389,7 @@ setInterval(() => {
   rooms.forEach((room, code) => {
     if (room.expiresAt <= now) {
       rooms.delete(code);
+      metrics.roomsExpired += 1;
     }
   });
 }, 1000 * 60 * 5);

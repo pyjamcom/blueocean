@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AgeGate from "./components/AgeGate";
 import HelpButton from "./components/HelpButton";
+import { registerErrorHandlers } from "./utils/telemetry";
 import RoundGallery from "./views/RoundGallery";
 import JoinView from "./views/JoinView";
 import LobbyView from "./views/LobbyView";
@@ -40,6 +41,10 @@ export default function App() {
       return;
     }
     setGateStatus("prompt");
+  }, []);
+
+  useEffect(() => {
+    registerErrorHandlers();
   }, []);
 
   const logCompliance = () => {
