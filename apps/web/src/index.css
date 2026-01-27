@@ -1,0 +1,167 @@
+:root {
+  color-scheme: light;
+  --bg: #0b0b10;
+  --accent: #ff6b6b;
+  --glow: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+}
+
+body {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+}
+
+.scene {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 20% 20%, #1f1f2b, #0b0b10 60%);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 40px var(--glow);
+  opacity: 0.9;
+}
+
+.orb--main {
+  width: 42vmin;
+  height: 42vmin;
+  mix-blend-mode: screen;
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb--a {
+  width: 18vmin;
+  height: 18vmin;
+  top: 12%;
+  left: 12%;
+  background: #845ef7;
+  animation: drift 10s ease-in-out infinite;
+}
+
+.orb--b {
+  width: 14vmin;
+  height: 14vmin;
+  bottom: 18%;
+  right: 16%;
+  background: #ffd166;
+  animation: drift 12s ease-in-out infinite;
+}
+
+.orb--c {
+  width: 10vmin;
+  height: 10vmin;
+  bottom: 20%;
+  left: 22%;
+  background: #63e6be;
+  animation: drift 9s ease-in-out infinite;
+}
+
+.ring {
+  width: 60vmin;
+  height: 60vmin;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  position: absolute;
+  animation: spin 18s linear infinite;
+}
+
+.spark {
+  position: absolute;
+  width: 6vmin;
+  height: 6vmin;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  transform: rotate(12deg);
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+.spark--a {
+  top: 18%;
+  right: 22%;
+}
+
+.spark--b {
+  bottom: 16%;
+  left: 28%;
+}
+
+.stamp {
+  position: absolute;
+  width: 24vmin;
+  height: 24vmin;
+  border-radius: 24px;
+  border: 6px solid rgba(255, 255, 255, 0.4);
+  transform: rotate(-12deg);
+  animation: stamp 7s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.9) rotate(8deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(-8deg);
+  }
+}
+
+@keyframes stamp {
+  0%,
+  100% {
+    transform: rotate(-12deg) scale(1);
+  }
+  50% {
+    transform: rotate(6deg) scale(1.05);
+  }
+}
