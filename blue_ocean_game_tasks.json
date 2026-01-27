@@ -3249,34 +3249,34 @@
     },
     {
       "number": "26",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: скорость = ценность опыта; без задержек. Context check: быстрый смех, мобильный фокус.",
       "description": "Performance: оптимизация PWA, кеширование, lazy loading, лимиты по памяти/CPU.",
       "subtasks": [
         {
           "number": "26.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: мгновенный старт. Context check: 2–3 тапа до игры.",
           "description": "Оптимизация PWA: минимальный critical‑path, prefetch сцен следующего раунда, без тяжёлых шрифтов/текста.",
           "subtasks": []
         },
         {
           "number": "26.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: отсутствие лагов = больше смеха. Context check: мобильные устройства.",
           "description": "Кеширование: service worker для ассетов, CDN‑cache, versioned assets; быстрый возврат в комнату.",
           "subtasks": []
         },
         {
           "number": "26.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: не перегружать устройство. Context check: лёгкие визуалы.",
           "description": "Lazy loading: загружать ассеты по сценам; LQIP/placeholder; освобождение памяти после раунда.",
           "subtasks": []
         },
         {
           "number": "26.4",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: стабильность во время вечеринки. Context check: без зависаний.",
           "description": "Лимиты CPU/Memory: ограничение одновременных анимаций, cap на размер ассета, fallback на статичный кадр.",
           "subtasks": []

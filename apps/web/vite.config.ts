@@ -9,6 +9,32 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icons/icon-192.svg", "icons/icon-512.svg"],
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith("/assets/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "escapers-assets",
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith("/icons/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "escapers-icons",
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 90,
+              },
+            },
+          },
+        ],
+      },
       manifest: {
         name: "Escapers",
         short_name: "Escapers",

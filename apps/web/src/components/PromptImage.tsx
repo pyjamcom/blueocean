@@ -63,6 +63,8 @@ export default function PromptImage({
       alt={ariaLabel ?? ""}
       onLoad={handleLoad}
       onError={handleError}
+      loading="lazy"
+      decoding="async"
     />
   );
 

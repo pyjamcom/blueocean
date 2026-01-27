@@ -106,7 +106,7 @@ export default function AnswerGrid({
           aria-label={answer.alt ?? ""}
           disabled={isLocked}
         >
-          <img src={answer.src} alt="" draggable={false} />
+          <img src={answer.src} alt="" draggable={false} loading="lazy" decoding="async" />
           {pressedIndex === index && <span className={styles.pressHalo} />}
         </button>
       );

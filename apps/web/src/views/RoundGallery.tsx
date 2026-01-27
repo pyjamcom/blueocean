@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
 import ProgressDots from "../components/ProgressDots";
 import { shuffleArray } from "../utils/shuffle";
+import { prefetchImage } from "../utils/prefetch";
 import {
   AbsurdSumView,
   AbsurdToastView,
@@ -35,6 +36,10 @@ export default function RoundGallery() {
   const answers = useMemo(() => shuffleArray(baseAnswers), [baseAnswers]);
   const noop = () => {};
   const now = useMemo(() => Date.now(), []);
+
+  useEffect(() => {
+    prefetchImage(sampleSrc);
+  }, []);
 
   const viewSequence = useMemo(
     () =>
