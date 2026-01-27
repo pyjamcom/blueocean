@@ -2947,27 +2947,27 @@
     },
     {
       "number": "18",
-      "status": "pending",
+      "status": "completed",
       "notes": "BO check: быстрый запуск и масштабирование без тяжёлой инфраструктуры. Context check: скорость старта важнее сложности. Decision: AWS US (us-east-1), PWA через S3+CloudFront+ACM+Route53, WS через ECS Fargate+ALB, Redis (ElastiCache).",
       "description": "Архитектура/Инфра: DB/Redis, хостинг, домены, CDN, storage, окружения dev/stage/prod (escapers.app).",
       "subtasks": [
         {
           "number": "18.1",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: снижает трение и удерживает скорость. Context check: быстрый старт комнат.",
           "description": "Схема хранения: \n- Redis (ElastiCache): оперативное состояние комнат/раундов/таймеров (TTL).\n- Postgres (RDS) или DynamoDB: долговременные данные (сессии, метрики).\n- Object Storage (S3): ассеты сцен (PNG/JPG/SVG), версии и контроль лицензий.",
           "subtasks": []
         },
         {
           "number": "18.2",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: минимальная инфраструктура, максимальная доступность. Context check: мобильный фокус.",
           "description": "Хостинг и домены (AWS): \n- escapers.app: CloudFront (origin S3 private).\n- ws.escapers.app: ALB → ECS Fargate (WebSocket).\n- ACM сертификаты: для CloudFront в us-east-1; для ALB в рабочем регионе.\n- Route53 Alias A/AAAA на CloudFront и ALB.\n- WAF (по необходимости) на CloudFront/ALB.",
           "subtasks": []
         },
         {
           "number": "18.3",
-          "status": "pending",
+          "status": "completed",
           "notes": "BO check: безопасные эксперименты без риска продакшна. Context check: простая структура окружений.",
           "description": "Окружения: \n- dev: dev.escapers.app (CloudFront + отдельный S3), ws-dev.escapers.app.\n- stage: stage.escapers.app, ws-stage.escapers.app.\n- prod: escapers.app, ws.escapers.app.\n- отдельные ключи/конфиги, фичефлаги, изоляция данных.",
           "subtasks": []
