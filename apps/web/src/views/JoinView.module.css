@@ -59,11 +59,11 @@
 }
 
 .iconAvatar {
-  background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='9' r='4'/><path d='M4.5 20c1.5-3 4.5-4.5 7.5-4.5s6 1.5 7.5 4.5'/></svg>\");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='9' r='4'/><path d='M4.5 20c1.5-3 4.5-4.5 7.5-4.5s6 1.5 7.5 4.5'/></svg>");
 }
 
 .iconPlay {
-  background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><polygon points='7,5 20,12 7,19'/></svg>\");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><polygon points='7,5 20,12 7,19'/></svg>");
 }
 
 
