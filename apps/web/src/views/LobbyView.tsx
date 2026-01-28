@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
 import TimerRing from "../components/TimerRing";
 import { AVATAR_IDS, avatarColor, randomAvatarId } from "../utils/avatar";
+import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -17,6 +18,7 @@ function resolveVariant(age?: number): PulseVariant {
 interface LobbyPlayer {
   id: string;
   avatarId: string;
+  assetId?: string;
   ready: boolean;
   pulse: boolean;
 }
@@ -27,10 +29,20 @@ export default function LobbyView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
 
+  const lobbyAssets = assetIds.length ? assetIds : [];
+  const assetCursor = useRef(3);
+  const pickAssetId = () => {
+    if (lobbyAssets.length === 0) return undefined;
+    const id = lobbyAssets[assetCursor.current % lobbyAssets.length];
+    assetCursor.current += 1;
+    return id;
+  };
+
   const [players, setPlayers] = useState<LobbyPlayer[]>(() =>
     Array.from({ length: 3 }).map((_, index) => ({
       id: `p-${index}`,
       avatarId: randomAvatarId(),
+      assetId: lobbyAssets.length ? lobbyAssets[index % lobbyAssets.length] : undefined,
       ready: true,
       pulse: false,
     })),
@@ -47,7 +59,16 @@ export default function LobbyView() {
       setPlayers((prev) => {
         if (prev.length >= 10) return prev;
         const id = `p-${Date.now()}`;
-        const next = [...prev, { id, avatarId: randomAvatarId(), ready: true, pulse: true }];
+        const next = [
+          ...prev,
+          {
+            id,
+            avatarId: randomAvatarId(),
+            assetId: pickAssetId(),
+            ready: true,
+            pulse: true,
+          },
+        ];
         window.setTimeout(() => {
           setPlayers((current) =>
             current.map((player) =>
@@ -89,6 +110,10 @@ export default function LobbyView() {
   };
 
   const selfAvatar = AVATAR_IDS[avatarIndex];
+  const selfAssetId = lobbyAssets.length
+    ? lobbyAssets[avatarIndex % lobbyAssets.length]
+    : undefined;
+  const selfAssetSrc = getAssetUrl(selfAssetId);
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -109,7 +134,13 @@ export default function LobbyView() {
           >
             <div
               className={styles.playerAvatar}
-              style={{ background: avatarColor(player.avatarId) }}
+              style={{
+                background: avatarColor(player.avatarId),
+                backgroundImage: `url(${getAssetUrl(player.assetId)})`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "70%",
+              }}
               aria-label={player.avatarId}
             />
             {player.ready && <span className={styles.readyRing} />}
@@ -123,7 +154,16 @@ export default function LobbyView() {
         onPointerUp={handlePointerUp}
         aria-label={selfAvatar}
       >
-        <div className={styles.selfAvatarCore} style={{ background: avatarColor(selfAvatar) }} />
+        <div
+          className={styles.selfAvatarCore}
+          style={{
+            background: avatarColor(selfAvatar),
+            backgroundImage: `url(${selfAssetSrc})`,
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "70%",
+          }}
+        />
         <span className={styles.selfPulse} />
       </div>
 
