@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
 import ProgressDots from "../components/ProgressDots";
+import { useRoom } from "../context/RoomContext";
 import { prefetchImage } from "../utils/prefetch";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
@@ -35,12 +36,15 @@ function renderQuestionView(
   question: QuestionRecord,
   answers: [AnswerOption, AnswerOption, AnswerOption, AnswerOption],
   now: number,
+  onSelect: (index: number) => void,
+  selectedIndex: number | null,
+  revealState: "idle" | "reveal",
 ) {
-  const noop = () => {};
   const baseProps = {
     answers,
-    onSelect: noop,
-    revealState: "idle" as const,
+    onSelect,
+    selectedIndex,
+    revealState,
     correctIndex: question.correct_index,
   };
   const promptSrc = resolveAssetRef(question.prompt_image, fallbackSrc);
@@ -120,8 +124,21 @@ function renderQuestionView(
 }
 
 export default function RoundGallery() {
-  const now = useMemo(() => Date.now(), []);
-  const activeQuestion = questionBank[0];
+  const { phase, questionIndex, roundStartAt, sendAnswer } = useRoom();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const activeQuestion = questionBank[questionIndex];
+  const revealState = phase === "reveal" ? "reveal" : "idle";
+  const now = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt]);
+
+  useEffect(() => {
+    setSelectedIndex(null);
+  }, [questionIndex, phase]);
+
+  const handleSelect = (index: number) => {
+    setSelectedIndex(index);
+    sendAnswer(index);
+  };
+
   const answers = useMemo(
     () => (activeQuestion ? buildAnswers(activeQuestion) : buildAnswers({
       id: "fallback",
@@ -148,9 +165,15 @@ export default function RoundGallery() {
 
   return (
     <div className={styles.view}>
-      <ProgressDots total={Math.max(questionBank.length, 1)} activeIndex={0} />
+      <ProgressDots total={Math.max(questionBank.length, 1)} activeIndex={questionIndex} />
       <div className={styles.card}>
-        {activeQuestion ? renderQuestionView(activeQuestion, answers, now) : null}
+        {activeQuestion
+          ? renderQuestionView(activeQuestion, answers, now, handleSelect, selectedIndex, revealState)
+          : null}
+      </div>
+      <div className={styles.hintRow}>
+        <span className={`${styles.hintChip} ${styles.hintTap}`} />
+        <span className={`${styles.hintChip} ${styles.hintTimer}`} />
       </div>
     </div>
   );

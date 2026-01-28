@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import QRCode from "qrcode";
 import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
 import TimerRing from "../components/TimerRing";
+import { useRoom } from "../context/RoomContext";
 import { AVATAR_IDS, avatarColor, randomAvatarId } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
@@ -28,6 +30,7 @@ export default function LobbyView() {
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
+  const { roomCode, isHost, phase, startGame } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
   const assetCursor = useRef(3);
@@ -52,6 +55,8 @@ export default function LobbyView() {
     Math.floor(Math.random() * AVATAR_IDS.length),
   );
   const touchStart = useRef<number | null>(null);
+  const [qrSrc, setQrSrc] = useState<string>("");
+  const [showQr, setShowQr] = useState(false);
 
   useEffect(() => {
     if (players.length >= 10) return;
@@ -84,6 +89,23 @@ export default function LobbyView() {
 
   const countdownStart = useMemo(() => Date.now(), []);
 
+  useEffect(() => {
+    if (!roomCode) return;
+    let active = true;
+    QRCode.toDataURL(`https://d0.do/${roomCode}`, {
+      width: 240,
+      margin: 1,
+      color: { dark: "#111111", light: "#ffffff" },
+    }).then((url) => {
+      if (active) {
+        setQrSrc(url);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [roomCode]);
+
   const handleAvatarCycle = (direction: number) => {
     setAvatarIndex((prev) => {
       const next = (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length;
@@ -114,6 +136,7 @@ export default function LobbyView() {
     ? lobbyAssets[avatarIndex % lobbyAssets.length]
     : undefined;
   const selfAssetSrc = getAssetUrl(selfAssetId);
+  const canStart = isHost && phase === "lobby";
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -167,13 +190,41 @@ export default function LobbyView() {
         <span className={styles.selfPulse} />
       </div>
 
+      <div className={styles.hintRow}>
+        <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
+        <span className={`${styles.hintChip} ${styles.hintTap}`} />
+      </div>
+
       <div className={styles.countdown}>
         <TimerRing durationMs={6000} startAt={countdownStart} size={100} state="running" />
+      </div>
+
+      <div className={styles.startRow}>
+        <button
+          className={`${styles.startButton} ${!canStart ? styles.startButtonDisabled : ""}`}
+          onClick={() => canStart && startGame()}
+          disabled={!canStart}
+          aria-label="start"
+        >
+          <span className={styles.startIcon} />
+        </button>
       </div>
 
       <div className={styles.soundToggle}>
         <SoundToggle enabled={soundOn} onToggle={() => setSoundOn((prev) => !prev)} />
       </div>
+
+      <button className={styles.qrToggle} onClick={() => setShowQr((prev) => !prev)} aria-label="qr">
+        <span className={styles.qrToggleIcon} />
+      </button>
+
+      {showQr && (
+        <div className={styles.qrOverlay} onClick={() => setShowQr(false)}>
+          <div className={styles.qrSheet}>
+            {qrSrc ? <img src={qrSrc} alt="" className={styles.qrImage} /> : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

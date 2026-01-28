@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AgeGate from "./components/AgeGate";
 import HelpButton from "./components/HelpButton";
+import { RoomProvider, RoomPhase, useRoom } from "./context/RoomContext";
 import { registerErrorHandlers } from "./utils/telemetry";
 import RoundGallery from "./views/RoundGallery";
 import JoinView from "./views/JoinView";
@@ -29,6 +30,41 @@ function Scene({ variant }: { variant: keyof typeof sceneStyles }) {
       <div className="stamp" />
     </div>
   );
+}
+
+const phaseRoutes: Record<RoomPhase, string> = {
+  join: "/join",
+  lobby: "/lobby",
+  round: "/game",
+  reveal: "/game",
+  leaderboard: "/result",
+  end: "/result",
+};
+
+function StageNavigator() {
+  const { phase, roomCode } = useRoom();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const path = location.pathname.toUpperCase();
+    const isJoinPath =
+      location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
+
+    if (!roomCode) {
+      if (!isJoinPath) {
+        navigate("/join", { replace: true });
+      }
+      return;
+    }
+
+    const target = phaseRoutes[phase] ?? "/join";
+    if (location.pathname !== target) {
+      navigate(target, { replace: true });
+    }
+  }, [location.pathname, navigate, phase, roomCode]);
+
+  return null;
 }
 
 export default function App() {
@@ -78,26 +114,29 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="app">
-        {gateStatus !== "accepted" && (
-          <AgeGate
-            status={gateStatus === "blocked" ? "blocked" : "prompt"}
-            onAccept={handleAccept}
-            onReject={handleReject}
-            onExit={handleExit}
-          />
-        )}
-        <HelpButton />
-        <Routes>
-          <Route path="/join" element={<JoinView />} />
-          <Route path="/:code" element={<JoinView />} />
-          <Route path="/lobby" element={<LobbyView />} />
-          <Route path="/game" element={<RoundGallery />} />
-          <Route path="/result" element={<ResultView />} />
-          <Route path="/wait" element={<JoinWaitView />} />
-          <Route path="*" element={<Navigate to="/join" replace />} />
-        </Routes>
-      </div>
+      <RoomProvider>
+        <div className="app">
+          {gateStatus !== "accepted" && (
+            <AgeGate
+              status={gateStatus === "blocked" ? "blocked" : "prompt"}
+              onAccept={handleAccept}
+              onReject={handleReject}
+              onExit={handleExit}
+            />
+          )}
+          <HelpButton />
+          <StageNavigator />
+          <Routes>
+            <Route path="/join" element={<JoinView />} />
+            <Route path="/:code" element={<JoinView />} />
+            <Route path="/lobby" element={<LobbyView />} />
+            <Route path="/game" element={<RoundGallery />} />
+            <Route path="/result" element={<ResultView />} />
+            <Route path="/wait" element={<JoinWaitView />} />
+            <Route path="*" element={<Navigate to="/join" replace />} />
+          </Routes>
+        </div>
+      </RoomProvider>
     </BrowserRouter>
   );
 }

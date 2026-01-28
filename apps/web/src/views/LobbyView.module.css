@@ -85,15 +85,140 @@
   animation: selfPulse 2s ease-in-out infinite;
 }
 
+.hintRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.hintChip {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hintChip::before,
+.hintChip::after {
+  content: "";
+  position: absolute;
+}
+
+.hintSwipe::before {
+  width: 18px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  box-shadow: -8px 0 0 rgba(255, 255, 255, 0.45), 8px 0 0 rgba(255, 255, 255, 0.45);
+}
+
+.hintSwipe::after {
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid rgba(255, 255, 255, 0.85);
+  transform: translateX(10px);
+}
+
+.hintTap::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.hintTap::after {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
 .countdown {
   display: grid;
   place-items: center;
+}
+
+.startRow {
+  display: grid;
+  place-items: center;
+}
+
+.startButton {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.startButtonDisabled {
+  opacity: 0.4;
+}
+
+.startIcon {
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.9);
+  clip-path: polygon(20% 10%, 90% 50%, 20% 90%);
 }
 
 .soundToggle {
   position: absolute;
   top: 24px;
   right: 24px;
+}
+
+.qrToggle {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  display: grid;
+  place-items: center;
+}
+
+.qrToggleIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.qrOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 14, 0.7);
+  display: grid;
+  place-items: center;
+  z-index: 10;
+}
+
+.qrSheet {
+  width: min(80vw, 280px);
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+.qrImage {
+  width: 86%;
+  height: 86%;
 }
 
 .fast .selfPulse {

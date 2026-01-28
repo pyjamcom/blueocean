@@ -12,6 +12,57 @@
   padding: 12px 0;
 }
 
+.hintRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.hintChip {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hintChip::before,
+.hintChip::after {
+  content: "";
+  position: absolute;
+}
+
+.hintTap::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.hintTap::after {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.hintTimer::before {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.hintTimer::after {
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  transform: translate(4px, -4px);
+}
+
 .promptBlock {
   width: 100%;
   height: clamp(180px, 32vh, 320px);

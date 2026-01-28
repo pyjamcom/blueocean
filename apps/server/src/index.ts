@@ -135,6 +135,15 @@ interface RateBucket {
   resetAt: number;
 }
 
+type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
+
+interface StagePayload {
+  roomCode: string;
+  phase: RoomPhase;
+  questionIndex?: number;
+  roundStartAt?: number;
+}
+
 interface Player {
   id: string;
   avatarId: string;
@@ -150,6 +159,8 @@ interface Room {
   createdAt: number;
   expiresAt: number;
   locked: boolean;
+  hostId?: string;
+  stage?: StagePayload;
 }
 
 const rooms = new Map<string, Room>();
@@ -251,6 +262,18 @@ function send(ws: WebSocket, payload: unknown) {
   ws.send(JSON.stringify(payload));
 }
 
+function broadcastToRoom(roomCode: string, payload: unknown) {
+  wss.clients.forEach((client) => {
+    if (client.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    const clientState = socketState.get(client);
+    if (clientState?.joinedRoom === roomCode) {
+      send(client, payload);
+    }
+  });
+}
+
 wss.on("connection", (socket, request) => {
   const ip = resolveIp(request);
   socketState.set(socket, { ip });
@@ -300,6 +323,13 @@ wss.on("connection", (socket, request) => {
             metrics.joinFail += 1;
             return;
           }
+          let isHost = false;
+          if (!room.hostId) {
+            room.hostId = joinPayload.playerId;
+            isHost = true;
+          } else if (room.hostId === joinPayload.playerId) {
+            isHost = true;
+          }
           const roomBurst = checkRate(`join:room:${room.code}`, 5000, 6, 12);
           if (!roomBurst.allowed) {
             logIncident({
@@ -330,9 +360,12 @@ wss.on("connection", (socket, request) => {
               streak: 0,
             });
           }
+          if (!room.stage) {
+            room.stage = { roomCode: room.code, phase: "lobby", questionIndex: 0 };
+          }
           state.joinedRoom = room.code;
           state.playerId = joinPayload.playerId;
-          send(socket, { type: "joined", payload: { roomCode: room.code } });
+          send(socket, { type: "joined", payload: { roomCode: room.code, isHost, stage: room.stage } });
           metrics.joinSuccess += 1;
         };
 
@@ -341,6 +374,51 @@ wss.on("connection", (socket, request) => {
         } else {
           processJoin();
         }
+        return;
+      }
+
+      if (type === "stage") {
+        const stagePayload = payload as any;
+        const phase = stagePayload?.phase as string | undefined;
+        const roomCode = stagePayload?.roomCode as string | undefined;
+        const allowedPhases = new Set([
+          "join",
+          "lobby",
+          "round",
+          "reveal",
+          "leaderboard",
+          "end",
+        ]);
+        if (!roomCode || !phase || !allowedPhases.has(phase)) {
+          send(socket, { type: "error", errors: [{ message: "invalid stage" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage" });
+          return;
+        }
+        if (!state.joinedRoom || state.joinedRoom !== roomCode) {
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_room" });
+          return;
+        }
+        const room = rooms.get(roomCode);
+        if (!room) {
+          return;
+        }
+        if (room.hostId && room.hostId !== state.playerId) {
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_host" });
+          return;
+        }
+        const nextStage: StagePayload = {
+          roomCode,
+          phase: phase as RoomPhase,
+        };
+        if (typeof stagePayload.questionIndex === "number") {
+          nextStage.questionIndex = stagePayload.questionIndex;
+        }
+        if (typeof stagePayload.roundStartAt === "number") {
+          nextStage.roundStartAt = stagePayload.roundStartAt;
+        }
+        room.stage = nextStage;
+        touchRoom(room);
+        broadcastToRoom(roomCode, { type: "stage", payload: nextStage });
         return;
       }
 

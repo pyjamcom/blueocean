@@ -44,6 +44,47 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.iconBubble::before,
+.iconBubble::after {
+  content: "";
+  position: absolute;
+}
+
+.iconScan::before {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.iconTap::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.iconTap::after {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.iconGroup::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    10px -4px 0 rgba(255, 255, 255, 0.7),
+    20px 0 0 rgba(255, 255, 255, 0.55);
 }
 
 .pulse {

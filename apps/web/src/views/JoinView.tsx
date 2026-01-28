@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useParams } from "react-router-dom";
-import { useJoinRoom } from "../hooks/useJoinRoom";
+import { useRoom } from "../context/RoomContext";
+import { randomAvatarId } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 import styles from "./JoinView.module.css";
 
@@ -27,22 +28,30 @@ export default function JoinView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
-  const { roomCode } = useJoinRoom({ roomCode: codeParam ?? undefined });
+  const { roomCode, joinRoom } = useRoom();
   const variant = resolveVariant(age);
+  const avatarId = useMemo(() => randomAvatarId(), []);
 
-  const joinUrl = useMemo(() => `https://d0.do/${roomCode}`, [roomCode]);
+  const joinTarget = roomCode ?? codeParam;
+  const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
+  const showQr = !codeParam;
 
   useEffect(() => {
+    joinRoom(codeParam ?? undefined, avatarId);
+  }, [avatarId, codeParam, joinRoom]);
+
+  useEffect(() => {
+    if (!roomCode) return;
     if (!codeParam) {
       trackEvent("create_room", { roomCode });
     } else {
       trackEvent("qr_scan", { roomCode: codeParam });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [codeParam, roomCode]);
 
   useEffect(() => {
+    if (!joinUrl || !showQr) return;
     let active = true;
     QRCode.toDataURL(joinUrl, {
       width: 320,
@@ -59,24 +68,24 @@ export default function JoinView() {
     return () => {
       active = false;
     };
-  }, [joinUrl]);
+  }, [joinUrl, showQr]);
 
   useEffect(() => {
-    if (qrSrc) {
+    if (qrSrc && roomCode && showQr) {
       trackEvent("qr_render", { roomCode });
     }
-  }, [qrSrc, roomCode]);
+  }, [qrSrc, roomCode, showQr]);
 
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
       <div className={styles.qrFrame}>
-        {qrSrc ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
+        {qrSrc && showQr ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
       </div>
       <div className={styles.iconRow}>
-        <div className={styles.iconBubble} />
-        <div className={styles.iconBubble} />
-        <div className={styles.iconBubble} />
+        <div className={`${styles.iconBubble} ${styles.iconScan}`} />
+        <div className={`${styles.iconBubble} ${styles.iconTap}`} />
+        <div className={`${styles.iconBubble} ${styles.iconGroup}`} />
       </div>
     </div>
   );
