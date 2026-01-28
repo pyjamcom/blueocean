@@ -10,27 +10,9 @@ import styles from "./ResultView.module.css";
 export default function ResultView() {
   const { players, playerId, answerCounts, roomCode } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
-  const samplePodium = useMemo(
-    () => [
-      { avatarId: "avatar_party_octopus", rank: 1 },
-      { avatarId: "avatar_disco_sloth", rank: 2 },
-      { avatarId: "avatar_space_cactus", rank: 3 },
-    ],
-    [],
-  );
-  const sampleLeaderboard = useMemo(
-    () => [
-      { playerId: "p1", avatarId: "avatar_party_octopus", rank: 1 },
-      { playerId: "p2", avatarId: "avatar_disco_sloth", rank: 2 },
-      { playerId: "p3", avatarId: "avatar_space_cactus", rank: 3 },
-      { playerId: "p4", avatarId: "avatar_laughing_llama", rank: 4 },
-      { playerId: "p5", avatarId: "avatar_penguin_chef", rank: 5 },
-    ],
-    [],
-  );
 
   const leaderboard = useMemo(() => {
-    if (!players.length) return sampleLeaderboard;
+    if (!players.length) return [];
     const sorted = [...players].sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
     return sorted.map((player, idx) => ({
       playerId: player.id,
@@ -39,23 +21,22 @@ export default function ResultView() {
       score: player.score,
       correctCount: player.correctCount,
     }));
-  }, [players, sampleLeaderboard]);
+  }, [players]);
 
   const selfEntry = useMemo(() => {
     return leaderboard.find((entry) => entry.playerId === playerId) ?? null;
   }, [leaderboard, playerId]);
 
   const podium = useMemo(() => {
-    if (!leaderboard.length) return samplePodium;
     return leaderboard.slice(0, 3).map((entry) => ({ avatarId: entry.avatarId, rank: entry.rank }));
-  }, [leaderboard, samplePodium]);
+  }, [leaderboard]);
 
   const winner = useMemo(() => {
-    if (!leaderboard.length) return { avatarId: "avatar_party_octopus" };
-    return { avatarId: leaderboard[0].avatarId };
+    return leaderboard.length ? { avatarId: leaderboard[0].avatarId } : null;
   }, [leaderboard]);
 
   const qrUrl = roomCode ? `https://d0.do/${roomCode}` : "https://d0.do/ABCD";
+  const canShareCard = Boolean(winner);
 
   useEffect(() => {
     trackEvent("sharecard_generate");
@@ -79,14 +60,16 @@ export default function ResultView() {
 
   return (
     <div className={styles.wrap}>
-      <ShareCard
-        ref={shareRef}
-        podiumTop3={podium}
-        winner={winner}
-        stampId="stamp-fiesta"
-        medalSetId="medal-spark"
-        qrUrl={qrUrl}
-      />
+      {winner ? (
+        <ShareCard
+          ref={shareRef}
+          podiumTop3={podium}
+          winner={winner}
+          stampId="stamp-fiesta"
+          medalSetId="medal-spark"
+          qrUrl={qrUrl}
+        />
+      ) : null}
       <AnswerDistribution counts={answerCounts} />
       <Leaderboard
         items={leaderboard}
@@ -105,13 +88,23 @@ export default function ResultView() {
       />
       <div className={styles.actions}>
         <div className={styles.actionItem}>
-          <button className={styles.actionButton} onClick={handleShare} aria-label="share">
+          <button
+            className={styles.actionButton}
+            onClick={handleShare}
+            aria-label="share"
+            disabled={!canShareCard}
+          >
             <span className={styles.iconShare} />
           </button>
           <span className={styles.actionLabel}>Share</span>
         </div>
         <div className={styles.actionItem}>
-          <button className={styles.actionButton} onClick={handleSave} aria-label="save">
+          <button
+            className={styles.actionButton}
+            onClick={handleSave}
+            aria-label="save"
+            disabled={!canShareCard}
+          >
             <span className={styles.iconSave} />
           </button>
           <span className={styles.actionLabel}>Save</span>
