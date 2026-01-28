@@ -70,6 +70,14 @@
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
 }
 
+.selfLabel {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 .selfAvatarCore {
   width: 92px;
   height: 92px;
@@ -146,6 +154,7 @@
 .startRow {
   display: grid;
   place-items: center;
+  gap: 8px;
 }
 
 .startButton {
@@ -168,6 +177,13 @@
   height: 26px;
   background: rgba(255, 255, 255, 0.9);
   clip-path: polygon(20% 10%, 90% 50%, 20% 90%);
+}
+
+.startLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .soundToggle {

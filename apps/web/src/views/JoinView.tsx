@@ -36,6 +36,7 @@ export default function JoinView() {
   const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
   const showQr = !codeParam;
+  const caption = showQr ? "Scan" : "Wait";
 
   useEffect(() => {
     joinRoom(codeParam ?? undefined, avatarId);
@@ -82,6 +83,7 @@ export default function JoinView() {
       <div className={styles.qrFrame}>
         {qrSrc && showQr ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
       </div>
+      <div className={styles.caption}>{caption}</div>
       <div className={styles.iconRow}>
         <div className={`${styles.iconBubble} ${styles.iconScan}`} />
         <div className={`${styles.iconBubble} ${styles.iconTap}`} />

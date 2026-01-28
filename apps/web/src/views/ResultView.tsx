@@ -68,6 +68,7 @@ export default function ResultView() {
         </button>
         <NextRoundButton onClick={() => trackEvent("replay_click")} />
       </div>
+      <div className={styles.caption}>Next</div>
     </div>
   );
 }

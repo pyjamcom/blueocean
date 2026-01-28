@@ -137,6 +137,7 @@ export default function LobbyView() {
     : undefined;
   const selfAssetSrc = getAssetUrl(selfAssetId);
   const canStart = isHost && phase === "lobby";
+  const startLabel = isHost ? "Start" : "Wait";
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -189,6 +190,7 @@ export default function LobbyView() {
         />
         <span className={styles.selfPulse} />
       </div>
+      <div className={styles.selfLabel}>Tap</div>
 
       <div className={styles.hintRow}>
         <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
@@ -208,6 +210,7 @@ export default function LobbyView() {
         >
           <span className={styles.startIcon} />
         </button>
+        <div className={styles.startLabel}>{startLabel}</div>
       </div>
 
       <div className={styles.soundToggle}>

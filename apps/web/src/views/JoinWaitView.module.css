@@ -3,6 +3,7 @@
   display: grid;
   place-items: center;
   background: radial-gradient(circle at top, #1f1f2b, #0b0b10 70%);
+  gap: 16px;
 }
 
 .orbit {
@@ -34,4 +35,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.caption {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
 }

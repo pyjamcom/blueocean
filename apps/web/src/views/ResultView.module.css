@@ -39,3 +39,10 @@
 .iconSave {
   clip-path: polygon(10% 0%, 90% 0%, 90% 80%, 50% 100%, 10% 80%);
 }
+
+.caption {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+}

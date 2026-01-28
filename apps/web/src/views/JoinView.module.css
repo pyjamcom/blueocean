@@ -38,6 +38,14 @@
   z-index: 2;
 }
 
+.caption {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  z-index: 2;
+}
+
 .iconBubble {
   width: 48px;
   height: 48px;
