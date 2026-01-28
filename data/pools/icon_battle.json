@@ -1,6 +1,8 @@
 {
   "type": "icon_battle",
   "question_ids": [
+    "q_ib_01",
+    "q_ib_02",
     "q_icon_battle_01"
   ],
   "scene_ids": [

@@ -84,12 +84,15 @@ export default function JoinView() {
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
           <div className={`${styles.iconBubble} ${styles.iconScan}`} aria-label="scan" />
+          <span className={styles.iconLabel}>Scan</span>
         </div>
         <div className={styles.iconItem}>
           <div className={`${styles.iconBubble} ${styles.iconAvatar}`} aria-label="avatar" />
+          <span className={styles.iconLabel}>Avatar</span>
         </div>
         <div className={styles.iconItem}>
           <div className={`${styles.iconBubble} ${styles.iconPlay}`} aria-label="play" />
+          <span className={styles.iconLabel}>Play</span>
         </div>
       </div>
     </div>

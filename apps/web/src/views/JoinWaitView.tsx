@@ -8,6 +8,7 @@ export default function JoinWaitView() {
           <span key={`orb-${index}`} className={styles.orb} />
         ))}
       </div>
+      <div className={styles.label}>Wait</div>
     </div>
   );
 }

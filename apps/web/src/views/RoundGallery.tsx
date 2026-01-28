@@ -181,8 +181,14 @@ export default function RoundGallery() {
           : null}
       </div>
       <div className={styles.hintRow}>
-        <span className={`${styles.hintChip} ${styles.hintTap}`} />
-        <span className={`${styles.hintChip} ${styles.hintTimer}`} />
+        <div className={styles.hintItem}>
+          <span className={`${styles.hintChip} ${styles.hintTap}`} />
+          <span className={styles.hintLabel}>Tap</span>
+        </div>
+        <div className={styles.hintItem}>
+          <span className={`${styles.hintChip} ${styles.hintTimer}`} />
+          <span className={styles.hintLabel}>Wait</span>
+        </div>
       </div>
     </div>
   );

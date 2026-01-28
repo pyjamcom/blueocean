@@ -1,6 +1,8 @@
 {
   "type": "absurd_sum",
   "question_ids": [
+    "q_as_01",
+    "q_as_02",
     "q_absurd_sum_01"
   ],
   "scene_ids": [

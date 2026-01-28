@@ -18,6 +18,19 @@
   gap: 12px;
 }
 
+.hintItem {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.hintLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .hintChip {
   width: 40px;
   height: 40px;

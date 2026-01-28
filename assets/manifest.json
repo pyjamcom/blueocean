@@ -330,6 +330,1848 @@
       "source_url": "local://generated",
       "evidence_file": "licenses/generated_cc0.png",
       "license_checked_at": "2026-01-27"
+    },
+    {
+      "id": "anim_cheer_bubbles",
+      "tags": [
+        "anim",
+        "cheer",
+        "bubbles"
+      ],
+      "file": "assets/anim_cheer_bubbles.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "anim_confetti_burst",
+      "tags": [
+        "anim",
+        "confetti",
+        "burst"
+      ],
+      "file": "assets/anim_confetti_burst.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "anim_fireworks_pop",
+      "tags": [
+        "anim",
+        "fireworks",
+        "pop"
+      ],
+      "file": "assets/anim_fireworks_pop.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "anim_laugh_rings",
+      "tags": [
+        "anim",
+        "laugh",
+        "rings"
+      ],
+      "file": "assets/anim_laugh_rings.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "anim_party_spray",
+      "tags": [
+        "anim",
+        "party",
+        "spray"
+      ],
+      "file": "assets/anim_party_spray.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "anim_starburst",
+      "tags": [
+        "anim",
+        "starburst"
+      ],
+      "file": "assets/anim_starburst.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_air_bass",
+      "tags": [
+        "ans",
+        "air",
+        "bass"
+      ],
+      "file": "assets/ans_air_bass.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_air_drums",
+      "tags": [
+        "ans",
+        "air",
+        "drums"
+      ],
+      "file": "assets/ans_air_drums.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_air_guitar",
+      "tags": [
+        "ans",
+        "air",
+        "guitar"
+      ],
+      "file": "assets/ans_air_guitar.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_air_violin",
+      "tags": [
+        "ans",
+        "air",
+        "violin"
+      ],
+      "file": "assets/ans_air_violin.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_banana_camera",
+      "tags": [
+        "ans",
+        "banana",
+        "camera"
+      ],
+      "file": "assets/ans_banana_camera.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_banana_mic",
+      "tags": [
+        "ans",
+        "banana",
+        "mic"
+      ],
+      "file": "assets/ans_banana_mic.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_banana_phone",
+      "tags": [
+        "ans",
+        "banana",
+        "phone"
+      ],
+      "file": "assets/ans_banana_phone.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_banana_radio",
+      "tags": [
+        "ans",
+        "banana",
+        "radio"
+      ],
+      "file": "assets/ans_banana_radio.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_bell_dodge",
+      "tags": [
+        "ans",
+        "bell",
+        "dodge"
+      ],
+      "file": "assets/ans_bell_dodge.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_bell_double",
+      "tags": [
+        "ans",
+        "bell",
+        "double"
+      ],
+      "file": "assets/ans_bell_double.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_bell_fake",
+      "tags": [
+        "ans",
+        "bell",
+        "fake"
+      ],
+      "file": "assets/ans_bell_fake.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_bell_hit",
+      "tags": [
+        "ans",
+        "bell",
+        "hit"
+      ],
+      "file": "assets/ans_bell_hit.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_cactus_dancer",
+      "tags": [
+        "ans",
+        "cactus",
+        "dancer"
+      ],
+      "file": "assets/ans_cactus_dancer.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_cactus_guitar",
+      "tags": [
+        "ans",
+        "cactus",
+        "guitar"
+      ],
+      "file": "assets/ans_cactus_guitar.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_cactus_splash",
+      "tags": [
+        "ans",
+        "cactus",
+        "splash"
+      ],
+      "file": "assets/ans_cactus_splash.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_cactus_static",
+      "tags": [
+        "ans",
+        "cactus",
+        "static"
+      ],
+      "file": "assets/ans_cactus_static.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_cat_dj",
+      "tags": [
+        "ans",
+        "cat",
+        "dj"
+      ],
+      "file": "assets/ans_cat_dj.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_dog_dj",
+      "tags": [
+        "ans",
+        "dog",
+        "dj"
+      ],
+      "file": "assets/ans_dog_dj.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_draw",
+      "tags": [
+        "ans",
+        "draw"
+      ],
+      "file": "assets/ans_draw.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_blank",
+      "tags": [
+        "ans",
+        "face",
+        "blank"
+      ],
+      "file": "assets/ans_face_blank.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_frown",
+      "tags": [
+        "ans",
+        "face",
+        "frown"
+      ],
+      "file": "assets/ans_face_frown.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_grin",
+      "tags": [
+        "ans",
+        "face",
+        "grin"
+      ],
+      "file": "assets/ans_face_grin.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_puff",
+      "tags": [
+        "ans",
+        "face",
+        "puff"
+      ],
+      "file": "assets/ans_face_puff.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_squint",
+      "tags": [
+        "ans",
+        "face",
+        "squint"
+      ],
+      "file": "assets/ans_face_squint.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_surprised",
+      "tags": [
+        "ans",
+        "face",
+        "surprised"
+      ],
+      "file": "assets/ans_face_surprised.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_wide",
+      "tags": [
+        "ans",
+        "face",
+        "wide"
+      ],
+      "file": "assets/ans_face_wide.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_face_wink",
+      "tags": [
+        "ans",
+        "face",
+        "wink"
+      ],
+      "file": "assets/ans_face_wink.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_fizz_flat",
+      "tags": [
+        "ans",
+        "fizz",
+        "flat"
+      ],
+      "file": "assets/ans_fizz_flat.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_fizz_open",
+      "tags": [
+        "ans",
+        "fizz",
+        "open"
+      ],
+      "file": "assets/ans_fizz_open.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_fizz_overflow",
+      "tags": [
+        "ans",
+        "fizz",
+        "overflow"
+      ],
+      "file": "assets/ans_fizz_overflow.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_fizz_shake",
+      "tags": [
+        "ans",
+        "fizz",
+        "shake"
+      ],
+      "file": "assets/ans_fizz_shake.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_flip_double",
+      "tags": [
+        "ans",
+        "flip",
+        "double"
+      ],
+      "file": "assets/ans_flip_double.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_flip_miss",
+      "tags": [
+        "ans",
+        "flip",
+        "miss"
+      ],
+      "file": "assets/ans_flip_miss.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_flip_spin",
+      "tags": [
+        "ans",
+        "flip",
+        "spin"
+      ],
+      "file": "assets/ans_flip_spin.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_flip_success",
+      "tags": [
+        "ans",
+        "flip",
+        "success"
+      ],
+      "file": "assets/ans_flip_success.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_friendly",
+      "tags": [
+        "ans",
+        "friendly"
+      ],
+      "file": "assets/ans_friendly.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_bucket",
+      "tags": [
+        "ans",
+        "hat",
+        "bucket"
+      ],
+      "file": "assets/ans_hat_bucket.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_cowboy",
+      "tags": [
+        "ans",
+        "hat",
+        "cowboy"
+      ],
+      "file": "assets/ans_hat_cowboy.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_none",
+      "tags": [
+        "ans",
+        "hat",
+        "none"
+      ],
+      "file": "assets/ans_hat_none.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_party",
+      "tags": [
+        "ans",
+        "hat",
+        "party"
+      ],
+      "file": "assets/ans_hat_party.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_top",
+      "tags": [
+        "ans",
+        "hat",
+        "top"
+      ],
+      "file": "assets/ans_hat_top.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_hat_wizard",
+      "tags": [
+        "ans",
+        "hat",
+        "wizard"
+      ],
+      "file": "assets/ans_hat_wizard.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_penguin_bartender",
+      "tags": [
+        "ans",
+        "penguin",
+        "bartender"
+      ],
+      "file": "assets/ans_penguin_bartender.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_penguin_chef",
+      "tags": [
+        "ans",
+        "penguin",
+        "chef"
+      ],
+      "file": "assets/ans_penguin_chef.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_penguin_pilot",
+      "tags": [
+        "ans",
+        "penguin",
+        "pilot"
+      ],
+      "file": "assets/ans_penguin_pilot.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_penguin_waiter",
+      "tags": [
+        "ans",
+        "penguin",
+        "waiter"
+      ],
+      "file": "assets/ans_penguin_waiter.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_pizza_crown",
+      "tags": [
+        "ans",
+        "pizza",
+        "crown"
+      ],
+      "file": "assets/ans_pizza_crown.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_pizza_dj",
+      "tags": [
+        "ans",
+        "pizza",
+        "dj"
+      ],
+      "file": "assets/ans_pizza_dj.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_pizza_drone",
+      "tags": [
+        "ans",
+        "pizza",
+        "drone"
+      ],
+      "file": "assets/ans_pizza_drone.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_pizza_mask",
+      "tags": [
+        "ans",
+        "pizza",
+        "mask"
+      ],
+      "file": "assets/ans_pizza_mask.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_pizza_shoe",
+      "tags": [
+        "ans",
+        "pizza",
+        "shoe"
+      ],
+      "file": "assets/ans_pizza_shoe.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_rocket_win",
+      "tags": [
+        "ans",
+        "rocket",
+        "win"
+      ],
+      "file": "assets/ans_rocket_win.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_shark_win",
+      "tags": [
+        "ans",
+        "shark",
+        "win"
+      ],
+      "file": "assets/ans_shark_win.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_snail_win",
+      "tags": [
+        "ans",
+        "snail",
+        "win"
+      ],
+      "file": "assets/ans_snail_win.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_taco_win",
+      "tags": [
+        "ans",
+        "taco",
+        "win"
+      ],
+      "file": "assets/ans_taco_win.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_clink",
+      "tags": [
+        "ans",
+        "toast",
+        "clink"
+      ],
+      "file": "assets/ans_toast_clink.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_cloud",
+      "tags": [
+        "ans",
+        "toast",
+        "cloud"
+      ],
+      "file": "assets/ans_toast_cloud.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_globe",
+      "tags": [
+        "ans",
+        "toast",
+        "globe"
+      ],
+      "file": "assets/ans_toast_globe.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_moon",
+      "tags": [
+        "ans",
+        "toast",
+        "moon"
+      ],
+      "file": "assets/ans_toast_moon.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_rain",
+      "tags": [
+        "ans",
+        "toast",
+        "rain"
+      ],
+      "file": "assets/ans_toast_rain.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_ring",
+      "tags": [
+        "ans",
+        "toast",
+        "ring"
+      ],
+      "file": "assets/ans_toast_ring.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_rocket",
+      "tags": [
+        "ans",
+        "toast",
+        "rocket"
+      ],
+      "file": "assets/ans_toast_rocket.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_silence",
+      "tags": [
+        "ans",
+        "toast",
+        "silence"
+      ],
+      "file": "assets/ans_toast_silence.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_spin",
+      "tags": [
+        "ans",
+        "toast",
+        "spin"
+      ],
+      "file": "assets/ans_toast_spin.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_sun",
+      "tags": [
+        "ans",
+        "toast",
+        "sun"
+      ],
+      "file": "assets/ans_toast_sun.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_thunder",
+      "tags": [
+        "ans",
+        "toast",
+        "thunder"
+      ],
+      "file": "assets/ans_toast_thunder.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toast_wave",
+      "tags": [
+        "ans",
+        "toast",
+        "wave"
+      ],
+      "file": "assets/ans_toast_wave.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_toaster_dj",
+      "tags": [
+        "ans",
+        "toaster",
+        "dj"
+      ],
+      "file": "assets/ans_toaster_dj.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_big",
+      "tags": [
+        "ans",
+        "trophy",
+        "big"
+      ],
+      "file": "assets/ans_trophy_big.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_cup",
+      "tags": [
+        "ans",
+        "trophy",
+        "cup"
+      ],
+      "file": "assets/ans_trophy_cup.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_hat",
+      "tags": [
+        "ans",
+        "trophy",
+        "hat"
+      ],
+      "file": "assets/ans_trophy_hat.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_sock",
+      "tags": [
+        "ans",
+        "trophy",
+        "sock"
+      ],
+      "file": "assets/ans_trophy_sock.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_spoon",
+      "tags": [
+        "ans",
+        "trophy",
+        "spoon"
+      ],
+      "file": "assets/ans_trophy_spoon.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_tiny",
+      "tags": [
+        "ans",
+        "trophy",
+        "tiny"
+      ],
+      "file": "assets/ans_trophy_tiny.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "ans_trophy_wobble",
+      "tags": [
+        "ans",
+        "trophy",
+        "wobble"
+      ],
+      "file": "assets/ans_trophy_wobble.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_chaos_swirl",
+      "tags": [
+        "escape",
+        "chaos",
+        "swirl"
+      ],
+      "file": "assets/escape_chaos_swirl.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_confetti",
+      "tags": [
+        "escape",
+        "confetti"
+      ],
+      "file": "assets/escape_confetti.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_fireworks",
+      "tags": [
+        "escape",
+        "fireworks"
+      ],
+      "file": "assets/escape_fireworks.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_laugh_cloud",
+      "tags": [
+        "escape",
+        "laugh",
+        "cloud"
+      ],
+      "file": "assets/escape_laugh_cloud.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_music_wave",
+      "tags": [
+        "escape",
+        "music",
+        "wave"
+      ],
+      "file": "assets/escape_music_wave.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "escape_splash",
+      "tags": [
+        "escape",
+        "splash"
+      ],
+      "file": "assets/escape_splash.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_passport_fun",
+      "tags": [
+        "icon",
+        "passport",
+        "fun"
+      ],
+      "file": "assets/icon_passport_fun.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_rocket",
+      "tags": [
+        "icon",
+        "rocket"
+      ],
+      "file": "assets/icon_rocket.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_shark",
+      "tags": [
+        "icon",
+        "shark"
+      ],
+      "file": "assets/icon_shark.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_snail",
+      "tags": [
+        "icon",
+        "snail"
+      ],
+      "file": "assets/icon_snail.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_stamp_victory",
+      "tags": [
+        "icon",
+        "stamp",
+        "victory"
+      ],
+      "file": "assets/icon_stamp_victory.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_taco",
+      "tags": [
+        "icon",
+        "taco"
+      ],
+      "file": "assets/icon_taco.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "icon_traveler_borderless",
+      "tags": [
+        "icon",
+        "traveler",
+        "borderless"
+      ],
+      "file": "assets/icon_traveler_borderless.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_breezy",
+      "tags": [
+        "mood",
+        "breezy"
+      ],
+      "file": "assets/mood_breezy.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_confetti",
+      "tags": [
+        "mood",
+        "confetti"
+      ],
+      "file": "assets/mood_confetti.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_friends",
+      "tags": [
+        "mood",
+        "friends"
+      ],
+      "file": "assets/mood_friends.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_laugh",
+      "tags": [
+        "mood",
+        "laugh"
+      ],
+      "file": "assets/mood_laugh.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_party",
+      "tags": [
+        "mood",
+        "party"
+      ],
+      "file": "assets/mood_party.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_relief",
+      "tags": [
+        "mood",
+        "relief"
+      ],
+      "file": "assets/mood_relief.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_splash",
+      "tags": [
+        "mood",
+        "splash"
+      ],
+      "file": "assets/mood_splash.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "mood_wild",
+      "tags": [
+        "mood",
+        "wild"
+      ],
+      "file": "assets/mood_wild.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_clapper",
+      "tags": [
+        "panic",
+        "clapper"
+      ],
+      "file": "assets/panic_clapper.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_laugh",
+      "tags": [
+        "panic",
+        "laugh"
+      ],
+      "file": "assets/panic_laugh.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_rocket",
+      "tags": [
+        "panic",
+        "rocket"
+      ],
+      "file": "assets/panic_rocket.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_swirl",
+      "tags": [
+        "panic",
+        "swirl"
+      ],
+      "file": "assets/panic_swirl.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_whistle",
+      "tags": [
+        "panic",
+        "whistle"
+      ],
+      "file": "assets/panic_whistle.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "panic_zigzag",
+      "tags": [
+        "panic",
+        "zigzag"
+      ],
+      "file": "assets/panic_zigzag.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_air_guitar",
+      "tags": [
+        "prompt",
+        "air",
+        "guitar"
+      ],
+      "file": "assets/prompt_air_guitar.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_banana_phone",
+      "tags": [
+        "prompt",
+        "banana",
+        "phone"
+      ],
+      "file": "assets/prompt_banana_phone.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_bell_slap",
+      "tags": [
+        "prompt",
+        "bell",
+        "slap"
+      ],
+      "file": "assets/prompt_bell_slap.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_cat_dj",
+      "tags": [
+        "prompt",
+        "cat",
+        "dj"
+      ],
+      "file": "assets/prompt_cat_dj.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_cheek_puff",
+      "tags": [
+        "prompt",
+        "cheek",
+        "puff"
+      ],
+      "file": "assets/prompt_cheek_puff.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_cup_flip",
+      "tags": [
+        "prompt",
+        "cup",
+        "flip"
+      ],
+      "file": "assets/prompt_cup_flip.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_golden_sock",
+      "tags": [
+        "prompt",
+        "golden",
+        "sock"
+      ],
+      "file": "assets/prompt_golden_sock.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_mirror_toast",
+      "tags": [
+        "prompt",
+        "mirror",
+        "toast"
+      ],
+      "file": "assets/prompt_mirror_toast.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_penguin_bartender",
+      "tags": [
+        "prompt",
+        "penguin",
+        "bartender"
+      ],
+      "file": "assets/prompt_penguin_bartender.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_pizza_crown",
+      "tags": [
+        "prompt",
+        "pizza",
+        "crown"
+      ],
+      "file": "assets/prompt_pizza_crown.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_rocket_vs_snail",
+      "tags": [
+        "prompt",
+        "rocket",
+        "vs",
+        "snail"
+      ],
+      "file": "assets/prompt_rocket_vs_snail.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_same_hat",
+      "tags": [
+        "prompt",
+        "same",
+        "hat"
+      ],
+      "file": "assets/prompt_same_hat.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_shark_vs_taco",
+      "tags": [
+        "prompt",
+        "shark",
+        "vs",
+        "taco"
+      ],
+      "file": "assets/prompt_shark_vs_taco.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_silhouette_cactus_dancer",
+      "tags": [
+        "prompt",
+        "silhouette",
+        "cactus",
+        "dancer"
+      ],
+      "file": "assets/prompt_silhouette_cactus_dancer.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_silhouette_tall_hat",
+      "tags": [
+        "prompt",
+        "silhouette",
+        "tall",
+        "hat"
+      ],
+      "file": "assets/prompt_silhouette_tall_hat.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_soda_fizz",
+      "tags": [
+        "prompt",
+        "soda",
+        "fizz"
+      ],
+      "file": "assets/prompt_soda_fizz.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_tiny_trophy",
+      "tags": [
+        "prompt",
+        "tiny",
+        "trophy"
+      ],
+      "file": "assets/prompt_tiny_trophy.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_toast_cloud",
+      "tags": [
+        "prompt",
+        "toast",
+        "cloud"
+      ],
+      "file": "assets/prompt_toast_cloud.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_toast_globe",
+      "tags": [
+        "prompt",
+        "toast",
+        "globe"
+      ],
+      "file": "assets/prompt_toast_globe.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "prompt_wide_eyes",
+      "tags": [
+        "prompt",
+        "wide",
+        "eyes"
+      ],
+      "file": "assets/prompt_wide_eyes.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_cheers",
+      "tags": [
+        "stamp",
+        "cheers"
+      ],
+      "file": "assets/stamp_cheers.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_firework",
+      "tags": [
+        "stamp",
+        "firework"
+      ],
+      "file": "assets/stamp_firework.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_laugh",
+      "tags": [
+        "stamp",
+        "laugh"
+      ],
+      "file": "assets/stamp_laugh.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_moon",
+      "tags": [
+        "stamp",
+        "moon"
+      ],
+      "file": "assets/stamp_moon.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_party",
+      "tags": [
+        "stamp",
+        "party"
+      ],
+      "file": "assets/stamp_party.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_rocket",
+      "tags": [
+        "stamp",
+        "rocket"
+      ],
+      "file": "assets/stamp_rocket.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_smile",
+      "tags": [
+        "stamp",
+        "smile"
+      ],
+      "file": "assets/stamp_smile.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_star",
+      "tags": [
+        "stamp",
+        "star"
+      ],
+      "file": "assets/stamp_star.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_sun",
+      "tags": [
+        "stamp",
+        "sun"
+      ],
+      "file": "assets/stamp_sun.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "stamp_wave",
+      "tags": [
+        "stamp",
+        "wave"
+      ],
+      "file": "assets/stamp_wave.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_borderless_travel",
+      "tags": [
+        "theme",
+        "borderless",
+        "travel"
+      ],
+      "file": "assets/theme_borderless_travel.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_cheer_route",
+      "tags": [
+        "theme",
+        "cheer",
+        "route"
+      ],
+      "file": "assets/theme_cheer_route.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_escape_wave",
+      "tags": [
+        "theme",
+        "escape",
+        "wave"
+      ],
+      "file": "assets/theme_escape_wave.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_fun_passport",
+      "tags": [
+        "theme",
+        "fun",
+        "passport"
+      ],
+      "file": "assets/theme_fun_passport.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_party_route",
+      "tags": [
+        "theme",
+        "party",
+        "route"
+      ],
+      "file": "assets/theme_party_route.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
+    },
+    {
+      "id": "theme_stamp_collect",
+      "tags": [
+        "theme",
+        "stamp",
+        "collect"
+      ],
+      "file": "assets/theme_stamp_collect.svg",
+      "license": "CC0",
+      "source_url": "local://generated",
+      "evidence_file": "licenses/generated_cc0.png",
+      "license_checked_at": "2026-01-28"
     }
   ]
 }

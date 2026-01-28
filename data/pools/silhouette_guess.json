@@ -1,6 +1,8 @@
 {
   "type": "silhouette_guess",
   "question_ids": [
+    "q_sg_01",
+    "q_sg_02",
     "q_silhouette_guess_01"
   ],
   "scene_ids": [

@@ -1,6 +1,8 @@
 {
   "type": "drunk_reflex",
   "question_ids": [
+    "q_dr_01",
+    "q_dr_02",
     "q_drunk_reflex_01"
   ],
   "scene_ids": [

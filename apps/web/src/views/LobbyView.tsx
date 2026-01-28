@@ -90,6 +90,7 @@ export default function LobbyView() {
   const selfAssetSrc = getAssetUrl(selfAssetId);
   const canStart = isHost && phase === "lobby";
   const startDisabled = isHost ? !canStart : false;
+  const startLabel = isHost ? "Start" : "Ready";
 
   useEffect(() => {
     if (roomCode) {
@@ -177,8 +178,14 @@ export default function LobbyView() {
       </div>
 
       <div className={styles.hintRow}>
-        <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
-        <span className={`${styles.hintChip} ${styles.hintTap}`} />
+        <div className={styles.hintItem}>
+          <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
+          <span className={styles.hintLabel}>Swipe</span>
+        </div>
+        <div className={styles.hintItem}>
+          <span className={`${styles.hintChip} ${styles.hintTap}`} />
+          <span className={styles.hintLabel}>Tap</span>
+        </div>
       </div>
 
       <div className={styles.countdown}>
@@ -200,6 +207,7 @@ export default function LobbyView() {
         >
           <span className={styles.startIcon} />
         </button>
+        <span className={styles.startLabel}>{startLabel}</span>
       </div>
 
       <div className={styles.soundToggle}>

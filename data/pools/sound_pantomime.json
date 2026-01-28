@@ -1,6 +1,8 @@
 {
   "type": "sound_pantomime",
   "question_ids": [
+    "q_sp_01",
+    "q_sp_02",
     "q_sound_pantomime_01"
   ],
   "scene_ids": [

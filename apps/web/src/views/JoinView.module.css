@@ -43,6 +43,13 @@
   justify-items: center;
 }
 
+.iconLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .iconBubble {
   width: 48px;
   height: 48px;
