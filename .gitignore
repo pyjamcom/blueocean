@@ -33,6 +33,7 @@ docs/*
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html
+data/pixabay_api_cache.json
 scripts/archive_csv.py
 scripts/build_cc0_meme_galleries.py
 scripts/check_compliance.py

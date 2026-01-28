@@ -84,7 +84,7 @@
     }
   ],
   "$defs": {
-    "assetId": {"type": "string", "pattern": "^[0-9]+$"},
+    "assetId": {"type": "string", "pattern": "^(?:[0-9]+|meme_[0-9]+)$"},
     "url": {"type": "string", "format": "uri"},
     "assetRef": {
       "anyOf": [

@@ -22,6 +22,14 @@ function isUrl(value) {
   return /^https?:\/\//i.test(value);
 }
 
+function isMemeId(value) {
+  return /^meme_[0-9]+$/.test(value);
+}
+
+function isRelativeMemePath(value) {
+  return value.startsWith("/memes/");
+}
+
 function hasLetters(value) {
   return /[A-Za-z]/.test(value);
 }
@@ -32,7 +40,7 @@ function collectAssetIdIssues(question) {
     if (!value || typeof value !== "string") {
       return;
     }
-    if (isUrl(value)) {
+    if (isUrl(value) || isMemeId(value) || isRelativeMemePath(value)) {
       return;
     }
     if (hasLetters(value)) {

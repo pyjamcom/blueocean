@@ -396,6 +396,5478 @@
       "humor_tag": "reward",
       "duration_ms": 6000,
       "trophy_stamp_id": "1201"
+    },
+    {
+      "id": "q_meme_0001",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000001",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000002",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000003",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000004",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000005",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0002",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000006",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000007",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000008",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000009",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000010",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0003",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000011",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000012",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000013",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000014",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000015",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0004",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000016",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000017",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000018",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000019",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000020",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0005",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000021",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000022",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000023",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000024",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000025",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0006",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000026",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000027",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000028",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000029",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000030",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0007",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000031",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000032",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000033",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000034",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000035",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0008",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000036",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000037",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000038",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000039",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000040",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0009",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000041",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000042",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000043",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000044",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000045",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0010",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000046",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000047",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000048",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000049",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000050",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0011",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000051",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000052",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000053",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000054",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000055",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0012",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000056",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000057",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000058",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000059",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000060",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0013",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000061",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000062",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000063",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000064",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000065",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0014",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000066",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000067",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000068",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000069",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000070",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0015",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000071",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000072",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000073",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000074",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000075",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0016",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000076",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000077",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000078",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000079",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000080",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0017",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000081",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000082",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000083",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000084",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000085",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0018",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000086",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000087",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000088",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000089",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000090",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0019",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000091",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000092",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000093",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000094",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000095",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0020",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000096",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000097",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000098",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000099",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000100",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0021",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000101",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000102",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000103",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000104",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000105",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0022",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000106",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000107",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000108",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000109",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000110",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0023",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000111",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000112",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000113",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000114",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000115",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0024",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000116",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000117",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000118",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000119",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000120",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0025",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000121",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000122",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000123",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000124",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000125",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0026",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000126",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000127",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000128",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000129",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000130",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0027",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000131",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000132",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000133",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000134",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000135",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0028",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000136",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000137",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000138",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000139",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000140",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0029",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000141",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000142",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000143",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000144",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000145",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0030",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000146",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000147",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000148",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000149",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000150",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0031",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000151",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000152",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000153",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000154",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000155",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0032",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000156",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000157",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000158",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000159",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000160",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0033",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000161",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000162",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000163",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000164",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000165",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0034",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000166",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000167",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000168",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000169",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000170",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0035",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000171",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000172",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000173",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000174",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000175",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0036",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000176",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000177",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000178",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000179",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000180",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0037",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000181",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000182",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000183",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000184",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000185",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0038",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000186",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000187",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000188",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000189",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000190",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0039",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000191",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000192",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000193",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000194",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000195",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0040",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000196",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000197",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000198",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000199",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000200",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0041",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000201",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000202",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000203",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000204",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000205",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0042",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000206",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000207",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000208",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000209",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000210",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0043",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000211",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000212",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000213",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000214",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000215",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0044",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000216",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000217",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000218",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000219",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000220",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0045",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000221",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000222",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000223",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000224",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000225",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0046",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000226",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000227",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000228",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000229",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000230",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0047",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000231",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000232",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000233",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000234",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000235",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0048",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000236",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000237",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000238",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000239",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000240",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0049",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000241",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000242",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000243",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000244",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000245",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0050",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000246",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000247",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000248",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000249",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000250",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0051",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000251",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000252",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000253",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000254",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000255",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0052",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000256",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000257",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000258",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000259",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000260",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0053",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000261",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000262",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000263",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000264",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000265",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0054",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000266",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000267",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000268",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000269",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000270",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0055",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000271",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000272",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000273",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000274",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000275",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0056",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000276",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000277",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000278",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000279",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000280",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0057",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000281",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000282",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000283",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000284",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000285",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0058",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000286",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000287",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000288",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000289",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000290",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0059",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000291",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000292",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000293",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000294",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000295",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0060",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000296",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000297",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000298",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000299",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000300",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0061",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000301",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000302",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000303",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000304",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000305",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0062",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000306",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000307",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000308",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000309",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000310",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0063",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000311",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000312",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000313",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000314",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000315",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0064",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000316",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000317",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000318",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000319",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000320",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0065",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000321",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000322",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000323",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000324",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000325",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0066",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000326",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000327",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000328",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000329",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000330",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0067",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000331",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000332",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000333",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000334",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000335",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0068",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000336",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000337",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000338",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000339",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000340",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0069",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000341",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000342",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000343",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000344",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000345",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0070",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000346",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000347",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000348",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000349",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000350",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0071",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000351",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000352",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000353",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000354",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000355",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0072",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000356",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000357",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000358",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000359",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000360",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0073",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000361",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000362",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000363",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000364",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000365",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0074",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000366",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000367",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000368",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000369",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000370",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0075",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000371",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000372",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000373",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000374",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000375",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0076",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000376",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000377",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000378",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000379",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000380",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0077",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000381",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000382",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000383",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000384",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000385",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0078",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000386",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000387",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000388",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000389",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000390",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0079",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000391",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000392",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000393",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000394",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000395",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0080",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000396",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000397",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000398",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000399",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000400",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0081",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000401",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000402",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000403",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000404",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000405",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0082",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000406",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000407",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000408",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000409",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000410",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0083",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000411",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000412",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000413",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000414",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000415",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0084",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000416",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000417",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000418",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000419",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000420",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0085",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000421",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000422",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000423",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000424",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000425",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0086",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000426",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000427",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000428",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000429",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000430",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0087",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000431",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000432",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000433",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000434",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000435",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0088",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000436",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000437",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000438",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000439",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000440",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0089",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000441",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000442",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000443",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000444",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000445",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0090",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000446",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000447",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000448",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000449",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000450",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0091",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000451",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000452",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000453",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000454",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000455",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0092",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000456",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000457",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000458",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000459",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000460",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0093",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000461",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000462",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000463",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000464",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000465",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0094",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000466",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000467",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000468",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000469",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000470",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0095",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000471",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000472",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000473",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000474",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000475",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0096",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000476",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000477",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000478",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000479",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000480",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0097",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000481",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000482",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000483",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000484",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000485",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0098",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000486",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000487",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000488",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000489",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000490",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0099",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000491",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000492",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000493",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000494",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000495",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0100",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000496",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000497",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000498",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000499",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000500",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0101",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000501",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000502",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000503",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000504",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000505",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0102",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000506",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000507",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000508",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000509",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000510",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0103",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000511",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000512",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000513",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000514",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000515",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0104",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000516",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000517",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000518",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000519",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000520",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0105",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000521",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000522",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000523",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000524",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000525",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0106",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000526",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000527",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000528",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000529",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000530",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0107",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000531",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000532",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000533",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000534",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000535",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0108",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000536",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000537",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000538",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000539",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000540",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0109",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000541",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000542",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000543",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000544",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000545",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0110",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000546",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000547",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000548",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000549",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000550",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0111",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000551",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000552",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000553",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000554",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000555",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0112",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000556",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000557",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000558",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000559",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000560",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0113",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000561",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000562",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000563",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000564",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000565",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0114",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000566",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000567",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000568",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000569",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000570",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0115",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000571",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000572",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000573",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000574",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000575",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0116",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000576",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000577",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000578",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000579",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000580",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0117",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000581",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000582",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000583",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000584",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000585",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0118",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000586",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000587",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000588",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000589",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000590",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0119",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000591",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000592",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000593",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000594",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000595",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0120",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000596",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000597",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000598",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000599",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000600",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0121",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000601",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000602",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000603",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000604",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000605",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0122",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000606",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000607",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000608",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000609",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000610",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0123",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000611",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000612",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000613",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000614",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000615",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0124",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000616",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000617",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000618",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000619",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000620",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0125",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000621",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000622",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000623",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000624",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000625",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0126",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000626",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000627",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000628",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000629",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000630",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0127",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000631",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000632",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000633",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000634",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000635",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0128",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000636",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000637",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000638",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000639",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000640",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0129",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000641",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000642",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000643",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000644",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000645",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0130",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000646",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000647",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000648",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000649",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000650",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0131",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000651",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000652",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000653",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000654",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000655",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0132",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000656",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000657",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000658",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000659",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000660",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0133",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000661",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000662",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000663",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000664",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000665",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0134",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000666",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000667",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000668",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000669",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000670",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0135",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000671",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000672",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000673",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000674",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000675",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0136",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000676",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000677",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000678",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000679",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000680",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0137",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000681",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000682",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000683",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000684",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000685",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0138",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000686",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000687",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000688",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000689",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000690",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0139",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000691",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000692",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000693",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000694",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000695",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0140",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000696",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000697",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000698",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000699",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000700",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0141",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000701",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000702",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000703",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000704",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000705",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 0,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0142",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000706",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000707",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000708",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000709",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000710",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 1,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0143",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000711",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000712",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000713",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000714",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000715",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 2,
+      "humor_tag": "meme",
+      "duration_ms": 6000
+    },
+    {
+      "id": "q_meme_0144",
+      "category": "visual_provocation",
+      "prompt_image": "meme_000716",
+      "answers": [
+        {
+          "id": "a1",
+          "asset_id": "meme_000717",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a2",
+          "asset_id": "meme_000718",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a3",
+          "asset_id": "meme_000719",
+          "tags": [
+            "meme"
+          ]
+        },
+        {
+          "id": "a4",
+          "asset_id": "meme_000720",
+          "tags": [
+            "meme"
+          ]
+        }
+      ],
+      "correct_index": 3,
+      "humor_tag": "meme",
+      "duration_ms": 6000
     }
   ]
 }
