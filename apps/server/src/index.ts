@@ -162,6 +162,8 @@ interface RateBucket {
 
 type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
 const allowedPhases = new Set<RoomPhase>(["join", "lobby", "round", "reveal", "leaderboard", "end"]);
+const isRoomPhase = (value: unknown): value is RoomPhase =>
+  typeof value === "string" && allowedPhases.has(value as RoomPhase);
 
 interface StagePayload {
   roomCode: string;
@@ -737,9 +739,9 @@ wss.on("connection", (socket, request) => {
 
       if (type === "stage") {
         const stagePayload = payload as any;
-        const phase = stagePayload?.phase as string | undefined;
+        const phase = stagePayload?.phase;
         const roomCode = stagePayload?.roomCode as string | undefined;
-        if (!roomCode || !phase || !allowedPhases.has(phase)) {
+        if (!roomCode || !isRoomPhase(phase)) {
           send(socket, { type: "error", errors: [{ message: "invalid stage" }] });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage" });
           return;
