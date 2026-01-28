@@ -388,11 +388,6 @@ wss.on("connection", (socket, request) => {
           }
           const room = getOrCreateRoom(joinPayload.roomCode);
           touchRoom(room);
-          if (room.locked) {
-            logIncident({ at: Date.now(), type: "room_locked", ip: state.ip, roomCode: room.code });
-            metrics.joinFail += 1;
-            return;
-          }
           let isHost = false;
           if (!room.hostId) {
             room.hostId = joinPayload.playerId;
@@ -612,10 +607,7 @@ wss.on("connection", (socket, request) => {
         answerCooldowns.set(cooldownKey, Date.now());
         const room = rooms.get(answerPayload.roomCode);
         if (room) {
-          room.locked = true;
           touchRoom(room);
-        }
-        if (room) {
           const questionIndex =
             typeof answerPayload.questionIndex === "number"
               ? answerPayload.questionIndex

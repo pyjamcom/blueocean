@@ -36,8 +36,6 @@ export default function JoinView() {
   const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
   const showQr = !codeParam;
-  const caption = showQr ? "Scan" : "Wait";
-
   useEffect(() => {
     joinRoom(codeParam ?? undefined, avatarId);
   }, [avatarId, codeParam, joinRoom]);
@@ -83,19 +81,15 @@ export default function JoinView() {
       <div className={styles.qrFrame}>
         {qrSrc && showQr ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
       </div>
-      <div className={styles.caption}>{caption}</div>
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconScan}`} />
-          <span className={styles.iconLabel}>Scan</span>
+          <div className={`${styles.iconBubble} ${styles.iconScan}`} aria-label="scan" />
         </div>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconTap}`} />
-          <span className={styles.iconLabel}>Tap</span>
+          <div className={`${styles.iconBubble} ${styles.iconAvatar}`} aria-label="avatar" />
         </div>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconGroup}`} />
-          <span className={styles.iconLabel}>Group</span>
+          <div className={`${styles.iconBubble} ${styles.iconPlay}`} aria-label="play" />
         </div>
       </div>
     </div>

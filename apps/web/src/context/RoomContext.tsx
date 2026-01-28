@@ -222,7 +222,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [flushJoin, wsStatus]);
 
   const joinRoom = useCallback(
-    (requestedRoom?: string, avatarId = "avatar_disco_sloth") => {
+    (requestedRoom?: string, avatarId = "avatar_raccoon_dj") => {
       const room = requestedRoom ?? randomId(4);
       pendingJoinRef.current = { roomCode: room, avatarId };
       flushJoin();

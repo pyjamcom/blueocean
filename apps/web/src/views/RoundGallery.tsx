@@ -130,7 +130,6 @@ export default function RoundGallery() {
   const activeQuestion = questionBank[questionIndex];
   const revealState = phase === "reveal" ? "reveal" : "idle";
   const now = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt]);
-  const instruction = phase === "round" ? "Tap" : "Wait";
 
   useEffect(() => {
     setSelectedIndex(null);
@@ -178,7 +177,6 @@ export default function RoundGallery() {
         <span className={`${styles.hintChip} ${styles.hintTap}`} />
         <span className={`${styles.hintChip} ${styles.hintTimer}`} />
       </div>
-      <div className={styles.instruction}>{instruction}</div>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export interface UseJoinRoomOptions {
   avatarId?: string;
 }
 
-export function useJoinRoom({ roomCode, avatarId = "avatar_disco_sloth" }: UseJoinRoomOptions) {
+export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj" }: UseJoinRoomOptions) {
   const [joinedRoom, setJoinedRoom] = useState<string | null>(null);
   const [errors, setErrors] = useState<unknown[]>([]);
 

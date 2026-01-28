@@ -70,13 +70,6 @@
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
 }
 
-.selfLabel {
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.75);
-}
 
 .selfAvatarCore {
   width: 92px;
@@ -152,12 +145,6 @@
   background-size: contain;
 }
 
-.startLabel {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-}
 
 .soundToggle {
   position: absolute;

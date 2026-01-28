@@ -96,7 +96,6 @@ export default function ResultView() {
           >
             <span className={styles.iconShare} />
           </button>
-          <span className={styles.actionLabel}>Share</span>
         </div>
         <div className={styles.actionItem}>
           <button
@@ -107,11 +106,9 @@ export default function ResultView() {
           >
             <span className={styles.iconSave} />
           </button>
-          <span className={styles.actionLabel}>Save</span>
         </div>
         <div className={styles.actionItem}>
           <NextRoundButton onClick={() => trackEvent("replay_click")} />
-          <span className={styles.actionLabel}>Next</span>
         </div>
       </div>
     </div>

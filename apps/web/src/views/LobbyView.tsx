@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
 import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
-import { AVATAR_IDS, avatarColor } from "../utils/avatar";
+import { AVATAR_IDS, avatarColor, avatarIconIndex } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
 
@@ -84,11 +84,10 @@ export default function LobbyView() {
   const selfPlayer = players.find((player) => player.id === playerId);
   const selfReady = selfPlayer?.ready ?? false;
   const selfAssetId = lobbyAssets.length
-    ? lobbyAssets[avatarIndex % lobbyAssets.length]
+    ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
     : undefined;
   const selfAssetSrc = getAssetUrl(selfAssetId);
   const canStart = isHost && phase === "lobby";
-  const startLabel = isHost ? "Start" : "Ready";
   const startDisabled = isHost ? !canStart : false;
 
   useEffect(() => {
@@ -109,21 +108,31 @@ export default function LobbyView() {
       </div>
 
       <div className={styles.players}>
-        {players.map((player) => (
-          <div
-            key={player.id}
-            className={styles.player}
-          >
+        {players.map((player) => {
+          const playerAssetId = lobbyAssets.length
+            ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
+            : undefined;
+          const playerAssetSrc = getAssetUrl(playerAssetId);
+          return (
             <div
-              className={styles.playerAvatar}
-              style={{
-                background: avatarColor(player.avatarId),
-              }}
-              aria-label={player.avatarId}
-            />
-            {player.ready && <span className={styles.readyRing} />}
-          </div>
-        ))}
+              key={player.id}
+              className={styles.player}
+            >
+              <div
+                className={styles.playerAvatar}
+                style={{
+                  background: avatarColor(player.avatarId),
+                  backgroundImage: `url(${playerAssetSrc})`,
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "70%",
+                }}
+                aria-label={player.avatarId}
+              />
+              {player.ready && <span className={styles.readyRing} />}
+            </div>
+          );
+        })}
       </div>
 
       <div
@@ -144,7 +153,6 @@ export default function LobbyView() {
         />
         <span className={styles.selfPulse} />
       </div>
-      <div className={styles.selfLabel}>Tap</div>
 
       <div className={styles.hintRow}>
         <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
@@ -170,7 +178,6 @@ export default function LobbyView() {
         >
           <span className={styles.startIcon} />
         </button>
-        <div className={styles.startLabel}>{startLabel}</div>
       </div>
 
       <div className={styles.soundToggle}>

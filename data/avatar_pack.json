@@ -2,136 +2,154 @@
   "version": 1,
   "avatars": [
     {
-      "id": "avatar_disco_sloth",
-      "description": "Sloth with disco jacket and sparkle aura, big smile.",
+      "id": "avatar_raccoon_dj",
+      "description": "Raccoon DJ with headphones.",
       "tags": ["animal", "party", "funny"]
     },
     {
-      "id": "avatar_laughing_llama",
-      "description": "Llama laughing with cheeks puffed, colorful scarf.",
-      "tags": ["animal", "silly", "party"]
+      "id": "avatar_panda_disco",
+      "description": "Disco panda with sparkle vibe.",
+      "tags": ["animal", "party", "funny"]
     },
     {
-      "id": "avatar_pizza_hero",
-      "description": "Pizza slice with cape and heroic pose.",
-      "tags": ["food", "hero", "absurd"]
+      "id": "avatar_cat_bartender",
+      "description": "Cat bartender with shaker.",
+      "tags": ["animal", "party", "funny"]
     },
     {
-      "id": "avatar_wild_toucan",
-      "description": "Toucan with oversized beak, wink and head tilt.",
-      "tags": ["animal", "silly", "colorful"]
+      "id": "avatar_llama_sax",
+      "description": "Llama playing sax.",
+      "tags": ["animal", "music", "funny"]
     },
     {
-      "id": "avatar_party_octopus",
-      "description": "Octopus juggling cups with happy eyes.",
-      "tags": ["animal", "party", "absurd"]
+      "id": "avatar_koala_sleepy",
+      "description": "Sleepy koala with pillow.",
+      "tags": ["animal", "chill", "funny"]
     },
     {
-      "id": "avatar_space_cactus",
-      "description": "Cactus in bubble helmet, floating pose.",
-      "tags": ["absurd", "space", "funny"]
+      "id": "avatar_octopus_juggler",
+      "description": "Octopus juggling props.",
+      "tags": ["animal", "absurd", "party"]
     },
     {
-      "id": "avatar_raccoon_sneak",
-      "description": "Raccoon with mask and sneaky grin.",
-      "tags": ["animal", "mischief", "funny"]
+      "id": "avatar_goose_conductor",
+      "description": "Goose conductor with baton.",
+      "tags": ["animal", "music", "funny"]
     },
     {
-      "id": "avatar_penguin_chef",
-      "description": "Penguin with chef hat and spatula, playful stance.",
-      "tags": ["animal", "food", "silly"]
+      "id": "avatar_capybara_chill",
+      "description": "Capybara chilling in beanbag.",
+      "tags": ["animal", "chill", "funny"]
     },
     {
-      "id": "avatar_banana_king",
-      "description": "Banana wearing crown, royal pose.",
+      "id": "avatar_robot_party",
+      "description": "Party robot with neon eyes.",
+      "tags": ["robot", "party", "absurd"]
+    },
+    {
+      "id": "avatar_penguin_mic",
+      "description": "Penguin with microphone.",
+      "tags": ["animal", "music", "party"]
+    },
+    {
+      "id": "avatar_sushi_samurai",
+      "description": "Sushi roll samurai.",
       "tags": ["food", "absurd", "funny"]
     },
     {
-      "id": "avatar_rocket_snail",
-      "description": "Snail with tiny rocket booster, surprised face.",
-      "tags": ["animal", "absurd", "cute"]
+      "id": "avatar_taco_dancer",
+      "description": "Dancing taco with sparks.",
+      "tags": ["food", "party", "funny"]
     },
     {
-      "id": "avatar_bubble_fish",
-      "description": "Fish inside bubble helmet, wide eyes.",
-      "tags": ["animal", "water", "funny"]
+      "id": "avatar_croissant_skater",
+      "description": "Croissant on a skateboard.",
+      "tags": ["food", "sport", "funny"]
     },
     {
-      "id": "avatar_toaster_bot",
-      "description": "Toaster with tiny arms and happy face.",
-      "tags": ["object", "robot", "funny"]
+      "id": "avatar_pineapple_king",
+      "description": "Pineapple with a crown.",
+      "tags": ["food", "absurd", "funny"]
     },
     {
-      "id": "avatar_cloud_rider",
-      "description": "Smiling cloud riding a tiny skateboard.",
-      "tags": ["absurd", "funny", "party"]
+      "id": "avatar_lemon_skater",
+      "description": "Lemon skating fast.",
+      "tags": ["food", "sport", "funny"]
     },
     {
-      "id": "avatar_donut_knight",
-      "description": "Donut with helmet and small shield.",
-      "tags": ["food", "hero", "absurd"]
-    }
-  ],
-  "accessories": [
-    {
-      "id": "acc_party_hat",
-      "description": "Cone party hat with pom, bright colors.",
-      "tags": ["hat", "party"]
+      "id": "avatar_donut_magician",
+      "description": "Donut magician with top hat.",
+      "tags": ["food", "absurd", "funny"]
     },
     {
-      "id": "acc_top_hat",
-      "description": "Tall top hat, classic silhouette.",
-      "tags": ["hat", "classic"]
+      "id": "avatar_cupcake_magician",
+      "description": "Cupcake magician with stars.",
+      "tags": ["food", "absurd", "party"]
     },
     {
-      "id": "acc_bucket_hat",
-      "description": "Bucket hat, rounded brim.",
-      "tags": ["hat", "casual"]
+      "id": "avatar_whale_dj",
+      "description": "Whale DJ with waves.",
+      "tags": ["animal", "music", "party"]
     },
     {
-      "id": "acc_wizard_hat",
-      "description": "Pointy wizard hat with star pattern.",
-      "tags": ["hat", "absurd"]
+      "id": "avatar_owl_bartender",
+      "description": "Owl bartender with tray.",
+      "tags": ["animal", "party", "funny"]
     },
     {
-      "id": "acc_sunglasses",
-      "description": "Oversized sunglasses, simple frame.",
-      "tags": ["glasses", "cool"]
+      "id": "avatar_flamingo_guitarist",
+      "description": "Flamingo playing guitar.",
+      "tags": ["animal", "music", "funny"]
     },
     {
-      "id": "acc_goggles",
-      "description": "Round goggles with strap.",
-      "tags": ["glasses", "funny"]
+      "id": "avatar_duck_detective",
+      "description": "Duck detective with coat.",
+      "tags": ["animal", "funny", "absurd"]
     },
     {
-      "id": "acc_mustache",
-      "description": "Curly mustache sticker.",
-      "tags": ["face", "funny"]
+      "id": "avatar_dog_surfer",
+      "description": "Dog riding a wave.",
+      "tags": ["animal", "sport", "funny"]
     },
     {
-      "id": "acc_foam_finger",
-      "description": "Giant foam finger pointing up.",
-      "tags": ["party", "gesture"]
+      "id": "avatar_fox_mailman",
+      "description": "Fox mail carrier with bag.",
+      "tags": ["animal", "funny", "absurd"]
     },
     {
-      "id": "acc_confetti_crown",
-      "description": "Crown made of confetti pieces.",
-      "tags": ["party", "crown"]
+      "id": "avatar_panda_tourist",
+      "description": "Panda tourist with camera.",
+      "tags": ["animal", "travel", "funny"]
     },
     {
-      "id": "acc_headphones",
-      "description": "Big headphones, simple shapes.",
-      "tags": ["music", "party"]
+      "id": "avatar_cactus_rocker",
+      "description": "Cactus rocking a guitar.",
+      "tags": ["absurd", "music", "funny"]
     },
     {
-      "id": "acc_cheek_stars",
-      "description": "Star stickers on cheeks.",
-      "tags": ["face", "funny"]
+      "id": "avatar_brain_cook",
+      "description": "Brain chef with hat.",
+      "tags": ["absurd", "food", "funny"]
     },
     {
-      "id": "acc_cape",
-      "description": "Short cape for hero vibe.",
-      "tags": ["hero", "absurd"]
+      "id": "avatar_dino_skate",
+      "description": "Dino skating in sneakers.",
+      "tags": ["animal", "sport", "funny"]
+    },
+    {
+      "id": "avatar_avocado_drummer",
+      "description": "Avocado drummer with sticks.",
+      "tags": ["food", "music", "party"]
+    },
+    {
+      "id": "avatar_banana_rocket",
+      "description": "Banana rocket launch.",
+      "tags": ["food", "absurd", "funny"]
+    },
+    {
+      "id": "avatar_shrimp_king",
+      "description": "Shrimp king with crown.",
+      "tags": ["animal", "absurd", "funny"]
     }
   ]
 }

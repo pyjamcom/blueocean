@@ -19,12 +19,6 @@
   gap: 6px;
 }
 
-.actionLabel {
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
-}
 
 .actionButton {
   width: 64px;

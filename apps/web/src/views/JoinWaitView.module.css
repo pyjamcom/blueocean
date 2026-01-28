@@ -36,10 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.caption {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.75);
-}

@@ -41,22 +41,6 @@
 .iconItem {
   display: grid;
   justify-items: center;
-  gap: 6px;
-}
-
-.iconLabel {
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.caption {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-  z-index: 2;
 }
 
 .iconBubble {
@@ -74,13 +58,14 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round'><path d='M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4'/></svg>");
 }
 
-.iconTap {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'><circle cx='12' cy='12' r='3'/><circle cx='12' cy='12' r='8'/></svg>");
+.iconAvatar {
+  background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='9' r='4'/><path d='M4.5 20c1.5-3 4.5-4.5 7.5-4.5s6 1.5 7.5 4.5'/></svg>\");
 }
 
-.iconGroup {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><circle cx='7' cy='10' r='3'/><circle cx='17' cy='10' r='3'/><circle cx='12' cy='15' r='3'/></svg>");
+.iconPlay {
+  background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><polygon points='7,5 20,12 7,19'/></svg>\");
 }
+
 
 .pulse {
   position: absolute;
