@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { trackEvent } from "../utils/analytics";
+import { playWin } from "../utils/sfx";
 import styles from "./AnswerGrid.module.css";
 
 export type RevealState = "idle" | "reveal";
@@ -32,6 +33,7 @@ export default function AnswerGrid({
   const [pressedIndex, setPressedIndex] = useState<number | null>(null);
   const [autoShuffle, setAutoShuffle] = useState(false);
   const didVibrateReveal = useRef(false);
+  const didPlayWin = useRef(false);
   const shuffleTimer = useRef<number | null>(null);
 
   const lockInput = () => locked || selectedIndex !== null && selectedIndex !== undefined;
@@ -56,8 +58,13 @@ export default function AnswerGrid({
       }
       didVibrateReveal.current = true;
     }
+    if (revealState === "reveal" && selectedIndex === correctIndex && !didPlayWin.current) {
+      playWin();
+      didPlayWin.current = true;
+    }
     if (revealState !== "reveal") {
       didVibrateReveal.current = false;
+      didPlayWin.current = false;
     }
   }, [revealState, selectedIndex, correctIndex]);
 

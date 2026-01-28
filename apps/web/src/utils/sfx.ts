@@ -32,3 +32,26 @@ export function playTap() {
   osc.start(now);
   osc.stop(now + 0.22);
 }
+
+export function playWin() {
+  if (!isSoundEnabled()) return;
+  const ctx = getContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const gain = ctx.createGain();
+  gain.gain.value = 0.0001;
+  gain.connect(ctx.destination);
+
+  const tones = [740, 880, 1040];
+  tones.forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    const t = now + idx * 0.06;
+    gain.gain.exponentialRampToValueAtTime(0.18, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    osc.start(t);
+    osc.stop(t + 0.14);
+  });
+}

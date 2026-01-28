@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useWsClient } from "../hooks/useWsClient";
 import { randomId, randomPlayerId } from "../utils/ids";
 import { questionBank } from "../data/questions";
+import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
 
 export type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
 
@@ -309,7 +310,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     if (!isHost || phase !== "round" || !roomCode) {
       return clearHostTimers;
     }
-    const question = questionBank[questionIndex];
+    const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
+    const baseQuestion = questionBank[resolvedIndex];
+    const question = baseQuestion
+      ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
+      : undefined;
     const durationMs = question?.duration_ms ?? 6000;
     const startAt = roundStartAt ?? Date.now();
     const remaining = Math.max(0, durationMs - (Date.now() - startAt));

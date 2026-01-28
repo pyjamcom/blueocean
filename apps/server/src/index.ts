@@ -420,7 +420,7 @@ wss.on("connection", (socket, request) => {
             room.players.set(joinPayload.playerId, {
               id: joinPayload.playerId,
               avatarId: joinPayload.avatarId,
-              ready: false,
+              ready: true,
               score: 0,
               correctCount: 0,
               streak: 0,

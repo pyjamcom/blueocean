@@ -37,6 +37,7 @@ export default function LobbyView() {
   const [showQr, setShowQr] = useState(false);
 
   const countdownStart = useMemo(() => Date.now(), []);
+  const autoStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -96,6 +97,27 @@ export default function LobbyView() {
     }
   }, [roomCode, selfAvatar, setAvatar]);
 
+  useEffect(() => {
+    if (autoStartRef.current) {
+      window.clearTimeout(autoStartRef.current);
+      autoStartRef.current = null;
+    }
+    if (!isHost || phase !== "lobby") {
+      return;
+    }
+    autoStartRef.current = window.setTimeout(() => {
+      if (phase === "lobby") {
+        startGame();
+      }
+    }, 6000);
+    return () => {
+      if (autoStartRef.current) {
+        window.clearTimeout(autoStartRef.current);
+        autoStartRef.current = null;
+      }
+    };
+  }, [isHost, phase, startGame]);
+
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
       <div className={styles.countRow}>
@@ -116,7 +138,7 @@ export default function LobbyView() {
           return (
             <div
               key={player.id}
-              className={styles.player}
+              className={`${styles.player} ${styles.playerPulse}`}
             >
               <div
                 className={styles.playerAvatar}

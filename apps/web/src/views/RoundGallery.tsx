@@ -6,6 +6,7 @@ import { prefetchImage } from "../utils/prefetch";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
 import { playTap } from "../utils/sfx";
+import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
 import {
   AbsurdSumView,
   AbsurdToastView,
@@ -125,9 +126,13 @@ function renderQuestionView(
 }
 
 export default function RoundGallery() {
-  const { phase, questionIndex, roundStartAt, sendAnswer } = useRoom();
+  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const activeQuestion = questionBank[questionIndex];
+  const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
+  const baseQuestion = questionBank[resolvedIndex];
+  const activeQuestion = baseQuestion
+    ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
+    : undefined;
   const revealState = phase === "reveal" ? "reveal" : "idle";
   const now = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt]);
 
@@ -142,14 +147,16 @@ export default function RoundGallery() {
   };
 
   const answers = useMemo(
-    () => (activeQuestion ? buildAnswers(activeQuestion) : buildAnswers({
-      id: "fallback",
-      category: "visual_provocation",
-      prompt_image: fallbackSrc,
-      answers: [],
-      correct_index: 0,
-      duration_ms: 6000,
-    })),
+    () => (activeQuestion
+      ? buildAnswers(activeQuestion)
+      : buildAnswers({
+          id: "fallback",
+          category: "visual_provocation",
+          prompt_image: fallbackSrc,
+          answers: [],
+          correct_index: 0,
+          duration_ms: 6000,
+        })),
     [activeQuestion],
   );
 
