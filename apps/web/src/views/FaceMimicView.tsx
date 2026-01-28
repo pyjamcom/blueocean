@@ -33,13 +33,15 @@ export default function FaceMimicView({
           </div>
         ))}
       </div>
-      <AnswerGrid
-        answers={answers}
-        onSelect={onSelect}
-        selectedIndex={selectedIndex}
-        revealState={revealState}
-        correctIndex={correctIndex}
-      />
+      <div className={styles.answerBlock}>
+        <AnswerGrid
+          answers={answers}
+          onSelect={onSelect}
+          selectedIndex={selectedIndex}
+          revealState={revealState}
+          correctIndex={correctIndex}
+        />
+      </div>
     </div>
   );
 }

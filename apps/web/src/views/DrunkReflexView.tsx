@@ -30,13 +30,15 @@ export default function DrunkReflexView({
         <PromptImage src={triggerSrc} fit="contain" ariaLabel="trigger" />
       </div>
       <TimerRing durationMs={durationMs} startAt={timerStart} size={84} />
-      <AnswerGrid
-        answers={answers}
-        onSelect={onSelect}
-        selectedIndex={selectedIndex}
-        revealState={revealState}
-        correctIndex={correctIndex}
-      />
+      <div className={styles.answerBlock}>
+        <AnswerGrid
+          answers={answers}
+          onSelect={onSelect}
+          selectedIndex={selectedIndex}
+          revealState={revealState}
+          correctIndex={correctIndex}
+        />
+      </div>
     </div>
   );
 }

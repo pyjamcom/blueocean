@@ -31,13 +31,15 @@ export default function AbsurdSumView({
           <PromptImage src={rightSrc} fit="contain" ariaLabel="right" />
         </div>
       </div>
-      <AnswerGrid
-        answers={answers}
-        onSelect={onSelect}
-        selectedIndex={selectedIndex}
-        revealState={revealState}
-        correctIndex={correctIndex}
-      />
+      <div className={styles.answerBlock}>
+        <AnswerGrid
+          answers={answers}
+          onSelect={onSelect}
+          selectedIndex={selectedIndex}
+          revealState={revealState}
+          correctIndex={correctIndex}
+        />
+      </div>
     </div>
   );
 }
