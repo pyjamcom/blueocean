@@ -12,6 +12,8 @@ const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
 const COMPLIANCE_LOG_LIMIT = 1000;
 const LOG_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+const TEST_API_ENABLED = process.env.TEST_API_ENABLED === "true";
+const TEST_API_TOKEN = process.env.TEST_API_TOKEN;
 
 app.use(express.json({ limit: "4kb" }));
 
@@ -21,6 +23,29 @@ const corsOrigins = (process.env.CORS_ORIGINS ?? "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 const allowedCorsOrigins = corsOrigins.length > 0 ? corsOrigins : defaultCorsOrigins;
+
+function isTestAuthorized(req: express.Request) {
+  if (!TEST_API_ENABLED) {
+    return false;
+  }
+  if (!TEST_API_TOKEN) {
+    return true;
+  }
+  const headerToken = req.header("x-test-token");
+  const authHeader = req.header("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
+  return headerToken === TEST_API_TOKEN || bearerToken === TEST_API_TOKEN;
+}
+
+const testRouter = express.Router();
+testRouter.use((req, res, next) => {
+  if (!isTestAuthorized(req)) {
+    res.status(TEST_API_ENABLED ? 401 : 404).json({ ok: false, error: "test api disabled" });
+    return;
+  }
+  next();
+});
+app.use("/test", testRouter);
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -136,6 +161,7 @@ interface RateBucket {
 }
 
 type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
+const allowedPhases = new Set<RoomPhase>(["join", "lobby", "round", "reveal", "leaderboard", "end"]);
 
 interface StagePayload {
   roomCode: string;
@@ -344,6 +370,266 @@ function broadcastToRoom(roomCode: string, payload: unknown) {
   });
 }
 
+function ensureRoomStage(room: Room) {
+  if (!room.stage) {
+    room.stage = { roomCode: room.code, phase: "lobby", questionIndex: 0 };
+  }
+  if (typeof room.currentQuestionIndex !== "number") {
+    room.currentQuestionIndex = room.stage.questionIndex ?? 0;
+  }
+}
+
+function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready = true) {
+  const existing = room.players.get(playerId);
+  if (existing) {
+    existing.avatarId = avatarId;
+    existing.ready = ready;
+    return;
+  }
+  room.players.set(playerId, {
+    id: playerId,
+    avatarId,
+    ready,
+    score: 0,
+    correctCount: 0,
+    streak: 0,
+  });
+}
+
+function buildRoomSnapshot(room: Room) {
+  return {
+    roomCode: room.code,
+    hostId: room.hostId,
+    stage: room.stage,
+    currentQuestionIndex: room.currentQuestionIndex,
+    players: buildRoster(room),
+    expiresAt: room.expiresAt,
+  };
+}
+
+function getRoomOrSend(roomCode: string, res: express.Response) {
+  const room = rooms.get(roomCode);
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return null;
+  }
+  return room;
+}
+
+function getPlayerOrSend(room: Room, playerId: string, res: express.Response) {
+  const player = room.players.get(playerId);
+  if (!player) {
+    res.status(404).json({ ok: false, error: "player_not_found" });
+    return null;
+  }
+  return player;
+}
+
+testRouter.get("/rooms", (_req, res) => {
+  res.json({
+    ok: true,
+    rooms: Array.from(rooms.values()).map((room) => buildRoomSnapshot(room)),
+  });
+});
+
+testRouter.post("/rooms", (req, res) => {
+  const roomCode = typeof req.body?.roomCode === "string" ? req.body.roomCode : undefined;
+  const hostId = typeof req.body?.hostId === "string" ? req.body.hostId : `test-host-${Date.now()}`;
+  const avatarId = typeof req.body?.avatarId === "string" ? req.body.avatarId : "avatar_robot_party";
+  const ready = req.body?.ready !== false;
+  const room = getOrCreateRoom(roomCode);
+  if (!room.hostId) {
+    room.hostId = hostId;
+  }
+  addOrUpdatePlayer(room, hostId, avatarId, ready);
+  ensureRoomStage(room);
+  touchRoom(room);
+  broadcastRoster(room);
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.get("/rooms/:roomCode", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/players", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const playerId = req.body?.playerId;
+  const avatarId = req.body?.avatarId ?? "avatar_robot_party";
+  if (typeof playerId !== "string" || typeof avatarId !== "string") {
+    res.status(400).json({ ok: false, error: "playerId and avatarId required" });
+    return;
+  }
+  const ready = req.body?.ready !== false;
+  addOrUpdatePlayer(room, playerId, avatarId, ready);
+  if (req.body?.asHost === true || !room.hostId) {
+    room.hostId = playerId;
+  }
+  ensureRoomStage(room);
+  touchRoom(room);
+  broadcastRoster(room);
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.delete("/rooms/:roomCode/players/:playerId", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const { playerId } = req.params;
+  room.players.delete(playerId);
+  if (room.hostId === playerId) {
+    room.hostId = room.players.keys().next().value as string | undefined;
+  }
+  touchRoom(room);
+  broadcastRoster(room);
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/players/:playerId/ready", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const player = getPlayerOrSend(room, req.params.playerId, res);
+  if (!player) return;
+  player.ready = req.body?.ready === true;
+  touchRoom(room);
+  broadcastRoster(room);
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/players/:playerId/avatar", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const player = getPlayerOrSend(room, req.params.playerId, res);
+  if (!player) return;
+  const avatarId = req.body?.avatarId;
+  if (typeof avatarId !== "string") {
+    res.status(400).json({ ok: false, error: "avatarId required" });
+    return;
+  }
+  player.avatarId = avatarId;
+  touchRoom(room);
+  broadcastRoster(room);
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/stage", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const phase = req.body?.phase as RoomPhase | undefined;
+  const playerId = req.body?.playerId as string | undefined;
+  const force = req.body?.force === true;
+  if (!phase || !allowedPhases.has(phase)) {
+    res.status(400).json({ ok: false, error: "invalid phase" });
+    return;
+  }
+  if (!force && playerId && room.hostId && room.hostId !== playerId) {
+    res.status(403).json({ ok: false, error: "not host" });
+    return;
+  }
+  const nextStage: StagePayload = {
+    roomCode: room.code,
+    phase,
+  };
+  if (typeof req.body?.questionIndex === "number") {
+    nextStage.questionIndex = req.body.questionIndex;
+    room.currentQuestionIndex = req.body.questionIndex;
+  }
+  if (typeof req.body?.roundStartAt === "number") {
+    nextStage.roundStartAt = req.body.roundStartAt;
+  }
+  room.stage = nextStage;
+  ensureRoomStage(room);
+  touchRoom(room);
+  broadcastToRoom(room.code, { type: "stage", payload: nextStage });
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/question", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const payload = { ...req.body, roomCode: room.code };
+  if (!validateQuestionFn(payload)) {
+    res.status(400).json({ ok: false, error: "invalid question", details: validateQuestion.errors });
+    return;
+  }
+  const index =
+    typeof payload.questionIndex === "number"
+      ? payload.questionIndex
+      : room.currentQuestionIndex;
+  if (typeof index === "number") {
+    room.questionsByIndex.set(index, {
+      correctIndex: payload.correct_index,
+      durationMs: payload.duration_ms,
+    });
+  }
+  touchRoom(room);
+  broadcastToRoom(room.code, { type: "question", payload });
+  res.json({ ok: true });
+});
+
+testRouter.post("/rooms/:roomCode/answer", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const payload = { ...req.body, roomCode: room.code };
+  if (!validateAnswerFn(payload)) {
+    res.status(400).json({ ok: false, error: "invalid answer", details: validateAnswer.errors });
+    return;
+  }
+  const player = room.players.get(payload.playerId);
+  if (!player) {
+    res.status(404).json({ ok: false, error: "player_not_found" });
+    return;
+  }
+  const questionIndex =
+    typeof payload.questionIndex === "number"
+      ? payload.questionIndex
+      : room.currentQuestionIndex;
+  if (typeof questionIndex === "number") {
+    const answeredSet = room.answeredByIndex.get(questionIndex) ?? new Set<string>();
+    if (!answeredSet.has(payload.playerId)) {
+      answeredSet.add(payload.playerId);
+      room.answeredByIndex.set(questionIndex, answeredSet);
+      const questionInfo = room.questionsByIndex.get(questionIndex);
+      if (questionInfo) {
+        const isCorrect = payload.answerIndex === questionInfo.correctIndex;
+        const scoring = calculateScore({
+          isCorrect,
+          latencyMs: payload.latencyMs ?? 0,
+          durationMs: questionInfo.durationMs ?? 6000,
+        });
+        player.score += scoring.points;
+        player.correctCount += scoring.correctIncrement;
+        player.streak = isCorrect ? player.streak + 1 : 0;
+        broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
+      }
+    }
+  }
+  touchRoom(room);
+  broadcastToRoom(room.code, { type: "answer", payload });
+  res.json({ ok: true, room: buildRoomSnapshot(room) });
+});
+
+testRouter.post("/rooms/:roomCode/broadcast", (req, res) => {
+  const room = getRoomOrSend(req.params.roomCode, res);
+  if (!room) return;
+  const payload = req.body;
+  broadcastToRoom(room.code, payload);
+  res.json({ ok: true });
+});
+
+testRouter.post("/rooms/:roomCode/reset", (req, res) => {
+  const roomCode = req.params.roomCode;
+  if (!rooms.has(roomCode)) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
+  }
+  rooms.delete(roomCode);
+  metrics.roomsExpired += 1;
+  res.json({ ok: true });
+});
+
 wss.on("connection", (socket, request) => {
   const ip = resolveIp(request);
   socketState.set(socket, { ip });
@@ -453,14 +739,6 @@ wss.on("connection", (socket, request) => {
         const stagePayload = payload as any;
         const phase = stagePayload?.phase as string | undefined;
         const roomCode = stagePayload?.roomCode as string | undefined;
-        const allowedPhases = new Set([
-          "join",
-          "lobby",
-          "round",
-          "reveal",
-          "leaderboard",
-          "end",
-        ]);
         if (!roomCode || !phase || !allowedPhases.has(phase)) {
           send(socket, { type: "error", errors: [{ message: "invalid stage" }] });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage" });
