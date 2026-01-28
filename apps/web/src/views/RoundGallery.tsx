@@ -5,6 +5,7 @@ import { useRoom } from "../context/RoomContext";
 import { prefetchImage } from "../utils/prefetch";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
+import { playTap } from "../utils/sfx";
 import {
   AbsurdSumView,
   AbsurdToastView,
@@ -137,6 +138,7 @@ export default function RoundGallery() {
 
   const handleSelect = (index: number) => {
     setSelectedIndex(index);
+    playTap();
     sendAnswer(index);
   };
 

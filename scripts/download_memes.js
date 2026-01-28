@@ -5,6 +5,9 @@ const http = require("http");
 
 const manifestPath = path.join(__dirname, "..", "data", "memes_manifest.json");
 const outputDir = path.join(__dirname, "..", "apps", "web", "public", "memes");
+const pixabayDataPath = path.join(__dirname, "..", "data", "memes_all_pixabay.json");
+
+const PIXABAY_API_KEY = process.env.PIXABAY_API_KEY;
 
 if (!fs.existsSync(manifestPath)) {
   console.error("memes_manifest.json not found. Run scripts/build_meme_manifest.js first.");
@@ -24,10 +27,30 @@ if (approved.length === 0) {
   process.exit(0);
 }
 
+let pixabayIdByFileUrl = new Map();
+if (fs.existsSync(pixabayDataPath)) {
+  try {
+    const pixabayItems = JSON.parse(fs.readFileSync(pixabayDataPath, "utf8"));
+    if (Array.isArray(pixabayItems)) {
+      pixabayIdByFileUrl = new Map(
+        pixabayItems
+          .filter((item) => item && item.fileURL && item.id)
+          .map((item) => [item.fileURL, item.id]),
+      );
+    }
+  } catch (err) {
+    console.warn("failed to parse memes_all_pixabay.json", err.message);
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function downloadFile(url, filePath) {
   return new Promise((resolve, reject) => {
     const client = url.startsWith("https") ? https : http;
-    const request = client.get(url, (response) => {
+    const request = client.get(url, { headers: { "User-Agent": "Mozilla/5.0" } }, (response) => {
       if (response.statusCode && response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
         response.resume();
         return resolve(downloadFile(response.headers.location, filePath));
@@ -46,6 +69,41 @@ function downloadFile(url, filePath) {
   });
 }
 
+async function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, { headers: { "User-Agent": "Mozilla/5.0" } }, (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (err) {
+            reject(err);
+          }
+        });
+      })
+      .on("error", reject);
+  });
+}
+
+const pixabayUrlCache = new Map();
+async function resolvePixabayUrl(item) {
+  if (!PIXABAY_API_KEY) return item.url;
+  const pixabayId = pixabayIdByFileUrl.get(item.url);
+  if (!pixabayId) return item.url;
+  if (pixabayUrlCache.has(pixabayId)) {
+    return pixabayUrlCache.get(pixabayId);
+  }
+  const apiUrl = `https://pixabay.com/api/?key=${encodeURIComponent(PIXABAY_API_KEY)}&id=${pixabayId}`;
+  const data = await fetchJson(apiUrl);
+  const hit = data?.hits?.[0];
+  const resolved =
+    hit?.largeImageURL || hit?.webformatURL || hit?.previewURL || item.url;
+  pixabayUrlCache.set(pixabayId, resolved);
+  return resolved;
+}
+
 async function run() {
   let ok = 0;
   let failed = 0;
@@ -57,13 +115,19 @@ async function run() {
       continue;
     }
     try {
+      const url = await resolvePixabayUrl(item);
       // eslint-disable-next-line no-await-in-loop
-      await downloadFile(item.url, filePath);
+      await downloadFile(url, filePath);
       ok += 1;
       console.log(`downloaded ${item.id}`);
+      // polite pacing to avoid rate limits
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(150);
     } catch (err) {
       failed += 1;
       console.error(`failed ${item.id}: ${err.message}`);
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(300);
     }
   }
   console.log(`done: ok=${ok} failed=${failed}`);

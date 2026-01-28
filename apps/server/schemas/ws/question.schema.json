@@ -6,6 +6,7 @@
   "required": ["id", "prompt_image", "answers", "correct_index", "duration_ms"],
   "properties": {
     "id": {"type": "string", "minLength": 1},
+    "questionIndex": {"type": "integer", "minimum": 0},
     "prompt_image": {"type": "string", "minLength": 1},
     "answers": {
       "type": "array",

@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useWsClient } from "../hooks/useWsClient";
 import { randomId, randomPlayerId } from "../utils/ids";
 import { questionBank } from "../data/questions";
-import { calculateScore } from "../utils/scoring";
 
 export type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
 
@@ -29,6 +28,7 @@ interface RoomState {
   phase: RoomPhase;
   questionIndex: number;
   roundStartAt: number | null;
+  joinedAt: number | null;
   players: RoomPlayer[];
   answerCounts: [number, number, number, number];
   wsStatus: string;
@@ -38,6 +38,7 @@ interface RoomState {
   startGame: () => void;
   sendAnswer: (answerIndex: number) => void;
   setReady: (ready: boolean) => void;
+  setAvatar: (avatarId: string) => void;
 }
 
 const RoomContext = createContext<RoomState | null>(null);
@@ -51,6 +52,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<RoomPhase>("join");
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundStartAt, setRoundStartAt] = useState<number | null>(null);
+  const [joinedAt, setJoinedAt] = useState<number | null>(null);
   const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
   const [errors, setErrors] = useState<unknown[]>([]);
@@ -59,6 +61,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const pendingJoinRef = useRef<{ roomCode: string; avatarId: string } | null>(null);
   const hostTimersRef = useRef<number[]>([]);
   const answeredByQuestionRef = useRef<Record<number, Set<string>>>({});
+  const sentQuestionsRef = useRef<Set<number>>(new Set());
 
   const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
 
@@ -74,7 +77,21 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const mergeRoster = useCallback((payload: { players?: Array<{ id: string; avatarId: string; ready?: boolean }> } | undefined) => {
+  const mergeRoster = useCallback(
+    (
+      payload:
+        | {
+            players?: Array<{
+              id: string;
+              avatarId: string;
+              ready?: boolean;
+              score?: number;
+              correctCount?: number;
+              streak?: number;
+            }>;
+          }
+        | undefined,
+    ) => {
     if (!payload?.players) return;
     setPlayers((prev) => {
       const prevMap = new Map(prev.map((player) => [player.id, player]));
@@ -84,9 +101,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           id: player.id,
           avatarId: player.avatarId,
           ready: player.ready === true,
-          score: existing?.score ?? 0,
-          correctCount: existing?.correctCount ?? 0,
-          streak: existing?.streak ?? 0,
+          score: player.score ?? existing?.score ?? 0,
+          correctCount: player.correctCount ?? existing?.correctCount ?? 0,
+          streak: player.streak ?? existing?.streak ?? 0,
         };
       });
     });
@@ -102,6 +119,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         if (payload?.roomCode) {
           setRoomCode(payload.roomCode);
           setIsHost(payload.isHost === true);
+          setJoinedAt(Date.now());
           if (payload.stage?.roomCode === payload.roomCode) {
             applyStage(payload.stage);
           } else {
@@ -152,29 +170,24 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
             return next;
           });
         }
-
-        const isCorrect = payload.answerIndex === question.correct_index;
-        const scoring = calculateScore({
-          isCorrect,
-          responseTimeMs: payload.latencyMs ?? 0,
-          questionTimeMs: question.duration_ms ?? 6000,
-          pointsMultiplier: 1,
-          mode: "speed",
-        });
-
-        setPlayers((prev) =>
-          prev.map((player) => {
-            if (player.id !== payload.playerId) {
-              return player;
-            }
-            const nextStreak = isCorrect ? player.streak + 1 : 0;
-            return {
-              ...player,
-              score: player.score + scoring.points,
-              correctCount: player.correctCount + scoring.correctIncrement,
-              streak: nextStreak,
-            };
-          }),
+        return;
+      }
+      if (message.type === "score") {
+        const payload = message.payload as
+          | { players?: Array<{ id: string; avatarId: string; ready?: boolean; score?: number; correctCount?: number; streak?: number }> }
+          | undefined;
+        if (!payload?.players) {
+          return;
+        }
+        setPlayers(
+          payload.players.map((player) => ({
+            id: player.id,
+            avatarId: player.avatarId,
+            ready: player.ready === true,
+            score: player.score ?? 0,
+            correctCount: player.correctCount ?? 0,
+            streak: player.streak ?? 0,
+          })),
         );
         return;
       }
@@ -251,6 +264,21 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     [playerId, questionIndex, roomCode, roundStartAt, send],
   );
 
+  const setAvatar = useCallback(
+    (avatarId: string) => {
+      if (!roomCode) return;
+      send({
+        type: "avatar",
+        payload: {
+          roomCode,
+          playerId,
+          avatarId,
+        },
+      });
+    },
+    [playerId, roomCode, send],
+  );
+
   const setReady = useCallback(
     (ready: boolean) => {
       if (!roomCode) return;
@@ -286,6 +314,14 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     const startAt = roundStartAt ?? Date.now();
     const remaining = Math.max(0, durationMs - (Date.now() - startAt));
 
+    if (question && !sentQuestionsRef.current.has(questionIndex)) {
+      send({
+        type: "question",
+        payload: { ...question, questionIndex },
+      });
+      sentQuestionsRef.current.add(questionIndex);
+    }
+
     const revealTimer = window.setTimeout(() => {
       sendStage({ phase: "reveal", questionIndex, roundStartAt: startAt });
     }, remaining);
@@ -306,6 +342,10 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [clearHostTimers, isHost, phase, questionIndex, roomCode, roundStartAt, sendStage]);
 
   useEffect(() => {
+    sentQuestionsRef.current.clear();
+  }, [roomCode]);
+
+  useEffect(() => {
     answeredByQuestionRef.current[questionIndex] = new Set();
     setAnswerCounts([0, 0, 0, 0]);
   }, [questionIndex]);
@@ -317,6 +357,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     phase,
     questionIndex,
     roundStartAt,
+    joinedAt,
     players,
     answerCounts,
     wsStatus,
@@ -326,6 +367,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     startGame,
     sendAnswer,
     setReady,
+    setAvatar,
   };
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

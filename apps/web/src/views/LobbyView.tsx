@@ -22,10 +22,13 @@ export default function LobbyView() {
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, isHost, phase, startGame, players, playerId, setReady } = useRoom();
+  const { roomCode, isHost, phase, startGame, players, playerId, setReady, setAvatar } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
-  const [soundOn, setSoundOn] = useState(true);
+  const [soundOn, setSoundOn] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("sound_enabled") !== "0";
+  });
   const [avatarIndex, setAvatarIndex] = useState(() =>
     Math.floor(Math.random() * AVATAR_IDS.length),
   );
@@ -87,6 +90,12 @@ export default function LobbyView() {
   const canStart = isHost && phase === "lobby";
   const startLabel = isHost ? "Start" : "Ready";
   const startDisabled = isHost ? !canStart : false;
+
+  useEffect(() => {
+    if (roomCode) {
+      setAvatar(selfAvatar);
+    }
+  }, [roomCode, selfAvatar, setAvatar]);
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -165,7 +174,18 @@ export default function LobbyView() {
       </div>
 
       <div className={styles.soundToggle}>
-        <SoundToggle enabled={soundOn} onToggle={() => setSoundOn((prev) => !prev)} />
+        <SoundToggle
+          enabled={soundOn}
+          onToggle={() =>
+            setSoundOn((prev) => {
+              const next = !prev;
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+              }
+              return next;
+            })
+          }
+        />
       </div>
 
       <button className={styles.qrToggle} onClick={() => setShowQr((prev) => !prev)} aria-label="qr">

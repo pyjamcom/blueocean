@@ -8,7 +8,7 @@ import { trackEvent } from "../utils/analytics";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, playerId, answerCounts } = useRoom();
+  const { players, playerId, answerCounts, roomCode } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
   const samplePodium = useMemo(
     () => [
@@ -45,6 +45,18 @@ export default function ResultView() {
     return leaderboard.find((entry) => entry.playerId === playerId) ?? null;
   }, [leaderboard, playerId]);
 
+  const podium = useMemo(() => {
+    if (!leaderboard.length) return samplePodium;
+    return leaderboard.slice(0, 3).map((entry) => ({ avatarId: entry.avatarId, rank: entry.rank }));
+  }, [leaderboard, samplePodium]);
+
+  const winner = useMemo(() => {
+    if (!leaderboard.length) return { avatarId: "avatar_party_octopus" };
+    return { avatarId: leaderboard[0].avatarId };
+  }, [leaderboard]);
+
+  const qrUrl = roomCode ? `https://d0.do/${roomCode}` : "https://d0.do/ABCD";
+
   useEffect(() => {
     trackEvent("sharecard_generate");
     trackEvent("leaderboard_view");
@@ -69,11 +81,11 @@ export default function ResultView() {
     <div className={styles.wrap}>
       <ShareCard
         ref={shareRef}
-        podiumTop3={samplePodium}
-        winner={{ avatarId: "avatar_party_octopus" }}
+        podiumTop3={podium}
+        winner={winner}
         stampId="stamp-fiesta"
         medalSetId="medal-spark"
-        qrUrl="https://d0.do/ABCD"
+        qrUrl={qrUrl}
       />
       <AnswerDistribution counts={answerCounts} />
       <Leaderboard

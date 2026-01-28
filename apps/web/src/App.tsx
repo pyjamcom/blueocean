@@ -42,7 +42,7 @@ const phaseRoutes: Record<RoomPhase, string> = {
 };
 
 function StageNavigator() {
-  const { phase, roomCode } = useRoom();
+  const { phase, roomCode, joinedAt, roundStartAt } = useRoom();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -58,11 +58,17 @@ function StageNavigator() {
       return;
     }
 
-    const target = phaseRoutes[phase] ?? "/join";
+    const shouldWait =
+      phase !== "lobby" &&
+      phase !== "join" &&
+      typeof joinedAt === "number" &&
+      typeof roundStartAt === "number" &&
+      joinedAt > roundStartAt;
+    const target = shouldWait ? "/wait" : phaseRoutes[phase] ?? "/join";
     if (location.pathname !== target) {
       navigate(target, { replace: true });
     }
-  }, [location.pathname, navigate, phase, roomCode]);
+  }, [joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt]);
 
   return null;
 }

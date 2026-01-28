@@ -162,6 +162,9 @@ interface Room {
   locked: boolean;
   hostId?: string;
   stage?: StagePayload;
+  currentQuestionIndex?: number;
+  questionsByIndex: Map<number, { correctIndex: number; durationMs: number }>;
+  answeredByIndex: Map<number, Set<string>>;
 }
 
 const rooms = new Map<string, Room>();
@@ -249,6 +252,8 @@ function getOrCreateRoom(code?: string): Room {
     createdAt: now,
     expiresAt: now + ROOM_TTL_MS,
     locked: false,
+    questionsByIndex: new Map(),
+    answeredByIndex: new Map(),
   };
   metrics.roomsCreated += 1;
   rooms.set(newCode, room);
@@ -268,6 +273,9 @@ function buildRoster(room: Room) {
     id: player.id,
     avatarId: player.avatarId,
     ready: player.ready,
+    score: player.score,
+    correctCount: player.correctCount,
+    streak: player.streak,
   }));
 }
 
@@ -280,6 +288,48 @@ function broadcastRoster(room: Room) {
       hostId: room.hostId,
     },
   });
+}
+
+function buildScorePayload(room: Room) {
+  const players = Array.from(room.players.values());
+  const sorted = [...players].sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
+  const leaderboardTop5 = sorted.slice(0, 5).map((player, index) => ({
+    playerId: player.id,
+    avatarId: player.avatarId,
+    score: player.score,
+    correctCount: player.correctCount,
+    rank: index + 1,
+  }));
+  const podiumTop3 = leaderboardTop5.slice(0, 3);
+  return {
+    roomCode: room.code,
+    mode: "speed",
+    players: players.map((player) => ({
+      id: player.id,
+      avatarId: player.avatarId,
+      ready: player.ready,
+      score: player.score,
+      correctCount: player.correctCount,
+      streak: player.streak,
+    })),
+    leaderboardTop5,
+    podiumTop3,
+  };
+}
+
+function calculateScore(params: { isCorrect: boolean; latencyMs: number; durationMs: number; multiplier?: number }) {
+  if (!params.isCorrect) {
+    return { points: 0, correctIncrement: 0, streakDelta: -1 };
+  }
+  const multiplier = params.multiplier ?? 1;
+  const pointsPossible = 1000 * multiplier;
+  if (params.latencyMs <= 500) {
+    return { points: pointsPossible, correctIncrement: 1, streakDelta: 1 };
+  }
+  const ratio = 1 - (params.latencyMs / params.durationMs) / 2;
+  const clamped = Math.max(0, Math.min(1, ratio));
+  const points = Math.round(pointsPossible * clamped);
+  return { points, correctIncrement: 1, streakDelta: 1 };
 }
 
 function broadcastToRoom(roomCode: string, payload: unknown) {
@@ -444,6 +494,9 @@ wss.on("connection", (socket, request) => {
           nextStage.roundStartAt = stagePayload.roundStartAt;
         }
         room.stage = nextStage;
+        if (typeof nextStage.questionIndex === "number") {
+          room.currentQuestionIndex = nextStage.questionIndex;
+        }
         touchRoom(room);
         broadcastToRoom(roomCode, { type: "stage", payload: nextStage });
         return;
@@ -472,6 +525,29 @@ wss.on("connection", (socket, request) => {
         return;
       }
 
+      if (type === "avatar") {
+        const avatarPayload = payload as any;
+        const roomCode = avatarPayload?.roomCode as string | undefined;
+        const playerId = avatarPayload?.playerId as string | undefined;
+        const avatarId = avatarPayload?.avatarId as string | undefined;
+        if (!roomCode || !playerId || !avatarId) {
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "avatar" });
+          return;
+        }
+        const room = rooms.get(roomCode);
+        if (!room) {
+          return;
+        }
+        const player = room.players.get(playerId);
+        if (!player) {
+          return;
+        }
+        player.avatarId = avatarId;
+        touchRoom(room);
+        broadcastRoster(room);
+        return;
+      }
+
       if (type === "question") {
         const questionPayload = payload as any;
         if (!validateQuestionFn(questionPayload)) {
@@ -482,10 +558,20 @@ wss.on("connection", (socket, request) => {
         if (state.joinedRoom) {
           const room = rooms.get(state.joinedRoom);
           if (room) {
+            const index =
+              typeof questionPayload.questionIndex === "number"
+                ? questionPayload.questionIndex
+                : room.currentQuestionIndex;
+            if (typeof index === "number") {
+              room.questionsByIndex.set(index, {
+                correctIndex: questionPayload.correct_index,
+                durationMs: questionPayload.duration_ms,
+              });
+            }
             touchRoom(room);
+            broadcastToRoom(room.code, { type: "question", payload: questionPayload });
           }
         }
-        send(socket, { type: "question", payload: questionPayload });
         return;
       }
 
@@ -528,6 +614,34 @@ wss.on("connection", (socket, request) => {
         if (room) {
           room.locked = true;
           touchRoom(room);
+        }
+        if (room) {
+          const questionIndex =
+            typeof answerPayload.questionIndex === "number"
+              ? answerPayload.questionIndex
+              : room.currentQuestionIndex;
+          if (typeof questionIndex === "number") {
+            const answeredSet = room.answeredByIndex.get(questionIndex) ?? new Set<string>();
+            if (answeredSet.has(answerPayload.playerId)) {
+              return;
+            }
+            answeredSet.add(answerPayload.playerId);
+            room.answeredByIndex.set(questionIndex, answeredSet);
+            const questionInfo = room.questionsByIndex.get(questionIndex);
+            const player = room.players.get(answerPayload.playerId);
+            if (questionInfo && player) {
+              const isCorrect = answerPayload.answerIndex === questionInfo.correctIndex;
+              const scoring = calculateScore({
+                isCorrect,
+                latencyMs: answerPayload.latencyMs ?? 0,
+                durationMs: questionInfo.durationMs ?? 6000,
+              });
+              player.score += scoring.points;
+              player.correctCount += scoring.correctIncrement;
+              player.streak = isCorrect ? player.streak + 1 : 0;
+              broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
+            }
+          }
         }
         broadcastToRoom(answerPayload.roomCode, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
