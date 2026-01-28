@@ -21,6 +21,15 @@ export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClos
   const socketRef = useRef<WebSocket | null>(null);
   const retryRef = useRef(0);
   const reconnectTimer = useRef<number | null>(null);
+  const onMessageRef = useRef<UseWsClientOptions["onMessage"]>(onMessage);
+  const onOpenRef = useRef<UseWsClientOptions["onOpen"]>(onOpen);
+  const onCloseRef = useRef<UseWsClientOptions["onClose"]>(onClose);
+
+  useEffect(() => {
+    onMessageRef.current = onMessage;
+    onOpenRef.current = onOpen;
+    onCloseRef.current = onClose;
+  }, [onMessage, onOpen, onClose]);
 
   const connect = useCallback(() => {
     if (socketRef.current) {
@@ -33,22 +42,22 @@ export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClos
     socket.addEventListener("open", () => {
       setStatus("open");
       retryRef.current = 0;
-      onOpen?.();
+      onOpenRef.current?.();
     });
 
     socket.addEventListener("message", (event) => {
       try {
         const parsed = JSON.parse(event.data) as WsMessage;
-        onMessage?.(parsed);
+        onMessageRef.current?.(parsed);
       } catch (_err) {
-        onMessage?.({ type: "error", errors: [{ message: "invalid payload" }] });
+        onMessageRef.current?.({ type: "error", errors: [{ message: "invalid payload" }] });
       }
     });
 
     socket.addEventListener("close", () => {
       setStatus("closed");
       socketRef.current = null;
-      onClose?.();
+      onCloseRef.current?.();
       if (autoConnect) {
         const delay = Math.min(4000, 600 + retryRef.current * 500);
         retryRef.current += 1;
@@ -74,7 +83,7 @@ export function useWsClient({ url, autoConnect = true, onMessage, onOpen, onClos
         }
       }
     });
-  }, [onClose, onMessage, onOpen, url]);
+  }, [autoConnect, url]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimer.current !== null) {
