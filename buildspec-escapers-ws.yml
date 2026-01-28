@@ -1,0 +1,23 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO: 686255964202.dkr.ecr.us-east-1.amazonaws.com/escapers-ws
+    IMAGE_TAG: latest
+
+phases:
+  pre_build:
+    commands:
+      - aws --version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $IMAGE_REPO
+  build:
+    commands:
+      - docker build -t $IMAGE_REPO:$IMAGE_TAG -f apps/server/Dockerfile .
+  post_build:
+    commands:
+      - docker push $IMAGE_REPO:$IMAGE_TAG
+      - printf '[{"name":"escapers-ws","imageUri":"%s"}]' $IMAGE_REPO:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json

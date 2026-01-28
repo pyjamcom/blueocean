@@ -55,7 +55,11 @@ export default function App() {
       navigator.sendBeacon(`${apiBase}/compliance/age`, blob);
       return;
     }
-    fetch(`${apiBase}/compliance/age`, {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: payload,\n    }).catch(() => undefined);
+    fetch(`${apiBase}/compliance/age`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    }).catch(() => undefined);
   };
 
   const handleAccept = () => {

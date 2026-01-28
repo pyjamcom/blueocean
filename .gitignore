@@ -2,6 +2,8 @@
 .node_modules/
 node_modules/
 .codex/
+.venv/
+session_full_2026-01-27_10-18-12.jsonl
 config/github_token.txt
 config/ga_oauth.env
 config/*.env
@@ -44,3 +46,5 @@ scripts/lint_errc_grid.py
 scripts/prepare_meme_webp_variants.py
 scripts/update_csv_from_mapping.py
 scripts/validate_csv_structure.py
+apps/web/dist/
+apps/server/dist/

@@ -15,6 +15,29 @@ const LOG_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 
 app.use(express.json({ limit: "4kb" }));
 
+const defaultCorsOrigins = ["https://escapers.app", "https://www.escapers.app"];
+const corsOrigins = (process.env.CORS_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const allowedCorsOrigins = corsOrigins.length > 0 ? corsOrigins : defaultCorsOrigins;
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedCorsOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  }
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
+
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
@@ -80,6 +103,9 @@ const answerSchema = JSON.parse(
 const validateJoin = ajv.compile(joinSchema);
 const validateQuestion = ajv.compile(questionSchema);
 const validateAnswer = ajv.compile(answerSchema);
+const validateJoinFn = validateJoin as (data: any) => boolean;
+const validateQuestionFn = validateQuestion as (data: any) => boolean;
+const validateAnswerFn = validateAnswer as (data: any) => boolean;
 
 const ROOM_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_TTL_MS = 1000 * 60 * 120;
@@ -155,10 +181,16 @@ function logIncident(incident: Incident) {
 function resolveIp(req: http.IncomingMessage): string {
   const forwarded = req.headers["x-forwarded-for"];
   if (typeof forwarded === "string" && forwarded.length > 0) {
-    return forwarded.split(",")[0].trim();
+    const first = forwarded.split(",")[0];
+    if (first) {
+      return first.trim();
+    }
   }
   if (Array.isArray(forwarded) && forwarded.length > 0) {
-    return forwarded[0].trim();
+    const first = forwarded[0];
+    if (first) {
+      return first.trim();
+    }
   }
   return req.socket.remoteAddress ?? "unknown";
 }
@@ -237,11 +269,13 @@ wss.on("connection", (socket, request) => {
         return;
       }
 
-      const message = JSON.parse(data.toString());
-      const { type, payload } = message;
+      const message: any = JSON.parse(data.toString());
+      const type = message?.type;
+      const payload: any = (message as any).payload;
 
       if (type === "join") {
-        if (!validateJoin(payload)) {
+        const joinPayload = payload as any;
+        if (!validateJoinFn(joinPayload)) {
           send(socket, { type: "error", errors: validateJoin.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "join" });
           metrics.joinFail += 1;
@@ -259,7 +293,7 @@ wss.on("connection", (socket, request) => {
             send(socket, { type: "joined", payload: { roomCode: state.joinedRoom } });
             return;
           }
-          const room = getOrCreateRoom(payload.roomCode);
+          const room = getOrCreateRoom(joinPayload.roomCode);
           touchRoom(room);
           if (room.locked) {
             logIncident({ at: Date.now(), type: "room_locked", ip: state.ip, roomCode: room.code });
@@ -287,17 +321,17 @@ wss.on("connection", (socket, request) => {
             metrics.joinFail += 1;
             return;
           }
-          if (!room.players.has(payload.playerId)) {
-            room.players.set(payload.playerId, {
-              id: payload.playerId,
-              avatarId: payload.avatarId,
+          if (!room.players.has(joinPayload.playerId)) {
+            room.players.set(joinPayload.playerId, {
+              id: joinPayload.playerId,
+              avatarId: joinPayload.avatarId,
               score: 0,
               correctCount: 0,
               streak: 0,
             });
           }
           state.joinedRoom = room.code;
-          state.playerId = payload.playerId;
+          state.playerId = joinPayload.playerId;
           send(socket, { type: "joined", payload: { roomCode: room.code } });
           metrics.joinSuccess += 1;
         };
@@ -311,7 +345,8 @@ wss.on("connection", (socket, request) => {
       }
 
       if (type === "question") {
-        if (!validateQuestion(payload)) {
+        const questionPayload = payload as any;
+        if (!validateQuestionFn(questionPayload)) {
           send(socket, { type: "error", errors: validateQuestion.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "question" });
           return;
@@ -322,50 +357,51 @@ wss.on("connection", (socket, request) => {
             touchRoom(room);
           }
         }
-        send(socket, { type: "question", payload });
+        send(socket, { type: "question", payload: questionPayload });
         return;
       }
 
       if (type === "answer") {
-        if (!validateAnswer(payload)) {
+        const answerPayload = payload as any;
+        if (!validateAnswerFn(answerPayload)) {
           send(socket, { type: "error", errors: validateAnswer.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "answer" });
           metrics.answerRejected += 1;
           return;
         }
-        const answerRate = checkRate(`answer:${payload.playerId}`, 2000, 5, 10);
+        const answerRate = checkRate(`answer:${answerPayload.playerId}`, 2000, 5, 10);
         if (!answerRate.allowed) {
           logIncident({
             at: Date.now(),
             type: "rate_limit",
             ip: state.ip,
-            roomCode: payload.roomCode,
-            playerId: payload.playerId,
+            roomCode: answerPayload.roomCode,
+            playerId: answerPayload.playerId,
             detail: "answer",
           });
           metrics.answerRejected += 1;
           return;
         }
-        const cooldownKey = `${payload.roomCode}:${payload.playerId}`;
+        const cooldownKey = `${answerPayload.roomCode}:${answerPayload.playerId}`;
         const lastAnswer = answerCooldowns.get(cooldownKey) ?? 0;
         if (Date.now() - lastAnswer < ANSWER_COOLDOWN_MS) {
           logIncident({
             at: Date.now(),
             type: "spam_drop",
             ip: state.ip,
-            roomCode: payload.roomCode,
-            playerId: payload.playerId,
+            roomCode: answerPayload.roomCode,
+            playerId: answerPayload.playerId,
           });
           metrics.answerRejected += 1;
           return;
         }
         answerCooldowns.set(cooldownKey, Date.now());
-        const room = rooms.get(payload.roomCode);
+        const room = rooms.get(answerPayload.roomCode);
         if (room) {
           room.locked = true;
           touchRoom(room);
         }
-        send(socket, { type: "answer", payload });
+        send(socket, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
       }
     } catch (_err) {
@@ -394,10 +430,18 @@ setInterval(() => {
     }
   });
   const cutoff = now - LOG_TTL_MS;
-  while (complianceEvents.length > 0 && complianceEvents[0].at < cutoff) {
+  while (complianceEvents.length > 0) {
+    const first = complianceEvents[0];
+    if (!first || first.at >= cutoff) {
+      break;
+    }
     complianceEvents.shift();
   }
-  while (analyticsEvents.length > 0 && analyticsEvents[0].at < cutoff) {
+  while (analyticsEvents.length > 0) {
+    const first = analyticsEvents[0];
+    if (!first || first.at >= cutoff) {
+      break;
+    }
     analyticsEvents.shift();
   }
 }, 1000 * 60 * 5);
