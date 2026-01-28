@@ -3,10 +3,12 @@ import AnswerDistribution from "../components/AnswerDistribution";
 import Leaderboard from "../components/Leaderboard";
 import NextRoundButton from "../components/NextRoundButton";
 import ShareCard, { ShareCardHandle } from "../components/ShareCard";
+import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
+  const { players, playerId, answerCounts } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
   const samplePodium = useMemo(
     () => [
@@ -26,6 +28,22 @@ export default function ResultView() {
     ],
     [],
   );
+
+  const leaderboard = useMemo(() => {
+    if (!players.length) return sampleLeaderboard;
+    const sorted = [...players].sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
+    return sorted.map((player, idx) => ({
+      playerId: player.id,
+      avatarId: player.avatarId,
+      rank: idx + 1,
+      score: player.score,
+      correctCount: player.correctCount,
+    }));
+  }, [players, sampleLeaderboard]);
+
+  const selfEntry = useMemo(() => {
+    return leaderboard.find((entry) => entry.playerId === playerId) ?? null;
+  }, [leaderboard, playerId]);
 
   useEffect(() => {
     trackEvent("sharecard_generate");
@@ -57,18 +75,40 @@ export default function ResultView() {
         medalSetId="medal-spark"
         qrUrl="https://d0.do/ABCD"
       />
-      <AnswerDistribution counts={[6, 2, 4, 1]} />
-      <Leaderboard items={sampleLeaderboard} self={{ rank: 2 }} mode="speed" />
+      <AnswerDistribution counts={answerCounts} />
+      <Leaderboard
+        items={leaderboard}
+        self={
+          selfEntry
+            ? {
+                playerId: selfEntry.playerId,
+                avatarId: selfEntry.avatarId,
+                rank: selfEntry.rank,
+                score: selfEntry.score,
+                correctCount: selfEntry.correctCount,
+              }
+            : null
+        }
+        mode="speed"
+      />
       <div className={styles.actions}>
-        <button className={styles.actionButton} onClick={handleShare} aria-label="share">
-          <span className={styles.iconShare} />
-        </button>
-        <button className={styles.actionButton} onClick={handleSave} aria-label="save">
-          <span className={styles.iconSave} />
-        </button>
-        <NextRoundButton onClick={() => trackEvent("replay_click")} />
+        <div className={styles.actionItem}>
+          <button className={styles.actionButton} onClick={handleShare} aria-label="share">
+            <span className={styles.iconShare} />
+          </button>
+          <span className={styles.actionLabel}>Share</span>
+        </div>
+        <div className={styles.actionItem}>
+          <button className={styles.actionButton} onClick={handleSave} aria-label="save">
+            <span className={styles.iconSave} />
+          </button>
+          <span className={styles.actionLabel}>Save</span>
+        </div>
+        <div className={styles.actionItem}>
+          <NextRoundButton onClick={() => trackEvent("replay_click")} />
+          <span className={styles.actionLabel}>Next</span>
+        </div>
       </div>
-      <div className={styles.caption}>Next</div>
     </div>
   );
 }

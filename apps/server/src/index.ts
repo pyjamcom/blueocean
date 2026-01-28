@@ -147,6 +147,7 @@ interface StagePayload {
 interface Player {
   id: string;
   avatarId: string;
+  ready: boolean;
   score: number;
   correctCount: number;
   streak: number;
@@ -262,6 +263,25 @@ function send(ws: WebSocket, payload: unknown) {
   ws.send(JSON.stringify(payload));
 }
 
+function buildRoster(room: Room) {
+  return Array.from(room.players.values()).map((player) => ({
+    id: player.id,
+    avatarId: player.avatarId,
+    ready: player.ready,
+  }));
+}
+
+function broadcastRoster(room: Room) {
+  broadcastToRoom(room.code, {
+    type: "roster",
+    payload: {
+      roomCode: room.code,
+      players: buildRoster(room),
+      hostId: room.hostId,
+    },
+  });
+}
+
 function broadcastToRoom(roomCode: string, payload: unknown) {
   wss.clients.forEach((client) => {
     if (client.readyState !== WebSocket.OPEN) {
@@ -355,10 +375,16 @@ wss.on("connection", (socket, request) => {
             room.players.set(joinPayload.playerId, {
               id: joinPayload.playerId,
               avatarId: joinPayload.avatarId,
+              ready: false,
               score: 0,
               correctCount: 0,
               streak: 0,
             });
+          } else {
+            const existing = room.players.get(joinPayload.playerId);
+            if (existing) {
+              existing.avatarId = joinPayload.avatarId;
+            }
           }
           if (!room.stage) {
             room.stage = { roomCode: room.code, phase: "lobby", questionIndex: 0 };
@@ -366,6 +392,7 @@ wss.on("connection", (socket, request) => {
           state.joinedRoom = room.code;
           state.playerId = joinPayload.playerId;
           send(socket, { type: "joined", payload: { roomCode: room.code, isHost, stage: room.stage } });
+          broadcastRoster(room);
           metrics.joinSuccess += 1;
         };
 
@@ -419,6 +446,29 @@ wss.on("connection", (socket, request) => {
         room.stage = nextStage;
         touchRoom(room);
         broadcastToRoom(roomCode, { type: "stage", payload: nextStage });
+        return;
+      }
+
+      if (type === "ready") {
+        const readyPayload = payload as any;
+        const roomCode = readyPayload?.roomCode as string | undefined;
+        const playerId = readyPayload?.playerId as string | undefined;
+        const ready = readyPayload?.ready === true;
+        if (!roomCode || !playerId) {
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "ready" });
+          return;
+        }
+        const room = rooms.get(roomCode);
+        if (!room) {
+          return;
+        }
+        const player = room.players.get(playerId);
+        if (!player) {
+          return;
+        }
+        player.ready = ready;
+        touchRoom(room);
+        broadcastRoster(room);
         return;
       }
 
@@ -479,7 +529,7 @@ wss.on("connection", (socket, request) => {
           room.locked = true;
           touchRoom(room);
         }
-        send(socket, { type: "answer", payload: answerPayload });
+        broadcastToRoom(answerPayload.roomCode, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
       }
     } catch (_err) {
@@ -492,6 +542,18 @@ wss.on("connection", (socket, request) => {
   socket.on("close", () => {
     console.log("ws:disconnect");
     metrics.wsDisconnects += 1;
+    const state = socketState.get(socket);
+    if (state?.joinedRoom && state.playerId) {
+      const room = rooms.get(state.joinedRoom);
+      if (room) {
+        room.players.delete(state.playerId);
+        if (room.hostId === state.playerId) {
+          const nextHost = room.players.keys().next().value as string | undefined;
+          room.hostId = nextHost;
+        }
+        broadcastRoster(room);
+      }
+    }
   });
 });
 

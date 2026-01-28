@@ -85,9 +85,18 @@ export default function JoinView() {
       </div>
       <div className={styles.caption}>{caption}</div>
       <div className={styles.iconRow}>
-        <div className={`${styles.iconBubble} ${styles.iconScan}`} />
-        <div className={`${styles.iconBubble} ${styles.iconTap}`} />
-        <div className={`${styles.iconBubble} ${styles.iconGroup}`} />
+        <div className={styles.iconItem}>
+          <div className={`${styles.iconBubble} ${styles.iconScan}`} />
+          <span className={styles.iconLabel}>Scan</span>
+        </div>
+        <div className={styles.iconItem}>
+          <div className={`${styles.iconBubble} ${styles.iconTap}`} />
+          <span className={styles.iconLabel}>Tap</span>
+        </div>
+        <div className={styles.iconItem}>
+          <div className={`${styles.iconBubble} ${styles.iconGroup}`} />
+          <span className={styles.iconLabel}>Group</span>
+        </div>
       </div>
     </div>
   );

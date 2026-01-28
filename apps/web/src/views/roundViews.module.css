@@ -31,44 +31,17 @@
   height: 40px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.12);
-  position: relative;
-  display: grid;
-  place-items: center;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
 }
 
-.hintChip::before,
-.hintChip::after {
-  content: "";
-  position: absolute;
+.hintTap {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'><circle cx='12' cy='12' r='3'/><circle cx='12' cy='12' r='8'/></svg>");
 }
 
-.hintTap::before {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-}
-
-.hintTap::after {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.hintTimer::before {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-}
-
-.hintTimer::after {
-  width: 6px;
-  height: 6px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.85);
-  transform: translate(4px, -4px);
+.hintTimer {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='12' r='8'/><path d='M12 8v5l3 3'/></svg>");
 }
 
 .promptBlock {

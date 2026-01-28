@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
 import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
-import { AVATAR_IDS, avatarColor, randomAvatarId } from "../utils/avatar";
+import { AVATAR_IDS, avatarColor } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
 
@@ -17,39 +17,14 @@ function resolveVariant(age?: number): PulseVariant {
   return "slow";
 }
 
-interface LobbyPlayer {
-  id: string;
-  avatarId: string;
-  assetId?: string;
-  ready: boolean;
-  pulse: boolean;
-}
-
 export default function LobbyView() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, isHost, phase, startGame } = useRoom();
+  const { roomCode, isHost, phase, startGame, players, playerId, setReady } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
-  const assetCursor = useRef(3);
-  const pickAssetId = () => {
-    if (lobbyAssets.length === 0) return undefined;
-    const id = lobbyAssets[assetCursor.current % lobbyAssets.length];
-    assetCursor.current += 1;
-    return id;
-  };
-
-  const [players, setPlayers] = useState<LobbyPlayer[]>(() =>
-    Array.from({ length: 3 }).map((_, index) => ({
-      id: `p-${index}`,
-      avatarId: randomAvatarId(),
-      assetId: lobbyAssets.length ? lobbyAssets[index % lobbyAssets.length] : undefined,
-      ready: true,
-      pulse: false,
-    })),
-  );
   const [soundOn, setSoundOn] = useState(true);
   const [avatarIndex, setAvatarIndex] = useState(() =>
     Math.floor(Math.random() * AVATAR_IDS.length),
@@ -57,35 +32,6 @@ export default function LobbyView() {
   const touchStart = useRef<number | null>(null);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [showQr, setShowQr] = useState(false);
-
-  useEffect(() => {
-    if (players.length >= 10) return;
-    const timer = window.setInterval(() => {
-      setPlayers((prev) => {
-        if (prev.length >= 10) return prev;
-        const id = `p-${Date.now()}`;
-        const next = [
-          ...prev,
-          {
-            id,
-            avatarId: randomAvatarId(),
-            assetId: pickAssetId(),
-            ready: true,
-            pulse: true,
-          },
-        ];
-        window.setTimeout(() => {
-          setPlayers((current) =>
-            current.map((player) =>
-              player.id === id ? { ...player, pulse: false } : player,
-            ),
-          );
-        }, 900);
-        return next;
-      });
-    }, 1600);
-    return () => window.clearInterval(timer);
-  }, [players.length]);
 
   const countdownStart = useMemo(() => Date.now(), []);
 
@@ -132,12 +78,15 @@ export default function LobbyView() {
   };
 
   const selfAvatar = AVATAR_IDS[avatarIndex];
+  const selfPlayer = players.find((player) => player.id === playerId);
+  const selfReady = selfPlayer?.ready ?? false;
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIndex % lobbyAssets.length]
     : undefined;
   const selfAssetSrc = getAssetUrl(selfAssetId);
   const canStart = isHost && phase === "lobby";
-  const startLabel = isHost ? "Start" : "Wait";
+  const startLabel = isHost ? "Start" : "Ready";
+  const startDisabled = isHost ? !canStart : false;
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -154,16 +103,12 @@ export default function LobbyView() {
         {players.map((player) => (
           <div
             key={player.id}
-            className={`${styles.player} ${player.pulse ? styles.playerPulse : ""}`}
+            className={styles.player}
           >
             <div
               className={styles.playerAvatar}
               style={{
                 background: avatarColor(player.avatarId),
-                backgroundImage: `url(${getAssetUrl(player.assetId)})`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "70%",
               }}
               aria-label={player.avatarId}
             />
@@ -203,9 +148,15 @@ export default function LobbyView() {
 
       <div className={styles.startRow}>
         <button
-          className={`${styles.startButton} ${!canStart ? styles.startButtonDisabled : ""}`}
-          onClick={() => canStart && startGame()}
-          disabled={!canStart}
+          className={`${styles.startButton} ${startDisabled ? styles.startButtonDisabled : ""}`}
+          onClick={() => {
+            if (isHost) {
+              if (canStart) startGame();
+            } else {
+              setReady(!selfReady);
+            }
+          }}
+          disabled={startDisabled}
           aria-label="start"
         >
           <span className={styles.startIcon} />

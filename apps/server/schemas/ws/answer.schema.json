@@ -13,6 +13,7 @@
     },
     "playerId": {"type": "string", "minLength": 1},
     "answerIndex": {"type": "integer", "minimum": 0, "maximum": 3},
-    "latencyMs": {"type": "integer", "minimum": 0}
+    "latencyMs": {"type": "integer", "minimum": 0},
+    "questionIndex": {"type": "integer", "minimum": 0}
   }
 }

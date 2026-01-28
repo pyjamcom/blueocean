@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useWsClient } from "../hooks/useWsClient";
 import { randomId, randomPlayerId } from "../utils/ids";
 import { questionBank } from "../data/questions";
+import { calculateScore } from "../utils/scoring";
 
 export type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
 
@@ -12,6 +13,15 @@ export interface StagePayload {
   roundStartAt?: number;
 }
 
+export interface RoomPlayer {
+  id: string;
+  avatarId: string;
+  ready: boolean;
+  score: number;
+  correctCount: number;
+  streak: number;
+}
+
 interface RoomState {
   roomCode: string | null;
   playerId: string;
@@ -19,12 +29,15 @@ interface RoomState {
   phase: RoomPhase;
   questionIndex: number;
   roundStartAt: number | null;
+  players: RoomPlayer[];
+  answerCounts: [number, number, number, number];
   wsStatus: string;
   errors: unknown[];
   joinRoom: (roomCode?: string, avatarId?: string) => void;
   sendStage: (payload: Omit<StagePayload, "roomCode">) => void;
   startGame: () => void;
   sendAnswer: (answerIndex: number) => void;
+  setReady: (ready: boolean) => void;
 }
 
 const RoomContext = createContext<RoomState | null>(null);
@@ -38,11 +51,14 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<RoomPhase>("join");
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundStartAt, setRoundStartAt] = useState<number | null>(null);
+  const [players, setPlayers] = useState<RoomPlayer[]>([]);
+  const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
   const [errors, setErrors] = useState<unknown[]>([]);
   const playerId = useMemo(() => randomPlayerId(), []);
   const joinSentRef = useRef(false);
   const pendingJoinRef = useRef<{ roomCode: string; avatarId: string } | null>(null);
   const hostTimersRef = useRef<number[]>([]);
+  const answeredByQuestionRef = useRef<Record<number, Set<string>>>({});
 
   const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
 
@@ -56,6 +72,24 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     } else if (payload.phase !== "round") {
       setRoundStartAt(null);
     }
+  }, []);
+
+  const mergeRoster = useCallback((payload: { players?: Array<{ id: string; avatarId: string; ready?: boolean }> } | undefined) => {
+    if (!payload?.players) return;
+    setPlayers((prev) => {
+      const prevMap = new Map(prev.map((player) => [player.id, player]));
+      return payload.players.map((player) => {
+        const existing = prevMap.get(player.id);
+        return {
+          id: player.id,
+          avatarId: player.avatarId,
+          ready: player.ready === true,
+          score: existing?.score ?? 0,
+          correctCount: existing?.correctCount ?? 0,
+          streak: existing?.streak ?? 0,
+        };
+      });
+    });
   }, []);
 
   const { status: wsStatus, send } = useWsClient({
@@ -76,11 +110,72 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         }
         return;
       }
+      if (message.type === "roster") {
+        const payload = message.payload as { players?: Array<{ id: string; avatarId: string; ready?: boolean }> } | undefined;
+        mergeRoster(payload);
+        return;
+      }
       if (message.type === "stage") {
         const payload = message.payload as StagePayload | undefined;
         if (payload?.roomCode && payload.phase) {
           applyStage(payload);
         }
+        return;
+      }
+      if (message.type === "answer") {
+        const payload = message.payload as
+          | { playerId?: string; answerIndex?: number; latencyMs?: number; questionIndex?: number }
+          | undefined;
+        if (!payload?.playerId || typeof payload.answerIndex !== "number") {
+          return;
+        }
+        const effectiveIndex =
+          typeof payload.questionIndex === "number" ? payload.questionIndex : questionIndex;
+        const question = questionBank[effectiveIndex];
+        if (!question) {
+          return;
+        }
+        const answeredSet =
+          answeredByQuestionRef.current[effectiveIndex] ?? new Set<string>();
+        if (answeredSet.has(payload.playerId)) {
+          return;
+        }
+        answeredSet.add(payload.playerId);
+        answeredByQuestionRef.current[effectiveIndex] = answeredSet;
+
+        if (effectiveIndex === questionIndex) {
+          setAnswerCounts((prev) => {
+            const next = [...prev] as [number, number, number, number];
+            if (payload.answerIndex >= 0 && payload.answerIndex < 4) {
+              next[payload.answerIndex] = (next[payload.answerIndex] ?? 0) + 1;
+            }
+            return next;
+          });
+        }
+
+        const isCorrect = payload.answerIndex === question.correct_index;
+        const scoring = calculateScore({
+          isCorrect,
+          responseTimeMs: payload.latencyMs ?? 0,
+          questionTimeMs: question.duration_ms ?? 6000,
+          pointsMultiplier: 1,
+          mode: "speed",
+        });
+
+        setPlayers((prev) =>
+          prev.map((player) => {
+            if (player.id !== payload.playerId) {
+              return player;
+            }
+            const nextStreak = isCorrect ? player.streak + 1 : 0;
+            return {
+              ...player,
+              score: player.score + scoring.points,
+              correctCount: player.correctCount + scoring.correctIncrement,
+              streak: nextStreak,
+            };
+          }),
+        );
         return;
       }
       if (message.type === "error" && Array.isArray(message.errors)) {
@@ -149,10 +244,31 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           playerId,
           answerIndex,
           latencyMs,
+          questionIndex,
         },
       });
     },
-    [playerId, roomCode, roundStartAt, send],
+    [playerId, questionIndex, roomCode, roundStartAt, send],
+  );
+
+  const setReady = useCallback(
+    (ready: boolean) => {
+      if (!roomCode) return;
+      send({
+        type: "ready",
+        payload: {
+          roomCode,
+          playerId,
+          ready,
+        },
+      });
+      setPlayers((prev) =>
+        prev.map((player) =>
+          player.id === playerId ? { ...player, ready } : player,
+        ),
+      );
+    },
+    [playerId, roomCode, send],
   );
 
   const clearHostTimers = useCallback(() => {
@@ -189,6 +305,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     return clearHostTimers;
   }, [clearHostTimers, isHost, phase, questionIndex, roomCode, roundStartAt, sendStage]);
 
+  useEffect(() => {
+    answeredByQuestionRef.current[questionIndex] = new Set();
+    setAnswerCounts([0, 0, 0, 0]);
+  }, [questionIndex]);
+
   const value: RoomState = {
     roomCode,
     playerId,
@@ -196,12 +317,15 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     phase,
     questionIndex,
     roundStartAt,
+    players,
+    answerCounts,
     wsStatus,
     errors,
     joinRoom,
     sendStage,
     startGame,
     sendAnswer,
+    setReady,
   };
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

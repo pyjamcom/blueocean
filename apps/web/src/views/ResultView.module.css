@@ -13,6 +13,19 @@
   align-items: center;
 }
 
+.actionItem {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.actionLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .actionButton {
   width: 64px;
   height: 64px;
@@ -28,21 +41,15 @@
 .iconSave {
   width: 28px;
   height: 28px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.7);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .iconShare {
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 5v10'/><path d='M8 8l4-4 4 4'/><path d='M5 19h14'/></svg>");
 }
 
 .iconSave {
-  clip-path: polygon(10% 0%, 90% 0%, 90% 80%, 50% 100%, 10% 80%);
-}
-
-.caption {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.75);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 5v10'/><path d='M8 12l4 4 4-4'/><path d='M5 19h14'/></svg>");
 }

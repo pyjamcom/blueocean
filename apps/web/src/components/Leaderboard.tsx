@@ -10,7 +10,7 @@ export interface LeaderboardItem {
 
 export interface LeaderboardProps {
   items: LeaderboardItem[];
-  self?: { rank: number; score?: number; correctCount?: number } | null;
+  self?: { playerId: string; avatarId: string; rank: number; score?: number; correctCount?: number } | null;
   mode: "speed" | "accuracy";
 }
 
@@ -31,7 +31,9 @@ function medalColor(rank: number) {
 }
 
 export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
-  const topItems = [...items].sort((a, b) => a.rank - b.rank).slice(0, 5);
+  const sorted = [...items].sort((a, b) => a.rank - b.rank);
+  const topItems = sorted.slice(0, 5);
+  const selfOutsideTop = self && self.rank > 5 ? self : null;
 
   return (
     <div className={`leaderboard ${styles.board} ${styles[mode]}`}>
@@ -57,6 +59,24 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
           </div>
         );
       })}
+      {selfOutsideTop && (
+        <div
+          className={`leaderboard__item ${styles.item} ${styles.selfRow} leaderboard__selfHighlight ${styles.self}`}
+          aria-label="self-rank"
+        >
+          <div
+            className={`leaderboard__rankBadge ${styles.rankBadge}`}
+            style={{ backgroundColor: medalColor(selfOutsideTop.rank) }}
+            aria-label={`rank-${selfOutsideTop.rank}`}
+          />
+          <div
+            className={`leaderboard__avatar ${styles.avatar}`}
+            style={{ background: `hsl(${hashHue(selfOutsideTop.avatarId)} 70% 60%)` }}
+            aria-label={selfOutsideTop.avatarId}
+          />
+          <span className={styles.spark} />
+        </div>
+      )}
     </div>
   );
 }

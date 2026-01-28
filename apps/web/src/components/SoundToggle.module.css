@@ -12,20 +12,10 @@
 .icon {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.7);
-  position: relative;
-}
-
-.icon::after {
-  content: "";
-  position: absolute;
-  right: -10px;
-  top: 4px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 9h4l5-4v14l-5-4H4z'/><path d='M17 9c1.5 1.5 1.5 4.5 0 6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .enabled {
@@ -33,9 +23,6 @@
 }
 
 .muted .icon {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.muted .icon::after {
-  border-color: rgba(255, 255, 255, 0.4);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 9h4l5-4v14l-5-4H4z'/><path d='M17 9l3 6'/><path d='M20 9l-3 6'/></svg>");
+  opacity: 0.7;
 }
