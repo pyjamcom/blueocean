@@ -90,6 +90,7 @@ export default function App() {
         <HelpButton />
         <Routes>
           <Route path="/join" element={<JoinView />} />
+          <Route path="/:code" element={<JoinView />} />
           <Route path="/lobby" element={<LobbyView />} />
           <Route path="/game" element={<RoundGallery />} />
           <Route path="/result" element={<ResultView />} />

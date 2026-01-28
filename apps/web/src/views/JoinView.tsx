@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useJoinRoom } from "../hooks/useJoinRoom";
 import { trackEvent } from "../utils/analytics";
 import styles from "./JoinView.module.css";
@@ -22,9 +22,11 @@ function resolveVariant(age?: number): PulseVariant {
 
 export default function JoinView() {
   const location = useLocation();
+  const { code: codeFromPath } = useParams<{ code?: string }>();
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
-  const codeParam = params.get("code")?.toUpperCase();
+  const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
+  const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
   const { roomCode } = useJoinRoom({ roomCode: codeParam ?? undefined });
   const variant = resolveVariant(age);
 
