@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import express from "express";
 import http from "http";
 import { WebSocket, WebSocketServer } from "ws";
@@ -5,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import Ajv from "ajv/dist/2020";
 import addFormats from "ajv-formats";
+import Redis from "ioredis";
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +16,19 @@ const COMPLIANCE_LOG_LIMIT = 1000;
 const LOG_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const TEST_API_ENABLED = process.env.TEST_API_ENABLED === "true";
 const TEST_API_TOKEN = process.env.TEST_API_TOKEN;
+const REDIS_URL = process.env.REDIS_URL;
+const REDIS_ENABLED = Boolean(REDIS_URL);
+const REDIS_CHANNEL = "escapers:broadcast";
+const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
+
+const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
+const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
+if (redis) {
+  redis.on("error", (err) => console.error("redis:error", err));
+}
+if (redisSub) {
+  redisSub.on("error", (err) => console.error("redis:sub:error", err));
+}
 
 app.use(express.json({ limit: "4kb" }));
 
@@ -105,10 +120,11 @@ app.post("/client-error", (req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/metrics", (_req, res) => {
+app.get("/metrics", async (_req, res) => {
+  const roomsActive = await roomStore.count();
   res.json({
     ...metrics,
-    roomsActive: rooms.size,
+    roomsActive,
     uptimeSec: Math.floor(process.uptime()),
   });
 });
@@ -195,7 +211,28 @@ interface Room {
   answeredByIndex: Map<number, Set<string>>;
 }
 
-const rooms = new Map<string, Room>();
+type StoredRoom = {
+  code: string;
+  players: Player[];
+  createdAt: number;
+  expiresAt: number;
+  locked: boolean;
+  hostId?: string;
+  stage?: StagePayload;
+  currentQuestionIndex?: number;
+  questionsByIndex: Record<string, { correctIndex: number; durationMs: number }>;
+  answeredByIndex: Record<string, string[]>;
+};
+
+interface RoomStore {
+  get(code: string): Promise<Room | null>;
+  set(room: Room): Promise<void>;
+  delete(code: string): Promise<boolean>;
+  list(): Promise<Room[]>;
+  count(): Promise<number>;
+}
+
+const roomsMemory = new Map<string, Room>();
 const incidents: Incident[] = [];
 const rateBuckets = new Map<string, RateBucket>();
 const socketState = new WeakMap<WebSocket, { ip: string; joinedRoom?: string; playerId?: string }>();
@@ -211,6 +248,120 @@ const metrics = {
   roomsExpired: 0,
   incidents: 0,
 };
+
+function serializeRoom(room: Room): StoredRoom {
+  const questionsByIndex: Record<string, { correctIndex: number; durationMs: number }> = {};
+  room.questionsByIndex.forEach((value, key) => {
+    questionsByIndex[String(key)] = value;
+  });
+  const answeredByIndex: Record<string, string[]> = {};
+  room.answeredByIndex.forEach((value, key) => {
+    answeredByIndex[String(key)] = Array.from(value);
+  });
+  return {
+    code: room.code,
+    players: Array.from(room.players.values()),
+    createdAt: room.createdAt,
+    expiresAt: room.expiresAt,
+    locked: room.locked,
+    hostId: room.hostId,
+    stage: room.stage,
+    currentQuestionIndex: room.currentQuestionIndex,
+    questionsByIndex,
+    answeredByIndex,
+  };
+}
+
+function deserializeRoom(data: StoredRoom): Room {
+  const players = new Map<string, Player>();
+  data.players.forEach((player) => {
+    players.set(player.id, { ...player });
+  });
+  const questionsByIndex = new Map<number, { correctIndex: number; durationMs: number }>();
+  Object.entries(data.questionsByIndex ?? {}).forEach(([key, value]) => {
+    questionsByIndex.set(Number(key), value);
+  });
+  const answeredByIndex = new Map<number, Set<string>>();
+  Object.entries(data.answeredByIndex ?? {}).forEach(([key, value]) => {
+    answeredByIndex.set(Number(key), new Set(value));
+  });
+  return {
+    code: data.code,
+    players,
+    createdAt: data.createdAt,
+    expiresAt: data.expiresAt,
+    locked: data.locked,
+    hostId: data.hostId,
+    stage: data.stage,
+    currentQuestionIndex: data.currentQuestionIndex,
+    questionsByIndex,
+    answeredByIndex,
+  };
+}
+
+async function listRedisRooms(): Promise<Room[]> {
+  if (!redis) return [];
+  const rooms: Room[] = [];
+  let cursor = "0";
+  do {
+    const [nextCursor, keys] = await redis.scan(cursor, "MATCH", "room:*", "COUNT", "100");
+    cursor = nextCursor;
+    for (const key of keys) {
+      const raw = await redis.get(key);
+      if (!raw) {
+        continue;
+      }
+      try {
+        rooms.push(deserializeRoom(JSON.parse(raw) as StoredRoom));
+      } catch (err) {
+        console.warn("redis:parse_room_failed", key, err);
+      }
+    }
+  } while (cursor !== "0");
+  return rooms;
+}
+
+const roomStore: RoomStore = REDIS_ENABLED
+  ? {
+      async get(code: string) {
+        const raw = await redis?.get(`room:${code}`);
+        if (!raw) return null;
+        return deserializeRoom(JSON.parse(raw) as StoredRoom);
+      },
+      async set(room: Room) {
+        const raw = JSON.stringify(serializeRoom(room));
+        const ttlSec = Math.max(60, Math.ceil((room.expiresAt - Date.now()) / 1000));
+        await redis?.set(`room:${room.code}`, raw, "EX", ttlSec);
+      },
+      async delete(code: string) {
+        const res = await redis?.del(`room:${code}`);
+        return Boolean(res && res > 0);
+      },
+      async list() {
+        return listRedisRooms();
+      },
+      async count() {
+        const rooms = await listRedisRooms();
+        return rooms.length;
+      },
+    }
+  : {
+      async get(code: string) {
+        return roomsMemory.get(code) ?? null;
+      },
+      async set(room: Room) {
+        roomsMemory.set(room.code, room);
+      },
+      async delete(code: string) {
+        return roomsMemory.delete(code);
+      },
+      async list() {
+        return Array.from(roomsMemory.values());
+      },
+      async count() {
+        return roomsMemory.size;
+      },
+    };
 
 function logIncident(incident: Incident) {
   incidents.push(incident);
@@ -268,11 +419,21 @@ function generateRoomCode(length = 4): string {
   return code;
 }
 
-function getOrCreateRoom(code?: string): Room {
-  if (code && rooms.has(code)) {
-    return rooms.get(code)!;
+async function getOrCreateRoom(code?: string): Promise<Room> {
+  if (code) {
+    const existing = await roomStore.get(code);
+    if (existing) {
+      return existing;
+    }
   }
-  const newCode = code || generateRoomCode(4 + Math.floor(Math.random() * 3));
+  let newCode = code || generateRoomCode(4 + Math.floor(Math.random() * 3));
+  if (!code) {
+    for (let i = 0; i < 5; i += 1) {
+      const existing = await roomStore.get(newCode);
+      if (!existing) break;
+      newCode = generateRoomCode(4 + Math.floor(Math.random() * 3));
+    }
+  }
   const now = Date.now();
   const room: Room = {
     code: newCode,
@@ -284,12 +445,13 @@ function getOrCreateRoom(code?: string): Room {
     answeredByIndex: new Map(),
   };
   metrics.roomsCreated += 1;
-  rooms.set(newCode, room);
+  await roomStore.set(room);
   return room;
 }
 
-function touchRoom(room: Room) {
+async function touchRoom(room: Room) {
   room.expiresAt = Date.now() + ROOM_TTL_MS;
+  await roomStore.set(room);
 }
 
 function send(ws: WebSocket, payload: unknown) {
@@ -360,7 +522,7 @@ function calculateScore(params: { isCorrect: boolean; latencyMs: number; duratio
   return { points, correctIncrement: 1, streakDelta: 1 };
 }
 
-function broadcastToRoom(roomCode: string, payload: unknown) {
+function broadcastToRoomLocal(roomCode: string, payload: unknown) {
   wss.clients.forEach((client) => {
     if (client.readyState !== WebSocket.OPEN) {
       return;
@@ -368,6 +530,35 @@ function broadcastToRoom(roomCode: string, payload: unknown) {
     const clientState = socketState.get(client);
     if (clientState?.joinedRoom === roomCode) {
       send(client, payload);
+    }
+  });
+}
+
+function broadcastToRoom(roomCode: string, payload: unknown) {
+  broadcastToRoomLocal(roomCode, payload);
+  if (redis) {
+    const message = JSON.stringify({ roomCode, payload, origin: INSTANCE_ID });
+    redis.publish(REDIS_CHANNEL, message).catch((err) => {
+      console.warn("redis:publish_failed", err);
+    });
+  }
+}
+
+if (redisSub) {
+  redisSub.subscribe(REDIS_CHANNEL).catch((err) => {
+    console.warn("redis:subscribe_failed", err);
+  });
+  redisSub.on("message", (_channel, message) => {
+    try {
+      const parsed = JSON.parse(message) as { roomCode: string; payload: unknown; origin?: string };
+      if (parsed.origin === INSTANCE_ID) {
+        return;
+      }
+      if (parsed.roomCode) {
+        broadcastToRoomLocal(parsed.roomCode, parsed.payload);
+      }
+    } catch (err) {
+      console.warn("redis:message_parse_failed", err);
     }
   });
 }
@@ -409,8 +600,8 @@ function buildRoomSnapshot(room: Room) {
   };
 }
 
-function getRoomOrSend(roomCode: string, res: express.Response) {
-  const room = rooms.get(roomCode);
+async function getRoomOrSend(roomCode: string, res: express.Response) {
+  const room = await roomStore.get(roomCode);
   if (!room) {
     res.status(404).json({ ok: false, error: "room_not_found" });
     return null;
@@ -427,37 +618,38 @@ function getPlayerOrSend(room: Room, playerId: string, res: express.Response) {
   return player;
 }
 
-testRouter.get("/rooms", (_req, res) => {
+testRouter.get("/rooms", async (_req, res) => {
+  const rooms = await roomStore.list();
   res.json({
     ok: true,
-    rooms: Array.from(rooms.values()).map((room) => buildRoomSnapshot(room)),
+    rooms: rooms.map((room) => buildRoomSnapshot(room)),
   });
 });
 
-testRouter.post("/rooms", (req, res) => {
+testRouter.post("/rooms", async (req, res) => {
   const roomCode = typeof req.body?.roomCode === "string" ? req.body.roomCode : undefined;
   const hostId = typeof req.body?.hostId === "string" ? req.body.hostId : `test-host-${Date.now()}`;
   const avatarId = typeof req.body?.avatarId === "string" ? req.body.avatarId : "avatar_robot_party";
   const ready = req.body?.ready !== false;
-  const room = getOrCreateRoom(roomCode);
+  const room = await getOrCreateRoom(roomCode);
   if (!room.hostId) {
     room.hostId = hostId;
   }
   addOrUpdatePlayer(room, hostId, avatarId, ready);
   ensureRoomStage(room);
-  touchRoom(room);
+  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.get("/rooms/:roomCode", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.get("/rooms/:roomCode", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/players", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/players", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const playerId = req.body?.playerId;
   const avatarId = req.body?.avatarId ?? "avatar_robot_party";
@@ -471,37 +663,37 @@ testRouter.post("/rooms/:roomCode/players", (req, res) => {
     room.hostId = playerId;
   }
   ensureRoomStage(room);
-  touchRoom(room);
+  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.delete("/rooms/:roomCode/players/:playerId", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.delete("/rooms/:roomCode/players/:playerId", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const { playerId } = req.params;
   room.players.delete(playerId);
   if (room.hostId === playerId) {
     room.hostId = room.players.keys().next().value as string | undefined;
   }
-  touchRoom(room);
+  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/players/:playerId/ready", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/players/:playerId/ready", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const player = getPlayerOrSend(room, req.params.playerId, res);
   if (!player) return;
   player.ready = req.body?.ready === true;
-  touchRoom(room);
+  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/players/:playerId/avatar", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/players/:playerId/avatar", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const player = getPlayerOrSend(room, req.params.playerId, res);
   if (!player) return;
@@ -511,13 +703,13 @@ testRouter.post("/rooms/:roomCode/players/:playerId/avatar", (req, res) => {
     return;
   }
   player.avatarId = avatarId;
-  touchRoom(room);
+  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/stage", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const phase = req.body?.phase as RoomPhase | undefined;
   const playerId = req.body?.playerId as string | undefined;
@@ -543,13 +735,13 @@ testRouter.post("/rooms/:roomCode/stage", (req, res) => {
   }
   room.stage = nextStage;
   ensureRoomStage(room);
-  touchRoom(room);
+  await touchRoom(room);
   broadcastToRoom(room.code, { type: "stage", payload: nextStage });
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/question", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/question", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const payload = { ...req.body, roomCode: room.code };
   if (!validateQuestionFn(payload)) {
@@ -566,13 +758,13 @@ testRouter.post("/rooms/:roomCode/question", (req, res) => {
       durationMs: payload.duration_ms,
     });
   }
-  touchRoom(room);
+  await touchRoom(room);
   broadcastToRoom(room.code, { type: "question", payload });
   res.json({ ok: true });
 });
 
-testRouter.post("/rooms/:roomCode/answer", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/answer", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const payload = { ...req.body, roomCode: room.code };
   if (!validateAnswerFn(payload)) {
@@ -605,29 +797,29 @@ testRouter.post("/rooms/:roomCode/answer", (req, res) => {
         player.correctCount += scoring.correctIncrement;
         player.streak = isCorrect ? player.streak + 1 : 0;
         broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
-      }
+        }
     }
   }
-  touchRoom(room);
+  await touchRoom(room);
   broadcastToRoom(room.code, { type: "answer", payload });
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
-testRouter.post("/rooms/:roomCode/broadcast", (req, res) => {
-  const room = getRoomOrSend(req.params.roomCode, res);
+testRouter.post("/rooms/:roomCode/broadcast", async (req, res) => {
+  const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
   const payload = req.body;
   broadcastToRoom(room.code, payload);
   res.json({ ok: true });
 });
 
-testRouter.post("/rooms/:roomCode/reset", (req, res) => {
+testRouter.post("/rooms/:roomCode/reset", async (req, res) => {
   const roomCode = req.params.roomCode;
-  if (!rooms.has(roomCode)) {
+  const deleted = await roomStore.delete(roomCode);
+  if (!deleted) {
     res.status(404).json({ ok: false, error: "room_not_found" });
     return;
   }
-  rooms.delete(roomCode);
   metrics.roomsExpired += 1;
   res.json({ ok: true });
 });
@@ -638,7 +830,7 @@ wss.on("connection", (socket, request) => {
   metrics.wsConnections += 1;
   console.log("ws:connect");
 
-  socket.on("message", (data) => {
+  socket.on("message", async (data) => {
     try {
       const state = socketState.get(socket);
       if (!state) {
@@ -669,13 +861,12 @@ wss.on("connection", (socket, request) => {
           return;
         }
 
-        const processJoin = () => {
+        const processJoin = async () => {
           if (state.joinedRoom) {
             send(socket, { type: "joined", payload: { roomCode: state.joinedRoom } });
             return;
           }
-          const room = getOrCreateRoom(joinPayload.roomCode);
-          touchRoom(room);
+          const room = await getOrCreateRoom(joinPayload.roomCode);
           let isHost = false;
           if (!room.hostId) {
             room.hostId = joinPayload.playerId;
@@ -695,7 +886,9 @@ wss.on("connection", (socket, request) => {
             return;
           }
           if (roomBurst.delayMs > 0) {
-            setTimeout(processJoin, roomBurst.delayMs);
+            setTimeout(() => {
+              void processJoin();
+            }, roomBurst.delayMs);
             return;
           }
           if (room.players.size >= MAX_ROOM_PLAYERS) {
@@ -724,15 +917,18 @@ wss.on("connection", (socket, request) => {
           }
           state.joinedRoom = room.code;
           state.playerId = joinPayload.playerId;
+          await touchRoom(room);
           send(socket, { type: "joined", payload: { roomCode: room.code, isHost, stage: room.stage } });
           broadcastRoster(room);
           metrics.joinSuccess += 1;
         };
 
         if (joinRate.delayMs > 0) {
-          setTimeout(processJoin, joinRate.delayMs);
+          setTimeout(() => {
+            void processJoin();
+          }, joinRate.delayMs);
         } else {
-          processJoin();
+          await processJoin();
         }
         return;
       }
@@ -750,7 +946,7 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_room" });
           return;
         }
-        const room = rooms.get(roomCode);
+        const room = await roomStore.get(roomCode);
         if (!room) {
           return;
         }
@@ -772,7 +968,7 @@ wss.on("connection", (socket, request) => {
         if (typeof nextStage.questionIndex === "number") {
           room.currentQuestionIndex = nextStage.questionIndex;
         }
-        touchRoom(room);
+        await touchRoom(room);
         broadcastToRoom(roomCode, { type: "stage", payload: nextStage });
         return;
       }
@@ -786,7 +982,7 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "ready" });
           return;
         }
-        const room = rooms.get(roomCode);
+        const room = await roomStore.get(roomCode);
         if (!room) {
           return;
         }
@@ -795,7 +991,7 @@ wss.on("connection", (socket, request) => {
           return;
         }
         player.ready = ready;
-        touchRoom(room);
+        await touchRoom(room);
         broadcastRoster(room);
         return;
       }
@@ -809,7 +1005,7 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "avatar" });
           return;
         }
-        const room = rooms.get(roomCode);
+        const room = await roomStore.get(roomCode);
         if (!room) {
           return;
         }
@@ -818,7 +1014,7 @@ wss.on("connection", (socket, request) => {
           return;
         }
         player.avatarId = avatarId;
-        touchRoom(room);
+        await touchRoom(room);
         broadcastRoster(room);
         return;
       }
@@ -831,7 +1027,7 @@ wss.on("connection", (socket, request) => {
           return;
         }
         if (state.joinedRoom) {
-          const room = rooms.get(state.joinedRoom);
+          const room = await roomStore.get(state.joinedRoom);
           if (room) {
             const index =
               typeof questionPayload.questionIndex === "number"
@@ -843,7 +1039,7 @@ wss.on("connection", (socket, request) => {
                 durationMs: questionPayload.duration_ms,
               });
             }
-            touchRoom(room);
+            await touchRoom(room);
             broadcastToRoom(room.code, { type: "question", payload: questionPayload });
           }
         }
@@ -885,9 +1081,8 @@ wss.on("connection", (socket, request) => {
           return;
         }
         answerCooldowns.set(cooldownKey, Date.now());
-        const room = rooms.get(answerPayload.roomCode);
+        const room = await roomStore.get(answerPayload.roomCode);
         if (room) {
-          touchRoom(room);
           const questionIndex =
             typeof answerPayload.questionIndex === "number"
               ? answerPayload.questionIndex
@@ -914,6 +1109,7 @@ wss.on("connection", (socket, request) => {
               broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
             }
           }
+          await touchRoom(room);
         }
         broadcastToRoom(answerPayload.roomCode, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
@@ -925,18 +1121,19 @@ wss.on("connection", (socket, request) => {
     }
   });
 
-  socket.on("close", () => {
+  socket.on("close", async () => {
     console.log("ws:disconnect");
     metrics.wsDisconnects += 1;
     const state = socketState.get(socket);
     if (state?.joinedRoom && state.playerId) {
-      const room = rooms.get(state.joinedRoom);
+      const room = await roomStore.get(state.joinedRoom);
       if (room) {
         room.players.delete(state.playerId);
         if (room.hostId === state.playerId) {
           const nextHost = room.players.keys().next().value as string | undefined;
           room.hostId = nextHost;
         }
+        await touchRoom(room);
         broadcastRoster(room);
       }
     }
@@ -947,14 +1144,15 @@ server.listen(PORT, () => {
   console.log(`server listening on ${PORT}`);
 });
 
-setInterval(() => {
+setInterval(async () => {
   const now = Date.now();
-  rooms.forEach((room, code) => {
+  const rooms = await roomStore.list();
+  for (const room of rooms) {
     if (room.expiresAt <= now) {
-      rooms.delete(code);
+      await roomStore.delete(room.code);
       metrics.roomsExpired += 1;
     }
-  });
+  }
   const cutoff = now - LOG_TTL_MS;
   while (complianceEvents.length > 0) {
     const first = complianceEvents[0];
