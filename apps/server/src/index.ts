@@ -21,6 +21,7 @@ const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
 const ROUND_DEFAULT_MS = 10000;
+const PREPARED_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 5000;
 const LEADERBOARD_DURATION_MS = 5000;
 const MAX_QUESTIONS = 15;
@@ -193,8 +194,8 @@ interface RateBucket {
   resetAt: number;
 }
 
-type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
-const allowedPhases = new Set<RoomPhase>(["join", "lobby", "round", "reveal", "leaderboard", "end"]);
+type RoomPhase = "join" | "lobby" | "prepared" | "round" | "reveal" | "leaderboard" | "end";
+const allowedPhases = new Set<RoomPhase>(["join", "lobby", "prepared", "round", "reveal", "leaderboard", "end"]);
 const isRoomPhase = (value: unknown): value is RoomPhase =>
   typeof value === "string" && allowedPhases.has(value as RoomPhase);
 
@@ -213,6 +214,7 @@ interface Player {
   score: number;
   correctCount: number;
   streak: number;
+  connectionId?: string;
   lastAnswerAt?: number;
   lastSeen?: number;
 }
@@ -254,7 +256,10 @@ interface RoomStore {
 const roomsMemory = new Map<string, Room>();
 const incidents: Incident[] = [];
 const rateBuckets = new Map<string, RateBucket>();
-const socketState = new WeakMap<WebSocket, { ip: string; joinedRoom?: string; playerId?: string; lastPong?: number }>();
+const socketState = new WeakMap<
+  WebSocket,
+  { ip: string; joinedRoom?: string; playerId?: string; connectionId?: string; lastPong?: number }
+>();
 const answerCooldowns = new Map<string, number>();
 const metrics = {
   wsConnections: 0,
@@ -615,6 +620,10 @@ function scheduleStageTimers(room: Room) {
   if (!room.stage) {
     return;
   }
+  if (room.stage.phase === "prepared") {
+    schedulePreparedTimers(room);
+    return;
+  }
   if (room.stage.phase === "round") {
     scheduleRoundTimers(room);
     return;
@@ -626,6 +635,41 @@ function scheduleStageTimers(room: Room) {
   if (room.stage.phase === "leaderboard") {
     scheduleLeaderboardTimers(room);
   }
+}
+
+function schedulePreparedTimers(room: Room) {
+  if (!room.stage || room.stage.phase !== "prepared") {
+    return;
+  }
+  const stage = room.stage;
+  const questionIndex =
+    typeof stage.questionIndex === "number"
+      ? stage.questionIndex
+      : typeof room.currentQuestionIndex === "number"
+        ? room.currentQuestionIndex
+        : 0;
+  const startAt = stage.roundStartAt ?? Date.now() + PREPARED_DURATION_MS;
+  const delay = Math.max(0, startAt - Date.now());
+  const timers: RoomTimers = {};
+  timers.next = setTimeout(() => {
+    void (async () => {
+      const updated = await applyStageTransition(
+        room.code,
+        "prepared",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "round",
+          questionIndex,
+          roundStartAt: startAt,
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, delay);
+  roomTimers.set(room.code, timers);
 }
 
 function scheduleRoundTimers(room: Room) {
@@ -682,19 +726,19 @@ function scheduleRoundTimers(room: Room) {
   }, remaining + REVEAL_DURATION_MS);
   timers.next = setTimeout(() => {
     void (async () => {
-      const nextIndex = questionIndex + 1;
-      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
-      const updated = await applyStageTransition(
-        room.code,
-        "leaderboard",
-        questionIndex,
-        {
-          roomCode: room.code,
-          phase: nextPhase,
-          questionIndex: nextIndex,
-          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
-        },
-      );
+    const nextIndex = questionIndex + 1;
+    const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "prepared";
+    const updated = await applyStageTransition(
+      room.code,
+      "leaderboard",
+      questionIndex,
+      {
+        roomCode: room.code,
+        phase: nextPhase,
+        questionIndex: nextIndex,
+        roundStartAt: nextPhase === "prepared" ? Date.now() + PREPARED_DURATION_MS : undefined,
+      },
+    );
       if (updated) {
         scheduleStageTimers(updated);
       }
@@ -736,19 +780,19 @@ function scheduleRevealTimers(room: Room) {
   }, REVEAL_DURATION_MS);
   timers.next = setTimeout(() => {
     void (async () => {
-      const nextIndex = questionIndex + 1;
-      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
-      const updated = await applyStageTransition(
-        room.code,
-        "leaderboard",
-        questionIndex,
-        {
-          roomCode: room.code,
-          phase: nextPhase,
-          questionIndex: nextIndex,
-          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
-        },
-      );
+    const nextIndex = questionIndex + 1;
+    const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "prepared";
+    const updated = await applyStageTransition(
+      room.code,
+      "leaderboard",
+      questionIndex,
+      {
+        roomCode: room.code,
+        phase: nextPhase,
+        questionIndex: nextIndex,
+        roundStartAt: nextPhase === "prepared" ? Date.now() + PREPARED_DURATION_MS : undefined,
+      },
+    );
       if (updated) {
         scheduleStageTimers(updated);
       }
@@ -771,19 +815,19 @@ function scheduleLeaderboardTimers(room: Room) {
   const timers: RoomTimers = {};
   timers.next = setTimeout(() => {
     void (async () => {
-      const nextIndex = questionIndex + 1;
-      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
-      const updated = await applyStageTransition(
-        room.code,
-        "leaderboard",
-        questionIndex,
-        {
-          roomCode: room.code,
-          phase: nextPhase,
-          questionIndex: nextIndex,
-          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
-        },
-      );
+    const nextIndex = questionIndex + 1;
+    const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "prepared";
+    const updated = await applyStageTransition(
+      room.code,
+      "leaderboard",
+      questionIndex,
+      {
+        roomCode: room.code,
+        phase: nextPhase,
+        questionIndex: nextIndex,
+        roundStartAt: nextPhase === "prepared" ? Date.now() + PREPARED_DURATION_MS : undefined,
+      },
+    );
       if (updated) {
         scheduleStageTimers(updated);
       }
@@ -893,13 +937,30 @@ function ensureHost(room: Room, fallbackId?: string) {
   return false;
 }
 
-function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready = true, name?: string) {
+function isCurrentConnection(room: Room, playerId: string, connectionId?: string) {
+  const player = room.players.get(playerId);
+  if (!player) return false;
+  if (!connectionId || !player.connectionId) return true;
+  return player.connectionId === connectionId;
+}
+
+function addOrUpdatePlayer(
+  room: Room,
+  playerId: string,
+  avatarId: string,
+  ready = true,
+  name?: string,
+  connectionId?: string,
+) {
   const existing = room.players.get(playerId);
   if (existing) {
     existing.avatarId = avatarId;
     existing.ready = ready;
     if (name) {
       existing.name = name;
+    }
+    if (connectionId) {
+      existing.connectionId = connectionId;
     }
     existing.lastSeen = Date.now();
     return;
@@ -912,17 +973,21 @@ function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready
     score: 0,
     correctCount: 0,
     streak: 0,
+    connectionId,
     lastSeen: Date.now(),
   });
 }
 
-async function markPlayerSeen(roomCode: string, playerId: string) {
+async function markPlayerSeen(roomCode: string, playerId: string, connectionId?: string) {
   const now = Date.now();
   await updateRoom(
     roomCode,
     (roomValue) => {
       const player = roomValue.players.get(playerId);
       if (!player) return;
+      if (connectionId && player.connectionId && player.connectionId !== connectionId) {
+        return;
+      }
       const lastSeen = player.lastSeen ?? 0;
       if (now - lastSeen < 10000) {
         return;
@@ -1002,9 +1067,9 @@ function maybeAutoStartRoom(room: Room) {
   }
   const nextStage: StagePayload = {
     roomCode: room.code,
-    phase: "round",
+    phase: "prepared",
     questionIndex: typeof room.currentQuestionIndex === "number" ? room.currentQuestionIndex : 0,
-    roundStartAt: Date.now(),
+    roundStartAt: Date.now() + PREPARED_DURATION_MS,
   };
   room.stage = nextStage;
   room.currentQuestionIndex = nextStage.questionIndex ?? 0;
@@ -1472,7 +1537,7 @@ wss.on("connection", (socket, request) => {
     if (!state) return;
     state.lastPong = Date.now();
     if (state.joinedRoom && state.playerId) {
-      void markPlayerSeen(state.joinedRoom, state.playerId);
+      void markPlayerSeen(state.joinedRoom, state.playerId, state.connectionId);
     }
   });
 
@@ -1492,7 +1557,7 @@ wss.on("connection", (socket, request) => {
       const type = message?.type;
       const payload: any = (message as any).payload;
       if (state.joinedRoom && state.playerId) {
-        void markPlayerSeen(state.joinedRoom, state.playerId);
+        void markPlayerSeen(state.joinedRoom, state.playerId, state.connectionId);
       }
 
       if (type === "join") {
@@ -1515,6 +1580,7 @@ wss.on("connection", (socket, request) => {
             send(socket, { type: "joined", payload: { roomCode: state.joinedRoom } });
             return;
           }
+          const connectionId = crypto.randomUUID();
           let roomCodeForJoin = joinPayload.roomCode;
           if (joinPayload.roomCode === PUBLIC_ROOM_CODE) {
             roomCodeForJoin = await resolvePublicJoinRoom();
@@ -1555,7 +1621,14 @@ wss.on("connection", (socket, request) => {
               } else if (roomValue.hostId === joinPayload.playerId) {
                 isHost = true;
               }
-              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, false, playerName);
+              addOrUpdatePlayer(
+                roomValue,
+                joinPayload.playerId,
+                joinPayload.avatarId,
+                false,
+                playerName,
+                connectionId,
+              );
               ensureRoomStage(roomValue);
             },
             { createIfMissing: true },
@@ -1568,6 +1641,7 @@ wss.on("connection", (socket, request) => {
           }
           state.joinedRoom = room.code;
           state.playerId = joinPayload.playerId;
+          state.connectionId = connectionId;
           send(socket, { type: "joined", payload: { roomCode: room.code, isHost, stage: room.stage } });
           broadcastRoster(room);
           metrics.joinSuccess += 1;
@@ -1600,6 +1674,9 @@ wss.on("connection", (socket, request) => {
         const room = await updateRoom(
           roomCode,
           (roomValue) => {
+            if (!isCurrentConnection(roomValue, playerId, state.connectionId)) {
+              return;
+            }
             roomValue.players.delete(playerId);
             if (roomValue.hostId === playerId) {
               const nextHost = roomValue.players.keys().next().value as string | undefined;
@@ -1639,6 +1716,9 @@ wss.on("connection", (socket, request) => {
           (roomValue) => {
             const player = roomValue.players.get(playerId);
             if (player) {
+              if (!isCurrentConnection(roomValue, playerId, state.connectionId)) {
+                return;
+              }
               player.name = name;
               player.lastSeen = Date.now();
             }
@@ -1675,7 +1755,13 @@ wss.on("connection", (socket, request) => {
               notHost = true;
               return;
             }
-            if (phase === "round" && roomValue.players.size < MIN_ROOM_PLAYERS) {
+            if (roomValue.hostId && roomValue.hostId === state.playerId) {
+              if (!isCurrentConnection(roomValue, state.playerId, state.connectionId)) {
+                notHost = true;
+                return;
+              }
+            }
+            if ((phase === "round" || phase === "prepared") && roomValue.players.size < MIN_ROOM_PLAYERS) {
               blockedByMinPlayers = true;
               return;
             }
@@ -1685,9 +1771,13 @@ wss.on("connection", (socket, request) => {
             };
             if (typeof stagePayload.questionIndex === "number") {
               nextStage.questionIndex = stagePayload.questionIndex;
+            } else if (typeof roomValue.currentQuestionIndex === "number") {
+              nextStage.questionIndex = roomValue.currentQuestionIndex;
             }
             if (typeof stagePayload.roundStartAt === "number") {
               nextStage.roundStartAt = stagePayload.roundStartAt;
+            } else if (phase === "prepared") {
+              nextStage.roundStartAt = Date.now() + PREPARED_DURATION_MS;
             }
             roomValue.stage = nextStage;
             if (typeof nextStage.questionIndex === "number") {
@@ -1709,7 +1799,7 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_min_players" });
           return;
         }
-        if (phase === "round") {
+        if (phase === "round" || phase === "prepared") {
           await clearPublicRoomPointerIfMatch(room.code);
         }
         broadcastToRoom(roomCode, { type: "stage", payload: room.stage });
@@ -1734,6 +1824,9 @@ wss.on("connection", (socket, request) => {
             if (!player) {
               return;
             }
+            if (!isCurrentConnection(roomValue, playerId, state.connectionId)) {
+              return;
+            }
             ensureHost(roomValue, playerId);
             player.ready = ready;
             player.lastSeen = Date.now();
@@ -1748,7 +1841,7 @@ wss.on("connection", (socket, request) => {
           broadcastRoster(room);
           if (autoStage) {
             const autoPhase = (autoStage as StagePayload | null)?.phase;
-            if (autoPhase === "round") {
+            if (autoPhase === "round" || autoPhase === "prepared") {
               await clearPublicRoomPointerIfMatch(room.code);
             }
             broadcastToRoom(room.code, { type: "stage", payload: autoStage });
@@ -1774,6 +1867,9 @@ wss.on("connection", (socket, request) => {
             if (!player) {
               return;
             }
+            if (!isCurrentConnection(roomValue, playerId, state.connectionId)) {
+              return;
+            }
             player.avatarId = avatarId;
             player.lastSeen = Date.now();
           },
@@ -1796,6 +1892,11 @@ wss.on("connection", (socket, request) => {
           const room = await updateRoom(
             state.joinedRoom,
             (roomValue) => {
+              if (roomValue.hostId && roomValue.hostId === state.playerId) {
+                if (!isCurrentConnection(roomValue, state.playerId, state.connectionId)) {
+                  return;
+                }
+              }
               const index =
                 typeof questionPayload.questionIndex === "number"
                   ? questionPayload.questionIndex
@@ -1812,6 +1913,9 @@ wss.on("connection", (socket, request) => {
           );
           if (room) {
             broadcastToRoom(room.code, { type: "question", payload: questionPayload });
+            if (room.stage?.phase === "round") {
+              scheduleStageTimers(room);
+            }
           }
         }
         return;
@@ -1857,6 +1961,9 @@ wss.on("connection", (socket, request) => {
         const room = await updateRoom(
           answerPayload.roomCode,
           (roomValue) => {
+            if (!isCurrentConnection(roomValue, answerPayload.playerId, state.connectionId)) {
+              return;
+            }
             const questionIndex =
               typeof answerPayload.questionIndex === "number"
                 ? answerPayload.questionIndex
@@ -1926,6 +2033,13 @@ wss.on("connection", (socket, request) => {
     if (state?.joinedRoom && state.playerId) {
       const room = await roomStore.get(state.joinedRoom);
       if (room) {
+        const player = room.players.get(state.playerId);
+        if (!player) {
+          return;
+        }
+        if (state.connectionId && player.connectionId && player.connectionId !== state.connectionId) {
+          return;
+        }
         room.players.delete(state.playerId);
         if (room.hostId === state.playerId) {
           const nextHost = room.players.keys().next().value as string | undefined;

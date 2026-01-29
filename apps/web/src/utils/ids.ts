@@ -13,3 +13,30 @@ export function randomPlayerId(): string {
   }
   return `P-${randomId(10)}`;
 }
+
+let cachedClientId: string | null = null;
+const CLIENT_ID_KEY = "escapers_client_id";
+
+export function getOrCreateClientId(): string {
+  if (cachedClientId) {
+    return cachedClientId;
+  }
+  if (typeof window !== "undefined") {
+    try {
+      const stored = window.localStorage.getItem(CLIENT_ID_KEY);
+      if (stored) {
+        cachedClientId = stored;
+        return stored;
+      }
+      const created = randomPlayerId();
+      window.localStorage.setItem(CLIENT_ID_KEY, created);
+      cachedClientId = created;
+      return created;
+    } catch (_err) {
+      // fall through to ephemeral id
+    }
+  }
+  const fallback = randomPlayerId();
+  cachedClientId = fallback;
+  return fallback;
+}

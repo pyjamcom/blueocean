@@ -17,12 +17,13 @@
   border: none;
   padding: clamp(8px, 1.6vw, 14px);
   border-radius: var(--tile-radius, 18px);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  border: 3px solid rgba(255, 255, 255, 0.6);
   overflow: hidden;
   aspect-ratio: 16 / 11;
   min-height: clamp(130px, 20vh, 230px);
   display: block;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.12);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
 }
 
@@ -36,19 +37,19 @@
 }
 
 .tile:nth-child(1) {
-  background: linear-gradient(135deg, #e53935, #ff6f61);
+  background: linear-gradient(135deg, #ff5c7a, #ff8a5b);
 }
 
 .tile:nth-child(2) {
-  background: linear-gradient(135deg, #1e88e5, #42a5f5);
+  background: linear-gradient(135deg, #14e0ff, #4cc9f0);
 }
 
 .tile:nth-child(3) {
-  background: linear-gradient(135deg, #f9a825, #fdd835);
+  background: linear-gradient(135deg, #ffd93d, #ffb703);
 }
 
 .tile:nth-child(4) {
-  background: linear-gradient(135deg, #43a047, #66bb6a);
+  background: linear-gradient(135deg, #52ff7b, #2bd673);
 }
 
 .tile img {
@@ -65,19 +66,19 @@
 
 .tileSelected,
 :global(.answer-tile--selected) {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7), 0 18px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.9), 0 18px 34px rgba(0, 0, 0, 0.35);
   transform: translateY(2px) scale(0.98);
 }
 
 .tileCorrect,
 :global(.answer-tile--correct) {
-  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.8), 0 0 34px rgba(99, 230, 190, 0.85);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9), 0 0 34px rgba(99, 230, 190, 0.85);
   filter: saturate(1.15);
 }
 
 .tileWrong,
 :global(.answer-tile--wrong) {
-  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.6), 0 0 28px rgba(255, 107, 107, 0.85);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.6), 0 0 28px rgba(255, 107, 107, 0.85);
   filter: grayscale(0.15) brightness(0.9);
 }
 

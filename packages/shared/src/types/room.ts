@@ -3,6 +3,7 @@ import { Question } from "./question";
 
 export enum RoomState {
   Lobby = "lobby",
+  Prepared = "prepared",
   Round = "round",
   Reveal = "reveal",
   Leaderboard = "leaderboard",

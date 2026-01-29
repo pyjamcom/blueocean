@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWsClient } from "../hooks/useWsClient";
-import { randomId, randomPlayerId } from "../utils/ids";
+import { getOrCreateClientId, randomId } from "../utils/ids";
 import { questionBank } from "../data/questions";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
 
-export type RoomPhase = "join" | "lobby" | "round" | "reveal" | "leaderboard" | "end";
+export type RoomPhase = "join" | "lobby" | "prepared" | "round" | "reveal" | "leaderboard" | "end";
 
 export interface StagePayload {
   roomCode: string;
@@ -48,9 +48,6 @@ interface RoomState {
 
 const RoomContext = createContext<RoomState | null>(null);
 
-const REVEAL_DURATION_MS = 5000;
-const LEADERBOARD_DURATION_MS = 5000;
-const MAX_QUESTIONS = Math.min(15, questionBank.length);
 const MIN_ROOM_PLAYERS = 3;
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
@@ -63,7 +60,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
   const [errors, setErrors] = useState<unknown[]>([]);
-  const playerId = useMemo(() => randomPlayerId(), []);
+  const playerId = useMemo(() => getOrCreateClientId(), []);
   const joinSentRef = useRef(false);
   const pendingJoinRef = useRef<{ roomCode: string; avatarId: string; playerName?: string } | null>(null);
   const awaitingLeaveRef = useRef(false);
@@ -81,7 +78,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     }
     if (typeof payload.roundStartAt === "number") {
       setRoundStartAt(payload.roundStartAt);
-    } else if (payload.phase !== "round") {
+    } else if (payload.phase !== "round" && payload.phase !== "prepared") {
       setRoundStartAt(null);
     }
   }, []);
@@ -311,8 +308,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
 
   const startGame = useCallback(() => {
     if (!roomCode) return;
-    const startAt = Date.now();
-    sendStage({ phase: "round", questionIndex: 0, roundStartAt: startAt });
+    sendStage({ phase: "prepared", questionIndex: 0 });
   }, [roomCode, sendStage]);
 
   useEffect(() => {
@@ -426,7 +422,10 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     clearHostTimers();
-    if (!isHost || phase !== "round" || !roomCode) {
+    if (!isHost || !roomCode) {
+      return clearHostTimers;
+    }
+    if (phase !== "prepared" && phase !== "round") {
       return clearHostTimers;
     }
     const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
@@ -434,10 +433,6 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     const question = baseQuestion
       ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
       : undefined;
-    const durationMs = question?.duration_ms ?? 10000;
-    const startAt = roundStartAt ?? Date.now();
-    const remaining = Math.max(0, durationMs - (Date.now() - startAt));
-
     if (question && !sentQuestionsRef.current.has(questionIndex)) {
       send({
         type: "question",
@@ -445,25 +440,8 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       });
       sentQuestionsRef.current.add(questionIndex);
     }
-
-    const revealTimer = window.setTimeout(() => {
-      sendStage({ phase: "reveal", questionIndex, roundStartAt: startAt });
-    }, remaining);
-    const leaderboardTimer = window.setTimeout(() => {
-      sendStage({ phase: "leaderboard", questionIndex, roundStartAt: startAt });
-    }, remaining + REVEAL_DURATION_MS);
-    const nextTimer = window.setTimeout(() => {
-      const nextIndex = questionIndex + 1;
-      if (nextIndex >= MAX_QUESTIONS) {
-        sendStage({ phase: "end", questionIndex });
-      } else {
-        sendStage({ phase: "round", questionIndex: nextIndex, roundStartAt: Date.now() });
-      }
-    }, remaining + REVEAL_DURATION_MS + LEADERBOARD_DURATION_MS);
-
-    hostTimersRef.current.push(revealTimer, leaderboardTimer, nextTimer);
     return clearHostTimers;
-  }, [clearHostTimers, isHost, phase, questionIndex, roomCode, roundStartAt, sendStage]);
+  }, [clearHostTimers, isHost, phase, questionIndex, roomCode, send]);
 
   useEffect(() => {
     sentQuestionsRef.current.clear();

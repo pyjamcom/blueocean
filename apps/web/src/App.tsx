@@ -35,6 +35,7 @@ function Scene({ variant }: { variant: keyof typeof sceneStyles }) {
 const phaseRoutes: Record<RoomPhase, string> = {
   join: "/join",
   lobby: "/lobby",
+  prepared: "/game",
   round: "/game",
   reveal: "/game",
   leaderboard: "/result",

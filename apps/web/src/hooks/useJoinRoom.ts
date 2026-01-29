@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useWsClient } from "./useWsClient";
-import { randomId, randomPlayerId } from "../utils/ids";
+import { getOrCreateClientId, randomId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
 
 export interface UseJoinRoomOptions {
@@ -14,7 +14,7 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerNa
   const [errors, setErrors] = useState<unknown[]>([]);
 
   const code = useMemo(() => roomCode ?? randomId(4), [roomCode]);
-  const playerId = useMemo(() => randomPlayerId(), []);
+  const playerId = useMemo(() => getOrCreateClientId(), []);
 
   const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
 

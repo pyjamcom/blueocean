@@ -3412,6 +3412,42 @@
           "subtasks": []
         }
       ]
+    },
+    {
+      "number": "31",
+      "status": "in_progress",
+      "notes": "BO check: стабильный цикл и меньше «призраков» повышают доверие. Context check: фазы должны быть простыми и воспроизводимыми. UI вдохновлён паттернами, без 1:1 копирования бренда.",
+      "description": "Перевести игровой цикл на фазовую статус‑машину (join/lobby/prepared/round/reveal/leaderboard/end), добавить clientId‑reconnect и унифицировать /join /lobby /game /result.",
+      "subtasks": [
+        {
+          "number": "31.1",
+          "status": "completed",
+          "notes": "BO check: предсказуемость > хаос. Context check: переходы строго по фазам.",
+          "description": "Server: добавить фазу prepared и централизованные переходы/таймеры; хранить connectionId у игрока и не удалять активного игрока при закрытии старого сокета.",
+          "subtasks": []
+        },
+        {
+          "number": "31.2",
+          "status": "completed",
+          "notes": "BO check: меньше «призраков» = больше доверия. Context check: повторные входы без дубликатов.",
+          "description": "Client: persistent clientId (localStorage) и reconnect на тот же playerId; использовать в /join и RoomContext.",
+          "subtasks": []
+        },
+        {
+          "number": "31.3",
+          "status": "completed",
+          "notes": "BO check: единая навигация снижает когнитивную нагрузку. Context check: минимальный текст.",
+          "description": "UI/роутинг: единая фазовая навигация, /game отображает prepared/round/reveal, /result — leaderboard/end.",
+          "subtasks": []
+        },
+        {
+          "number": "31.4",
+          "status": "in_progress",
+          "notes": "BO check: «свежесть» через ясные визуальные сигналы. Context check: адаптация, не копия.",
+          "description": "Визуальный рефайн: контраст, карточки, таймер/прогресс, reveal‑баннеры — по мотивам Rahoot, но с оригинальной палитрой/типографикой/иконками.",
+          "subtasks": []
+        }
+      ]
     }
   ]
 }

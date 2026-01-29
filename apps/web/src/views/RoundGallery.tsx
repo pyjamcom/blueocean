@@ -24,6 +24,7 @@ import styles from "./roundViews.module.css";
 
 const fallbackSrc = "/icons/icon-192.svg";
 const MAX_QUESTIONS = Math.min(15, questionBank.length);
+const PREPARE_DURATION_MS = 3000;
 
 function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, AnswerOption, AnswerOption] {
   const answers = question.answers.map((answer) => ({
@@ -134,6 +135,7 @@ export default function RoundGallery() {
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const durationMs = activeQuestion?.duration_ms ?? 10000;
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
+  const [prepareSecondsLeft, setPrepareSecondsLeft] = useState<number>(0);
 
   useEffect(() => {
     setSelectedIndex(null);
@@ -154,7 +156,25 @@ export default function RoundGallery() {
     return () => window.clearInterval(intervalId);
   }, [durationMs, phase, timerStartAt]);
 
+  useEffect(() => {
+    if (phase !== "prepared") {
+      setPrepareSecondsLeft(0);
+      return;
+    }
+    const startAt = roundStartAt ?? Date.now() + PREPARE_DURATION_MS;
+    const tick = () => {
+      const remaining = Math.max(0, startAt - Date.now());
+      setPrepareSecondsLeft(Math.ceil(remaining / 1000));
+    };
+    tick();
+    const intervalId = window.setInterval(tick, 100);
+    return () => window.clearInterval(intervalId);
+  }, [phase, roundStartAt]);
+
   const handleSelect = (index: number) => {
+    if (phase !== "round") {
+      return;
+    }
     setSelectedIndex(index);
     playTap();
     sendAnswer(index);
@@ -199,6 +219,17 @@ export default function RoundGallery() {
   return (
     <div className={`${styles.shell} ${styles.gameTheme}`}>
       <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
+      {phase === "prepared" && (
+        <div className={styles.prepRow}>
+          <TimerRing
+            durationMs={PREPARE_DURATION_MS}
+            startAt={(roundStartAt ?? Date.now() + PREPARE_DURATION_MS) - PREPARE_DURATION_MS}
+            size={72}
+            strokeWidth={6}
+          />
+          <div className={styles.prepBadge}>{prepareSecondsLeft}</div>
+        </div>
+      )}
       {phase === "round" && (
         <div className={styles.timerRow}>
           <TimerRing durationMs={durationMs} startAt={timerStartAt} size={72} strokeWidth={6} />
