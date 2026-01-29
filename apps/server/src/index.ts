@@ -1093,6 +1093,41 @@ wss.on("connection", (socket, request) => {
         return;
       }
 
+      if (type === "leave") {
+        const leavePayload = payload as any;
+        const roomCode = leavePayload?.roomCode;
+        const playerId = leavePayload?.playerId;
+        if (!roomCode || !playerId) {
+          send(socket, { type: "error", errors: [{ message: "invalid leave" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "leave" });
+          return;
+        }
+        if (!state.joinedRoom || state.joinedRoom !== roomCode || state.playerId !== playerId) {
+          send(socket, { type: "error", errors: [{ message: "invalid leave" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "leave_room" });
+          return;
+        }
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            roomValue.players.delete(playerId);
+            if (roomValue.hostId === playerId) {
+              const nextHost = roomValue.players.keys().next().value as string | undefined;
+              roomValue.hostId = nextHost;
+            }
+          },
+          { createIfMissing: false },
+        );
+        if (room) {
+          await touchRoom(room);
+          broadcastRoster(room);
+        }
+        state.joinedRoom = undefined;
+        state.playerId = undefined;
+        send(socket, { type: "left", payload: { roomCode } });
+        return;
+      }
+
       if (type === "stage") {
         const stagePayload = payload as any;
         const phase = stagePayload?.phase;

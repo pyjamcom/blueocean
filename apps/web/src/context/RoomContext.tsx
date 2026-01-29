@@ -35,11 +35,13 @@ interface RoomState {
   wsStatus: string;
   errors: unknown[];
   joinRoom: (roomCode?: string, avatarId?: string) => void;
+  resetRoom: () => void;
   sendStage: (payload: Omit<StagePayload, "roomCode">) => void;
   startGame: () => void;
   sendAnswer: (answerIndex: number) => void;
   setReady: (ready: boolean) => void;
   setAvatar: (avatarId: string) => void;
+  createNextRoom: (avatarId?: string) => void;
 }
 
 const RoomContext = createContext<RoomState | null>(null);
@@ -60,6 +62,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const playerId = useMemo(() => randomPlayerId(), []);
   const joinSentRef = useRef(false);
   const pendingJoinRef = useRef<{ roomCode: string; avatarId: string } | null>(null);
+  const awaitingLeaveRef = useRef(false);
   const hostTimersRef = useRef<number[]>([]);
   const answeredByQuestionRef = useRef<Record<number, Set<string>>>({});
   const sentQuestionsRef = useRef<Set<number>>(new Set());
@@ -110,7 +113,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const { status: wsStatus, send } = useWsClient({
+  const { status: wsStatus, send, disconnect } = useWsClient({
     url: wsUrl,
     onMessage: (message) => {
       if (message.type === "joined") {
@@ -132,6 +135,12 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       if (message.type === "roster") {
         const payload = message.payload as { players?: Array<{ id: string; avatarId: string; ready?: boolean }> } | undefined;
         mergeRoster(payload);
+        return;
+      }
+      if (message.type === "left") {
+        awaitingLeaveRef.current = false;
+        joinSentRef.current = false;
+        flushJoin();
         return;
       }
       if (message.type === "stage") {
@@ -229,6 +238,36 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       flushJoin();
     },
     [flushJoin],
+  );
+
+  const resetLocalState = useCallback(() => {
+    setRoomCode(null);
+    setIsHost(false);
+    setPhase("join");
+    setQuestionIndex(0);
+    setRoundStartAt(null);
+    setJoinedAt(null);
+    setPlayers([]);
+    setAnswerCounts([0, 0, 0, 0]);
+    setErrors([]);
+    sentQuestionsRef.current.clear();
+    answeredByQuestionRef.current = {};
+  }, []);
+
+  const createNextRoom = useCallback(
+    (avatarId = "avatar_raccoon_dj") => {
+      const nextRoom = randomId(4);
+      pendingJoinRef.current = { roomCode: nextRoom, avatarId };
+      joinSentRef.current = false;
+      resetLocalState();
+      if (roomCode && wsStatus === "open") {
+        awaitingLeaveRef.current = true;
+        send({ type: "leave", payload: { roomCode, playerId } });
+        return;
+      }
+      flushJoin();
+    },
+    [flushJoin, playerId, resetLocalState, roomCode, send, wsStatus],
   );
 
   const sendStage = useCallback(
@@ -373,6 +412,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     sendAnswer,
     setReady,
     setAvatar,
+    createNextRoom,
   };
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

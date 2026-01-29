@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import AnswerDistribution from "../components/AnswerDistribution";
 import Leaderboard from "../components/Leaderboard";
 import NextRoundButton from "../components/NextRoundButton";
 import ShareCard, { ShareCardHandle } from "../components/ShareCard";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
+import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, playerId, answerCounts, roomCode } = useRoom();
+  const { players, playerId, answerCounts, roomCode, createNextRoom } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
+  const navigate = useNavigate();
 
   const leaderboard = useMemo(() => {
     if (!players.length) return [];
@@ -56,6 +59,13 @@ export default function ResultView() {
     link.href = imageUrl;
     link.download = "escapers-win.png";
     link.click();
+  };
+
+  const handleNext = () => {
+    const avatarId = getStoredAvatarId() ?? randomAvatarId();
+    createNextRoom(avatarId);
+    trackEvent("replay_click");
+    navigate("/join");
   };
 
   return (
@@ -110,7 +120,7 @@ export default function ResultView() {
           <span className={styles.actionLabel}>Save</span>
         </div>
         <div className={styles.actionItem}>
-          <NextRoundButton onClick={() => trackEvent("replay_click")} />
+          <NextRoundButton onClick={handleNext} />
           <span className={styles.actionLabel}>Next</span>
         </div>
       </div>
