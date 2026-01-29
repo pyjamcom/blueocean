@@ -7,6 +7,7 @@ import {
   avatarColor,
   avatarIconIndex,
   getStoredAvatarId,
+  getAvatarImageUrl,
   randomAvatarId,
   setStoredAvatarId,
 } from "../utils/avatar";
@@ -125,7 +126,7 @@ export default function JoinView() {
   const avatarAssetId = assetIds.length
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length]
     : undefined;
-  const avatarAssetSrc = getAssetUrl(avatarAssetId);
+  const avatarAssetSrc = getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId);
 
   return (
     <div className={`${styles.join} ${styles[variant]}`}>

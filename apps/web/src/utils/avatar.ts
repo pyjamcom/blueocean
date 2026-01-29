@@ -1,3 +1,5 @@
+import avatarsManifest from "../../../../data/avatars_manifest.json";
+
 export const AVATAR_IDS = [
   "avatar_raccoon_dj",
   "avatar_panda_disco",
@@ -68,4 +70,14 @@ export function avatarColor(id: string) {
 
 export function avatarIconIndex(id: string) {
   return Math.abs(hashValue(id));
+}
+
+const avatarFiles: string[] = Array.isArray((avatarsManifest as any)?.items)
+  ? ((avatarsManifest as any).items as string[])
+  : [];
+
+export function getAvatarImageUrl(id: string) {
+  if (!avatarFiles.length) return null;
+  const idx = avatarIconIndex(id) % avatarFiles.length;
+  return `/avatars/${avatarFiles[idx]}`;
 }

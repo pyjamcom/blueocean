@@ -41,6 +41,8 @@ const phaseRoutes: Record<RoomPhase, string> = {
   end: "/result",
 };
 
+const MIN_PLAYERS = 3;
+
 function StageNavigator() {
   const { phase, roomCode, joinedAt, roundStartAt, isHost, players } = useRoom();
   const location = useLocation();
@@ -67,7 +69,7 @@ function StageNavigator() {
       typeof roundStartAt === "number" &&
       joinedAt > roundStartAt;
     const hostWaitingForPlayers =
-      isHost && phase === "lobby" && (players?.length ?? 0) <= 1 && !allowPreview;
+      isHost && phase === "lobby" && (players?.length ?? 0) < MIN_PLAYERS && !allowPreview;
     const target = shouldWait ? "/wait" : phaseRoutes[phase] ?? "/join";
     const nextTarget = hostWaitingForPlayers ? "/join" : target;
     if (location.pathname !== nextTarget) {

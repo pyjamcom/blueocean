@@ -151,6 +151,7 @@ const validateAnswerFn = validateAnswer as (data: any) => boolean;
 const ROOM_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_TTL_MS = 1000 * 60 * 120;
 const MAX_ROOM_PLAYERS = 12;
+const MIN_ROOM_PLAYERS = 3;
 const ANSWER_COOLDOWN_MS = 700;
 const INCIDENT_LOG_LIMIT = 500;
 
@@ -840,11 +841,16 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
     nextStage.roundStartAt = req.body.roundStartAt;
   }
   let notHost = false;
+  let blockedByMinPlayers = false;
   const room = await updateRoom(
     req.params.roomCode,
     (roomValue) => {
       if (!force && playerId && roomValue.hostId && roomValue.hostId !== playerId) {
         notHost = true;
+        return;
+      }
+      if (phase === "round" && roomValue.players.size < MIN_ROOM_PLAYERS) {
+        blockedByMinPlayers = true;
         return;
       }
       roomValue.stage = { ...nextStage, roomCode: roomValue.code };
@@ -861,6 +867,10 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
   }
   if (notHost) {
     res.status(403).json({ ok: false, error: "not host" });
+    return;
+  }
+  if (blockedByMinPlayers) {
+    res.status(409).json({ ok: false, error: "min_players" });
     return;
   }
   broadcastToRoom(room.code, { type: "stage", payload: room.stage });
@@ -1097,11 +1107,16 @@ wss.on("connection", (socket, request) => {
           return;
         }
         let notHost = false;
+        let blockedByMinPlayers = false;
         const room = await updateRoom(
           roomCode,
           (roomValue) => {
             if (roomValue.hostId && roomValue.hostId !== state.playerId) {
               notHost = true;
+              return;
+            }
+            if (phase === "round" && roomValue.players.size < MIN_ROOM_PLAYERS) {
+              blockedByMinPlayers = true;
               return;
             }
             const nextStage: StagePayload = {
@@ -1127,6 +1142,11 @@ wss.on("connection", (socket, request) => {
         }
         if (notHost) {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_host" });
+          return;
+        }
+        if (blockedByMinPlayers) {
+          send(socket, { type: "error", errors: [{ message: "min_players" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_min_players" });
           return;
         }
         broadcastToRoom(roomCode, { type: "stage", payload: room.stage });
