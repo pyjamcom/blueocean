@@ -219,14 +219,23 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     const pending = pendingJoinRef.current;
     if (!pending || joinSentRef.current) return;
     if (wsStatus !== "open") return;
+    const safeName = pending.playerName?.trim();
+    const payload: {
+      roomCode: string;
+      playerId: string;
+      avatarId: string;
+      playerName?: string;
+    } = {
+      roomCode: pending.roomCode,
+      playerId,
+      avatarId: pending.avatarId,
+    };
+    if (safeName) {
+      payload.playerName = safeName.slice(0, 18);
+    }
     send({
       type: "join",
-      payload: {
-        roomCode: pending.roomCode,
-        playerId,
-        avatarId: pending.avatarId,
-        playerName: pending.playerName,
-      },
+      payload,
     });
     joinSentRef.current = true;
   }, [playerId, send, wsStatus]);

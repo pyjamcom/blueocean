@@ -21,14 +21,14 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerNa
   const { status, send } = useWsClient({
     url: wsUrl,
     onOpen: () => {
+      const safeName = playerName?.trim();
+      const payload: Record<string, string> = { roomCode: code, playerId, avatarId };
+      if (safeName) {
+        payload.playerName = safeName.slice(0, 18);
+      }
       send({
         type: "join",
-        payload: {
-          roomCode: code,
-          playerId,
-          avatarId,
-          playerName,
-        },
+        payload,
       });
     },
     onMessage: (message) => {

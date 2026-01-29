@@ -16,6 +16,7 @@ import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
+const DEFAULT_PUBLIC_ROOM = "PLAY";
 
 function resolveVariant(age?: number): PulseVariant {
   if (!age) {
@@ -55,9 +56,9 @@ export default function JoinView() {
   const showQr = !codeParam;
   const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
   useEffect(() => {
-    if (roomCode && !codeParam) return;
-    joinRoom(codeParam ?? undefined, initialAvatarId, playerName);
-  }, [codeParam, initialAvatarId, joinRoom, playerName, roomCode]);
+    if (!codeParam) return;
+    joinRoom(codeParam, initialAvatarId, playerName);
+  }, [codeParam, initialAvatarId, joinRoom, playerName]);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -96,6 +97,9 @@ export default function JoinView() {
 
   const handleScanClick = () => {
     if (!showQr) return;
+    if (!roomCode) {
+      joinRoom(undefined, initialAvatarId, playerName);
+    }
     setQrVisible(true);
   };
 
@@ -106,7 +110,11 @@ export default function JoinView() {
   };
 
   const handlePlayClick = () => {
-    navigate("/lobby?preview=1");
+    if (!roomCode) {
+      const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
+      joinRoom(target, initialAvatarId, playerName);
+    }
+    navigate("/lobby");
   };
 
   const handleAvatarStep = (direction: number) => {
