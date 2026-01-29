@@ -157,7 +157,7 @@ export default function JoinView() {
             aria-label="play"
             onClick={handlePlayClick}
           />
-          <span className={styles.iconLabel}>Play</span>
+          <span className={styles.iconLabel}>Join the game</span>
         </div>
       </div>
 
