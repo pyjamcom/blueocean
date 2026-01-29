@@ -18,6 +18,8 @@ import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
 const DEFAULT_PUBLIC_ROOM = "PLAY";
+const HOST_WAIT_KEY = "escapers_host_wait";
+const MIN_PLAYERS = 3;
 
 function resolveVariant(age?: number): PulseVariant {
   if (!age) {
@@ -40,7 +42,7 @@ export default function JoinView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
-  const { roomCode, joinRoom, setAvatar, setName } = useRoom();
+  const { roomCode, joinRoom, setAvatar, setName, isHost, players } = useRoom();
   const variant = resolveVariant(age);
   const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
@@ -68,6 +70,15 @@ export default function JoinView() {
     setJoinPending(false);
     navigate("/lobby");
   }, [joinPending, navigate, roomCode]);
+
+  useEffect(() => {
+    if (!roomCode || !isHost) return;
+    const waitingForRoom = window.localStorage.getItem(HOST_WAIT_KEY);
+    if (waitingForRoom && waitingForRoom === roomCode && players.length >= MIN_PLAYERS) {
+      window.localStorage.removeItem(HOST_WAIT_KEY);
+      navigate("/lobby");
+    }
+  }, [isHost, navigate, players.length, roomCode]);
 
   useEffect(() => {
     if (roomCode) {
@@ -120,6 +131,7 @@ export default function JoinView() {
       const nextCode = pendingRoomCode ?? randomId(4);
       setPendingRoomCode(nextCode);
       joinRoom(nextCode, initialAvatarId, playerName);
+      window.localStorage.setItem(HOST_WAIT_KEY, nextCode);
     }
     setQrVisible(true);
   };

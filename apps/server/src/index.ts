@@ -908,9 +908,16 @@ function maybeAutoStartRoom(room: Room) {
   if (room.players.size < MIN_ROOM_PLAYERS) {
     return null;
   }
-  const allReady = Array.from(room.players.values()).every((player) => player.ready);
-  if (!allReady) {
+  const players = Array.from(room.players.values());
+  const readyPlayers = players.filter((player) => player.ready);
+  if (readyPlayers.length < MIN_ROOM_PLAYERS) {
     return null;
+  }
+  if (room.hostId) {
+    const host = room.players.get(room.hostId);
+    if (!host?.ready) {
+      return null;
+    }
   }
   const nextStage: StagePayload = {
     roomCode: room.code,

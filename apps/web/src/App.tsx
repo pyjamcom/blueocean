@@ -44,7 +44,7 @@ const phaseRoutes: Record<RoomPhase, string> = {
 const MIN_PLAYERS = 3;
 
 function StageNavigator() {
-  const { phase, roomCode, joinedAt, roundStartAt, createNextRoom } = useRoom();
+  const { phase, roomCode, joinedAt, roundStartAt, createNextRoom, isHost, players } = useRoom();
   const location = useLocation();
   const navigate = useNavigate();
   const nextRoomRequestedRef = useRef(false);
@@ -63,6 +63,15 @@ function StageNavigator() {
 
     if (!roomCode) {
       if (!isJoinPath) {
+        navigate("/join", { replace: true });
+      }
+      return;
+    }
+
+    const hostWaitKey = typeof window !== "undefined" ? window.localStorage.getItem("escapers_host_wait") : null;
+    const hostWaiting = Boolean(hostWaitKey && hostWaitKey === roomCode && isHost);
+    if (hostWaiting && players.length < MIN_PLAYERS) {
+      if (location.pathname !== "/join") {
         navigate("/join", { replace: true });
       }
       return;
@@ -87,7 +96,7 @@ function StageNavigator() {
     if (location.pathname !== nextTarget) {
       navigate(nextTarget, { replace: true });
     }
-  }, [createNextRoom, joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt]);
+  }, [createNextRoom, joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt, isHost, players.length]);
 
   return null;
 }
