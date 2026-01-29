@@ -20,14 +20,22 @@
   z-index: 2;
 }
 
+.qrSpot {
+  width: min(80vw, 360px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
 .qrImage {
   width: 86%;
   height: 86%;
 }
 
 .qrIcon {
-  width: 38%;
-  height: 38%;
+  width: 34%;
+  height: 34%;
   object-fit: contain;
 }
 

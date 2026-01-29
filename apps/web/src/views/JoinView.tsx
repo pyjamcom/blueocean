@@ -93,13 +93,15 @@ export default function JoinView() {
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
-      <div className={styles.qrFrame}>
-        {qrVisible && qrSrc && showQr ? (
+      {qrVisible && qrSrc && showQr ? (
+        <div className={styles.qrFrame}>
           <img src={qrSrc} alt="" className={styles.qrImage} />
-        ) : (
+        </div>
+      ) : (
+        <div className={styles.qrSpot}>
           <img src="/favicon.ico" alt="" className={styles.qrIcon} />
-        )}
-      </div>
+        </div>
+      )}
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
           <button
