@@ -35,6 +35,23 @@ export function randomAvatarId() {
   return AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)];
 }
 
+const AVATAR_STORAGE_KEY = "avatar_id";
+
+export function getStoredAvatarId() {
+  if (typeof window === "undefined") return null;
+  const stored = window.localStorage.getItem(AVATAR_STORAGE_KEY);
+  if (stored && AVATAR_IDS.includes(stored)) {
+    return stored;
+  }
+  return null;
+}
+
+export function setStoredAvatarId(id: string) {
+  if (typeof window === "undefined") return;
+  if (!AVATAR_IDS.includes(id)) return;
+  window.localStorage.setItem(AVATAR_STORAGE_KEY, id);
+}
+
 function hashValue(id: string) {
   let hash = 0;
   for (let i = 0; i < id.length; i += 1) {

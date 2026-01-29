@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
 import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
-import { AVATAR_IDS, avatarColor, avatarIconIndex } from "../utils/avatar";
+import { AVATAR_IDS, avatarColor, avatarIconIndex, getStoredAvatarId, setStoredAvatarId } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
 
@@ -29,9 +29,14 @@ export default function LobbyView() {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("sound_enabled") !== "0";
   });
-  const [avatarIndex, setAvatarIndex] = useState(() =>
-    Math.floor(Math.random() * AVATAR_IDS.length),
-  );
+  const [avatarIndex, setAvatarIndex] = useState(() => {
+    const stored = getStoredAvatarId();
+    if (stored) {
+      const idx = AVATAR_IDS.indexOf(stored);
+      if (idx >= 0) return idx;
+    }
+    return Math.floor(Math.random() * AVATAR_IDS.length);
+  });
   const touchStart = useRef<number | null>(null);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [showQr, setShowQr] = useState(false);
@@ -93,6 +98,7 @@ export default function LobbyView() {
   const startLabel = isHost ? "Start" : "Ready";
 
   useEffect(() => {
+    setStoredAvatarId(selfAvatar);
     if (roomCode) {
       setAvatar(selfAvatar);
     }

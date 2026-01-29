@@ -2,7 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
-import { AVATAR_IDS, avatarColor, avatarIconIndex, randomAvatarId } from "../utils/avatar";
+import {
+  AVATAR_IDS,
+  avatarColor,
+  avatarIconIndex,
+  getStoredAvatarId,
+  randomAvatarId,
+  setStoredAvatarId,
+} from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./JoinView.module.css";
@@ -32,7 +39,7 @@ export default function JoinView() {
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
   const { roomCode, joinRoom, setAvatar } = useRoom();
   const variant = resolveVariant(age);
-  const initialAvatarId = useMemo(() => randomAvatarId(), []);
+  const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [avatarIndex, setAvatarIndex] = useState(() => {
@@ -110,6 +117,7 @@ export default function JoinView() {
     const selected = AVATAR_IDS[avatarIndex];
     setAvatarId(selected);
     setAvatar(selected);
+    setStoredAvatarId(selected);
     setAvatarOpen(false);
   };
 
