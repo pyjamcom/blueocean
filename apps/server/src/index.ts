@@ -1365,7 +1365,8 @@ wss.on("connection", (socket, request) => {
         if (room) {
           broadcastRoster(room);
           if (autoStage) {
-            if (autoStage.phase === "round") {
+            const autoPhase = (autoStage as StagePayload | null)?.phase;
+            if (autoPhase === "round") {
               await clearPublicRoomPointerIfMatch(room.code);
             }
             broadcastToRoom(room.code, { type: "stage", payload: autoStage });
