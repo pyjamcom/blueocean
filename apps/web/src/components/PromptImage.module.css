@@ -11,6 +11,7 @@
   border-radius: 24px;
   background: transparent;
   box-shadow: none;
+  object-position: center;
 }
 
 .promptImageContain {
