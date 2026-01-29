@@ -885,6 +885,14 @@ function ensureRoomStage(room: Room) {
   }
 }
 
+function ensureHost(room: Room, fallbackId?: string) {
+  if (!room.hostId || !room.players.has(room.hostId)) {
+    room.hostId = fallbackId ?? (room.players.keys().next().value as string | undefined);
+    return true;
+  }
+  return false;
+}
+
 function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready = true, name?: string) {
   const existing = room.players.get(playerId);
   if (existing) {
@@ -940,12 +948,32 @@ async function pruneStalePlayers() {
         }
       }
     });
-    if (removed) {
-      if (!room.hostId) {
-        room.hostId = room.players.keys().next().value as string | undefined;
-      }
+  if (removed) {
+      ensureHost(room);
       await roomStore.set(room);
       broadcastRoster(room);
+    }
+  }
+}
+
+async function autoStartEligibleRooms() {
+  const rooms = await roomStore.list();
+  for (const room of rooms) {
+    let autoStage: StagePayload | null = null;
+    const updated = await updateRoom(
+      room.code,
+      (roomValue) => {
+        const maybeStage = maybeAutoStartRoom(roomValue);
+        if (maybeStage) {
+          autoStage = maybeStage;
+        }
+      },
+      { createIfMissing: false },
+    );
+    if (updated && autoStage) {
+      await clearPublicRoomPointerIfMatch(updated.code);
+      broadcastToRoom(updated.code, { type: "stage", payload: autoStage });
+      scheduleStageTimers(updated);
     }
   }
 }
@@ -954,6 +982,7 @@ function maybeAutoStartRoom(room: Room) {
   if (!room.stage) {
     ensureRoomStage(room);
   }
+  ensureHost(room);
   if (room.stage?.phase !== "lobby") {
     return null;
   }
@@ -1520,7 +1549,7 @@ wss.on("connection", (socket, request) => {
                 joinAllowed = false;
                 return;
               }
-              if (!roomValue.hostId) {
+              if (!roomValue.hostId || !roomValue.players.has(roomValue.hostId)) {
                 roomValue.hostId = joinPayload.playerId;
                 isHost = true;
               } else if (roomValue.hostId === joinPayload.playerId) {
@@ -1705,6 +1734,7 @@ wss.on("connection", (socket, request) => {
             if (!player) {
               return;
             }
+            ensureHost(roomValue, playerId);
             player.ready = ready;
             player.lastSeen = Date.now();
             const maybeStage = maybeAutoStartRoom(roomValue);
@@ -1933,6 +1963,7 @@ setInterval(() => {
     }
   });
   void pruneStalePlayers();
+  void autoStartEligibleRooms();
 }, HEARTBEAT_INTERVAL_MS);
 
 setInterval(async () => {
