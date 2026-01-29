@@ -140,8 +140,10 @@ export default function JoinView() {
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
       {qrVisible && qrSrc && showQr ? (
-        <div className={styles.qrFrame}>
-          <img src={qrSrc} alt="" className={styles.qrImage} />
+        <div className={styles.qrOverlay} onClick={() => setQrVisible(false)}>
+          <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
+            <img src={qrSrc} alt="" className={styles.qrImage} />
+          </div>
         </div>
       ) : (
         <div className={styles.qrSpot}>

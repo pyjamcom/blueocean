@@ -20,6 +20,15 @@
   z-index: 2;
 }
 
+.qrOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 14, 0.7);
+  display: grid;
+  place-items: center;
+  z-index: 10;
+}
+
 .qrSpot {
   width: min(80vw, 360px);
   aspect-ratio: 1 / 1;
