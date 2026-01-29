@@ -1,7 +1,13 @@
-.button {
+.wrap {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  display: flex;
+  gap: 12px;
+  z-index: 5;
+}
+
+.button {
   width: 56px;
   height: 56px;
   border-radius: 18px;
@@ -9,7 +15,8 @@
   display: grid;
   place-items: center;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
-  z-index: 5;
+  border: none;
+  cursor: pointer;
 }
 
 .icon {
@@ -19,4 +26,18 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+}
+
+.exitIcon {
+  width: 22px;
+  height: 22px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 7l-5 5 5 5'/><path d='M5 12h10'/><path d='M15 5h4v14h-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.button:hover,
+.button:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 12px 28px rgba(0, 0, 0, 0.35);
 }
