@@ -97,8 +97,7 @@ export default function LobbyView() {
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
-  const selfReadyLocked = selfReady;
-  const startLabel = "Ready to play";
+  const startLabel = selfReady ? "Waiting to start" : "Ready to play";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -177,16 +176,14 @@ export default function LobbyView() {
 
       <div className={styles.startRow}>
         <button
-          className={`${styles.startButton} ${selfReadyLocked ? styles.startButtonDisabled : ""}`}
+          className={styles.startButton}
           onClick={() => {
-            if (!selfReady) {
-              setReady(true);
-            }
+            setReady(!selfReady);
           }}
-          disabled={selfReadyLocked}
+          disabled={false}
           aria-label="start"
         >
-          <span className={styles.startIcon} />
+          <span className={selfReady ? styles.startIconPaused : styles.startIcon} />
         </button>
         <span className={styles.startLabel}>{startLabel}</span>
       </div>
