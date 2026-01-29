@@ -92,6 +92,83 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><polygon points='7,5 20,12 7,19'/></svg>");
 }
 
+.avatarOverlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 5, 8, 0.7);
+  z-index: 20;
+}
+
+.avatarSheet {
+  width: min(86vw, 420px);
+  padding: 22px;
+  border-radius: 28px;
+  background: rgba(14, 14, 20, 0.95);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+
+.avatarPreview {
+  width: min(58vw, 200px);
+  aspect-ratio: 1 / 1;
+  border-radius: 28px;
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.15);
+}
+
+.avatarControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatarNav {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55%;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.avatarNav:hover,
+.avatarNav:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.avatarPrev {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M15 18l-6-6 6-6'/></svg>");
+}
+
+.avatarNext {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 6l6 6-6 6'/></svg>");
+}
+
+.avatarSelect {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #ffd166;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.avatarSelect:hover,
+.avatarSelect:focus-visible {
+  filter: brightness(1.05);
+}
 
 .pulse {
   position: absolute;
