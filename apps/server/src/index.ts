@@ -154,6 +154,9 @@ const MAX_ROOM_PLAYERS = 12;
 const MIN_ROOM_PLAYERS = 3;
 const ANSWER_COOLDOWN_MS = 700;
 const INCIDENT_LOG_LIMIT = 500;
+const PUBLIC_ROOM_CODE = "PLAY";
+const PUBLIC_ROOM_POINTER_KEY = "public:PLAY:next";
+let publicRoomPointerMemory: string | null = null;
 
 type IncidentType =
   | "rate_limit"
@@ -678,6 +681,72 @@ function maybeAutoStartRoom(room: Room) {
   return nextStage;
 }
 
+async function getPublicRoomPointer(): Promise<string | null> {
+  if (redis) {
+    return redis.get(PUBLIC_ROOM_POINTER_KEY);
+  }
+  return publicRoomPointerMemory;
+}
+
+async function setPublicRoomPointer(code: string) {
+  const ttlSec = Math.max(60, Math.ceil(ROOM_TTL_MS / 1000));
+  if (redis) {
+    await redis.set(PUBLIC_ROOM_POINTER_KEY, code, "EX", ttlSec);
+    return;
+  }
+  publicRoomPointerMemory = code;
+}
+
+async function clearPublicRoomPointerIfMatch(code: string) {
+  if (redis) {
+    const current = await redis.get(PUBLIC_ROOM_POINTER_KEY);
+    if (current === code) {
+      await redis.del(PUBLIC_ROOM_POINTER_KEY);
+    }
+    return;
+  }
+  if (publicRoomPointerMemory === code) {
+    publicRoomPointerMemory = null;
+  }
+}
+
+async function resolvePublicJoinRoom(): Promise<string> {
+  const mainRoom = await roomStore.get(PUBLIC_ROOM_CODE);
+  if (!mainRoom) {
+    return PUBLIC_ROOM_CODE;
+  }
+  ensureRoomStage(mainRoom);
+  if (mainRoom.stage?.phase === "lobby" && mainRoom.players.size < MAX_ROOM_PLAYERS) {
+    return PUBLIC_ROOM_CODE;
+  }
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const pointer = await getPublicRoomPointer();
+    if (pointer) {
+      const room = await roomStore.get(pointer);
+      if (room) {
+        ensureRoomStage(room);
+        if (room.stage?.phase === "lobby" && room.players.size < MAX_ROOM_PLAYERS) {
+          return pointer;
+        }
+      }
+      await clearPublicRoomPointerIfMatch(pointer);
+    }
+    let candidate = generateRoomCode(4 + Math.floor(Math.random() * 3));
+    for (let i = 0; i < 5; i += 1) {
+      const existing = await roomStore.get(candidate);
+      if (!existing) break;
+      candidate = generateRoomCode(4 + Math.floor(Math.random() * 3));
+    }
+    await setPublicRoomPointer(candidate);
+    const room = buildNewRoom(candidate);
+    ensureRoomStage(room);
+    metrics.roomsCreated += 1;
+    await roomStore.set(room);
+    return candidate;
+  }
+  return PUBLIC_ROOM_CODE;
+}
+
 function buildRoomSnapshot(room: Room) {
   return {
     roomCode: room.code,
@@ -907,6 +976,9 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
     res.status(409).json({ ok: false, error: "min_players" });
     return;
   }
+  if (phase === "round") {
+    await clearPublicRoomPointerIfMatch(room.code);
+  }
   broadcastToRoom(room.code, { type: "stage", payload: room.stage });
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
@@ -1065,7 +1137,11 @@ wss.on("connection", (socket, request) => {
             send(socket, { type: "joined", payload: { roomCode: state.joinedRoom } });
             return;
           }
-          const roomBurst = checkRate(`join:room:${joinPayload.roomCode}`, 5000, 6, 12);
+          let roomCodeForJoin = joinPayload.roomCode;
+          if (joinPayload.roomCode === PUBLIC_ROOM_CODE) {
+            roomCodeForJoin = await resolvePublicJoinRoom();
+          }
+          const roomBurst = checkRate(`join:room:${roomCodeForJoin}`, 5000, 6, 12);
           if (!roomBurst.allowed) {
             logIncident({
               at: Date.now(),
@@ -1084,11 +1160,11 @@ wss.on("connection", (socket, request) => {
           }
           let isHost = false;
           let joinAllowed = true;
-          let joinRoomCode = joinPayload.roomCode;
+          let joinRoomCode = roomCodeForJoin;
           const playerName =
             typeof joinPayload.playerName === "string" ? joinPayload.playerName.trim().slice(0, 18) : undefined;
           const room = await updateRoom(
-            joinPayload.roomCode,
+            joinRoomCode,
             (roomValue) => {
               joinRoomCode = roomValue.code;
               if (roomValue.players.size >= MAX_ROOM_PLAYERS && !roomValue.players.has(joinPayload.playerId)) {
@@ -1254,6 +1330,9 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_min_players" });
           return;
         }
+        if (phase === "round") {
+          await clearPublicRoomPointerIfMatch(room.code);
+        }
         broadcastToRoom(roomCode, { type: "stage", payload: room.stage });
         return;
       }
@@ -1286,6 +1365,9 @@ wss.on("connection", (socket, request) => {
         if (room) {
           broadcastRoster(room);
           if (autoStage) {
+            if (autoStage.phase === "round") {
+              await clearPublicRoomPointerIfMatch(room.code);
+            }
             broadcastToRoom(room.code, { type: "stage", payload: autoStage });
           }
         }
