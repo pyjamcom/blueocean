@@ -6,7 +6,6 @@ import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
-  avatarColor,
   avatarIconIndex,
   getAvatarImageUrl,
   getStoredAvatarId,
@@ -139,6 +138,23 @@ export default function LobbyView() {
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
+      <div className={styles.topBar}>
+        <button className={styles.qrToggle} onClick={() => setShowQr((prev) => !prev)} aria-label="qr">
+          <span className={styles.qrToggleIcon} />
+        </button>
+        <SoundToggle
+          enabled={soundOn}
+          onToggle={() =>
+            setSoundOn((prev) => {
+              const next = !prev;
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+              }
+              return next;
+            })
+          }
+        />
+      </div>
       <div className={styles.players}>
         {players.map((player) => {
           const playerAssetId = lobbyAssets.length
@@ -150,17 +166,11 @@ export default function LobbyView() {
               key={player.id}
               className={`${styles.player} ${styles.playerPulse}`}
             >
-              <div
-                className={styles.playerAvatar}
-                style={{
-                  background: avatarColor(player.avatarId),
-                  backgroundImage: `url(${playerAssetSrc})`,
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "70%",
-                }}
-                aria-label={player.avatarId}
-              />
+              <div className={styles.playerAvatar} aria-label={player.avatarId}>
+                {playerAssetSrc ? (
+                  <img src={playerAssetSrc} alt="" className={styles.avatarImage} />
+                ) : null}
+              </div>
               {player.ready && <span className={styles.readyRing} />}
             </div>
           );
@@ -174,16 +184,9 @@ export default function LobbyView() {
         onClick={() => handleAvatarCycle(1)}
         aria-label={selfAvatar}
       >
-        <div
-          className={styles.selfAvatarCore}
-          style={{
-            background: avatarColor(selfAvatar),
-            backgroundImage: `url(${selfAssetSrc})`,
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "70%",
-          }}
-        />
+        <div className={styles.selfAvatarCore}>
+          {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
+        </div>
         <span className={styles.selfPulse} />
       </div>
 
@@ -222,25 +225,6 @@ export default function LobbyView() {
         </button>
         <span className={styles.startLabel}>{startLabel}</span>
       </div>
-
-      <div className={styles.soundToggle}>
-        <SoundToggle
-          enabled={soundOn}
-          onToggle={() =>
-            setSoundOn((prev) => {
-              const next = !prev;
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem("sound_enabled", next ? "1" : "0");
-              }
-              return next;
-            })
-          }
-        />
-      </div>
-
-      <button className={styles.qrToggle} onClick={() => setShowQr((prev) => !prev)} aria-label="qr">
-        <span className={styles.qrToggleIcon} />
-      </button>
 
       {showQr && (
         <div className={styles.qrOverlay} onClick={() => setShowQr(false)}>
