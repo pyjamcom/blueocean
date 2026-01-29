@@ -37,7 +37,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "silly",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_telepath_sync_01",
@@ -75,7 +75,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "social",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_icon_battle_01",
@@ -113,7 +113,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "battle",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "battle_pair_ids": [
         "1001",
         "1101"
@@ -155,7 +155,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "toast",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_drunk_reflex_01",
@@ -193,7 +193,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reflex",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "trigger_asset_id": "1401"
     },
     {
@@ -232,7 +232,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "absurd",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "prompt_pair_ids": [
         "1101",
         "1001"
@@ -274,7 +274,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "mimic",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "face_overlay_ids": [
         "1401",
         "1402"
@@ -316,7 +316,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "panto",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "audio_asset_id": "1201"
     },
     {
@@ -355,7 +355,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "guess",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "silhouette_base_id": "1001"
     },
     {
@@ -394,7 +394,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reward",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "trophy_stamp_id": "1201"
     },
     {
@@ -441,7 +441,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "silly",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_vp_02",
@@ -487,7 +487,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "silly",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_ts_01",
@@ -533,7 +533,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "social",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_ts_02",
@@ -579,7 +579,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "social",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_dr_01",
@@ -625,7 +625,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reflex",
-      "duration_ms": 5000,
+      "duration_ms": 10000,
       "trigger_asset_id": "prompt_cup_flip"
     },
     {
@@ -672,7 +672,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reflex",
-      "duration_ms": 5000,
+      "duration_ms": 10000,
       "trigger_asset_id": "prompt_bell_slap"
     },
     {
@@ -719,7 +719,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "absurd",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "prompt_pair_ids": [
         "prompt_pizza_crown",
         "prompt_pizza_crown"
@@ -769,7 +769,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "absurd",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "prompt_pair_ids": [
         "prompt_banana_phone",
         "prompt_banana_phone"
@@ -819,7 +819,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "mimic",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "face_overlay_ids": [
         "ans_face_wide",
         "ans_face_squint",
@@ -871,7 +871,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "mimic",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "face_overlay_ids": [
         "ans_face_puff",
         "ans_face_grin",
@@ -921,7 +921,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "battle",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "battle_pair_ids": [
         "icon_rocket",
         "icon_snail"
@@ -969,7 +969,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "battle",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "battle_pair_ids": [
         "icon_shark",
         "icon_taco"
@@ -1019,7 +1019,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "panto",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "audio_asset_id": "prompt_air_guitar"
     },
     {
@@ -1066,7 +1066,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "panto",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "audio_asset_id": "prompt_soda_fizz"
     },
     {
@@ -1113,7 +1113,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "toast",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_at_02",
@@ -1159,7 +1159,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "toast",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_sg_01",
@@ -1205,7 +1205,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "guess",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "silhouette_base_id": "prompt_silhouette_tall_hat"
     },
     {
@@ -1252,7 +1252,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "guess",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "silhouette_base_id": "prompt_silhouette_cactus_dancer"
     },
     {
@@ -1299,7 +1299,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reward",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "trophy_stamp_id": "prompt_golden_sock"
     },
     {
@@ -1346,7 +1346,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "reward",
-      "duration_ms": 6000,
+      "duration_ms": 10000,
       "trophy_stamp_id": "prompt_tiny_trophy"
     },
     {
@@ -1385,7 +1385,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0002",
@@ -1423,7 +1423,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0003",
@@ -1461,7 +1461,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0004",
@@ -1499,7 +1499,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0005",
@@ -1537,7 +1537,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0006",
@@ -1575,7 +1575,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0007",
@@ -1613,7 +1613,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0008",
@@ -1651,7 +1651,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0009",
@@ -1689,7 +1689,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0010",
@@ -1727,7 +1727,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0011",
@@ -1765,7 +1765,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0012",
@@ -1803,7 +1803,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0013",
@@ -1841,7 +1841,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0014",
@@ -1879,7 +1879,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0015",
@@ -1917,7 +1917,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0016",
@@ -1955,7 +1955,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0017",
@@ -1993,7 +1993,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0018",
@@ -2031,7 +2031,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0019",
@@ -2069,7 +2069,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0020",
@@ -2107,7 +2107,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0021",
@@ -2145,7 +2145,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0022",
@@ -2183,7 +2183,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0023",
@@ -2221,7 +2221,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0024",
@@ -2259,7 +2259,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0025",
@@ -2297,7 +2297,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0026",
@@ -2335,7 +2335,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0027",
@@ -2373,7 +2373,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0028",
@@ -2411,7 +2411,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0029",
@@ -2449,7 +2449,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0030",
@@ -2487,7 +2487,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0031",
@@ -2525,7 +2525,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0032",
@@ -2563,7 +2563,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0033",
@@ -2601,7 +2601,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0034",
@@ -2639,7 +2639,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0035",
@@ -2677,7 +2677,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0036",
@@ -2715,7 +2715,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0037",
@@ -2753,7 +2753,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0038",
@@ -2791,7 +2791,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0039",
@@ -2829,7 +2829,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0040",
@@ -2867,7 +2867,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0041",
@@ -2905,7 +2905,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0042",
@@ -2943,7 +2943,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0043",
@@ -2981,7 +2981,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0044",
@@ -3019,7 +3019,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0045",
@@ -3057,7 +3057,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0046",
@@ -3095,7 +3095,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0047",
@@ -3133,7 +3133,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0048",
@@ -3171,7 +3171,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0049",
@@ -3209,7 +3209,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0050",
@@ -3247,7 +3247,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0051",
@@ -3285,7 +3285,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0052",
@@ -3323,7 +3323,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0053",
@@ -3361,7 +3361,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0054",
@@ -3399,7 +3399,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0055",
@@ -3437,7 +3437,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0056",
@@ -3475,7 +3475,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0057",
@@ -3513,7 +3513,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0058",
@@ -3551,7 +3551,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0059",
@@ -3589,7 +3589,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0060",
@@ -3627,7 +3627,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0061",
@@ -3665,7 +3665,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0062",
@@ -3703,7 +3703,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0063",
@@ -3741,7 +3741,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0064",
@@ -3779,7 +3779,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0065",
@@ -3817,7 +3817,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0066",
@@ -3855,7 +3855,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0067",
@@ -3893,7 +3893,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0068",
@@ -3931,7 +3931,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0069",
@@ -3969,7 +3969,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0070",
@@ -4007,7 +4007,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0071",
@@ -4045,7 +4045,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0072",
@@ -4083,7 +4083,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0073",
@@ -4121,7 +4121,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0074",
@@ -4159,7 +4159,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0075",
@@ -4197,7 +4197,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0076",
@@ -4235,7 +4235,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0077",
@@ -4273,7 +4273,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0078",
@@ -4311,7 +4311,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0079",
@@ -4349,7 +4349,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0080",
@@ -4387,7 +4387,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0081",
@@ -4425,7 +4425,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0082",
@@ -4463,7 +4463,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0083",
@@ -4501,7 +4501,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0084",
@@ -4539,7 +4539,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0085",
@@ -4577,7 +4577,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0086",
@@ -4615,7 +4615,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0087",
@@ -4653,7 +4653,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0088",
@@ -4691,7 +4691,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0089",
@@ -4729,7 +4729,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0090",
@@ -4767,7 +4767,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0091",
@@ -4805,7 +4805,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0092",
@@ -4843,7 +4843,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0093",
@@ -4881,7 +4881,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0094",
@@ -4919,7 +4919,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0095",
@@ -4957,7 +4957,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0096",
@@ -4995,7 +4995,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0097",
@@ -5033,7 +5033,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0098",
@@ -5071,7 +5071,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0099",
@@ -5109,7 +5109,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0100",
@@ -5147,7 +5147,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0101",
@@ -5185,7 +5185,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0102",
@@ -5223,7 +5223,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0103",
@@ -5261,7 +5261,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0104",
@@ -5299,7 +5299,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0105",
@@ -5337,7 +5337,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0106",
@@ -5375,7 +5375,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0107",
@@ -5413,7 +5413,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0108",
@@ -5451,7 +5451,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0109",
@@ -5489,7 +5489,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0110",
@@ -5527,7 +5527,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0111",
@@ -5565,7 +5565,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0112",
@@ -5603,7 +5603,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0113",
@@ -5641,7 +5641,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0114",
@@ -5679,7 +5679,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0115",
@@ -5717,7 +5717,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0116",
@@ -5755,7 +5755,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0117",
@@ -5793,7 +5793,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0118",
@@ -5831,7 +5831,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0119",
@@ -5869,7 +5869,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0120",
@@ -5907,7 +5907,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0121",
@@ -5945,7 +5945,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0122",
@@ -5983,7 +5983,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0123",
@@ -6021,7 +6021,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0124",
@@ -6059,7 +6059,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0125",
@@ -6097,7 +6097,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0126",
@@ -6135,7 +6135,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0127",
@@ -6173,7 +6173,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0128",
@@ -6211,7 +6211,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0129",
@@ -6249,7 +6249,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0130",
@@ -6287,7 +6287,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0131",
@@ -6325,7 +6325,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0132",
@@ -6363,7 +6363,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0133",
@@ -6401,7 +6401,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0134",
@@ -6439,7 +6439,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0135",
@@ -6477,7 +6477,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0136",
@@ -6515,7 +6515,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0137",
@@ -6553,7 +6553,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0138",
@@ -6591,7 +6591,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0139",
@@ -6629,7 +6629,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0140",
@@ -6667,7 +6667,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0141",
@@ -6705,7 +6705,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0142",
@@ -6743,7 +6743,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0143",
@@ -6781,7 +6781,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0144",
@@ -6819,7 +6819,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0145",
@@ -6857,7 +6857,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0146",
@@ -6895,7 +6895,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0147",
@@ -6933,7 +6933,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0148",
@@ -6971,7 +6971,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0149",
@@ -7009,7 +7009,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0150",
@@ -7047,7 +7047,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0151",
@@ -7085,7 +7085,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0152",
@@ -7123,7 +7123,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0153",
@@ -7161,7 +7161,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0154",
@@ -7199,7 +7199,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0155",
@@ -7237,7 +7237,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0156",
@@ -7275,7 +7275,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0157",
@@ -7313,7 +7313,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0158",
@@ -7351,7 +7351,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0159",
@@ -7389,7 +7389,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0160",
@@ -7427,7 +7427,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0161",
@@ -7465,7 +7465,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0162",
@@ -7503,7 +7503,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0163",
@@ -7541,7 +7541,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0164",
@@ -7579,7 +7579,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0165",
@@ -7617,7 +7617,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0166",
@@ -7655,7 +7655,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0167",
@@ -7693,7 +7693,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0168",
@@ -7731,7 +7731,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0169",
@@ -7769,7 +7769,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0170",
@@ -7807,7 +7807,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0171",
@@ -7845,7 +7845,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0172",
@@ -7883,7 +7883,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0173",
@@ -7921,7 +7921,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0174",
@@ -7959,7 +7959,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0175",
@@ -7997,7 +7997,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0176",
@@ -8035,7 +8035,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0177",
@@ -8073,7 +8073,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0178",
@@ -8111,7 +8111,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0179",
@@ -8149,7 +8149,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0180",
@@ -8187,7 +8187,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0181",
@@ -8225,7 +8225,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0182",
@@ -8263,7 +8263,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0183",
@@ -8301,7 +8301,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0184",
@@ -8339,7 +8339,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0185",
@@ -8377,7 +8377,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0186",
@@ -8415,7 +8415,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0187",
@@ -8453,7 +8453,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0188",
@@ -8491,7 +8491,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0189",
@@ -8529,7 +8529,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0190",
@@ -8567,7 +8567,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0191",
@@ -8605,7 +8605,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0192",
@@ -8643,7 +8643,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0193",
@@ -8681,7 +8681,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0194",
@@ -8719,7 +8719,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0195",
@@ -8757,7 +8757,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0196",
@@ -8795,7 +8795,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0197",
@@ -8833,7 +8833,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0198",
@@ -8871,7 +8871,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0199",
@@ -8909,7 +8909,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0200",
@@ -8947,7 +8947,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0201",
@@ -8985,7 +8985,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0202",
@@ -9023,7 +9023,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0203",
@@ -9061,7 +9061,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0204",
@@ -9099,7 +9099,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0205",
@@ -9137,7 +9137,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0206",
@@ -9175,7 +9175,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0207",
@@ -9213,7 +9213,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0208",
@@ -9251,7 +9251,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0209",
@@ -9289,7 +9289,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0210",
@@ -9327,7 +9327,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0211",
@@ -9365,7 +9365,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0212",
@@ -9403,7 +9403,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0213",
@@ -9441,7 +9441,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0214",
@@ -9479,7 +9479,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0215",
@@ -9517,7 +9517,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0216",
@@ -9555,7 +9555,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0217",
@@ -9593,7 +9593,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0218",
@@ -9631,7 +9631,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0219",
@@ -9669,7 +9669,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0220",
@@ -9707,7 +9707,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0221",
@@ -9745,7 +9745,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0222",
@@ -9783,7 +9783,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0223",
@@ -9821,7 +9821,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0224",
@@ -9859,7 +9859,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0225",
@@ -9897,7 +9897,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0226",
@@ -9935,7 +9935,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0227",
@@ -9973,7 +9973,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0228",
@@ -10011,7 +10011,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0229",
@@ -10049,7 +10049,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0230",
@@ -10087,7 +10087,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0231",
@@ -10125,7 +10125,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0232",
@@ -10163,7 +10163,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0233",
@@ -10201,7 +10201,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0234",
@@ -10239,7 +10239,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0235",
@@ -10277,7 +10277,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0236",
@@ -10315,7 +10315,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0237",
@@ -10353,7 +10353,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0238",
@@ -10391,7 +10391,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0239",
@@ -10429,7 +10429,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0240",
@@ -10467,7 +10467,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0241",
@@ -10505,7 +10505,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0242",
@@ -10543,7 +10543,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0243",
@@ -10581,7 +10581,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0244",
@@ -10619,7 +10619,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0245",
@@ -10657,7 +10657,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0246",
@@ -10695,7 +10695,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0247",
@@ -10733,7 +10733,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0248",
@@ -10771,7 +10771,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0249",
@@ -10809,7 +10809,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0250",
@@ -10847,7 +10847,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0251",
@@ -10885,7 +10885,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0252",
@@ -10923,7 +10923,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0253",
@@ -10961,7 +10961,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0254",
@@ -10999,7 +10999,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0255",
@@ -11037,7 +11037,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0256",
@@ -11075,7 +11075,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0257",
@@ -11113,7 +11113,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0258",
@@ -11151,7 +11151,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0259",
@@ -11189,7 +11189,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0260",
@@ -11227,7 +11227,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0261",
@@ -11265,7 +11265,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0262",
@@ -11303,7 +11303,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0263",
@@ -11341,7 +11341,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0264",
@@ -11379,7 +11379,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0265",
@@ -11417,7 +11417,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0266",
@@ -11455,7 +11455,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0267",
@@ -11493,7 +11493,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0268",
@@ -11531,7 +11531,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0269",
@@ -11569,7 +11569,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0270",
@@ -11607,7 +11607,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0271",
@@ -11645,7 +11645,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0272",
@@ -11683,7 +11683,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0273",
@@ -11721,7 +11721,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0274",
@@ -11759,7 +11759,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0275",
@@ -11797,7 +11797,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0276",
@@ -11835,7 +11835,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0277",
@@ -11873,7 +11873,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0278",
@@ -11911,7 +11911,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0279",
@@ -11949,7 +11949,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0280",
@@ -11987,7 +11987,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0281",
@@ -12025,7 +12025,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0282",
@@ -12063,7 +12063,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0283",
@@ -12101,7 +12101,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0284",
@@ -12139,7 +12139,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0285",
@@ -12177,7 +12177,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0286",
@@ -12215,7 +12215,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0287",
@@ -12253,7 +12253,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0288",
@@ -12291,7 +12291,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0289",
@@ -12329,7 +12329,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0290",
@@ -12367,7 +12367,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0291",
@@ -12405,7 +12405,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0292",
@@ -12443,7 +12443,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0293",
@@ -12481,7 +12481,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0294",
@@ -12519,7 +12519,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0295",
@@ -12557,7 +12557,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0296",
@@ -12595,7 +12595,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0297",
@@ -12633,7 +12633,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0298",
@@ -12671,7 +12671,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0299",
@@ -12709,7 +12709,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0300",
@@ -12747,7 +12747,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0301",
@@ -12785,7 +12785,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0302",
@@ -12823,7 +12823,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0303",
@@ -12861,7 +12861,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0304",
@@ -12899,7 +12899,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0305",
@@ -12937,7 +12937,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0306",
@@ -12975,7 +12975,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0307",
@@ -13013,7 +13013,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0308",
@@ -13051,7 +13051,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0309",
@@ -13089,7 +13089,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0310",
@@ -13127,7 +13127,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0311",
@@ -13165,7 +13165,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0312",
@@ -13203,7 +13203,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0313",
@@ -13241,7 +13241,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0314",
@@ -13279,7 +13279,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0315",
@@ -13317,7 +13317,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0316",
@@ -13355,7 +13355,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0317",
@@ -13393,7 +13393,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0318",
@@ -13431,7 +13431,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0319",
@@ -13469,7 +13469,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0320",
@@ -13507,7 +13507,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0321",
@@ -13545,7 +13545,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0322",
@@ -13583,7 +13583,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0323",
@@ -13621,7 +13621,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0324",
@@ -13659,7 +13659,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0325",
@@ -13697,7 +13697,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0326",
@@ -13735,7 +13735,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0327",
@@ -13773,7 +13773,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0328",
@@ -13811,7 +13811,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0329",
@@ -13849,7 +13849,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0330",
@@ -13887,7 +13887,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0331",
@@ -13925,7 +13925,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0332",
@@ -13963,7 +13963,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0333",
@@ -14001,7 +14001,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0334",
@@ -14039,7 +14039,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0335",
@@ -14077,7 +14077,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0336",
@@ -14115,7 +14115,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0337",
@@ -14153,7 +14153,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0338",
@@ -14191,7 +14191,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0339",
@@ -14229,7 +14229,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0340",
@@ -14267,7 +14267,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0341",
@@ -14305,7 +14305,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0342",
@@ -14343,7 +14343,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0343",
@@ -14381,7 +14381,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0344",
@@ -14419,7 +14419,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0345",
@@ -14457,7 +14457,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0346",
@@ -14495,7 +14495,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0347",
@@ -14533,7 +14533,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0348",
@@ -14571,7 +14571,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0349",
@@ -14609,7 +14609,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0350",
@@ -14647,7 +14647,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0351",
@@ -14685,7 +14685,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0352",
@@ -14723,7 +14723,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0353",
@@ -14761,7 +14761,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0354",
@@ -14799,7 +14799,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0355",
@@ -14837,7 +14837,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0356",
@@ -14875,7 +14875,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0357",
@@ -14913,7 +14913,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0358",
@@ -14951,7 +14951,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0359",
@@ -14989,7 +14989,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0360",
@@ -15027,7 +15027,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0361",
@@ -15065,7 +15065,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0362",
@@ -15103,7 +15103,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0363",
@@ -15141,7 +15141,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0364",
@@ -15179,7 +15179,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0365",
@@ -15217,7 +15217,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0366",
@@ -15255,7 +15255,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0367",
@@ -15293,7 +15293,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0368",
@@ -15331,7 +15331,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0369",
@@ -15369,7 +15369,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0370",
@@ -15407,7 +15407,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0371",
@@ -15445,7 +15445,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0372",
@@ -15483,7 +15483,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0373",
@@ -15521,7 +15521,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0374",
@@ -15559,7 +15559,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0375",
@@ -15597,7 +15597,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0376",
@@ -15635,7 +15635,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0377",
@@ -15673,7 +15673,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0378",
@@ -15711,7 +15711,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0379",
@@ -15749,7 +15749,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0380",
@@ -15787,7 +15787,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0381",
@@ -15825,7 +15825,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0382",
@@ -15863,7 +15863,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0383",
@@ -15901,7 +15901,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0384",
@@ -15939,7 +15939,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0385",
@@ -15977,7 +15977,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0386",
@@ -16015,7 +16015,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0387",
@@ -16053,7 +16053,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0388",
@@ -16091,7 +16091,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0389",
@@ -16129,7 +16129,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0390",
@@ -16167,7 +16167,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0391",
@@ -16205,7 +16205,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0392",
@@ -16243,7 +16243,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0393",
@@ -16281,7 +16281,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0394",
@@ -16319,7 +16319,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0395",
@@ -16357,7 +16357,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0396",
@@ -16395,7 +16395,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0397",
@@ -16433,7 +16433,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0398",
@@ -16471,7 +16471,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0399",
@@ -16509,7 +16509,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0400",
@@ -16547,7 +16547,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0401",
@@ -16585,7 +16585,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0402",
@@ -16623,7 +16623,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0403",
@@ -16661,7 +16661,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0404",
@@ -16699,7 +16699,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0405",
@@ -16737,7 +16737,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0406",
@@ -16775,7 +16775,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0407",
@@ -16813,7 +16813,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0408",
@@ -16851,7 +16851,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0409",
@@ -16889,7 +16889,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0410",
@@ -16927,7 +16927,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0411",
@@ -16965,7 +16965,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0412",
@@ -17003,7 +17003,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0413",
@@ -17041,7 +17041,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0414",
@@ -17079,7 +17079,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0415",
@@ -17117,7 +17117,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0416",
@@ -17155,7 +17155,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0417",
@@ -17193,7 +17193,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0418",
@@ -17231,7 +17231,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0419",
@@ -17269,7 +17269,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0420",
@@ -17307,7 +17307,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0421",
@@ -17345,7 +17345,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0422",
@@ -17383,7 +17383,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0423",
@@ -17421,7 +17421,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0424",
@@ -17459,7 +17459,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0425",
@@ -17497,7 +17497,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0426",
@@ -17535,7 +17535,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0427",
@@ -17573,7 +17573,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0428",
@@ -17611,7 +17611,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0429",
@@ -17649,7 +17649,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0430",
@@ -17687,7 +17687,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0431",
@@ -17725,7 +17725,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0432",
@@ -17763,7 +17763,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0433",
@@ -17801,7 +17801,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0434",
@@ -17839,7 +17839,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0435",
@@ -17877,7 +17877,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0436",
@@ -17915,7 +17915,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0437",
@@ -17953,7 +17953,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0438",
@@ -17991,7 +17991,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0439",
@@ -18029,7 +18029,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0440",
@@ -18067,7 +18067,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0441",
@@ -18105,7 +18105,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0442",
@@ -18143,7 +18143,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0443",
@@ -18181,7 +18181,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0444",
@@ -18219,7 +18219,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0445",
@@ -18257,7 +18257,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0446",
@@ -18295,7 +18295,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0447",
@@ -18333,7 +18333,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0448",
@@ -18371,7 +18371,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0449",
@@ -18409,7 +18409,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0450",
@@ -18447,7 +18447,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0451",
@@ -18485,7 +18485,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0452",
@@ -18523,7 +18523,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0453",
@@ -18561,7 +18561,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0454",
@@ -18599,7 +18599,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0455",
@@ -18637,7 +18637,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0456",
@@ -18675,7 +18675,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0457",
@@ -18713,7 +18713,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0458",
@@ -18751,7 +18751,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0459",
@@ -18789,7 +18789,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0460",
@@ -18827,7 +18827,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0461",
@@ -18865,7 +18865,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0462",
@@ -18903,7 +18903,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0463",
@@ -18941,7 +18941,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0464",
@@ -18979,7 +18979,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0465",
@@ -19017,7 +19017,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0466",
@@ -19055,7 +19055,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0467",
@@ -19093,7 +19093,7 @@
       ],
       "correct_index": 2,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0468",
@@ -19131,7 +19131,7 @@
       ],
       "correct_index": 3,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0469",
@@ -19169,7 +19169,7 @@
       ],
       "correct_index": 0,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     },
     {
       "id": "q_meme_0470",
@@ -19207,7 +19207,7 @@
       ],
       "correct_index": 1,
       "humor_tag": "meme",
-      "duration_ms": 6000
+      "duration_ms": 10000
     }
   ]
 }

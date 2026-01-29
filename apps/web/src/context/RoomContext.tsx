@@ -49,7 +49,7 @@ interface RoomState {
 const RoomContext = createContext<RoomState | null>(null);
 
 const REVEAL_DURATION_MS = 2400;
-const LEADERBOARD_DURATION_MS = 2400;
+const LEADERBOARD_DURATION_MS = 5000;
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
@@ -410,7 +410,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     const question = baseQuestion
       ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
       : undefined;
-    const durationMs = question?.duration_ms ?? 6000;
+    const durationMs = question?.duration_ms ?? 10000;
     const startAt = roundStartAt ?? Date.now();
     const remaining = Math.max(0, durationMs - (Date.now() - startAt));
 

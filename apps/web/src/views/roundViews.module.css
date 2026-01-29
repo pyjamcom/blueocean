@@ -1,49 +1,75 @@
+.shell {
+  display: grid;
+  gap: 16px;
+  width: min(96vw, 860px);
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  position: relative;
+}
+
 .view {
   display: grid;
-  gap: 20px;
-  width: min(92vw, 520px);
-  margin: 0 auto;
-  padding: 24px 20px 32px;
+  gap: 18px;
+  width: 100%;
 }
 
 .timerRow {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .timerBadge {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.14);
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: rgba(12, 12, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
 .card {
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 12px 0;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -40% 10% auto;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 60%);
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .promptBlock {
   width: 100%;
-  height: clamp(180px, 32vh, 320px);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.06);
+  height: clamp(220px, 36vh, 420px);
+  border-radius: 30px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 16px;
   display: grid;
   position: relative;
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 18px 40px rgba(0, 0, 0, 0.3);
 }
 
 .answerBlock {
-  margin-top: 12px;
+  margin-top: 16px;
   position: relative;
   z-index: 1;
 }
@@ -57,7 +83,8 @@
 
 .promptCell {
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 12px;
   display: grid;
 }
@@ -71,7 +98,8 @@
 .overlayTile {
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 6px;
 }
 
@@ -83,7 +111,8 @@
   width: 100%;
   height: clamp(160px, 28vh, 260px);
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: grid;
   place-items: center;
 }

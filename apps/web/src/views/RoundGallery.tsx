@@ -129,9 +129,9 @@ export default function RoundGallery() {
   const activeQuestion = baseQuestion
     ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
     : undefined;
-  const revealState = phase === "reveal" ? "reveal" : "idle";
+  const revealState = phase === "reveal" || selectedIndex !== null ? "reveal" : "idle";
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
-  const durationMs = activeQuestion?.duration_ms ?? 6000;
+  const durationMs = activeQuestion?.duration_ms ?? 10000;
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
 
   useEffect(() => {
@@ -168,7 +168,7 @@ export default function RoundGallery() {
           prompt_image: fallbackSrc,
           answers: [],
           correct_index: 0,
-          duration_ms: 6000,
+          duration_ms: 10000,
         })),
     [activeQuestion],
   );
@@ -186,7 +186,7 @@ export default function RoundGallery() {
   }, [activeQuestion, answers]);
 
   return (
-    <div className={styles.view}>
+    <div className={styles.shell}>
       <ProgressDots total={Math.max(questionBank.length, 1)} activeIndex={questionIndex} />
       {phase === "round" && (
         <div className={styles.timerRow}>

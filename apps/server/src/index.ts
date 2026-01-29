@@ -20,9 +20,9 @@ const REDIS_URL = process.env.REDIS_URL;
 const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
-const ROUND_DEFAULT_MS = 6000;
+const ROUND_DEFAULT_MS = 10000;
 const REVEAL_DURATION_MS = 2400;
-const LEADERBOARD_DURATION_MS = 2400;
+const LEADERBOARD_DURATION_MS = 5000;
 
 const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
 const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
@@ -1329,7 +1329,7 @@ testRouter.post("/rooms/:roomCode/answer", async (req, res) => {
         const scoring = calculateScore({
           isCorrect,
           latencyMs: payload.latencyMs ?? 0,
-          durationMs: questionInfo.durationMs ?? 6000,
+          durationMs: questionInfo.durationMs ?? 10000,
         });
         player.score += scoring.points;
         player.correctCount += scoring.correctIncrement;
@@ -1773,7 +1773,7 @@ wss.on("connection", (socket, request) => {
               const scoring = calculateScore({
                 isCorrect,
                 latencyMs: answerPayload.latencyMs ?? 0,
-                durationMs: questionInfo.durationMs ?? 6000,
+                durationMs: questionInfo.durationMs ?? 10000,
               });
               player.score += scoring.points;
               player.correctCount += scoring.correctIncrement;

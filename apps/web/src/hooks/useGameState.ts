@@ -49,7 +49,7 @@ export function useGameState({
   scoringMode,
   pointsMultiplier,
   revealDurationMs = 2500,
-  leaderboardDurationMs = 2500,
+  leaderboardDurationMs = 5000,
 }: UseGameStateOptions) {
   const [state, setState] = useState<GameState>({
     phase: "lobby",
