@@ -137,8 +137,13 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       if (message.type === "roster") {
-        const payload = message.payload as { players?: Array<{ id: string; avatarId: string; ready?: boolean }> } | undefined;
+        const payload = message.payload as
+          | { players?: Array<{ id: string; avatarId: string; ready?: boolean }>; hostId?: string }
+          | undefined;
         mergeRoster(payload);
+        if (payload?.hostId) {
+          setIsHost(payload.hostId === playerId);
+        }
         return;
       }
       if (message.type === "left") {

@@ -653,6 +653,31 @@ function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready
   });
 }
 
+function maybeAutoStartRoom(room: Room) {
+  if (!room.stage) {
+    ensureRoomStage(room);
+  }
+  if (room.stage?.phase !== "lobby") {
+    return null;
+  }
+  if (room.players.size < MIN_ROOM_PLAYERS) {
+    return null;
+  }
+  const allReady = Array.from(room.players.values()).every((player) => player.ready);
+  if (!allReady) {
+    return null;
+  }
+  const nextStage: StagePayload = {
+    roomCode: room.code,
+    phase: "round",
+    questionIndex: typeof room.currentQuestionIndex === "number" ? room.currentQuestionIndex : 0,
+    roundStartAt: Date.now(),
+  };
+  room.stage = nextStage;
+  room.currentQuestionIndex = nextStage.questionIndex ?? 0;
+  return nextStage;
+}
+
 function buildRoomSnapshot(room: Room) {
   return {
     roomCode: room.code,
@@ -1076,7 +1101,7 @@ wss.on("connection", (socket, request) => {
               } else if (roomValue.hostId === joinPayload.playerId) {
                 isHost = true;
               }
-              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, true, playerName);
+              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, false, playerName);
               ensureRoomStage(roomValue);
             },
             { createIfMissing: true },
@@ -1242,6 +1267,7 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "ready" });
           return;
         }
+        let autoStage: StagePayload | null = null;
         const room = await updateRoom(
           roomCode,
           (roomValue) => {
@@ -1250,11 +1276,18 @@ wss.on("connection", (socket, request) => {
               return;
             }
             player.ready = ready;
+            const maybeStage = maybeAutoStartRoom(roomValue);
+            if (maybeStage) {
+              autoStage = maybeStage;
+            }
           },
           { createIfMissing: false },
         );
         if (room) {
           broadcastRoster(room);
+          if (autoStage) {
+            broadcastToRoom(room.code, { type: "stage", payload: autoStage });
+          }
         }
         return;
       }

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation } from "react-router-dom";
 import SoundToggle from "../components/SoundToggle";
-import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
@@ -25,12 +24,11 @@ function resolveVariant(age?: number): PulseVariant {
 }
 
 export default function LobbyView() {
-  const MIN_PLAYERS = 3;
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, isHost, phase, startGame, players, playerId, setReady, setAvatar } = useRoom();
+  const { roomCode, players, playerId, setReady, setAvatar } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
@@ -48,9 +46,6 @@ export default function LobbyView() {
   const touchStart = useRef<number | null>(null);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [showQr, setShowQr] = useState(false);
-
-  const [countdownStart, setCountdownStart] = useState<number | null>(null);
-  const autoStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -102,8 +97,7 @@ export default function LobbyView() {
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
-  const canStart = isHost && phase === "lobby" && players.length >= MIN_PLAYERS;
-  const startDisabled = isHost ? !canStart : false;
+  const selfReadyLocked = selfReady;
   const startLabel = "Ready to play";
 
   useEffect(() => {
@@ -112,31 +106,6 @@ export default function LobbyView() {
       setAvatar(selfAvatar);
     }
   }, [roomCode, selfAvatar, setAvatar]);
-
-  useEffect(() => {
-    if (autoStartRef.current) {
-      window.clearTimeout(autoStartRef.current);
-      autoStartRef.current = null;
-    }
-    const shouldAutoStart = isHost && phase === "lobby" && players.length >= MIN_PLAYERS;
-    if (!shouldAutoStart) {
-      setCountdownStart(null);
-      return;
-    }
-    const startAt = Date.now();
-    setCountdownStart(startAt);
-    autoStartRef.current = window.setTimeout(() => {
-      if (phase === "lobby" && players.length >= MIN_PLAYERS) {
-        startGame();
-      }
-    }, 6000);
-    return () => {
-      if (autoStartRef.current) {
-        window.clearTimeout(autoStartRef.current);
-        autoStartRef.current = null;
-      }
-    };
-  }, [isHost, phase, players.length, startGame]);
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -206,23 +175,15 @@ export default function LobbyView() {
         </button>
       </div>
 
-      {canStart && countdownStart !== null ? (
-        <div className={styles.countdown}>
-          <TimerRing durationMs={6000} startAt={countdownStart} size={100} state="running" />
-        </div>
-      ) : null}
-
       <div className={styles.startRow}>
         <button
-          className={`${styles.startButton} ${startDisabled ? styles.startButtonDisabled : ""}`}
+          className={`${styles.startButton} ${selfReadyLocked ? styles.startButtonDisabled : ""}`}
           onClick={() => {
-            if (isHost) {
-              if (canStart) startGame();
-            } else {
-              setReady(!selfReady);
+            if (!selfReady) {
+              setReady(true);
             }
           }}
-          disabled={startDisabled}
+          disabled={selfReadyLocked}
           aria-label="start"
         >
           <span className={styles.startIcon} />
