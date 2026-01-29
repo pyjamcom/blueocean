@@ -148,7 +148,7 @@ export default function JoinView() {
             aria-label="avatar"
             onClick={handleAvatarClick}
           />
-          <span className={styles.iconLabel}>Avatar</span>
+          <span className={styles.iconLabel}>Choose an avatar</span>
         </div>
         <div className={styles.iconItem}>
           <button
