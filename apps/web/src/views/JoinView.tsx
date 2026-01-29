@@ -12,6 +12,7 @@ import {
 } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
+import { randomId } from "../utils/ids";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import styles from "./JoinView.module.css";
 
@@ -50,7 +51,8 @@ export default function JoinView() {
     return idx >= 0 ? idx : 0;
   });
 
-  const joinTarget = roomCode ?? codeParam;
+  const [pendingRoomCode, setPendingRoomCode] = useState<string | null>(null);
+  const joinTarget = roomCode ?? codeParam ?? pendingRoomCode;
   const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [qrVisible, setQrVisible] = useState(false);
@@ -66,6 +68,16 @@ export default function JoinView() {
     setJoinPending(false);
     navigate("/lobby");
   }, [joinPending, navigate, roomCode]);
+
+  useEffect(() => {
+    if (roomCode) {
+      setPendingRoomCode(null);
+    }
+  }, [roomCode]);
+
+  useEffect(() => {
+    setQrSrc("");
+  }, [joinTarget]);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -105,7 +117,9 @@ export default function JoinView() {
   const handleScanClick = () => {
     if (!showQr) return;
     if (!roomCode) {
-      joinRoom(undefined, initialAvatarId, playerName);
+      const nextCode = pendingRoomCode ?? randomId(4);
+      setPendingRoomCode(nextCode);
+      joinRoom(nextCode, initialAvatarId, playerName);
     }
     setQrVisible(true);
   };
