@@ -52,6 +52,14 @@ export default function JoinView() {
   const [qrSrc, setQrSrc] = useState<string>("");
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
+  const [playerName, setPlayerName] = useState(() => {
+    if (typeof document === "undefined") return "";
+    const match = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("player_name="));
+    if (!match) return "";
+    return decodeURIComponent(match.split("=")[1] ?? "");
+  });
   useEffect(() => {
     if (roomCode && !codeParam) return;
     joinRoom(codeParam ?? undefined, initialAvatarId);
@@ -140,6 +148,24 @@ export default function JoinView() {
           <img src="/favicon.ico" alt="" className={styles.qrIcon} />
         </div>
       )}
+      {showQr ? (
+        <div className={styles.nameRow}>
+          <input
+            type="text"
+            value={playerName}
+            onChange={(event) => {
+              const value = event.target.value.slice(0, 18);
+              setPlayerName(value);
+              if (typeof document !== "undefined") {
+                document.cookie = `player_name=${encodeURIComponent(value)}; path=/; max-age=31536000`;
+              }
+            }}
+            placeholder="Your name"
+            className={styles.nameInput}
+            aria-label="player name"
+          />
+        </div>
+      ) : null}
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
           <button

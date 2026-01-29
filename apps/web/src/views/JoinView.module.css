@@ -28,6 +28,28 @@
   z-index: 2;
 }
 
+.nameRow {
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.nameInput {
+  width: min(70vw, 260px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 10, 16, 0.6);
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.nameInput::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .qrImage {
   width: 86%;
   height: 86%;
