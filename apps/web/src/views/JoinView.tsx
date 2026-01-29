@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
-  avatarColor,
   avatarIconIndex,
   getStoredAvatarId,
   getAvatarImageUrl,
@@ -54,8 +53,9 @@ export default function JoinView() {
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
   useEffect(() => {
+    if (roomCode && !codeParam) return;
     joinRoom(codeParam ?? undefined, initialAvatarId);
-  }, [codeParam, initialAvatarId, joinRoom]);
+  }, [codeParam, initialAvatarId, joinRoom, roomCode]);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -176,11 +176,11 @@ export default function JoinView() {
             <div
               className={styles.avatarPreview}
               style={{
-                background: avatarColor(currentAvatar),
+                background: "transparent",
                 backgroundImage: `url(${avatarAssetSrc})`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "70%",
+                backgroundSize: "contain",
               }}
             />
             <div className={styles.avatarControls}>

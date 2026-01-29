@@ -41,7 +41,7 @@ interface RoomState {
   sendAnswer: (answerIndex: number) => void;
   setReady: (ready: boolean) => void;
   setAvatar: (avatarId: string) => void;
-  createNextRoom: (avatarId?: string) => void;
+  createNextRoom: (roomCode?: string, avatarId?: string) => void;
 }
 
 const RoomContext = createContext<RoomState | null>(null);
@@ -241,6 +241,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   );
 
   const resetLocalState = useCallback(() => {
+    clearHostTimers();
     setRoomCode(null);
     setIsHost(false);
     setPhase("join");
@@ -252,11 +253,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setErrors([]);
     sentQuestionsRef.current.clear();
     answeredByQuestionRef.current = {};
-  }, []);
+  }, [clearHostTimers]);
 
   const createNextRoom = useCallback(
-    (avatarId = "avatar_raccoon_dj") => {
-      const nextRoom = randomId(4);
+    (targetRoom = randomId(4), avatarId = "avatar_raccoon_dj") => {
+      const nextRoom = targetRoom;
       pendingJoinRef.current = { roomCode: nextRoom, avatarId };
       joinSentRef.current = false;
       resetLocalState();
@@ -344,6 +345,24 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     hostTimersRef.current = [];
   }, []);
 
+  const resetRoom = useCallback(() => {
+    clearHostTimers();
+    disconnect();
+    setRoomCode(null);
+    setIsHost(false);
+    setPhase("join");
+    setQuestionIndex(0);
+    setRoundStartAt(null);
+    setJoinedAt(null);
+    setPlayers([]);
+    setAnswerCounts([0, 0, 0, 0]);
+    setErrors([]);
+    joinSentRef.current = false;
+    pendingJoinRef.current = null;
+    sentQuestionsRef.current.clear();
+    answeredByQuestionRef.current = {};
+  }, [clearHostTimers, disconnect]);
+
   useEffect(() => {
     clearHostTimers();
     if (!isHost || phase !== "round" || !roomCode) {
@@ -407,6 +426,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     wsStatus,
     errors,
     joinRoom,
+    resetRoom,
     sendStage,
     startGame,
     sendAnswer,

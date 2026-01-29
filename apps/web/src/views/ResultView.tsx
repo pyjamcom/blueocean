@@ -7,6 +7,7 @@ import ShareCard, { ShareCardHandle } from "../components/ShareCard";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
+import { randomId } from "../utils/ids";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
@@ -38,7 +39,15 @@ export default function ResultView() {
     return leaderboard.length ? { avatarId: leaderboard[0].avatarId } : null;
   }, [leaderboard]);
 
-  const qrUrl = roomCode ? `https://d0.do/${roomCode}` : "https://d0.do/ABCD";
+  const nextRoomCode = useMemo(() => {
+    if (!roomCode) return randomId(4);
+    let code = randomId(4);
+    while (code === roomCode) {
+      code = randomId(4);
+    }
+    return code;
+  }, [roomCode]);
+  const qrUrl = `https://d0.do/${nextRoomCode}`;
   const canShareCard = Boolean(winner);
 
   useEffect(() => {
@@ -63,7 +72,7 @@ export default function ResultView() {
 
   const handleNext = () => {
     const avatarId = getStoredAvatarId() ?? randomAvatarId();
-    createNextRoom(avatarId);
+    createNextRoom(nextRoomCode, avatarId);
     trackEvent("replay_click");
     navigate("/join");
   };
