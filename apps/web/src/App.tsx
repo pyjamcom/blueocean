@@ -87,7 +87,7 @@ function StageNavigator() {
     if (location.pathname !== nextTarget) {
       navigate(nextTarget, { replace: true });
     }
-  }, [createNextRoom, joinedAt, location.pathname, navigate, phase, players, roomCode, roundStartAt]);
+  }, [createNextRoom, joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt]);
 
   return null;
 }
