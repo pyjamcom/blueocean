@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AgeGate from "./components/AgeGate";
 import HelpButton from "./components/HelpButton";
@@ -44,10 +44,9 @@ const phaseRoutes: Record<RoomPhase, string> = {
 const MIN_PLAYERS = 3;
 
 function StageNavigator() {
-  const { phase, roomCode, joinedAt, roundStartAt, createNextRoom, isHost, players } = useRoom();
+  const { phase, roomCode, joinedAt, roundStartAt, isHost, players } = useRoom();
   const location = useLocation();
   const navigate = useNavigate();
-  const nextRoomRequestedRef = useRef(false);
 
   useEffect(() => {
     const path = location.pathname.toUpperCase();
@@ -56,10 +55,6 @@ function StageNavigator() {
     const searchParams = new URLSearchParams(location.search);
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
-
-    if (roomCode && roomCode !== "PLAY") {
-      nextRoomRequestedRef.current = false;
-    }
 
     if (!roomCode) {
       if (!isJoinPath) {
@@ -78,10 +73,6 @@ function StageNavigator() {
     }
 
     if (isPublicRoom && phase !== "lobby" && phase !== "join") {
-      if (!nextRoomRequestedRef.current) {
-        nextRoomRequestedRef.current = true;
-        createNextRoom();
-      }
       return;
     }
 
@@ -96,7 +87,7 @@ function StageNavigator() {
     if (location.pathname !== nextTarget) {
       navigate(nextTarget, { replace: true });
     }
-  }, [createNextRoom, joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt, isHost, players.length]);
+  }, [joinedAt, location.pathname, navigate, phase, roomCode, roundStartAt, isHost, players.length]);
 
   return null;
 }
