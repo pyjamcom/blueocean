@@ -103,7 +103,7 @@ export default function LobbyView() {
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
   const canStart = isHost && phase === "lobby" && players.length >= MIN_PLAYERS;
   const startDisabled = isHost ? !canStart : false;
-  const startLabel = isHost ? "Start" : "Ready";
+  const startLabel = "Ready to play";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -139,15 +139,6 @@ export default function LobbyView() {
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
-      <div className={styles.countRow}>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <span
-            key={`slot-${index}`}
-            className={`${styles.countDot} ${index < players.length ? styles.countDotActive : ""}`}
-          />
-        ))}
-      </div>
-
       <div className={styles.players}>
         {players.map((player) => {
           const playerAssetId = lobbyAssets.length
@@ -180,6 +171,7 @@ export default function LobbyView() {
         className={styles.selfAvatar}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
+        onClick={() => handleAvatarCycle(1)}
         aria-label={selfAvatar}
       >
         <div
@@ -196,14 +188,15 @@ export default function LobbyView() {
       </div>
 
       <div className={styles.hintRow}>
-        <div className={styles.hintItem}>
-          <span className={`${styles.hintChip} ${styles.hintSwipe}`} />
-          <span className={styles.hintLabel}>Swipe</span>
-        </div>
-        <div className={styles.hintItem}>
-          <span className={`${styles.hintChip} ${styles.hintTap}`} />
-          <span className={styles.hintLabel}>Tap</span>
-        </div>
+        <button
+          type="button"
+          className={styles.hintButton}
+          onClick={() => handleAvatarCycle(1)}
+          aria-label="change avatar"
+        >
+          <span className={styles.hintButtonIcon} />
+          <span className={styles.hintLabel}>Change avatar</span>
+        </button>
       </div>
 
       {canStart && countdownStart !== null ? (

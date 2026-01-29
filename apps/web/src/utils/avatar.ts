@@ -1,6 +1,10 @@
 import avatarsManifest from "../../../../data/avatars_manifest.json";
 
-export const AVATAR_IDS = [
+const avatarFiles: string[] = Array.isArray((avatarsManifest as any)?.items)
+  ? ((avatarsManifest as any).items as string[])
+  : [];
+
+const fallbackAvatars = [
   "avatar_raccoon_dj",
   "avatar_panda_disco",
   "avatar_cat_bartender",
@@ -32,6 +36,8 @@ export const AVATAR_IDS = [
   "avatar_banana_rocket",
   "avatar_shrimp_king",
 ];
+
+export const AVATAR_IDS = avatarFiles.length ? avatarFiles : fallbackAvatars;
 
 export function randomAvatarId() {
   return AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)];
@@ -72,12 +78,11 @@ export function avatarIconIndex(id: string) {
   return Math.abs(hashValue(id));
 }
 
-const avatarFiles: string[] = Array.isArray((avatarsManifest as any)?.items)
-  ? ((avatarsManifest as any).items as string[])
-  : [];
-
 export function getAvatarImageUrl(id: string) {
   if (!avatarFiles.length) return null;
+  if (avatarFiles.includes(id)) {
+    return `/avatars/${id}`;
+  }
   const idx = avatarIconIndex(id) % avatarFiles.length;
   return `/avatars/${avatarFiles[idx]}`;
 }
