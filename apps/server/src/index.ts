@@ -743,14 +743,15 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
 testRouter.post("/rooms/:roomCode/question", async (req, res) => {
   const room = await getRoomOrSend(req.params.roomCode, res);
   if (!room) return;
-  const payload = { ...req.body, roomCode: room.code };
-  if (!validateQuestionFn(payload)) {
+  const rawPayload = req.body;
+  if (!validateQuestionFn(rawPayload)) {
     res.status(400).json({ ok: false, error: "invalid question", details: validateQuestion.errors });
     return;
   }
+  const payload = { ...rawPayload, roomCode: room.code };
   const index =
-    typeof payload.questionIndex === "number"
-      ? payload.questionIndex
+    typeof rawPayload.questionIndex === "number"
+      ? rawPayload.questionIndex
       : room.currentQuestionIndex;
   if (typeof index === "number") {
     room.questionsByIndex.set(index, {
