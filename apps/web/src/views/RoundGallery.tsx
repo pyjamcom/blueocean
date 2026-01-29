@@ -23,6 +23,7 @@ import {
 import styles from "./roundViews.module.css";
 
 const fallbackSrc = "/icons/icon-192.svg";
+const MAX_QUESTIONS = Math.min(15, questionBank.length);
 
 function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, AnswerOption, AnswerOption] {
   const answers = question.answers.map((answer) => ({
@@ -129,14 +130,14 @@ export default function RoundGallery() {
   const activeQuestion = baseQuestion
     ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
     : undefined;
-  const revealState = phase === "reveal" || selectedIndex !== null ? "reveal" : "idle";
+  const revealState = phase === "reveal" ? "reveal" : "idle";
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const durationMs = activeQuestion?.duration_ms ?? 10000;
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
 
   useEffect(() => {
     setSelectedIndex(null);
-  }, [questionIndex, phase]);
+  }, [questionIndex]);
 
   useEffect(() => {
     if (phase !== "round") {
@@ -185,9 +186,19 @@ export default function RoundGallery() {
     assetsToPrefetch.forEach((src) => prefetchImage(src));
   }, [activeQuestion, answers]);
 
+  const correctIndex = activeQuestion?.correct_index ?? 0;
+  const hasAnswer = selectedIndex !== null;
+  const isCorrect = hasAnswer && selectedIndex === correctIndex;
+  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct" : "Wrong";
+  const revealClass = isCorrect
+    ? styles.revealCorrect
+    : hasAnswer
+      ? styles.revealWrong
+      : styles.revealNeutral;
+
   return (
     <div className={styles.shell}>
-      <ProgressDots total={Math.max(questionBank.length, 1)} activeIndex={questionIndex} />
+      <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
       {phase === "round" && (
         <div className={styles.timerRow}>
           <TimerRing durationMs={durationMs} startAt={timerStartAt} size={72} strokeWidth={6} />
@@ -195,6 +206,9 @@ export default function RoundGallery() {
         </div>
       )}
       <div className={styles.card}>
+        {phase === "reveal" && (
+          <div className={`${styles.revealBanner} ${revealClass}`}>{revealMessage}</div>
+        )}
         {activeQuestion
           ? renderQuestionView(activeQuestion, answers, handleSelect, selectedIndex, revealState)
           : null}

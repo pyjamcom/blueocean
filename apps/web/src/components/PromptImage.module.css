@@ -9,8 +9,8 @@
   width: 100%;
   height: 100%;
   border-radius: 24px;
-  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  background: transparent;
+  box-shadow: none;
 }
 
 .promptImageContain {

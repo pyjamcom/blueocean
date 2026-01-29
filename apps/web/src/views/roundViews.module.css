@@ -55,6 +55,31 @@
   pointer-events: none;
 }
 
+.revealBanner {
+  margin: 0 0 14px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 14px;
+  color: #0f1117;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.revealCorrect {
+  background: linear-gradient(135deg, #63e6be, #20c997);
+}
+
+.revealWrong {
+  background: linear-gradient(135deg, #ff6b6b, #ff8787);
+}
+
+.revealNeutral {
+  background: linear-gradient(135deg, #ffd166, #ffbe0b);
+}
+
 .promptBlock {
   width: 100%;
   height: clamp(220px, 36vh, 420px);

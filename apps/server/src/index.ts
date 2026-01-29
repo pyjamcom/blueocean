@@ -21,8 +21,9 @@ const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
 const ROUND_DEFAULT_MS = 10000;
-const REVEAL_DURATION_MS = 2400;
+const REVEAL_DURATION_MS = 5000;
 const LEADERBOARD_DURATION_MS = 5000;
+const MAX_QUESTIONS = 15;
 
 const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
 const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
@@ -678,15 +679,16 @@ function scheduleRoundTimers(room: Room) {
   timers.next = setTimeout(() => {
     void (async () => {
       const nextIndex = questionIndex + 1;
+      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
       const updated = await applyStageTransition(
         room.code,
         "leaderboard",
         questionIndex,
         {
           roomCode: room.code,
-          phase: "round",
+          phase: nextPhase,
           questionIndex: nextIndex,
-          roundStartAt: Date.now(),
+          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
         },
       );
       if (updated) {
@@ -731,15 +733,16 @@ function scheduleRevealTimers(room: Room) {
   timers.next = setTimeout(() => {
     void (async () => {
       const nextIndex = questionIndex + 1;
+      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
       const updated = await applyStageTransition(
         room.code,
         "leaderboard",
         questionIndex,
         {
           roomCode: room.code,
-          phase: "round",
+          phase: nextPhase,
           questionIndex: nextIndex,
-          roundStartAt: Date.now(),
+          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
         },
       );
       if (updated) {
@@ -765,15 +768,16 @@ function scheduleLeaderboardTimers(room: Room) {
   timers.next = setTimeout(() => {
     void (async () => {
       const nextIndex = questionIndex + 1;
+      const nextPhase: RoomPhase = nextIndex >= MAX_QUESTIONS ? "end" : "round";
       const updated = await applyStageTransition(
         room.code,
         "leaderboard",
         questionIndex,
         {
           roomCode: room.code,
-          phase: "round",
+          phase: nextPhase,
           questionIndex: nextIndex,
-          roundStartAt: Date.now(),
+          roundStartAt: nextPhase === "round" ? Date.now() : undefined,
         },
       );
       if (updated) {

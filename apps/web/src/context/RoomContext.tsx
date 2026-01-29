@@ -48,8 +48,9 @@ interface RoomState {
 
 const RoomContext = createContext<RoomState | null>(null);
 
-const REVEAL_DURATION_MS = 2400;
+const REVEAL_DURATION_MS = 5000;
 const LEADERBOARD_DURATION_MS = 5000;
+const MAX_QUESTIONS = Math.min(15, questionBank.length);
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
@@ -430,7 +431,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     }, remaining + REVEAL_DURATION_MS);
     const nextTimer = window.setTimeout(() => {
       const nextIndex = questionIndex + 1;
-      if (nextIndex >= questionBank.length) {
+      if (nextIndex >= MAX_QUESTIONS) {
         sendStage({ phase: "end", questionIndex });
       } else {
         sendStage({ phase: "round", questionIndex: nextIndex, roundStartAt: Date.now() });
