@@ -3,6 +3,7 @@ import styles from "./Leaderboard.module.css";
 export interface LeaderboardItem {
   playerId: string;
   avatarId: string;
+  name?: string;
   rank: number;
   score?: number;
   correctCount?: number;
@@ -10,7 +11,7 @@ export interface LeaderboardItem {
 
 export interface LeaderboardProps {
   items: LeaderboardItem[];
-  self?: { playerId: string; avatarId: string; rank: number; score?: number; correctCount?: number } | null;
+  self?: { playerId: string; avatarId: string; name?: string; rank: number; score?: number; correctCount?: number } | null;
   mode: "speed" | "accuracy";
 }
 
@@ -50,11 +51,14 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
               style={{ backgroundColor: medalColor(item.rank) }}
               aria-label={`rank-${item.rank}`}
             />
-            <div
-              className={`leaderboard__avatar ${styles.avatar}`}
-              style={{ background: `hsl(${hue} 70% 60%)` }}
-              aria-label={item.avatarId}
-            />
+            <div className={styles.avatarBlock}>
+              <div
+                className={`leaderboard__avatar ${styles.avatar}`}
+                style={{ background: `hsl(${hue} 70% 60%)` }}
+                aria-label={item.avatarId}
+              />
+              <span className={styles.name}>{item.name ?? "Player"}</span>
+            </div>
             <span className={styles.spark} />
           </div>
         );
@@ -69,11 +73,14 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
             style={{ backgroundColor: medalColor(selfOutsideTop.rank) }}
             aria-label={`rank-${selfOutsideTop.rank}`}
           />
-          <div
-            className={`leaderboard__avatar ${styles.avatar}`}
-            style={{ background: `hsl(${hashHue(selfOutsideTop.avatarId)} 70% 60%)` }}
-            aria-label={selfOutsideTop.avatarId}
-          />
+          <div className={styles.avatarBlock}>
+            <div
+              className={`leaderboard__avatar ${styles.avatar}`}
+              style={{ background: `hsl(${hashHue(selfOutsideTop.avatarId)} 70% 60%)` }}
+              aria-label={selfOutsideTop.avatarId}
+            />
+            <span className={styles.name}>{selfOutsideTop.name ?? "Player"}</span>
+          </div>
           <span className={styles.spark} />
         </div>
       )}

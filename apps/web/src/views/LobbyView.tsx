@@ -12,6 +12,7 @@ import {
   setStoredAvatarId,
 } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
+import { getStoredPlayerName } from "../utils/playerName";
 import styles from "./LobbyView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -96,6 +97,7 @@ export default function LobbyView() {
   const selfAvatar = AVATAR_IDS[avatarIndex];
   const selfPlayer = players.find((player) => player.id === playerId);
   const selfReady = selfPlayer?.ready ?? false;
+  const selfName = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
     : undefined;
@@ -171,6 +173,7 @@ export default function LobbyView() {
                   <img src={playerAssetSrc} alt="" className={styles.avatarImage} />
                 ) : null}
               </div>
+              <span className={styles.playerName}>{player.name ?? "Player"}</span>
               {player.ready && <span className={styles.readyRing} />}
             </div>
           );
@@ -187,6 +190,7 @@ export default function LobbyView() {
         <div className={styles.selfAvatarCore}>
           {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
         </div>
+        <span className={styles.selfName}>{selfName}</span>
         <span className={styles.selfPulse} />
       </div>
 

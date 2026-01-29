@@ -192,6 +192,7 @@ interface StagePayload {
 interface Player {
   id: string;
   avatarId: string;
+  name?: string;
   ready: boolean;
   score: number;
   correctCount: number;
@@ -519,6 +520,7 @@ function buildRoster(room: Room) {
   return Array.from(room.players.values()).map((player) => ({
     id: player.id,
     avatarId: player.avatarId,
+    name: player.name,
     ready: player.ready,
     score: player.score,
     correctCount: player.correctCount,
@@ -554,6 +556,7 @@ function buildScorePayload(room: Room) {
     players: players.map((player) => ({
       id: player.id,
       avatarId: player.avatarId,
+      name: player.name,
       ready: player.ready,
       score: player.score,
       correctCount: player.correctCount,
@@ -629,16 +632,20 @@ function ensureRoomStage(room: Room) {
   }
 }
 
-function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready = true) {
+function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready = true, name?: string) {
   const existing = room.players.get(playerId);
   if (existing) {
     existing.avatarId = avatarId;
     existing.ready = ready;
+    if (name) {
+      existing.name = name;
+    }
     return;
   }
   room.players.set(playerId, {
     id: playerId,
     avatarId,
+    name,
     ready,
     score: 0,
     correctCount: 0,
@@ -687,6 +694,7 @@ testRouter.post("/rooms", async (req, res) => {
   const roomCode = typeof req.body?.roomCode === "string" ? req.body.roomCode : undefined;
   const hostId = typeof req.body?.hostId === "string" ? req.body.hostId : `test-host-${Date.now()}`;
   const avatarId = typeof req.body?.avatarId === "string" ? req.body.avatarId : "avatar_robot_party";
+  const playerName = typeof req.body?.playerName === "string" ? req.body.playerName : undefined;
   const ready = req.body?.ready !== false;
   let resolvedCode = roomCode;
   if (!resolvedCode) {
@@ -699,7 +707,7 @@ testRouter.post("/rooms", async (req, res) => {
       if (!roomValue.hostId) {
         roomValue.hostId = hostId;
       }
-      addOrUpdatePlayer(roomValue, hostId, avatarId, ready);
+      addOrUpdatePlayer(roomValue, hostId, avatarId, ready, playerName);
       ensureRoomStage(roomValue);
     },
     { createIfMissing: true },
@@ -721,6 +729,7 @@ testRouter.get("/rooms/:roomCode", async (req, res) => {
 testRouter.post("/rooms/:roomCode/players", async (req, res) => {
   const playerId = req.body?.playerId;
   const avatarId = req.body?.avatarId ?? "avatar_robot_party";
+  const playerName = typeof req.body?.playerName === "string" ? req.body.playerName : undefined;
   if (typeof playerId !== "string" || typeof avatarId !== "string") {
     res.status(400).json({ ok: false, error: "playerId and avatarId required" });
     return;
@@ -729,7 +738,7 @@ testRouter.post("/rooms/:roomCode/players", async (req, res) => {
   const room = await updateRoom(
     req.params.roomCode,
     (roomValue) => {
-      addOrUpdatePlayer(roomValue, playerId, avatarId, ready);
+      addOrUpdatePlayer(roomValue, playerId, avatarId, ready, playerName);
       if (req.body?.asHost === true || !roomValue.hostId) {
         roomValue.hostId = playerId;
       }
@@ -1051,6 +1060,8 @@ wss.on("connection", (socket, request) => {
           let isHost = false;
           let joinAllowed = true;
           let joinRoomCode = joinPayload.roomCode;
+          const playerName =
+            typeof joinPayload.playerName === "string" ? joinPayload.playerName.trim().slice(0, 18) : undefined;
           const room = await updateRoom(
             joinPayload.roomCode,
             (roomValue) => {
@@ -1065,7 +1076,7 @@ wss.on("connection", (socket, request) => {
               } else if (roomValue.hostId === joinPayload.playerId) {
                 isHost = true;
               }
-              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, true);
+              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, true, playerName);
               ensureRoomStage(roomValue);
             },
             { createIfMissing: true },
@@ -1125,6 +1136,40 @@ wss.on("connection", (socket, request) => {
         state.joinedRoom = undefined;
         state.playerId = undefined;
         send(socket, { type: "left", payload: { roomCode } });
+        return;
+      }
+
+      if (type === "name") {
+        const namePayload = payload as any;
+        const roomCode = namePayload?.roomCode;
+        const playerId = namePayload?.playerId;
+        const name =
+          typeof namePayload?.name === "string" ? namePayload.name.trim().slice(0, 18) : "";
+        if (!roomCode || !playerId || !name) {
+          send(socket, { type: "error", errors: [{ message: "invalid name" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "name" });
+          return;
+        }
+        if (!state.joinedRoom || state.joinedRoom !== roomCode || state.playerId !== playerId) {
+          send(socket, { type: "error", errors: [{ message: "invalid name" }] });
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "name_room" });
+          return;
+        }
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            const player = roomValue.players.get(playerId);
+            if (player) {
+              player.name = name;
+            }
+          },
+          { createIfMissing: false },
+        );
+        if (!room) {
+          send(socket, { type: "error", errors: [{ message: "room not found" }] });
+          return;
+        }
+        broadcastRoster(room);
         return;
       }
 

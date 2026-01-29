@@ -12,6 +12,7 @@
       "pattern": "^[A-Z0-9]+$"
     },
     "playerId": {"type": "string", "minLength": 1},
-    "avatarId": {"type": "string", "minLength": 1}
+    "avatarId": {"type": "string", "minLength": 1},
+    "playerName": {"type": "string", "minLength": 1, "maxLength": 18}
   }
 }

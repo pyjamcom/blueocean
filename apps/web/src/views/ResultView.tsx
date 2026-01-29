@@ -8,6 +8,7 @@ import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { randomId } from "../utils/ids";
+import { getStoredPlayerName } from "../utils/playerName";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
@@ -21,6 +22,7 @@ export default function ResultView() {
     return sorted.map((player, idx) => ({
       playerId: player.id,
       avatarId: player.avatarId,
+      name: player.name,
       rank: idx + 1,
       score: player.score,
       correctCount: player.correctCount,
@@ -72,7 +74,8 @@ export default function ResultView() {
 
   const handleNext = () => {
     const avatarId = getStoredAvatarId() ?? randomAvatarId();
-    createNextRoom(nextRoomCode, avatarId);
+    const playerName = getStoredPlayerName();
+    createNextRoom(nextRoomCode, avatarId, playerName);
     trackEvent("replay_click");
     navigate("/join");
   };
@@ -97,6 +100,7 @@ export default function ResultView() {
             ? {
                 playerId: selfEntry.playerId,
                 avatarId: selfEntry.avatarId,
+                name: selfEntry.name,
                 rank: selfEntry.rank,
                 score: selfEntry.score,
                 correctCount: selfEntry.correctCount,

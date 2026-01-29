@@ -12,6 +12,7 @@ import {
 } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
+import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -37,7 +38,7 @@ export default function JoinView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
-  const { roomCode, joinRoom, setAvatar } = useRoom();
+  const { roomCode, joinRoom, setAvatar, setName } = useRoom();
   const variant = resolveVariant(age);
   const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
@@ -52,18 +53,11 @@ export default function JoinView() {
   const [qrSrc, setQrSrc] = useState<string>("");
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
-  const [playerName, setPlayerName] = useState(() => {
-    if (typeof document === "undefined") return "";
-    const match = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("player_name="));
-    if (!match) return "";
-    return decodeURIComponent(match.split("=")[1] ?? "");
-  });
+  const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
   useEffect(() => {
     if (roomCode && !codeParam) return;
-    joinRoom(codeParam ?? undefined, initialAvatarId);
-  }, [codeParam, initialAvatarId, joinRoom, roomCode]);
+    joinRoom(codeParam ?? undefined, initialAvatarId, playerName);
+  }, [codeParam, initialAvatarId, joinRoom, playerName, roomCode]);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -158,8 +152,9 @@ export default function JoinView() {
             onChange={(event) => {
               const value = event.target.value.slice(0, 18);
               setPlayerName(value);
-              if (typeof document !== "undefined") {
-                document.cookie = `player_name=${encodeURIComponent(value)}; path=/; max-age=31536000`;
+              setStoredPlayerName(value);
+              if (roomCode) {
+                setName(value);
               }
             }}
             placeholder="Your name"

@@ -26,6 +26,7 @@
   display: grid;
   place-items: center;
   height: 68px;
+  gap: 6px;
 }
 
 .playerAvatar {
@@ -37,6 +38,16 @@
   overflow: hidden;
   display: grid;
   place-items: center;
+}
+
+.playerName {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .readyRing {
@@ -52,16 +63,17 @@
 
 .selfAvatar {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  min-height: 170px;
   border-radius: 40px;
   margin: 0 auto;
   display: grid;
   place-items: center;
+  gap: 6px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.06);
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
 }
-
 
 .selfAvatarCore {
   width: 92px;
@@ -71,6 +83,16 @@
   overflow: hidden;
   display: grid;
   place-items: center;
+}
+
+.selfName {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .selfPulse {

@@ -6,9 +6,10 @@ import { trackEvent } from "../utils/analytics";
 export interface UseJoinRoomOptions {
   roomCode?: string;
   avatarId?: string;
+  playerName?: string;
 }
 
-export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj" }: UseJoinRoomOptions) {
+export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerName }: UseJoinRoomOptions) {
   const [joinedRoom, setJoinedRoom] = useState<string | null>(null);
   const [errors, setErrors] = useState<unknown[]>([]);
 
@@ -26,6 +27,7 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj" }: UseJoi
           roomCode: code,
           playerId,
           avatarId,
+          playerName,
         },
       });
     },
