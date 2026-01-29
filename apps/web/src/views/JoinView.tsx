@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import { randomAvatarId } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
@@ -23,6 +23,7 @@ function resolveVariant(age?: number): PulseVariant {
 
 export default function JoinView() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { code: codeFromPath } = useParams<{ code?: string }>();
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
@@ -35,6 +36,7 @@ export default function JoinView() {
   const joinTarget = roomCode ?? codeParam;
   const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
+  const [qrExpanded, setQrExpanded] = useState(false);
   const showQr = !codeParam;
   useEffect(() => {
     joinRoom(codeParam ?? undefined, avatarId);
@@ -75,6 +77,19 @@ export default function JoinView() {
     }
   }, [qrSrc, roomCode, showQr]);
 
+  const handleScanClick = () => {
+    if (!qrSrc) return;
+    setQrExpanded(true);
+  };
+
+  const handleAvatarClick = () => {
+    navigate("/lobby?preview=1");
+  };
+
+  const handlePlayClick = () => {
+    navigate("/lobby?preview=1");
+  };
+
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
@@ -83,18 +98,41 @@ export default function JoinView() {
       </div>
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconScan}`} aria-label="scan" />
+          <button
+            type="button"
+            className={`${styles.iconBubble} ${styles.iconScan}`}
+            aria-label="scan"
+            onClick={handleScanClick}
+          />
           <span className={styles.iconLabel}>Scan</span>
         </div>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconAvatar}`} aria-label="avatar" />
+          <button
+            type="button"
+            className={`${styles.iconBubble} ${styles.iconAvatar}`}
+            aria-label="avatar"
+            onClick={handleAvatarClick}
+          />
           <span className={styles.iconLabel}>Avatar</span>
         </div>
         <div className={styles.iconItem}>
-          <div className={`${styles.iconBubble} ${styles.iconPlay}`} aria-label="play" />
+          <button
+            type="button"
+            className={`${styles.iconBubble} ${styles.iconPlay}`}
+            aria-label="play"
+            onClick={handlePlayClick}
+          />
           <span className={styles.iconLabel}>Play</span>
         </div>
       </div>
+
+      {qrExpanded && qrSrc && (
+        <div className={styles.qrOverlay} onClick={() => setQrExpanded(false)}>
+          <div className={styles.qrSheet}>
+            <img src={qrSrc} alt="" className={styles.qrImage} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -50,6 +50,8 @@ function StageNavigator() {
     const path = location.pathname.toUpperCase();
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
+    const searchParams = new URLSearchParams(location.search);
+    const allowPreview = searchParams.get("preview") === "1";
 
     if (!roomCode) {
       if (!isJoinPath) {
@@ -65,7 +67,7 @@ function StageNavigator() {
       typeof roundStartAt === "number" &&
       joinedAt > roundStartAt;
     const hostWaitingForPlayers =
-      isHost && phase === "lobby" && (players?.length ?? 0) <= 1;
+      isHost && phase === "lobby" && (players?.length ?? 0) <= 1 && !allowPreview;
     const target = shouldWait ? "/wait" : phaseRoutes[phase] ?? "/join";
     const nextTarget = hostWaitingForPlayers ? "/join" : target;
     if (location.pathname !== nextTarget) {
