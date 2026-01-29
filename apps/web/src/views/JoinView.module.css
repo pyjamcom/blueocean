@@ -25,30 +25,10 @@
   height: 86%;
 }
 
-.qrPlaceholder {
-  width: 70%;
-  height: 70%;
-  border-radius: 24px;
-  background: #e9ecef;
-}
-
-.qrOverlay {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 10;
-}
-
-.qrSheet {
-  width: min(86vw, 420px);
-  aspect-ratio: 1 / 1;
-  background: #ffffff;
-  border-radius: 32px;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+.qrIcon {
+  width: 38%;
+  height: 38%;
+  object-fit: contain;
 }
 
 .iconRow {

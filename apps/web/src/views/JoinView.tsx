@@ -36,7 +36,7 @@ export default function JoinView() {
   const joinTarget = roomCode ?? codeParam;
   const joinUrl = useMemo(() => (joinTarget ? `https://d0.do/${joinTarget}` : ""), [joinTarget]);
   const [qrSrc, setQrSrc] = useState<string>("");
-  const [qrExpanded, setQrExpanded] = useState(false);
+  const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
   useEffect(() => {
     joinRoom(codeParam ?? undefined, avatarId);
@@ -52,7 +52,7 @@ export default function JoinView() {
   }, [codeParam, roomCode]);
 
   useEffect(() => {
-    if (!joinUrl || !showQr) return;
+    if (!joinUrl || !showQr || !qrVisible || qrSrc) return;
     let active = true;
     QRCode.toDataURL(joinUrl, {
       width: 320,
@@ -69,17 +69,17 @@ export default function JoinView() {
     return () => {
       active = false;
     };
-  }, [joinUrl, showQr]);
+  }, [joinUrl, showQr, qrVisible, qrSrc]);
 
   useEffect(() => {
-    if (qrSrc && roomCode && showQr) {
+    if (qrSrc && roomCode && showQr && qrVisible) {
       trackEvent("qr_render", { roomCode });
     }
-  }, [qrSrc, roomCode, showQr]);
+  }, [qrSrc, roomCode, showQr, qrVisible]);
 
   const handleScanClick = () => {
-    if (!qrSrc) return;
-    setQrExpanded(true);
+    if (!showQr) return;
+    setQrVisible(true);
   };
 
   const handleAvatarClick = () => {
@@ -94,17 +94,21 @@ export default function JoinView() {
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
       <div className={styles.qrFrame}>
-        {qrSrc && showQr ? <img src={qrSrc} alt="" className={styles.qrImage} /> : <div className={styles.qrPlaceholder} />}
+        {qrVisible && qrSrc && showQr ? (
+          <img src={qrSrc} alt="" className={styles.qrImage} />
+        ) : (
+          <img src="/favicon.ico" alt="" className={styles.qrIcon} />
+        )}
       </div>
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
           <button
             type="button"
             className={`${styles.iconBubble} ${styles.iconScan}`}
-            aria-label="scan"
+            aria-label="create game"
             onClick={handleScanClick}
           />
-          <span className={styles.iconLabel}>Scan</span>
+          <span className={styles.iconLabel}>Create game</span>
         </div>
         <div className={styles.iconItem}>
           <button
@@ -126,13 +130,6 @@ export default function JoinView() {
         </div>
       </div>
 
-      {qrExpanded && qrSrc && (
-        <div className={styles.qrOverlay} onClick={() => setQrExpanded(false)}>
-          <div className={styles.qrSheet}>
-            <img src={qrSrc} alt="" className={styles.qrImage} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
