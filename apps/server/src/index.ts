@@ -687,13 +687,26 @@ testRouter.post("/rooms", async (req, res) => {
   const hostId = typeof req.body?.hostId === "string" ? req.body.hostId : `test-host-${Date.now()}`;
   const avatarId = typeof req.body?.avatarId === "string" ? req.body.avatarId : "avatar_robot_party";
   const ready = req.body?.ready !== false;
-  const room = await getOrCreateRoom(roomCode);
-  if (!room.hostId) {
-    room.hostId = hostId;
+  let resolvedCode = roomCode;
+  if (!resolvedCode) {
+    const created = await getOrCreateRoom();
+    resolvedCode = created.code;
   }
-  addOrUpdatePlayer(room, hostId, avatarId, ready);
-  ensureRoomStage(room);
-  await touchRoom(room);
+  const room = await updateRoom(
+    resolvedCode,
+    (roomValue) => {
+      if (!roomValue.hostId) {
+        roomValue.hostId = hostId;
+      }
+      addOrUpdatePlayer(roomValue, hostId, avatarId, ready);
+      ensureRoomStage(roomValue);
+    },
+    { createIfMissing: true },
+  );
+  if (!room) {
+    res.status(500).json({ ok: false, error: "room_create_failed" });
+    return;
+  }
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
@@ -705,8 +718,6 @@ testRouter.get("/rooms/:roomCode", async (req, res) => {
 });
 
 testRouter.post("/rooms/:roomCode/players", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
   const playerId = req.body?.playerId;
   const avatarId = req.body?.avatarId ?? "avatar_robot_party";
   if (typeof playerId !== "string" || typeof avatarId !== "string") {
@@ -714,59 +725,103 @@ testRouter.post("/rooms/:roomCode/players", async (req, res) => {
     return;
   }
   const ready = req.body?.ready !== false;
-  addOrUpdatePlayer(room, playerId, avatarId, ready);
-  if (req.body?.asHost === true || !room.hostId) {
-    room.hostId = playerId;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      addOrUpdatePlayer(roomValue, playerId, avatarId, ready);
+      if (req.body?.asHost === true || !roomValue.hostId) {
+        roomValue.hostId = playerId;
+      }
+      ensureRoomStage(roomValue);
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
   }
-  ensureRoomStage(room);
-  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
 testRouter.delete("/rooms/:roomCode/players/:playerId", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
   const { playerId } = req.params;
-  room.players.delete(playerId);
-  if (room.hostId === playerId) {
-    room.hostId = room.players.keys().next().value as string | undefined;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      roomValue.players.delete(playerId);
+      if (roomValue.hostId === playerId) {
+        roomValue.hostId = roomValue.players.keys().next().value as string | undefined;
+      }
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
   }
-  await touchRoom(room);
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
 testRouter.post("/rooms/:roomCode/players/:playerId/ready", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
-  const player = getPlayerOrSend(room, req.params.playerId, res);
-  if (!player) return;
-  player.ready = req.body?.ready === true;
-  await touchRoom(room);
+  let playerFound = false;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      const player = roomValue.players.get(req.params.playerId);
+      if (!player) {
+        return;
+      }
+      playerFound = true;
+      player.ready = req.body?.ready === true;
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
+  }
+  if (!playerFound) {
+    res.status(404).json({ ok: false, error: "player_not_found" });
+    return;
+  }
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
 testRouter.post("/rooms/:roomCode/players/:playerId/avatar", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
-  const player = getPlayerOrSend(room, req.params.playerId, res);
-  if (!player) return;
   const avatarId = req.body?.avatarId;
   if (typeof avatarId !== "string") {
     res.status(400).json({ ok: false, error: "avatarId required" });
     return;
   }
-  player.avatarId = avatarId;
-  await touchRoom(room);
+  let playerFound = false;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      const player = roomValue.players.get(req.params.playerId);
+      if (!player) {
+        return;
+      }
+      playerFound = true;
+      player.avatarId = avatarId;
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
+  }
+  if (!playerFound) {
+    res.status(404).json({ ok: false, error: "player_not_found" });
+    return;
+  }
   broadcastRoster(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
 testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
   const phase = req.body?.phase as RoomPhase | undefined;
   const playerId = req.body?.playerId as string | undefined;
   const force = req.body?.force === true;
@@ -774,75 +829,107 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
     res.status(400).json({ ok: false, error: "invalid phase" });
     return;
   }
-  if (!force && playerId && room.hostId && room.hostId !== playerId) {
-    res.status(403).json({ ok: false, error: "not host" });
-    return;
-  }
   const nextStage: StagePayload = {
-    roomCode: room.code,
+    roomCode: req.params.roomCode,
     phase,
   };
   if (typeof req.body?.questionIndex === "number") {
     nextStage.questionIndex = req.body.questionIndex;
-    room.currentQuestionIndex = req.body.questionIndex;
   }
   if (typeof req.body?.roundStartAt === "number") {
     nextStage.roundStartAt = req.body.roundStartAt;
   }
-  room.stage = nextStage;
-  ensureRoomStage(room);
-  await touchRoom(room);
-  broadcastToRoom(room.code, { type: "stage", payload: nextStage });
+  let notHost = false;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      if (!force && playerId && roomValue.hostId && roomValue.hostId !== playerId) {
+        notHost = true;
+        return;
+      }
+      roomValue.stage = { ...nextStage, roomCode: roomValue.code };
+      if (typeof nextStage.questionIndex === "number") {
+        roomValue.currentQuestionIndex = nextStage.questionIndex;
+      }
+      ensureRoomStage(roomValue);
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
+  }
+  if (notHost) {
+    res.status(403).json({ ok: false, error: "not host" });
+    return;
+  }
+  broadcastToRoom(room.code, { type: "stage", payload: room.stage });
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
 testRouter.post("/rooms/:roomCode/question", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
   const rawPayload = req.body;
   if (!validateQuestionFn(rawPayload)) {
     res.status(400).json({ ok: false, error: "invalid question", details: validateQuestion.errors });
     return;
   }
-  const payload = { ...rawPayload, roomCode: room.code };
-  const index =
-    typeof rawPayload.questionIndex === "number"
-      ? rawPayload.questionIndex
-      : room.currentQuestionIndex;
-  if (typeof index === "number") {
-    room.questionsByIndex.set(index, {
-      correctIndex: payload.correct_index,
-      durationMs: payload.duration_ms,
-    });
+  let resolvedIndex: number | undefined;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      resolvedIndex =
+        typeof rawPayload.questionIndex === "number"
+          ? rawPayload.questionIndex
+          : roomValue.currentQuestionIndex;
+      if (typeof resolvedIndex === "number") {
+        roomValue.questionsByIndex.set(resolvedIndex, {
+          correctIndex: rawPayload.correct_index,
+          durationMs: rawPayload.duration_ms,
+        });
+        roomValue.currentQuestionIndex = resolvedIndex;
+      }
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
   }
-  await touchRoom(room);
+  const payload = { ...rawPayload, roomCode: room.code };
   broadcastToRoom(room.code, { type: "question", payload });
   res.json({ ok: true });
 });
 
 testRouter.post("/rooms/:roomCode/answer", async (req, res) => {
-  const room = await getRoomOrSend(req.params.roomCode, res);
-  if (!room) return;
-  const payload = { ...req.body, roomCode: room.code };
+  const payload = { ...req.body, roomCode: req.params.roomCode };
   if (!validateAnswerFn(payload)) {
     res.status(400).json({ ok: false, error: "invalid answer", details: validateAnswer.errors });
     return;
   }
-  const player = room.players.get(payload.playerId);
-  if (!player) {
-    res.status(404).json({ ok: false, error: "player_not_found" });
-    return;
-  }
-  const questionIndex =
-    typeof payload.questionIndex === "number"
-      ? payload.questionIndex
-      : room.currentQuestionIndex;
-  if (typeof questionIndex === "number") {
-    const answeredSet = room.answeredByIndex.get(questionIndex) ?? new Set<string>();
-    if (!answeredSet.has(payload.playerId)) {
+  let playerFound = false;
+  let scorePayload: ReturnType<typeof buildScorePayload> | null = null;
+  const room = await updateRoom(
+    req.params.roomCode,
+    (roomValue) => {
+      const player = roomValue.players.get(payload.playerId);
+      if (!player) {
+        return;
+      }
+      playerFound = true;
+      const questionIndex =
+        typeof payload.questionIndex === "number"
+          ? payload.questionIndex
+          : roomValue.currentQuestionIndex;
+      if (typeof questionIndex !== "number") {
+        return;
+      }
+      const answeredSet = roomValue.answeredByIndex.get(questionIndex) ?? new Set<string>();
+      if (answeredSet.has(payload.playerId)) {
+        return;
+      }
       answeredSet.add(payload.playerId);
-      room.answeredByIndex.set(questionIndex, answeredSet);
-      const questionInfo = room.questionsByIndex.get(questionIndex);
+      roomValue.answeredByIndex.set(questionIndex, answeredSet);
+      const questionInfo = roomValue.questionsByIndex.get(questionIndex);
       if (questionInfo) {
         const isCorrect = payload.answerIndex === questionInfo.correctIndex;
         const scoring = calculateScore({
@@ -853,11 +940,22 @@ testRouter.post("/rooms/:roomCode/answer", async (req, res) => {
         player.score += scoring.points;
         player.correctCount += scoring.correctIncrement;
         player.streak = isCorrect ? player.streak + 1 : 0;
-        broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
-        }
-    }
+        scorePayload = buildScorePayload(roomValue);
+      }
+    },
+    { createIfMissing: false },
+  );
+  if (!room) {
+    res.status(404).json({ ok: false, error: "room_not_found" });
+    return;
   }
-  await touchRoom(room);
+  if (!playerFound) {
+    res.status(404).json({ ok: false, error: "player_not_found" });
+    return;
+  }
+  if (scorePayload) {
+    broadcastToRoom(room.code, { type: "score", payload: scorePayload });
+  }
   broadcastToRoom(room.code, { type: "answer", payload });
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
@@ -998,30 +1096,40 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_room" });
           return;
         }
-        const room = await roomStore.get(roomCode);
+        let notHost = false;
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            if (roomValue.hostId && roomValue.hostId !== state.playerId) {
+              notHost = true;
+              return;
+            }
+            const nextStage: StagePayload = {
+              roomCode: roomValue.code,
+              phase: phase as RoomPhase,
+            };
+            if (typeof stagePayload.questionIndex === "number") {
+              nextStage.questionIndex = stagePayload.questionIndex;
+            }
+            if (typeof stagePayload.roundStartAt === "number") {
+              nextStage.roundStartAt = stagePayload.roundStartAt;
+            }
+            roomValue.stage = nextStage;
+            if (typeof nextStage.questionIndex === "number") {
+              roomValue.currentQuestionIndex = nextStage.questionIndex;
+            }
+            ensureRoomStage(roomValue);
+          },
+          { createIfMissing: false },
+        );
         if (!room) {
           return;
         }
-        if (room.hostId && room.hostId !== state.playerId) {
+        if (notHost) {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "stage_host" });
           return;
         }
-        const nextStage: StagePayload = {
-          roomCode,
-          phase: phase as RoomPhase,
-        };
-        if (typeof stagePayload.questionIndex === "number") {
-          nextStage.questionIndex = stagePayload.questionIndex;
-        }
-        if (typeof stagePayload.roundStartAt === "number") {
-          nextStage.roundStartAt = stagePayload.roundStartAt;
-        }
-        room.stage = nextStage;
-        if (typeof nextStage.questionIndex === "number") {
-          room.currentQuestionIndex = nextStage.questionIndex;
-        }
-        await touchRoom(room);
-        broadcastToRoom(roomCode, { type: "stage", payload: nextStage });
+        broadcastToRoom(roomCode, { type: "stage", payload: room.stage });
         return;
       }
 
@@ -1085,19 +1193,24 @@ wss.on("connection", (socket, request) => {
           return;
         }
         if (state.joinedRoom) {
-          const room = await roomStore.get(state.joinedRoom);
+          const room = await updateRoom(
+            state.joinedRoom,
+            (roomValue) => {
+              const index =
+                typeof questionPayload.questionIndex === "number"
+                  ? questionPayload.questionIndex
+                  : roomValue.currentQuestionIndex;
+              if (typeof index === "number") {
+                roomValue.questionsByIndex.set(index, {
+                  correctIndex: questionPayload.correct_index,
+                  durationMs: questionPayload.duration_ms,
+                });
+                roomValue.currentQuestionIndex = index;
+              }
+            },
+            { createIfMissing: false },
+          );
           if (room) {
-            const index =
-              typeof questionPayload.questionIndex === "number"
-                ? questionPayload.questionIndex
-                : room.currentQuestionIndex;
-            if (typeof index === "number") {
-              room.questionsByIndex.set(index, {
-                correctIndex: questionPayload.correct_index,
-                durationMs: questionPayload.duration_ms,
-              });
-            }
-            await touchRoom(room);
             broadcastToRoom(room.code, { type: "question", payload: questionPayload });
           }
         }
@@ -1139,21 +1252,25 @@ wss.on("connection", (socket, request) => {
           return;
         }
         answerCooldowns.set(cooldownKey, Date.now());
-        const room = await roomStore.get(answerPayload.roomCode);
-        if (room) {
-          const questionIndex =
-            typeof answerPayload.questionIndex === "number"
-              ? answerPayload.questionIndex
-              : room.currentQuestionIndex;
-          if (typeof questionIndex === "number") {
-            const answeredSet = room.answeredByIndex.get(questionIndex) ?? new Set<string>();
+        let scorePayload: ReturnType<typeof buildScorePayload> | null = null;
+        const room = await updateRoom(
+          answerPayload.roomCode,
+          (roomValue) => {
+            const questionIndex =
+              typeof answerPayload.questionIndex === "number"
+                ? answerPayload.questionIndex
+                : roomValue.currentQuestionIndex;
+            if (typeof questionIndex !== "number") {
+              return;
+            }
+            const answeredSet = roomValue.answeredByIndex.get(questionIndex) ?? new Set<string>();
             if (answeredSet.has(answerPayload.playerId)) {
               return;
             }
             answeredSet.add(answerPayload.playerId);
-            room.answeredByIndex.set(questionIndex, answeredSet);
-            const questionInfo = room.questionsByIndex.get(questionIndex);
-            const player = room.players.get(answerPayload.playerId);
+            roomValue.answeredByIndex.set(questionIndex, answeredSet);
+            const questionInfo = roomValue.questionsByIndex.get(questionIndex);
+            const player = roomValue.players.get(answerPayload.playerId);
             if (questionInfo && player) {
               const isCorrect = answerPayload.answerIndex === questionInfo.correctIndex;
               const scoring = calculateScore({
@@ -1164,10 +1281,13 @@ wss.on("connection", (socket, request) => {
               player.score += scoring.points;
               player.correctCount += scoring.correctIncrement;
               player.streak = isCorrect ? player.streak + 1 : 0;
-              broadcastToRoom(room.code, { type: "score", payload: buildScorePayload(room) });
+              scorePayload = buildScorePayload(roomValue);
             }
-          }
-          await touchRoom(room);
+          },
+          { createIfMissing: false },
+        );
+        if (room && scorePayload) {
+          broadcastToRoom(room.code, { type: "score", payload: scorePayload });
         }
         broadcastToRoom(answerPayload.roomCode, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
