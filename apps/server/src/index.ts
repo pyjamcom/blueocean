@@ -419,6 +419,71 @@ function generateRoomCode(length = 4): string {
   return code;
 }
 
+function buildNewRoom(code: string): Room {
+  const now = Date.now();
+  return {
+    code,
+    players: new Map(),
+    createdAt: now,
+    expiresAt: now + ROOM_TTL_MS,
+    locked: false,
+    questionsByIndex: new Map(),
+    answeredByIndex: new Map(),
+  };
+}
+
+async function updateRoom(
+  code: string,
+  updater: (room: Room) => void,
+  options: { createIfMissing?: boolean } = {},
+): Promise<Room | null> {
+  if (!REDIS_ENABLED || !redis) {
+    let room = roomsMemory.get(code) ?? null;
+    if (!room && options.createIfMissing) {
+      room = buildNewRoom(code);
+      metrics.roomsCreated += 1;
+    }
+    if (!room) {
+      return null;
+    }
+    updater(room);
+    room.expiresAt = Date.now() + ROOM_TTL_MS;
+    roomsMemory.set(code, room);
+    return room;
+  }
+
+  const key = `room:${code}`;
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    await redis.watch(key);
+    const raw = await redis.get(key);
+    let room = raw ? deserializeRoom(JSON.parse(raw) as StoredRoom) : null;
+    let created = false;
+    if (!room) {
+      if (!options.createIfMissing) {
+        await redis.unwatch();
+        return null;
+      }
+      room = buildNewRoom(code);
+      created = true;
+    }
+    updater(room);
+    room.expiresAt = Date.now() + ROOM_TTL_MS;
+    const ttlSec = Math.max(60, Math.ceil((room.expiresAt - Date.now()) / 1000));
+    const rawUpdated = JSON.stringify(serializeRoom(room));
+    const tx = redis.multi();
+    tx.set(key, rawUpdated, "EX", ttlSec);
+    const res = await tx.exec();
+    if (res === null) {
+      continue;
+    }
+    if (created) {
+      metrics.roomsCreated += 1;
+    }
+    return room;
+  }
+  return null;
+}
+
 async function getOrCreateRoom(code?: string): Promise<Room> {
   if (code) {
     const existing = await roomStore.get(code);
@@ -434,16 +499,7 @@ async function getOrCreateRoom(code?: string): Promise<Room> {
       newCode = generateRoomCode(4 + Math.floor(Math.random() * 3));
     }
   }
-  const now = Date.now();
-  const room: Room = {
-    code: newCode,
-    players: new Map(),
-    createdAt: now,
-    expiresAt: now + ROOM_TTL_MS,
-    locked: false,
-    questionsByIndex: new Map(),
-    answeredByIndex: new Map(),
-  };
+  const room: Room = buildNewRoom(newCode);
   metrics.roomsCreated += 1;
   await roomStore.set(room);
   return room;
@@ -867,21 +923,13 @@ wss.on("connection", (socket, request) => {
             send(socket, { type: "joined", payload: { roomCode: state.joinedRoom } });
             return;
           }
-          const room = await getOrCreateRoom(joinPayload.roomCode);
-          let isHost = false;
-          if (!room.hostId) {
-            room.hostId = joinPayload.playerId;
-            isHost = true;
-          } else if (room.hostId === joinPayload.playerId) {
-            isHost = true;
-          }
-          const roomBurst = checkRate(`join:room:${room.code}`, 5000, 6, 12);
+          const roomBurst = checkRate(`join:room:${joinPayload.roomCode}`, 5000, 6, 12);
           if (!roomBurst.allowed) {
             logIncident({
               at: Date.now(),
               type: "join_burst",
               ip: state.ip,
-              roomCode: room.code,
+              roomCode: joinPayload.roomCode,
             });
             metrics.joinFail += 1;
             return;
@@ -892,33 +940,36 @@ wss.on("connection", (socket, request) => {
             }, roomBurst.delayMs);
             return;
           }
-          if (room.players.size >= MAX_ROOM_PLAYERS) {
+          let isHost = false;
+          let joinAllowed = true;
+          let joinRoomCode = joinPayload.roomCode;
+          const room = await updateRoom(
+            joinPayload.roomCode,
+            (roomValue) => {
+              joinRoomCode = roomValue.code;
+              if (roomValue.players.size >= MAX_ROOM_PLAYERS && !roomValue.players.has(joinPayload.playerId)) {
+                joinAllowed = false;
+                return;
+              }
+              if (!roomValue.hostId) {
+                roomValue.hostId = joinPayload.playerId;
+                isHost = true;
+              } else if (roomValue.hostId === joinPayload.playerId) {
+                isHost = true;
+              }
+              addOrUpdatePlayer(roomValue, joinPayload.playerId, joinPayload.avatarId, true);
+              ensureRoomStage(roomValue);
+            },
+            { createIfMissing: true },
+          );
+          if (!room || !joinAllowed) {
             send(socket, { type: "error", errors: [{ message: "room full" }] });
-            logIncident({ at: Date.now(), type: "room_full", ip: state.ip, roomCode: room.code });
+            logIncident({ at: Date.now(), type: "room_full", ip: state.ip, roomCode: joinRoomCode });
             metrics.joinFail += 1;
             return;
           }
-          if (!room.players.has(joinPayload.playerId)) {
-            room.players.set(joinPayload.playerId, {
-              id: joinPayload.playerId,
-              avatarId: joinPayload.avatarId,
-              ready: true,
-              score: 0,
-              correctCount: 0,
-              streak: 0,
-            });
-          } else {
-            const existing = room.players.get(joinPayload.playerId);
-            if (existing) {
-              existing.avatarId = joinPayload.avatarId;
-            }
-          }
-          if (!room.stage) {
-            room.stage = { roomCode: room.code, phase: "lobby", questionIndex: 0 };
-          }
           state.joinedRoom = room.code;
           state.playerId = joinPayload.playerId;
-          await touchRoom(room);
           send(socket, { type: "joined", payload: { roomCode: room.code, isHost, stage: room.stage } });
           broadcastRoster(room);
           metrics.joinSuccess += 1;
@@ -983,17 +1034,20 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "ready" });
           return;
         }
-        const room = await roomStore.get(roomCode);
-        if (!room) {
-          return;
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            const player = roomValue.players.get(playerId);
+            if (!player) {
+              return;
+            }
+            player.ready = ready;
+          },
+          { createIfMissing: false },
+        );
+        if (room) {
+          broadcastRoster(room);
         }
-        const player = room.players.get(playerId);
-        if (!player) {
-          return;
-        }
-        player.ready = ready;
-        await touchRoom(room);
-        broadcastRoster(room);
         return;
       }
 
@@ -1006,17 +1060,20 @@ wss.on("connection", (socket, request) => {
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "avatar" });
           return;
         }
-        const room = await roomStore.get(roomCode);
-        if (!room) {
-          return;
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            const player = roomValue.players.get(playerId);
+            if (!player) {
+              return;
+            }
+            player.avatarId = avatarId;
+          },
+          { createIfMissing: false },
+        );
+        if (room) {
+          broadcastRoster(room);
         }
-        const player = room.players.get(playerId);
-        if (!player) {
-          return;
-        }
-        player.avatarId = avatarId;
-        await touchRoom(room);
-        broadcastRoster(room);
         return;
       }
 
