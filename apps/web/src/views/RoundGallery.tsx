@@ -199,16 +199,6 @@ export default function RoundGallery() {
           ? renderQuestionView(activeQuestion, answers, handleSelect, selectedIndex, revealState)
           : null}
       </div>
-      <div className={styles.hintRow}>
-        <div className={styles.hintItem}>
-          <span className={`${styles.hintChip} ${styles.hintTap}`} />
-          <span className={styles.hintLabel}>Tap</span>
-        </div>
-        <div className={styles.hintItem}>
-          <span className={`${styles.hintChip} ${styles.hintTimer}`} />
-          <span className={styles.hintLabel}>Wait</span>
-        </div>
-      </div>
     </div>
   );
 }

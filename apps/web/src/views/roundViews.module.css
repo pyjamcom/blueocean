@@ -31,43 +31,6 @@
   padding: 12px 0;
 }
 
-.hintRow {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.hintItem {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-}
-
-.hintLabel {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.hintChip {
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.12);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 60%;
-}
-
-.hintTap {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'><circle cx='12' cy='12' r='3'/><circle cx='12' cy='12' r='8'/></svg>");
-}
-
-.hintTimer {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' fill='none' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='12' r='8'/><path d='M12 8v5l3 3'/></svg>");
-}
-
 .promptBlock {
   width: 100%;
   height: clamp(180px, 32vh, 320px);
