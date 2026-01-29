@@ -51,6 +51,7 @@ const RoomContext = createContext<RoomState | null>(null);
 const REVEAL_DURATION_MS = 5000;
 const LEADERBOARD_DURATION_MS = 5000;
 const MAX_QUESTIONS = Math.min(15, questionBank.length);
+const MIN_ROOM_PLAYERS = 3;
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
@@ -69,6 +70,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const hostTimersRef = useRef<number[]>([]);
   const answeredByQuestionRef = useRef<Record<number, Set<string>>>({});
   const sentQuestionsRef = useRef<Set<number>>(new Set());
+  const autoStartRef = useRef(false);
 
   const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
 
@@ -312,6 +314,27 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     const startAt = Date.now();
     sendStage({ phase: "round", questionIndex: 0, roundStartAt: startAt });
   }, [roomCode, sendStage]);
+
+  useEffect(() => {
+    if (phase !== "lobby") {
+      autoStartRef.current = false;
+      return;
+    }
+    if (!isHost || !roomCode) {
+      autoStartRef.current = false;
+      return;
+    }
+    const readyCount = players.filter((player) => player.ready).length;
+    const selfReady = players.find((player) => player.id === playerId)?.ready === true;
+    if (selfReady && readyCount >= MIN_ROOM_PLAYERS) {
+      if (!autoStartRef.current) {
+        autoStartRef.current = true;
+        startGame();
+      }
+      return;
+    }
+    autoStartRef.current = false;
+  }, [isHost, phase, playerId, players, roomCode, startGame]);
 
   const sendAnswer = useCallback(
     (answerIndex: number) => {
