@@ -44,6 +44,7 @@ export default function JoinView() {
   const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [joinPending, setJoinPending] = useState(false);
   const [avatarIndex, setAvatarIndex] = useState(() => {
     const idx = AVATAR_IDS.indexOf(initialAvatarId);
     return idx >= 0 ? idx : 0;
@@ -59,6 +60,12 @@ export default function JoinView() {
     if (!codeParam) return;
     joinRoom(codeParam, initialAvatarId, playerName);
   }, [codeParam, initialAvatarId, joinRoom, playerName]);
+
+  useEffect(() => {
+    if (!joinPending || !roomCode) return;
+    setJoinPending(false);
+    navigate("/lobby");
+  }, [joinPending, navigate, roomCode]);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -114,7 +121,7 @@ export default function JoinView() {
       const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
       joinRoom(target, initialAvatarId, playerName);
     }
-    navigate("/lobby");
+    setJoinPending(true);
   };
 
   const handleAvatarStep = (direction: number) => {
