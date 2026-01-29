@@ -240,6 +240,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     [flushJoin],
   );
 
+  const clearHostTimers = useCallback(() => {
+    hostTimersRef.current.forEach((id) => window.clearTimeout(id));
+    hostTimersRef.current = [];
+  }, []);
+
   const resetLocalState = useCallback(() => {
     clearHostTimers();
     setRoomCode(null);
@@ -339,11 +344,6 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     },
     [playerId, roomCode, send],
   );
-
-  const clearHostTimers = useCallback(() => {
-    hostTimersRef.current.forEach((id) => window.clearTimeout(id));
-    hostTimersRef.current = [];
-  }, []);
 
   const resetRoom = useCallback(() => {
     clearHostTimers();
