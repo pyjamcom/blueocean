@@ -117,6 +117,17 @@
   aspect-ratio: 1 / 1;
   border-radius: 28px;
   box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.15);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.avatarPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
 }
 
 .avatarControls {

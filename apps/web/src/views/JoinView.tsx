@@ -173,16 +173,9 @@ export default function JoinView() {
       {avatarOpen && (
         <div className={styles.avatarOverlay} onClick={() => setAvatarOpen(false)}>
           <div className={styles.avatarSheet} onClick={(event) => event.stopPropagation()}>
-            <div
-              className={styles.avatarPreview}
-              style={{
-                background: "transparent",
-                backgroundImage: `url(${avatarAssetSrc})`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "contain",
-              }}
-            />
+            <div className={styles.avatarPreview}>
+              <img src={avatarAssetSrc} alt="" aria-hidden="true" />
+            </div>
             <div className={styles.avatarControls}>
               <button
                 type="button"
