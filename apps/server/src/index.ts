@@ -20,6 +20,9 @@ const REDIS_URL = process.env.REDIS_URL;
 const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
+const ROUND_DEFAULT_MS = 6000;
+const REVEAL_DURATION_MS = 2400;
+const LEADERBOARD_DURATION_MS = 2400;
 
 const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
 const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
@@ -157,6 +160,12 @@ const INCIDENT_LOG_LIMIT = 500;
 const PUBLIC_ROOM_CODE = "PLAY";
 const PUBLIC_ROOM_POINTER_KEY = "public:PLAY:next";
 let publicRoomPointerMemory: string | null = null;
+type RoomTimers = {
+  reveal?: ReturnType<typeof setTimeout>;
+  leaderboard?: ReturnType<typeof setTimeout>;
+  next?: ReturnType<typeof setTimeout>;
+};
+const roomTimers = new Map<string, RoomTimers>();
 
 type IncidentType =
   | "rate_limit"
@@ -540,6 +549,239 @@ function broadcastRoster(room: Room) {
       hostId: room.hostId,
     },
   });
+}
+
+function clearRoomTimers(roomCode: string) {
+  const timers = roomTimers.get(roomCode);
+  if (!timers) {
+    return;
+  }
+  if (timers.reveal) {
+    clearTimeout(timers.reveal);
+  }
+  if (timers.leaderboard) {
+    clearTimeout(timers.leaderboard);
+  }
+  if (timers.next) {
+    clearTimeout(timers.next);
+  }
+  roomTimers.delete(roomCode);
+}
+
+async function applyStageTransition(
+  roomCode: string,
+  expectedPhase: RoomPhase,
+  expectedQuestionIndex: number | null,
+  nextStage: StagePayload,
+): Promise<Room | null> {
+  let updated = false;
+  const room = await updateRoom(
+    roomCode,
+    (roomValue) => {
+      ensureRoomStage(roomValue);
+      if (roomValue.stage?.phase !== expectedPhase) {
+        return;
+      }
+      const currentIndex =
+        typeof roomValue.currentQuestionIndex === "number"
+          ? roomValue.currentQuestionIndex
+          : roomValue.stage?.questionIndex;
+      if (typeof expectedQuestionIndex === "number" && currentIndex !== expectedQuestionIndex) {
+        return;
+      }
+      roomValue.stage = { ...nextStage, roomCode: roomValue.code };
+      if (typeof nextStage.questionIndex === "number") {
+        roomValue.currentQuestionIndex = nextStage.questionIndex;
+      }
+      ensureRoomStage(roomValue);
+      updated = true;
+    },
+    { createIfMissing: false },
+  );
+  if (!room || !updated) {
+    return null;
+  }
+  broadcastToRoom(room.code, { type: "stage", payload: room.stage });
+  return room;
+}
+
+function scheduleStageTimers(room: Room) {
+  clearRoomTimers(room.code);
+  if (!room.stage) {
+    return;
+  }
+  if (room.stage.phase === "round") {
+    scheduleRoundTimers(room);
+    return;
+  }
+  if (room.stage.phase === "reveal") {
+    scheduleRevealTimers(room);
+    return;
+  }
+  if (room.stage.phase === "leaderboard") {
+    scheduleLeaderboardTimers(room);
+  }
+}
+
+function scheduleRoundTimers(room: Room) {
+  if (!room.stage || room.stage.phase !== "round") {
+    return;
+  }
+  const stage = room.stage;
+  const questionIndex =
+    typeof stage.questionIndex === "number"
+      ? stage.questionIndex
+      : typeof room.currentQuestionIndex === "number"
+        ? room.currentQuestionIndex
+        : 0;
+  const startAt = stage.roundStartAt ?? Date.now();
+  const questionInfo = room.questionsByIndex.get(questionIndex);
+  const durationMs = questionInfo?.durationMs ?? ROUND_DEFAULT_MS;
+  const remaining = Math.max(0, durationMs - (Date.now() - startAt));
+  const timers: RoomTimers = {};
+  timers.reveal = setTimeout(() => {
+    void (async () => {
+      const updated = await applyStageTransition(
+        room.code,
+        "round",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "reveal",
+          questionIndex,
+          roundStartAt: startAt,
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, remaining);
+  timers.leaderboard = setTimeout(() => {
+    void (async () => {
+      const updated = await applyStageTransition(
+        room.code,
+        "reveal",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "leaderboard",
+          questionIndex,
+          roundStartAt: startAt,
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, remaining + REVEAL_DURATION_MS);
+  timers.next = setTimeout(() => {
+    void (async () => {
+      const nextIndex = questionIndex + 1;
+      const updated = await applyStageTransition(
+        room.code,
+        "leaderboard",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "round",
+          questionIndex: nextIndex,
+          roundStartAt: Date.now(),
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, remaining + REVEAL_DURATION_MS + LEADERBOARD_DURATION_MS);
+  roomTimers.set(room.code, timers);
+}
+
+function scheduleRevealTimers(room: Room) {
+  if (!room.stage || room.stage.phase !== "reveal") {
+    return;
+  }
+  const stage = room.stage;
+  const questionIndex =
+    typeof stage.questionIndex === "number"
+      ? stage.questionIndex
+      : typeof room.currentQuestionIndex === "number"
+        ? room.currentQuestionIndex
+        : 0;
+  const startAt = stage.roundStartAt ?? Date.now();
+  const timers: RoomTimers = {};
+  timers.leaderboard = setTimeout(() => {
+    void (async () => {
+      const updated = await applyStageTransition(
+        room.code,
+        "reveal",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "leaderboard",
+          questionIndex,
+          roundStartAt: startAt,
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, REVEAL_DURATION_MS);
+  timers.next = setTimeout(() => {
+    void (async () => {
+      const nextIndex = questionIndex + 1;
+      const updated = await applyStageTransition(
+        room.code,
+        "leaderboard",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "round",
+          questionIndex: nextIndex,
+          roundStartAt: Date.now(),
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, REVEAL_DURATION_MS + LEADERBOARD_DURATION_MS);
+  roomTimers.set(room.code, timers);
+}
+
+function scheduleLeaderboardTimers(room: Room) {
+  if (!room.stage || room.stage.phase !== "leaderboard") {
+    return;
+  }
+  const stage = room.stage;
+  const questionIndex =
+    typeof stage.questionIndex === "number"
+      ? stage.questionIndex
+      : typeof room.currentQuestionIndex === "number"
+        ? room.currentQuestionIndex
+        : 0;
+  const timers: RoomTimers = {};
+  timers.next = setTimeout(() => {
+    void (async () => {
+      const nextIndex = questionIndex + 1;
+      const updated = await applyStageTransition(
+        room.code,
+        "leaderboard",
+        questionIndex,
+        {
+          roomCode: room.code,
+          phase: "round",
+          questionIndex: nextIndex,
+          roundStartAt: Date.now(),
+        },
+      );
+      if (updated) {
+        scheduleStageTimers(updated);
+      }
+    })();
+  }, LEADERBOARD_DURATION_MS);
+  roomTimers.set(room.code, timers);
 }
 
 function buildScorePayload(room: Room) {
@@ -1015,6 +1257,7 @@ testRouter.post("/rooms/:roomCode/stage", async (req, res) => {
     await clearPublicRoomPointerIfMatch(room.code);
   }
   broadcastToRoom(room.code, { type: "stage", payload: room.stage });
+  scheduleStageTimers(room);
   res.json({ ok: true, room: buildRoomSnapshot(room) });
 });
 
@@ -1369,6 +1612,7 @@ wss.on("connection", (socket, request) => {
           await clearPublicRoomPointerIfMatch(room.code);
         }
         broadcastToRoom(roomCode, { type: "stage", payload: room.stage });
+        scheduleStageTimers(room);
         return;
       }
 
@@ -1405,6 +1649,7 @@ wss.on("connection", (socket, request) => {
               await clearPublicRoomPointerIfMatch(room.code);
             }
             broadcastToRoom(room.code, { type: "stage", payload: autoStage });
+            scheduleStageTimers(room);
           }
         }
         return;
@@ -1504,6 +1749,7 @@ wss.on("connection", (socket, request) => {
         }
         answerCooldowns.set(cooldownKey, Date.now());
         let scorePayload: ReturnType<typeof buildScorePayload> | null = null;
+        let autoStage: StagePayload | null = null;
         const room = await updateRoom(
           answerPayload.roomCode,
           (roomValue) => {
@@ -1534,6 +1780,19 @@ wss.on("connection", (socket, request) => {
               player.streak = isCorrect ? player.streak + 1 : 0;
               scorePayload = buildScorePayload(roomValue);
             }
+            if (roomValue.stage?.phase === "round" && roomValue.players.size > 0) {
+              const allAnswered = answeredSet.size >= roomValue.players.size;
+              if (allAnswered) {
+                autoStage = {
+                  roomCode: roomValue.code,
+                  phase: "reveal",
+                  questionIndex,
+                  roundStartAt: roomValue.stage.roundStartAt ?? Date.now(),
+                };
+                roomValue.stage = autoStage;
+                roomValue.currentQuestionIndex = questionIndex;
+              }
+            }
           },
           { createIfMissing: false },
         );
@@ -1542,6 +1801,11 @@ wss.on("connection", (socket, request) => {
         }
         broadcastToRoom(answerPayload.roomCode, { type: "answer", payload: answerPayload });
         metrics.answerAccepted += 1;
+        if (room && autoStage) {
+          clearRoomTimers(room.code);
+          broadcastToRoom(room.code, { type: "stage", payload: autoStage });
+          scheduleStageTimers(room);
+        }
       }
     } catch (_err) {
       const state = socketState.get(socket);
@@ -1579,6 +1843,7 @@ setInterval(async () => {
   for (const room of rooms) {
     if (room.expiresAt <= now) {
       await roomStore.delete(room.code);
+      clearRoomTimers(room.code);
       metrics.roomsExpired += 1;
     }
   }

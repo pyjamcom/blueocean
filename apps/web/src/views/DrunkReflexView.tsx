@@ -1,6 +1,5 @@
 import AnswerGrid, { AnswerOption } from "../components/AnswerGrid";
 import PromptImage from "../components/PromptImage";
-import TimerRing from "../components/TimerRing";
 import styles from "./roundViews.module.css";
 
 export interface DrunkReflexViewProps {
@@ -10,8 +9,6 @@ export interface DrunkReflexViewProps {
   selectedIndex?: number | null;
   revealState?: "idle" | "reveal";
   correctIndex?: number | null;
-  timerStart: number;
-  durationMs: number;
 }
 
 export default function DrunkReflexView({
@@ -21,15 +18,12 @@ export default function DrunkReflexView({
   selectedIndex,
   revealState,
   correctIndex,
-  timerStart,
-  durationMs,
 }: DrunkReflexViewProps) {
   return (
     <div className={styles.view}>
       <div className={styles.promptBlock}>
         <PromptImage src={triggerSrc} fit="contain" ariaLabel="trigger" />
       </div>
-      <TimerRing durationMs={durationMs} startAt={timerStart} size={84} />
       <div className={styles.answerBlock}>
         <AnswerGrid
           answers={answers}

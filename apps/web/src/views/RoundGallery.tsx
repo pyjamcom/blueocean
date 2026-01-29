@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
 import ProgressDots from "../components/ProgressDots";
+import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
 import { prefetchImage } from "../utils/prefetch";
 import { questionBank, QuestionRecord } from "../data/questions";
@@ -37,7 +38,6 @@ function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, An
 function renderQuestionView(
   question: QuestionRecord,
   answers: [AnswerOption, AnswerOption, AnswerOption, AnswerOption],
-  now: number,
   onSelect: (index: number) => void,
   selectedIndex: number | null,
   revealState: "idle" | "reveal",
@@ -58,8 +58,6 @@ function renderQuestionView(
       return (
         <DrunkReflexView
           triggerSrc={resolveAssetRef(question.trigger_asset_id ?? question.prompt_image, fallbackSrc)}
-          timerStart={now}
-          durationMs={question.duration_ms}
           {...baseProps}
         />
       );
@@ -99,8 +97,6 @@ function renderQuestionView(
       return (
         <SoundPantomimeView
           audioSrc={resolveAssetRef(question.audio_asset_id ?? question.prompt_image, fallbackSrc)}
-          timerStart={now}
-          durationMs={question.duration_ms}
           {...baseProps}
         />
       );
@@ -134,11 +130,28 @@ export default function RoundGallery() {
     ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
     : undefined;
   const revealState = phase === "reveal" ? "reveal" : "idle";
-  const now = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt]);
+  const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
+  const durationMs = activeQuestion?.duration_ms ?? 6000;
+  const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
 
   useEffect(() => {
     setSelectedIndex(null);
   }, [questionIndex, phase]);
+
+  useEffect(() => {
+    if (phase !== "round") {
+      setSecondsLeft(0);
+      return;
+    }
+    const startAt = timerStartAt;
+    const tick = () => {
+      const remaining = Math.max(0, durationMs - (Date.now() - startAt));
+      setSecondsLeft(Math.ceil(remaining / 1000));
+    };
+    tick();
+    const intervalId = window.setInterval(tick, 100);
+    return () => window.clearInterval(intervalId);
+  }, [durationMs, phase, timerStartAt]);
 
   const handleSelect = (index: number) => {
     setSelectedIndex(index);
@@ -175,9 +188,15 @@ export default function RoundGallery() {
   return (
     <div className={styles.view}>
       <ProgressDots total={Math.max(questionBank.length, 1)} activeIndex={questionIndex} />
+      {phase === "round" && (
+        <div className={styles.timerRow}>
+          <TimerRing durationMs={durationMs} startAt={timerStartAt} size={72} strokeWidth={6} />
+          <div className={styles.timerBadge}>{secondsLeft}</div>
+        </div>
+      )}
       <div className={styles.card}>
         {activeQuestion
-          ? renderQuestionView(activeQuestion, answers, now, handleSelect, selectedIndex, revealState)
+          ? renderQuestionView(activeQuestion, answers, handleSelect, selectedIndex, revealState)
           : null}
       </div>
       <div className={styles.hintRow}>
