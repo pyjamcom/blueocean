@@ -24,7 +24,7 @@ export default function FaceMimicView({
   return (
     <div className={styles.view}>
       <div className={styles.promptBlock}>
-        <PromptImage src={cameraSrc} fit="cover" ariaLabel="camera" />
+        <PromptImage src={cameraSrc} fit="contain" ariaLabel="camera" />
       </div>
       <div className={styles.overlayRow}>
         {overlaySrcs.map((src, idx) => (

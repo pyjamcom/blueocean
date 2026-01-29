@@ -24,6 +24,9 @@ const ROUND_DEFAULT_MS = 10000;
 const REVEAL_DURATION_MS = 5000;
 const LEADERBOARD_DURATION_MS = 5000;
 const MAX_QUESTIONS = 15;
+const HEARTBEAT_INTERVAL_MS = 15000;
+const HEARTBEAT_TIMEOUT_MS = 35000;
+const STALE_PLAYER_MS = 45000;
 
 const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
 const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
@@ -211,6 +214,7 @@ interface Player {
   correctCount: number;
   streak: number;
   lastAnswerAt?: number;
+  lastSeen?: number;
 }
 
 interface Room {
@@ -250,7 +254,7 @@ interface RoomStore {
 const roomsMemory = new Map<string, Room>();
 const incidents: Incident[] = [];
 const rateBuckets = new Map<string, RateBucket>();
-const socketState = new WeakMap<WebSocket, { ip: string; joinedRoom?: string; playerId?: string }>();
+const socketState = new WeakMap<WebSocket, { ip: string; joinedRoom?: string; playerId?: string; lastPong?: number }>();
 const answerCooldowns = new Map<string, number>();
 const metrics = {
   wsConnections: 0,
@@ -889,6 +893,7 @@ function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready
     if (name) {
       existing.name = name;
     }
+    existing.lastSeen = Date.now();
     return;
   }
   room.players.set(playerId, {
@@ -899,7 +904,50 @@ function addOrUpdatePlayer(room: Room, playerId: string, avatarId: string, ready
     score: 0,
     correctCount: 0,
     streak: 0,
+    lastSeen: Date.now(),
   });
+}
+
+async function markPlayerSeen(roomCode: string, playerId: string) {
+  const now = Date.now();
+  await updateRoom(
+    roomCode,
+    (roomValue) => {
+      const player = roomValue.players.get(playerId);
+      if (!player) return;
+      const lastSeen = player.lastSeen ?? 0;
+      if (now - lastSeen < 10000) {
+        return;
+      }
+      player.lastSeen = now;
+    },
+    { createIfMissing: false },
+  );
+}
+
+async function pruneStalePlayers() {
+  const now = Date.now();
+  const rooms = await roomStore.list();
+  for (const room of rooms) {
+    let removed = false;
+    room.players.forEach((player, id) => {
+      const lastSeen = player.lastSeen ?? room.createdAt;
+      if (now - lastSeen > STALE_PLAYER_MS) {
+        room.players.delete(id);
+        removed = true;
+        if (room.hostId === id) {
+          room.hostId = undefined;
+        }
+      }
+    });
+    if (removed) {
+      if (!room.hostId) {
+        room.hostId = room.players.keys().next().value as string | undefined;
+      }
+      await roomStore.set(room);
+      broadcastRoster(room);
+    }
+  }
 }
 
 function maybeAutoStartRoom(room: Room) {
@@ -1386,9 +1434,18 @@ testRouter.post("/rooms/:roomCode/reset", async (req, res) => {
 
 wss.on("connection", (socket, request) => {
   const ip = resolveIp(request);
-  socketState.set(socket, { ip });
+  socketState.set(socket, { ip, lastPong: Date.now() });
   metrics.wsConnections += 1;
   console.log("ws:connect");
+
+  socket.on("pong", () => {
+    const state = socketState.get(socket);
+    if (!state) return;
+    state.lastPong = Date.now();
+    if (state.joinedRoom && state.playerId) {
+      void markPlayerSeen(state.joinedRoom, state.playerId);
+    }
+  });
 
   socket.on("message", async (data) => {
     try {
@@ -1405,6 +1462,9 @@ wss.on("connection", (socket, request) => {
       const message: any = JSON.parse(data.toString());
       const type = message?.type;
       const payload: any = (message as any).payload;
+      if (state.joinedRoom && state.playerId) {
+        void markPlayerSeen(state.joinedRoom, state.playerId);
+      }
 
       if (type === "join") {
         const joinPayload = payload as any;
@@ -1551,6 +1611,7 @@ wss.on("connection", (socket, request) => {
             const player = roomValue.players.get(playerId);
             if (player) {
               player.name = name;
+              player.lastSeen = Date.now();
             }
           },
           { createIfMissing: false },
@@ -1645,6 +1706,7 @@ wss.on("connection", (socket, request) => {
               return;
             }
             player.ready = ready;
+            player.lastSeen = Date.now();
             const maybeStage = maybeAutoStartRoom(roomValue);
             if (maybeStage) {
               autoStage = maybeStage;
@@ -1683,6 +1745,7 @@ wss.on("connection", (socket, request) => {
               return;
             }
             player.avatarId = avatarId;
+            player.lastSeen = Date.now();
           },
           { createIfMissing: false },
         );
@@ -1789,6 +1852,7 @@ wss.on("connection", (socket, request) => {
               player.score += scoring.points;
               player.correctCount += scoring.correctIncrement;
               player.streak = isCorrect ? player.streak + 1 : 0;
+              player.lastSeen = Date.now();
               scorePayload = buildScorePayload(roomValue);
             }
             if (roomValue.stage?.phase === "round" && roomValue.players.size > 0) {
@@ -1847,6 +1911,29 @@ wss.on("connection", (socket, request) => {
 server.listen(PORT, () => {
   console.log(`server listening on ${PORT}`);
 });
+
+setInterval(() => {
+  const now = Date.now();
+  wss.clients.forEach((client) => {
+    const state = socketState.get(client);
+    if (!state) {
+      return;
+    }
+    if (client.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    if (state.lastPong && now - state.lastPong > HEARTBEAT_TIMEOUT_MS) {
+      client.terminate();
+      return;
+    }
+    try {
+      client.ping();
+    } catch (_err) {
+      client.terminate();
+    }
+  });
+  void pruneStalePlayers();
+}, HEARTBEAT_INTERVAL_MS);
 
 setInterval(async () => {
   const now = Date.now();
