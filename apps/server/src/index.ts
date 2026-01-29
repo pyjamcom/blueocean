@@ -697,6 +697,19 @@ async function setPublicRoomPointer(code: string) {
   publicRoomPointerMemory = code;
 }
 
+async function trySetPublicRoomPointer(code: string): Promise<boolean> {
+  const ttlSec = Math.max(60, Math.ceil(ROOM_TTL_MS / 1000));
+  if (redis) {
+    const res = await redis.set(PUBLIC_ROOM_POINTER_KEY, code, "EX", ttlSec, "NX");
+    return Boolean(res);
+  }
+  if (publicRoomPointerMemory) {
+    return false;
+  }
+  publicRoomPointerMemory = code;
+  return true;
+}
+
 async function clearPublicRoomPointerIfMatch(code: string) {
   if (redis) {
     const current = await redis.get(PUBLIC_ROOM_POINTER_KEY);
@@ -719,30 +732,52 @@ async function resolvePublicJoinRoom(): Promise<string> {
   if (mainRoom.stage?.phase === "lobby" && mainRoom.players.size < MAX_ROOM_PLAYERS) {
     return PUBLIC_ROOM_CODE;
   }
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const pointer = await getPublicRoomPointer();
-    if (pointer) {
-      const room = await roomStore.get(pointer);
-      if (room) {
-        ensureRoomStage(room);
-        if (room.stage?.phase === "lobby" && room.players.size < MAX_ROOM_PLAYERS) {
-          return pointer;
-        }
-      }
-      await clearPublicRoomPointerIfMatch(pointer);
+  const pointer = await getPublicRoomPointer();
+  if (pointer) {
+    const room = await roomStore.get(pointer);
+    if (!room) {
+      const created = buildNewRoom(pointer);
+      ensureRoomStage(created);
+      metrics.roomsCreated += 1;
+      await roomStore.set(created);
+      return pointer;
     }
+    ensureRoomStage(room);
+    if (room.stage?.phase === "lobby" && room.players.size < MAX_ROOM_PLAYERS) {
+      return pointer;
+    }
+    await clearPublicRoomPointerIfMatch(pointer);
+  }
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     let candidate = generateRoomCode(4 + Math.floor(Math.random() * 3));
     for (let i = 0; i < 5; i += 1) {
       const existing = await roomStore.get(candidate);
       if (!existing) break;
       candidate = generateRoomCode(4 + Math.floor(Math.random() * 3));
     }
-    await setPublicRoomPointer(candidate);
-    const room = buildNewRoom(candidate);
-    ensureRoomStage(room);
-    metrics.roomsCreated += 1;
-    await roomStore.set(room);
-    return candidate;
+    const claimed = await trySetPublicRoomPointer(candidate);
+    if (claimed) {
+      const room = buildNewRoom(candidate);
+      ensureRoomStage(room);
+      metrics.roomsCreated += 1;
+      await roomStore.set(room);
+      return candidate;
+    }
+    const current = await getPublicRoomPointer();
+    if (current) {
+      const room = await roomStore.get(current);
+      if (!room) {
+        const created = buildNewRoom(current);
+        ensureRoomStage(created);
+        metrics.roomsCreated += 1;
+        await roomStore.set(created);
+        return current;
+      }
+      ensureRoomStage(room);
+      if (room.stage?.phase === "lobby" && room.players.size < MAX_ROOM_PLAYERS) {
+        return current;
+      }
+    }
   }
   return PUBLIC_ROOM_CODE;
 }
