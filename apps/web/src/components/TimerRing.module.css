@@ -15,10 +15,12 @@
 
 .track,
 :global(.timerRing__track) {
+  stroke: var(--timer-track, rgba(255, 255, 255, 0.2));
   transition: stroke 0.2s ease;
 }
 
 .progress,
 :global(.timerRing__progress) {
+  stroke: var(--timer-progress, rgba(255, 255, 255, 0.9));
   transition: stroke-dashoffset 0.1s linear;
 }

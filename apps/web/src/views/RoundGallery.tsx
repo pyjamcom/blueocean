@@ -197,7 +197,7 @@ export default function RoundGallery() {
       : styles.revealNeutral;
 
   return (
-    <div className={styles.shell}>
+    <div className={`${styles.shell} ${styles.gameTheme}`}>
       <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
       {phase === "round" && (
         <div className={styles.timerRow}>

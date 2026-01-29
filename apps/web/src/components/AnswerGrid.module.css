@@ -2,7 +2,7 @@
 :global(.answer-grid) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(14px, 2vw, 22px);
+  gap: clamp(16px, 2vw, 24px);
   width: 100%;
 }
 
@@ -16,14 +16,14 @@
   position: relative;
   border: none;
   padding: 0;
-  border-radius: 22px;
+  border-radius: var(--tile-radius, 18px);
   background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
   aspect-ratio: 16 / 11;
-  min-height: clamp(120px, 18vh, 220px);
+  min-height: clamp(130px, 20vh, 230px);
   display: grid;
   place-items: center;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
 }
 
@@ -31,50 +31,50 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.2), transparent 50%);
-  opacity: 0.5;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.25), transparent 55%);
+  opacity: 0.55;
   pointer-events: none;
 }
 
 .tile:nth-child(1) {
-  background: linear-gradient(135deg, #ff4d6d, #ff7a59);
+  background: linear-gradient(135deg, #e53935, #ff6f61);
 }
 
 .tile:nth-child(2) {
-  background: linear-gradient(135deg, #4361ee, #4cc9f0);
+  background: linear-gradient(135deg, #1e88e5, #42a5f5);
 }
 
 .tile:nth-child(3) {
-  background: linear-gradient(135deg, #ffbe0b, #fcbf49);
+  background: linear-gradient(135deg, #f9a825, #fdd835);
 }
 
 .tile:nth-child(4) {
-  background: linear-gradient(135deg, #06d6a0, #2dd4bf);
+  background: linear-gradient(135deg, #43a047, #66bb6a);
 }
 
 .tile img {
-  width: 64%;
-  height: 64%;
+  width: 62%;
+  height: 62%;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
 }
 
 .tileSelected,
 :global(.answer-tile--selected) {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 16px 28px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7), 0 18px 30px rgba(0, 0, 0, 0.35);
   transform: translateY(2px) scale(0.98);
 }
 
 .tileCorrect,
 :global(.answer-tile--correct) {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.75), 0 0 30px rgba(99, 230, 190, 0.8);
-  filter: saturate(1.1);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.8), 0 0 34px rgba(99, 230, 190, 0.85);
+  filter: saturate(1.15);
 }
 
 .tileWrong,
 :global(.answer-tile--wrong) {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6), 0 0 24px rgba(255, 107, 107, 0.8);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.6), 0 0 28px rgba(255, 107, 107, 0.85);
   filter: grayscale(0.15) brightness(0.9);
 }
 
