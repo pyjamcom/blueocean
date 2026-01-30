@@ -369,7 +369,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const sendAnswer = useCallback(
     (answerIndex: number) => {
       if (!roomCode) return;
-      const latencyMs = roundStartAt ? Date.now() - roundStartAt : 0;
+      const latencyMs = roundStartAt ? Math.max(0, Math.round(Date.now() - roundStartAt)) : 0;
       send({
         type: "answer",
         payload: {

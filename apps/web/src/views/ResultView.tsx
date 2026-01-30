@@ -44,6 +44,8 @@ export default function ResultView() {
       })),
     [leaderboard],
   );
+  const previousEntriesRef = useRef<typeof rahootEntries | null>(null);
+  const previousEntries = previousEntriesRef.current ?? undefined;
 
   const winner = useMemo(() => {
     return leaderboard.length ? { avatarId: leaderboard[0].avatarId } : null;
@@ -64,6 +66,10 @@ export default function ResultView() {
     trackEvent("sharecard_generate");
     trackEvent("leaderboard_view");
   }, []);
+
+  useEffect(() => {
+    previousEntriesRef.current = rahootEntries;
+  }, [rahootEntries]);
 
   const handleShare = async () => {
     await shareRef.current?.share();
@@ -106,7 +112,7 @@ export default function ResultView() {
       ) : null}
       {isLeaderboard ? (
         phase === "leaderboard" ? (
-          <RahootLeaderboard entries={rahootEntries} />
+          <RahootLeaderboard entries={rahootEntries} previousEntries={previousEntries} />
         ) : (
           <RahootPodium title="Final" top={rahootEntries.slice(0, 3)} />
         )
