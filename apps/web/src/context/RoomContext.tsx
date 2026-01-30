@@ -34,6 +34,7 @@ interface RoomState {
   joinedAt: number | null;
   players: RoomPlayer[];
   answerCounts: [number, number, number, number];
+  lastSelfPoints: number;
   wsStatus: string;
   errors: unknown[];
   joinRoom: (roomCode?: string, avatarId?: string, playerName?: string) => void;
@@ -61,6 +62,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [joinedAt, setJoinedAt] = useState<number | null>(null);
   const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
+  const [lastSelfPoints, setLastSelfPoints] = useState(0);
   const [errors, setErrors] = useState<unknown[]>([]);
   const playerId = useMemo(() => getOrCreateClientId(), []);
   const joinSentRef = useRef(false);
@@ -134,6 +136,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           setRoomCode(payload.roomCode);
           setIsHost(payload.isHost === true);
           setJoinedAt(Date.now());
+          setLastSelfPoints(0);
           if (payload.stage?.roomCode === payload.roomCode) {
             applyStage(payload.stage);
           } else {
@@ -214,8 +217,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         if (!payload?.players) {
           return;
         }
-        setPlayers(
-          payload.players.map((player) => ({
+        setPlayers((prev) => {
+          const prevMap = new Map(prev.map((player) => [player.id, player]));
+          const nextPlayers = payload.players.map((player) => ({
             id: player.id,
             avatarId: player.avatarId,
             name: player.name,
@@ -223,8 +227,17 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
             score: player.score ?? 0,
             correctCount: player.correctCount ?? 0,
             streak: player.streak ?? 0,
-          })),
-        );
+          }));
+          const prevSelf = prevMap.get(playerId);
+          const nextSelf = nextPlayers.find((player) => player.id === playerId);
+          if (prevSelf && nextSelf) {
+            const delta = nextSelf.score - prevSelf.score;
+            if (delta !== 0) {
+              setLastSelfPoints(delta);
+            }
+          }
+          return nextPlayers;
+        });
         return;
       }
       if (message.type === "error" && Array.isArray(message.errors)) {
@@ -295,6 +308,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setJoinedAt(null);
     setPlayers([]);
     setAnswerCounts([0, 0, 0, 0]);
+    setLastSelfPoints(0);
     setErrors([]);
     sentQuestionsRef.current.clear();
     answeredByQuestionRef.current = {};
@@ -472,6 +486,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setCurrentQuestion(null);
     answeredByQuestionRef.current[questionIndex] = new Set();
     setAnswerCounts([0, 0, 0, 0]);
+    setLastSelfPoints(0);
   }, [questionIndex]);
 
   const value: RoomState = {
@@ -485,6 +500,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     joinedAt,
     players,
     answerCounts,
+    lastSelfPoints,
     wsStatus,
     errors,
     joinRoom,

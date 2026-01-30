@@ -61,6 +61,7 @@ export default function JoinView() {
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
   const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
+  const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
     if (!codeParam) return;
     joinRoom(codeParam, initialAvatarId, playerName);
@@ -69,8 +70,10 @@ export default function JoinView() {
   useEffect(() => {
     if (!joinPending || !roomCode) return;
     setJoinPending(false);
-    navigate("/lobby");
-  }, [joinPending, navigate, roomCode]);
+    if (!isManagerRoute) {
+      navigate("/lobby");
+    }
+  }, [isManagerRoute, joinPending, navigate, roomCode]);
 
   useEffect(() => {
     if (!joinPending || roomCode) {

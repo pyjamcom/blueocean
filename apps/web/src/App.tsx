@@ -9,6 +9,7 @@ import JoinView from "./views/JoinView";
 import LobbyView from "./views/LobbyView";
 import JoinWaitView from "./views/JoinWaitView";
 import ResultView from "./views/ResultView";
+import ManagerView from "./views/ManagerView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -53,14 +54,19 @@ function StageNavigator() {
     const path = location.pathname.toUpperCase();
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
+    const isManagerPath = location.pathname === "/manager";
     const searchParams = new URLSearchParams(location.search);
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
 
     if (!roomCode) {
-      if (!isJoinPath) {
+      if (!isJoinPath && !isManagerPath) {
         navigate("/join", { replace: true });
       }
+      return;
+    }
+
+    if (isManagerPath) {
       return;
     }
 
@@ -158,6 +164,7 @@ export default function App() {
             <Route path="/lobby" element={<LobbyView />} />
             <Route path="/game" element={<RoundGallery />} />
             <Route path="/result" element={<ResultView />} />
+            <Route path="/manager" element={<ManagerView />} />
             <Route path="/wait" element={<JoinWaitView />} />
             <Route path="*" element={<Navigate to="/join" replace />} />
           </Routes>

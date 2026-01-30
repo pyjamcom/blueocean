@@ -8,6 +8,7 @@ import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
 import { playTap } from "../utils/sfx";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
+import RahootResult from "../components/RahootResult";
 import {
   AbsurdSumView,
   AbsurdToastView,
@@ -124,7 +125,7 @@ function renderQuestionView(
 }
 
 export default function RoundGallery() {
-  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode, currentQuestion } = useRoom();
+  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode, currentQuestion, players, playerId, lastSelfPoints } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
@@ -226,6 +227,10 @@ export default function RoundGallery() {
       ? styles.revealWrong
       : styles.revealNeutral;
   const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)}/${MAX_QUESTIONS}`;
+  const leaderboard = useMemo(() => [...players].sort((a, b) => b.score - a.score), [players]);
+  const selfEntry = leaderboard.find((entry) => entry.id === playerId) ?? null;
+  const selfRank = selfEntry ? leaderboard.findIndex((entry) => entry.id === playerId) + 1 : null;
+  const aheadOfMe = selfRank && selfRank > 1 ? leaderboard[selfRank - 2]?.name ?? null : null;
 
   return (
     <div className={`${styles.shell} ${styles.gameTheme}`}>
@@ -270,6 +275,15 @@ export default function RoundGallery() {
         )}
       </div>
       <div className={styles.card}>
+        {phase === "reveal" && (
+          <RahootResult
+            correct={hasAnswer ? isCorrect : false}
+            message={revealMessage}
+            points={hasAnswer && isCorrect ? lastSelfPoints : 0}
+            rank={selfRank}
+            aheadOfMe={aheadOfMe}
+          />
+        )}
         {phase === "reveal" && (
           <div className={`${styles.revealBanner} ${revealClass}`}>
             <span className={styles.revealIcon}>{revealIcon}</span>
