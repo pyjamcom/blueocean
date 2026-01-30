@@ -229,6 +229,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       }
       if (message.type === "error" && Array.isArray(message.errors)) {
         setErrors(message.errors);
+        joinSentRef.current = false;
       }
     },
     onClose: () => {
@@ -271,6 +272,8 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     (requestedRoom?: string, avatarId = "avatar_raccoon_dj", playerName?: string) => {
       const room = requestedRoom ?? randomId(4);
       pendingJoinRef.current = { roomCode: room, avatarId, playerName };
+      setErrors([]);
+      joinSentRef.current = false;
       flushJoin();
     },
     [flushJoin],

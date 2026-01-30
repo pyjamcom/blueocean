@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
@@ -48,6 +48,7 @@ export default function JoinView() {
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [joinPending, setJoinPending] = useState(false);
+  const joinRetryRef = useRef(0);
   const [avatarIndex, setAvatarIndex] = useState(() => {
     const idx = AVATAR_IDS.indexOf(initialAvatarId);
     return idx >= 0 ? idx : 0;
@@ -70,6 +71,26 @@ export default function JoinView() {
     setJoinPending(false);
     navigate("/lobby");
   }, [joinPending, navigate, roomCode]);
+
+  useEffect(() => {
+    if (!joinPending || roomCode) {
+      joinRetryRef.current = 0;
+    }
+  }, [joinPending, roomCode]);
+
+  useEffect(() => {
+    if (!joinPending || roomCode) return;
+    if (joinRetryRef.current >= 1) return;
+    const timer = window.setTimeout(() => {
+      if (roomCode || !joinPending) return;
+      joinRetryRef.current += 1;
+      const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
+      joinRoom(target, avatarId, playerName);
+    }, 2000);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [avatarId, codeParam, joinPending, joinRoom, playerName, roomCode]);
 
   useEffect(() => {
     if (!roomCode || !isHost) return;
@@ -130,7 +151,7 @@ export default function JoinView() {
     if (!roomCode) {
       const nextCode = pendingRoomCode ?? randomId(4);
       setPendingRoomCode(nextCode);
-      joinRoom(nextCode, initialAvatarId, playerName);
+      joinRoom(nextCode, avatarId, playerName);
       window.localStorage.setItem(HOST_WAIT_KEY, nextCode);
     }
     setQrVisible(true);
@@ -143,9 +164,10 @@ export default function JoinView() {
   };
 
   const handlePlayClick = () => {
+    joinRetryRef.current = 0;
     if (!roomCode) {
       const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
-      joinRoom(target, initialAvatarId, playerName);
+      joinRoom(target, avatarId, playerName);
     }
     setJoinPending(true);
   };
