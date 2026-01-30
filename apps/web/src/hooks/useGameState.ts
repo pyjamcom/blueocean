@@ -180,17 +180,12 @@ export function useGameState({
   }, [state.phase, state.roundStartAt, state.questionIndex, state.questions, endRound, nextQuestion, revealDurationMs, leaderboardDurationMs]);
 
   const leaderboard = useMemo(() => {
-    const sorted = [...state.players].sort((a, b) => {
-      if (state.scoringMode === "accuracy") {
-        return b.correctCount - a.correctCount || b.score - a.score;
-      }
-      return b.score - a.score;
-    });
+    const sorted = [...state.players].sort((a, b) => b.score - a.score);
     return sorted.map((player, idx) => ({
       ...player,
       rank: idx + 1,
     }));
-  }, [state.players, state.scoringMode]);
+  }, [state.players]);
 
   return {
     state,

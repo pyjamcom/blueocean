@@ -141,6 +141,10 @@ export default function RoundGallery() {
   const durationMs = activeQuestion?.duration_ms ?? 10000;
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
   const [prepareSecondsLeft, setPrepareSecondsLeft] = useState<number>(0);
+  const prepareTotalSeconds = Math.ceil(PREPARE_DURATION_MS / 1000);
+  const showPrepare = phase === "prepared";
+  const prepareDisplay = Math.max(1, prepareSecondsLeft);
+  const prepareRotation = 45 * (prepareTotalSeconds - prepareDisplay);
 
   useEffect(() => {
     setSelectedIndex(null);
@@ -214,7 +218,8 @@ export default function RoundGallery() {
   const correctIndex = activeQuestion?.correct_index ?? 0;
   const hasAnswer = selectedIndex !== null;
   const isCorrect = hasAnswer && selectedIndex === correctIndex;
-  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct" : "Wrong";
+  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct!" : "Wrong!";
+  const revealIcon = !hasAnswer ? "?" : isCorrect ? "OK" : "X";
   const revealClass = isCorrect
     ? styles.revealCorrect
     : hasAnswer
@@ -224,6 +229,23 @@ export default function RoundGallery() {
 
   return (
     <div className={`${styles.shell} ${styles.gameTheme}`}>
+      {showPrepare && (
+        <div className={styles.prepOverlay} aria-live="polite">
+          <div className={styles.prepContent}>
+            <div className={styles.prepTitle}>Get ready</div>
+            <div className={styles.prepCountdown}>
+              <div
+                className={styles.prepShape}
+                style={{ transform: `rotate(${prepareRotation}deg)` }}
+              />
+              <div className={styles.prepNumber}>{prepareDisplay}</div>
+            </div>
+            <div className={styles.prepHint}>
+              Round {Math.min(questionIndex + 1, MAX_QUESTIONS)}
+            </div>
+          </div>
+        </div>
+      )}
       <div className={styles.headerRow}>
         <div className={styles.questionBadge} aria-label="question-count">
           {questionLabel}
@@ -249,7 +271,10 @@ export default function RoundGallery() {
       </div>
       <div className={styles.card}>
         {phase === "reveal" && (
-          <div className={`${styles.revealBanner} ${revealClass}`}>{revealMessage}</div>
+          <div className={`${styles.revealBanner} ${revealClass}`}>
+            <span className={styles.revealIcon}>{revealIcon}</span>
+            <span className={styles.revealText}>{revealMessage}</span>
+          </div>
         )}
         {activeQuestion
           ? renderQuestionView(activeQuestion, answers, handleSelect, selectedIndex, revealState)

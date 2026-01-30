@@ -134,9 +134,12 @@
 }
 
 .revealBanner {
-  margin: 0 0 14px;
+  margin: 0 auto 14px;
   padding: 10px 16px;
   border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: "Bungee", "Sora", sans-serif;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -146,6 +149,24 @@
   color: #0f1117;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
   animation: revealDrop 0.4s ease;
+}
+
+.revealIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 15, 15, 0.75);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.revealText {
+  line-height: 1;
 }
 
 .revealCorrect {
@@ -158,6 +179,82 @@
 
 .revealNeutral {
   background: linear-gradient(135deg, #ffd166, #ffbe0b);
+}
+
+.revealCorrect .revealIcon {
+  background: rgba(15, 24, 18, 0.85);
+  color: #63e6be;
+}
+
+.revealWrong .revealIcon {
+  background: rgba(40, 12, 12, 0.85);
+  color: #ff6b6b;
+}
+
+.revealNeutral .revealIcon {
+  background: rgba(32, 24, 10, 0.85);
+  color: #ffd166;
+}
+
+.prepOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, rgba(20, 224, 255, 0.18), rgba(6, 10, 22, 0.92) 55%);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+  animation: prepFade 0.35s ease;
+}
+
+.prepContent {
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.prepTitle {
+  font-family: "Bungee", "Sora", sans-serif;
+  font-size: clamp(20px, 4vw, 32px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.prepCountdown {
+  position: relative;
+  width: clamp(140px, 38vw, 220px);
+  height: clamp(140px, 38vw, 220px);
+  display: grid;
+  place-items: center;
+}
+
+.prepShape {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(20, 224, 255, 0.5));
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease-out;
+  animation: prepPulse 1s ease-out infinite;
+}
+
+.prepNumber {
+  position: absolute;
+  font-size: clamp(64px, 14vw, 120px);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+}
+
+.prepHint {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .promptBlock {
@@ -265,6 +362,30 @@
   }
   100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes prepPulse {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(1.06) rotate(0deg);
+  }
+  70% {
+    transform: scale(0.98) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes prepFade {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
 }

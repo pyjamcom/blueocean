@@ -838,7 +838,7 @@ function scheduleLeaderboardTimers(room: Room) {
 
 function buildScorePayload(room: Room) {
   const players = Array.from(room.players.values());
-  const sorted = [...players].sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
+  const sorted = [...players].sort((a, b) => b.score - a.score);
   const leaderboardTop5 = sorted.slice(0, 5).map((player, index) => ({
     playerId: player.id,
     avatarId: player.avatarId,
@@ -864,18 +864,15 @@ function buildScorePayload(room: Room) {
   };
 }
 
-function calculateScore(params: { isCorrect: boolean; latencyMs: number; durationMs: number; multiplier?: number }) {
+function calculateScore(params: { isCorrect: boolean; latencyMs: number; durationMs: number; startAt?: number }) {
   if (!params.isCorrect) {
     return { points: 0, correctIncrement: 0, streakDelta: -1 };
   }
-  const multiplier = params.multiplier ?? 1;
-  const pointsPossible = 1000 * multiplier;
-  if (params.latencyMs <= 500) {
-    return { points: pointsPossible, correctIncrement: 1, streakDelta: 1 };
-  }
-  const ratio = 1 - (params.latencyMs / params.durationMs) / 2;
-  const clamped = Math.max(0, Math.min(1, ratio));
-  const points = Math.round(pointsPossible * clamped);
+  const durationMs = Math.max(1, params.durationMs);
+  const elapsedMs =
+    typeof params.startAt === "number" ? Math.max(0, Date.now() - params.startAt) : Math.max(0, params.latencyMs);
+  const rawPoints = 1000 - (1000 / durationMs) * elapsedMs;
+  const points = Math.round(Math.max(0, Math.min(1000, rawPoints)));
   return { points, correctIncrement: 1, streakDelta: 1 };
 }
 
@@ -1483,6 +1480,7 @@ testRouter.post("/rooms/:roomCode/answer", async (req, res) => {
           isCorrect,
           latencyMs: payload.latencyMs ?? 0,
           durationMs: questionInfo.durationMs ?? 10000,
+          startAt: roomValue.stage?.roundStartAt,
         });
         player.score += scoring.points;
         player.correctCount += scoring.correctIncrement;
@@ -1985,6 +1983,7 @@ wss.on("connection", (socket, request) => {
                 isCorrect,
                 latencyMs: answerPayload.latencyMs ?? 0,
                 durationMs: questionInfo.durationMs ?? 10000,
+                startAt: roomValue.stage?.roundStartAt,
               });
               player.score += scoring.points;
               player.correctCount += scoring.correctIncrement;
