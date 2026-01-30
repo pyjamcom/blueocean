@@ -15,15 +15,7 @@
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: rgba(234, 88, 12, 0.7);
-}
-
-.backgroundImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.6;
-  pointer-events: none;
+  background: #ea580c;
 }
 
 .topBar {
@@ -59,6 +51,17 @@
 .loader {
   width: 80px;
   height: 80px;
+}
+
+.loaderSpin {
+  animation: spin 1s linear infinite;
+}
+
+.waitingText {
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 1.6vw + 1rem, 2.5rem);
+  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
 }
 
 .waitTitle {
@@ -242,6 +245,73 @@
   border-radius: 6px;
 }
 
+.answerRevealGrid {
+  margin: 0 auto 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 80rem;
+  padding: 0 8px;
+}
+
+.answerRevealTile {
+  position: relative;
+  border-radius: 10px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.answerRevealDim {
+  opacity: 0.3;
+}
+
+.answerRevealImage {
+  max-height: 140px;
+  width: auto;
+  object-fit: contain;
+}
+
+.answerRevealIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 42px;
+  height: 42px;
+}
+
+.responsesChart {
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+  width: min(100%, 720px);
+  height: 160px;
+  padding: 0 8px;
+}
+
+.responseColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 8px;
+  overflow: hidden;
+  align-self: end;
+}
+
+.responseCount {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 6px 0;
+}
+
 .answerRed {
   background: #ef4444;
 }
@@ -404,5 +474,14 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

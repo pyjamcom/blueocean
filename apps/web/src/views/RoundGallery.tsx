@@ -12,7 +12,6 @@ import Circle from "../components/rahoot/icons/Circle";
 import Square from "../components/rahoot/icons/Square";
 import CricleCheck from "../components/rahoot/icons/CricleCheck";
 import CricleXmark from "../components/rahoot/icons/CricleXmark";
-import background from "../assets/rahoot/background.webp";
 import loader from "../assets/rahoot/loader.svg";
 import styles from "./rahootGame.module.css";
 
@@ -25,6 +24,7 @@ const ANSWER_COLORS = [
   styles.answerYellow,
   styles.answerGreen,
 ];
+const REVEAL_ANSWERS_DURATION_MS = 2200;
 
 function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, AnswerOption, AnswerOption] {
   const answers = question.answers.map((answer) => ({
@@ -56,8 +56,10 @@ export default function RoundGallery() {
     lastSelfPoints,
     answerCounts,
     wsStatus,
+    isHost,
   } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [revealStep, setRevealStep] = useState<"answers" | "result">("answers");
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
   const activeQuestion = useMemo(() => {
@@ -75,6 +77,16 @@ export default function RoundGallery() {
   useEffect(() => {
     setSelectedIndex(null);
   }, [questionIndex]);
+
+  useEffect(() => {
+    if (phase !== "reveal") {
+      setRevealStep("answers");
+      return;
+    }
+    setRevealStep("answers");
+    const timer = window.setTimeout(() => setRevealStep("result"), REVEAL_ANSWERS_DURATION_MS);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "round") {
@@ -253,11 +265,65 @@ export default function RoundGallery() {
   const showPrepared = phase === "prepared";
   const showRound = phase === "round";
   const showReveal = phase === "reveal";
+  const showAnsweredWait = showRound && selectedIndex !== null;
+  const showAnswerGrid = showRound && selectedIndex === null;
+  const showRevealAnswers = showReveal && (!isHost && revealStep === "answers");
+  const showRevealResult = showReveal && (!isHost && revealStep === "result");
+  const showManagerResponses = showReveal && isHost;
+
+  const renderAnswerRevealGrid = () => (
+    <div className={styles.answerRevealGrid}>
+      {answers.map((answer, index) => {
+        const isCorrectAnswer = index === correctIndex;
+        return (
+          <div
+            key={answer.id}
+            className={`${styles.answerRevealTile} ${!isCorrectAnswer ? styles.answerRevealDim : ""}`}
+          >
+            <img
+              className={styles.answerRevealImage}
+              src={answer.src}
+              alt={`Answer ${index + 1}`}
+            />
+            {isCorrectAnswer ? (
+              <CricleCheck className={styles.answerRevealIcon} />
+            ) : (
+              <CricleXmark className={styles.answerRevealIcon} />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderResponsesChart = () => {
+    const totalCount = answerCounts.reduce((sum, count) => sum + count, 0);
+    return (
+      <div
+        className={styles.responsesChart}
+        style={{ gridTemplateColumns: `repeat(${answers.length}, minmax(0, 1fr))` }}
+      >
+        {answers.map((_, index) => {
+          const count = answerCounts[index] ?? 0;
+          const ratio = totalCount > 0 ? count / totalCount : 0;
+          const height = `${Math.max(8, Math.round(ratio * 100))}%`;
+          return (
+            <div
+              key={`resp-${index}`}
+              className={`${styles.responseColumn} ${ANSWER_COLORS[index]}`}
+              style={{ height }}
+            >
+              <span className={styles.responseCount}>{count}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <section className={styles.root}>
       <div className={styles.background} aria-hidden="true">
-        <img className={styles.backgroundImage} src={background} alt="" />
       </div>
 
       <div className={styles.topBar}>
@@ -267,7 +333,7 @@ export default function RoundGallery() {
 
       {showWait && (
         <section className={styles.centerWrap}>
-          <img className={styles.loader} src={loader} alt="loader" />
+          <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />
           <h2 className={styles.waitTitle}>
             {wsStatus !== "open" ? "Connecting..." : "Waiting for the host"}
           </h2>
@@ -295,7 +361,14 @@ export default function RoundGallery() {
         </section>
       )}
 
-      {showRound && (
+      {showAnsweredWait && (
+        <section className={styles.centerWrap}>
+          <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />
+          <h2 className={styles.waitingText}>Waiting for the players to answer</h2>
+        </section>
+      )}
+
+      {showAnswerGrid && (
         <div className={styles.answersWrap}>
           <div className={styles.questionBlock}>
             <h2 className={styles.questionTitle}>{questionTitle}</h2>
@@ -342,7 +415,24 @@ export default function RoundGallery() {
         </div>
       )}
 
-      {showReveal && (
+      {showManagerResponses && (
+        <section className={`${styles.centerWrap} ${styles.animShow}`}>
+          <h2 className={styles.questionTitle}>{questionTitle}</h2>
+          {renderPrompt()}
+          {renderResponsesChart()}
+          {renderAnswerRevealGrid()}
+        </section>
+      )}
+
+      {showRevealAnswers && (
+        <section className={`${styles.centerWrap} ${styles.animShow}`}>
+          <h2 className={styles.questionTitle}>{questionTitle}</h2>
+          {renderPrompt()}
+          {renderAnswerRevealGrid()}
+        </section>
+      )}
+
+      {showRevealResult && (
         <section className={`${styles.centerWrap} ${styles.animShow}`}>
           {isCorrect ? (
             <CricleCheck className={styles.resultIcon} />

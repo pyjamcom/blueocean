@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styles from "./RahootLeaderboard.module.css";
 
 export interface RahootLeaderboardEntry {
@@ -40,6 +40,8 @@ export default function RahootLeaderboard({
   previousEntries?: RahootLeaderboardEntry[];
 }) {
   const [showAnimated, setShowAnimated] = useState(false);
+  const rowRefs = useRef(new Map<string, HTMLDivElement>());
+  const prevPositions = useRef(new Map<string, DOMRect>());
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowAnimated(true), 1600);
@@ -52,6 +54,37 @@ export default function RahootLeaderboard({
     return map;
   }, [entries, previousEntries]);
 
+  useLayoutEffect(() => {
+    const nextPositions = new Map<string, DOMRect>();
+    entries.forEach((entry) => {
+      const node = rowRefs.current.get(entry.id);
+      if (node) {
+        nextPositions.set(entry.id, node.getBoundingClientRect());
+      }
+    });
+
+    nextPositions.forEach((nextRect, id) => {
+      const prevRect = prevPositions.current.get(id);
+      if (!prevRect) {
+        return;
+      }
+      const deltaY = prevRect.top - nextRect.top;
+      if (!deltaY) {
+        return;
+      }
+      const node = rowRefs.current.get(id);
+      if (!node) {
+        return;
+      }
+      node.animate(
+        [{ transform: `translateY(${deltaY}px)` }, { transform: "translateY(0)" }],
+        { duration: 600, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      );
+    });
+
+    prevPositions.current = nextPositions;
+  }, [entries]);
+
   return (
     <section className={styles.wrap}>
       <h2 className={styles.title}>Leaderboard</h2>
@@ -59,7 +92,17 @@ export default function RahootLeaderboard({
         {entries.map((entry) => {
           const prev = prevMap.get(entry.id);
           return (
-            <div key={entry.id} className={styles.row}>
+            <div
+              key={entry.id}
+              className={styles.row}
+              ref={(node) => {
+                if (node) {
+                  rowRefs.current.set(entry.id, node);
+                } else {
+                  rowRefs.current.delete(entry.id);
+                }
+              }}
+            >
               <span className={styles.name}>{entry.name}</span>
               {showAnimated ? (
                 <AnimatedPoints from={prev?.points ?? 0} to={entry.points} />
