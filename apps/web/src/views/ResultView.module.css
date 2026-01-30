@@ -3,14 +3,45 @@
   display: grid;
   justify-items: center;
   gap: 20px;
-  background: radial-gradient(circle at top, #1f1f2b, #0b0b10 70%);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(63, 169, 255, 0.3), transparent 45%),
+    radial-gradient(circle at 82% 12%, rgba(255, 77, 109, 0.3), transparent 45%),
+    linear-gradient(160deg, #1a1335, #0a0a14 65%);
   padding: 24px;
+  color: var(--ui-text);
+}
+
+.phaseHeader {
+  width: min(92vw, 520px);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.phasePill {
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.phaseHint {
+  font-size: 12px;
+  color: var(--ui-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .actions {
   display: flex;
   gap: 16px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .actionItem {
@@ -23,7 +54,7 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ui-muted);
 }
 
 
@@ -32,7 +63,7 @@
   height: 64px;
   border-radius: 18px;
   border: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   display: grid;
   place-items: center;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);

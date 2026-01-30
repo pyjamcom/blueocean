@@ -124,13 +124,18 @@ function renderQuestionView(
 }
 
 export default function RoundGallery() {
-  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode } = useRoom();
+  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode, currentQuestion } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
-  const activeQuestion = baseQuestion
-    ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
-    : undefined;
+  const activeQuestion = useMemo(() => {
+    if (currentQuestion) {
+      if (typeof currentQuestion.questionIndex !== "number" || currentQuestion.questionIndex === questionIndex) {
+        return currentQuestion;
+      }
+    }
+    return baseQuestion ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex) : undefined;
+  }, [baseQuestion, currentQuestion, questionIndex, roomCode]);
   const revealState = phase === "reveal" ? "reveal" : "idle";
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const durationMs = activeQuestion?.duration_ms ?? 10000;
@@ -215,27 +220,33 @@ export default function RoundGallery() {
     : hasAnswer
       ? styles.revealWrong
       : styles.revealNeutral;
+  const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)}/${MAX_QUESTIONS}`;
 
   return (
     <div className={`${styles.shell} ${styles.gameTheme}`}>
-      <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
-      {phase === "prepared" && (
-        <div className={styles.prepRow}>
-          <TimerRing
-            durationMs={PREPARE_DURATION_MS}
-            startAt={(roundStartAt ?? Date.now() + PREPARE_DURATION_MS) - PREPARE_DURATION_MS}
-            size={72}
-            strokeWidth={6}
-          />
-          <div className={styles.prepBadge}>{prepareSecondsLeft}</div>
+      <div className={styles.headerRow}>
+        <div className={styles.questionBadge} aria-label="question-count">
+          {questionLabel}
         </div>
-      )}
-      {phase === "round" && (
-        <div className={styles.timerRow}>
-          <TimerRing durationMs={durationMs} startAt={timerStartAt} size={72} strokeWidth={6} />
-          <div className={styles.timerBadge}>{secondsLeft}</div>
-        </div>
-      )}
+        <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
+        {phase === "prepared" && (
+          <div className={styles.timerStack}>
+            <TimerRing
+              durationMs={PREPARE_DURATION_MS}
+              startAt={(roundStartAt ?? Date.now() + PREPARE_DURATION_MS) - PREPARE_DURATION_MS}
+              size={64}
+              strokeWidth={6}
+            />
+            <div className={styles.prepBadge}>{prepareSecondsLeft}</div>
+          </div>
+        )}
+        {phase === "round" && (
+          <div className={styles.timerStack}>
+            <TimerRing durationMs={durationMs} startAt={timerStartAt} size={64} strokeWidth={6} />
+            <div className={styles.timerBadge}>{secondsLeft}</div>
+          </div>
+        )}
+      </div>
       <div className={styles.card}>
         {phase === "reveal" && (
           <div className={`${styles.revealBanner} ${revealClass}`}>{revealMessage}</div>

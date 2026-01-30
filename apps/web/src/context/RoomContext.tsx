@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWsClient } from "../hooks/useWsClient";
 import { getOrCreateClientId, randomId } from "../utils/ids";
-import { questionBank } from "../data/questions";
+import { questionBank, QuestionRecord } from "../data/questions";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
 
 export type RoomPhase = "join" | "lobby" | "prepared" | "round" | "reveal" | "leaderboard" | "end";
@@ -30,6 +30,7 @@ interface RoomState {
   phase: RoomPhase;
   questionIndex: number;
   roundStartAt: number | null;
+  currentQuestion: (QuestionRecord & { questionIndex?: number }) | null;
   joinedAt: number | null;
   players: RoomPlayer[];
   answerCounts: [number, number, number, number];
@@ -56,6 +57,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<RoomPhase>("join");
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundStartAt, setRoundStartAt] = useState<number | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<(QuestionRecord & { questionIndex?: number }) | null>(null);
   const [joinedAt, setJoinedAt] = useState<number | null>(null);
   const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
@@ -191,6 +193,16 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         }
         return;
       }
+      if (message.type === "question") {
+        const payload = message.payload as (QuestionRecord & { questionIndex?: number }) | undefined;
+        if (payload?.id) {
+          setCurrentQuestion(payload);
+          if (typeof payload.questionIndex === "number") {
+            setQuestionIndex(payload.questionIndex);
+          }
+        }
+        return;
+      }
       if (message.type === "score") {
         const payload = message.payload as
           | { players?: Array<{ id: string; avatarId: string; name?: string; ready?: boolean; score?: number; correctCount?: number; streak?: number }> }
@@ -272,6 +284,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setPhase("join");
     setQuestionIndex(0);
     setRoundStartAt(null);
+    setCurrentQuestion(null);
     setJoinedAt(null);
     setPlayers([]);
     setAnswerCounts([0, 0, 0, 0]);
@@ -410,6 +423,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setPhase("join");
     setQuestionIndex(0);
     setRoundStartAt(null);
+    setCurrentQuestion(null);
     setJoinedAt(null);
     setPlayers([]);
     setAnswerCounts([0, 0, 0, 0]);
@@ -448,6 +462,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [roomCode]);
 
   useEffect(() => {
+    setCurrentQuestion(null);
     answeredByQuestionRef.current[questionIndex] = new Set();
     setAnswerCounts([0, 0, 0, 0]);
   }, [questionIndex]);
@@ -459,6 +474,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     phase,
     questionIndex,
     roundStartAt,
+    currentQuestion,
     joinedAt,
     players,
     answerCounts,

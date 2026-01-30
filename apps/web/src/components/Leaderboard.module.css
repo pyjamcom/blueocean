@@ -2,13 +2,13 @@
 :global(.leaderboard) {
   display: grid;
   gap: 12px;
-  width: min(80vw, 360px);
+  width: min(88vw, 420px);
 }
 
 .item,
 :global(.leaderboard__item) {
   display: grid;
-  grid-template-columns: 32px 64px 1fr;
+  grid-template-columns: 32px 64px 1fr auto;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
@@ -31,6 +31,17 @@
   height: 42px;
   border-radius: 16px;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .avatarBlock {
@@ -47,6 +58,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.score {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .self,

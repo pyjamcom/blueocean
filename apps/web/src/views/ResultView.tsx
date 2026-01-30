@@ -12,9 +12,11 @@ import { getStoredPlayerName } from "../utils/playerName";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, playerId, answerCounts, roomCode, createNextRoom } = useRoom();
+  const { players, playerId, answerCounts, roomCode, createNextRoom, phase } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
   const navigate = useNavigate();
+  const isFinal = phase === "end";
+  const isLeaderboard = phase === "leaderboard" || phase === "end";
 
   const leaderboard = useMemo(() => {
     if (!players.length) return [];
@@ -50,7 +52,7 @@ export default function ResultView() {
     return code;
   }, [roomCode]);
   const qrUrl = `https://d0.do/${nextRoomCode}`;
-  const canShareCard = Boolean(winner);
+  const canShareCard = Boolean(winner) && isFinal;
 
   useEffect(() => {
     trackEvent("sharecard_generate");
@@ -82,7 +84,11 @@ export default function ResultView() {
 
   return (
     <div className={styles.wrap}>
-      {winner ? (
+      <div className={styles.phaseHeader}>
+        <span className={styles.phasePill}>{isFinal ? "Final" : "Leaderboard"}</span>
+        {!isFinal && <span className={styles.phaseHint}>Next round incoming</span>}
+      </div>
+      {isFinal && winner ? (
         <ShareCard
           ref={shareRef}
           podiumTop3={podium}
@@ -92,51 +98,55 @@ export default function ResultView() {
           qrUrl={qrUrl}
         />
       ) : null}
-      <AnswerDistribution counts={answerCounts} />
-      <Leaderboard
-        items={leaderboard}
-        self={
-          selfEntry
-            ? {
-                playerId: selfEntry.playerId,
-                avatarId: selfEntry.avatarId,
-                name: selfEntry.name,
-                rank: selfEntry.rank,
-                score: selfEntry.score,
-                correctCount: selfEntry.correctCount,
-              }
-            : null
-        }
-        mode="speed"
-      />
-      <div className={styles.actions}>
-        <div className={styles.actionItem}>
-          <button
-            className={styles.actionButton}
-            onClick={handleShare}
-            aria-label="share"
-            disabled={!canShareCard}
-          >
-            <span className={styles.iconShare} />
-          </button>
-          <span className={styles.actionLabel}>Share</span>
+      {isLeaderboard ? <AnswerDistribution counts={answerCounts} /> : null}
+      {isLeaderboard ? (
+        <Leaderboard
+          items={leaderboard}
+          self={
+            selfEntry
+              ? {
+                  playerId: selfEntry.playerId,
+                  avatarId: selfEntry.avatarId,
+                  name: selfEntry.name,
+                  rank: selfEntry.rank,
+                  score: selfEntry.score,
+                  correctCount: selfEntry.correctCount,
+                }
+              : null
+          }
+          mode="speed"
+        />
+      ) : null}
+      {isFinal && (
+        <div className={styles.actions}>
+          <div className={styles.actionItem}>
+            <button
+              className={styles.actionButton}
+              onClick={handleShare}
+              aria-label="share"
+              disabled={!canShareCard}
+            >
+              <span className={styles.iconShare} />
+            </button>
+            <span className={styles.actionLabel}>Share</span>
+          </div>
+          <div className={styles.actionItem}>
+            <button
+              className={styles.actionButton}
+              onClick={handleSave}
+              aria-label="save"
+              disabled={!canShareCard}
+            >
+              <span className={styles.iconSave} />
+            </button>
+            <span className={styles.actionLabel}>Save</span>
+          </div>
+          <div className={styles.actionItem}>
+            <NextRoundButton onClick={handleNext} />
+            <span className={styles.actionLabel}>Next</span>
+          </div>
         </div>
-        <div className={styles.actionItem}>
-          <button
-            className={styles.actionButton}
-            onClick={handleSave}
-            aria-label="save"
-            disabled={!canShareCard}
-          >
-            <span className={styles.iconSave} />
-          </button>
-          <span className={styles.actionLabel}>Save</span>
-        </div>
-        <div className={styles.actionItem}>
-          <NextRoundButton onClick={handleNext} />
-          <span className={styles.actionLabel}>Next</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

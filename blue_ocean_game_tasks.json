@@ -3415,8 +3415,8 @@
     },
     {
       "number": "31",
-      "status": "in_progress",
-      "notes": "BO check: стабильный цикл и меньше «призраков» повышают доверие. Context check: фазы должны быть простыми и воспроизводимыми. UI вдохновлён паттернами, без 1:1 копирования бренда.",
+      "status": "completed",
+      "notes": "BO check: стабильный цикл и меньше «призраков» повышают доверие. Context check: фазы должны быть простыми и воспроизводимыми. UI вдохновлён паттернами, без 1:1 копирования бренда. UI и механика синхронизированы с фазовой системой.",
       "description": "Перевести игровой цикл на фазовую статус‑машину (join/lobby/prepared/round/reveal/leaderboard/end), добавить clientId‑reconnect и унифицировать /join /lobby /game /result.",
       "subtasks": [
         {
@@ -3442,8 +3442,8 @@
         },
         {
           "number": "31.4",
-          "status": "in_progress",
-          "notes": "BO check: «свежесть» через ясные визуальные сигналы. Context check: адаптация, не копия.",
+          "status": "completed",
+          "notes": "BO check: «свежесть» через ясные визуальные сигналы. Context check: адаптация, не копия. Обновлены темы/шрифты/карточки/баннеры/лейауты join/lobby/game/result, добавлен Rahoot‑inspired UI и использование server question payload.",
           "description": "Визуальный рефайн: контраст, карточки, таймер/прогресс, reveal‑баннеры — по мотивам Rahoot, но с оригинальной палитрой/типографикой/иконками.",
           "subtasks": []
         }

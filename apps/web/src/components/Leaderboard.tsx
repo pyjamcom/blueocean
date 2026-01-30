@@ -1,4 +1,6 @@
 import styles from "./Leaderboard.module.css";
+import { avatarIconIndex, getAvatarImageUrl } from "../utils/avatar";
+import { assetIds, getAssetUrl } from "../utils/assets";
 
 export interface LeaderboardItem {
   playerId: string;
@@ -41,6 +43,10 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
       {topItems.map((item) => {
         const isSelf = self?.rank === item.rank;
         const hue = hashHue(item.avatarId);
+        const assetId = assetIds.length
+          ? assetIds[avatarIconIndex(item.avatarId) % assetIds.length]
+          : undefined;
+        const avatarSrc = getAvatarImageUrl(item.avatarId) ?? getAssetUrl(assetId);
         return (
           <div
             key={item.playerId}
@@ -56,9 +62,12 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
                 className={`leaderboard__avatar ${styles.avatar}`}
                 style={{ background: `hsl(${hue} 70% 60%)` }}
                 aria-label={item.avatarId}
-              />
+              >
+                {avatarSrc ? <img src={avatarSrc} alt="" /> : null}
+              </div>
               <span className={styles.name}>{item.name ?? "Player"}</span>
             </div>
+            <span className={styles.score}>{item.score ?? 0}</span>
             <span className={styles.spark} />
           </div>
         );
@@ -78,9 +87,18 @@ export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
               className={`leaderboard__avatar ${styles.avatar}`}
               style={{ background: `hsl(${hashHue(selfOutsideTop.avatarId)} 70% 60%)` }}
               aria-label={selfOutsideTop.avatarId}
-            />
+            >
+              {(() => {
+                const assetId = assetIds.length
+                  ? assetIds[avatarIconIndex(selfOutsideTop.avatarId) % assetIds.length]
+                  : undefined;
+                const avatarSrc = getAvatarImageUrl(selfOutsideTop.avatarId) ?? getAssetUrl(assetId);
+                return avatarSrc ? <img src={avatarSrc} alt="" /> : null;
+              })()}
+            </div>
             <span className={styles.name}>{selfOutsideTop.name ?? "Player"}</span>
           </div>
+          <span className={styles.score}>{selfOutsideTop.score ?? 0}</span>
           <span className={styles.spark} />
         </div>
       )}

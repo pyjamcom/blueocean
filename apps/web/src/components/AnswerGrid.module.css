@@ -18,7 +18,7 @@
   padding: clamp(8px, 1.6vw, 14px);
   border-radius: var(--tile-radius, 18px);
   background: rgba(255, 255, 255, 0.12);
-  border: 3px solid rgba(255, 255, 255, 0.6);
+  border: 3px solid rgba(255, 255, 255, 0.5);
   overflow: hidden;
   aspect-ratio: 16 / 11;
   min-height: clamp(130px, 20vh, 230px);
@@ -37,19 +37,19 @@
 }
 
 .tile:nth-child(1) {
-  background: linear-gradient(135deg, #ff5c7a, #ff8a5b);
+  background: linear-gradient(135deg, var(--ui-red), #ff7b9f);
 }
 
 .tile:nth-child(2) {
-  background: linear-gradient(135deg, #14e0ff, #4cc9f0);
+  background: linear-gradient(135deg, var(--ui-blue), #7cc2ff);
 }
 
 .tile:nth-child(3) {
-  background: linear-gradient(135deg, #ffd93d, #ffb703);
+  background: linear-gradient(135deg, var(--ui-yellow), #ffb703);
 }
 
 .tile:nth-child(4) {
-  background: linear-gradient(135deg, #52ff7b, #2bd673);
+  background: linear-gradient(135deg, var(--ui-green), #2dff8f);
 }
 
 .tile img {

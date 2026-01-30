@@ -1,8 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Bungee&display=swap");
+
 :root {
   color-scheme: light;
-  --bg: #0b0b10;
+  --bg: #0a0a14;
   --accent: #ff6b6b;
   --glow: rgba(255, 255, 255, 0.2);
+  --ui-bg: #0a0a14;
+  --ui-surface: rgba(255, 255, 255, 0.08);
+  --ui-card: rgba(255, 255, 255, 0.12);
+  --ui-border: rgba(255, 255, 255, 0.18);
+  --ui-glow: rgba(255, 255, 255, 0.24);
+  --ui-text: #f5f7ff;
+  --ui-muted: rgba(245, 247, 255, 0.7);
+  --ui-red: #ff4d6d;
+  --ui-blue: #3fa9ff;
+  --ui-yellow: #ffd93d;
+  --ui-green: #2ec4b6;
 }
 
 * {
@@ -18,7 +31,7 @@ body,
 }
 
 body {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-family: "Sora", "Segoe UI", sans-serif;
 }
 
 .app {
