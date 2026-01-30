@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { calculateScore, ScoringMode } from "../utils/scoring";
+import { calculateScore } from "../utils/scoring";
 import { trackEvent } from "../utils/analytics";
 
 export type GamePhase = "lobby" | "round" | "reveal" | "leaderboard" | "end";
@@ -24,15 +24,11 @@ export interface GameState {
   questions: QuestionState[];
   players: PlayerState[];
   roundStartAt: number | null;
-  scoringMode: ScoringMode;
-  pointsMultiplier: 0 | 1 | 2;
 }
 
 export interface UseGameStateOptions {
   questions: QuestionState[];
   players: PlayerState[];
-  scoringMode: ScoringMode;
-  pointsMultiplier: 0 | 1 | 2;
   revealDurationMs?: number;
   leaderboardDurationMs?: number;
 }
@@ -46,8 +42,6 @@ export interface AnswerEvent {
 export function useGameState({
   questions,
   players,
-  scoringMode,
-  pointsMultiplier,
   revealDurationMs = 2500,
   leaderboardDurationMs = 5000,
 }: UseGameStateOptions) {
@@ -57,8 +51,6 @@ export function useGameState({
     questions,
     players,
     roundStartAt: null,
-    scoringMode,
-    pointsMultiplier,
   });
 
   const answersRef = useRef<Record<string, AnswerEvent>>({});
@@ -129,8 +121,6 @@ export function useGameState({
           isCorrect,
           responseTimeMs,
           questionTimeMs: question.duration_ms,
-          pointsMultiplier: prev.pointsMultiplier,
-          mode: prev.scoringMode,
         });
 
         const updatedPlayers = prev.players.map((player) => {

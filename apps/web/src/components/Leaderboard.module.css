@@ -85,12 +85,6 @@
 
 .speed {}
 
-.accuracy {}
-
 .speed .spark {
   background: linear-gradient(90deg, rgba(255, 107, 107, 0.7), rgba(255, 255, 255, 0));
-}
-
-.accuracy .spark {
-  background: linear-gradient(90deg, rgba(99, 230, 190, 0.7), rgba(255, 255, 255, 0));
 }

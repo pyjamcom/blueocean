@@ -14,7 +14,6 @@ export interface LeaderboardItem {
 export interface LeaderboardProps {
   items: LeaderboardItem[];
   self?: { playerId: string; avatarId: string; name?: string; rank: number; score?: number; correctCount?: number } | null;
-  mode: "speed" | "accuracy";
 }
 
 function hashHue(value: string) {
@@ -33,13 +32,13 @@ function medalColor(rank: number) {
   return "rgba(255,255,255,0.2)";
 }
 
-export default function Leaderboard({ items, self, mode }: LeaderboardProps) {
+export default function Leaderboard({ items, self }: LeaderboardProps) {
   const sorted = [...items].sort((a, b) => a.rank - b.rank);
   const topItems = sorted.slice(0, 5);
   const selfOutsideTop = self && self.rank > 5 ? self : null;
 
   return (
-    <div className={`leaderboard ${styles.board} ${styles[mode]}`}>
+    <div className={`leaderboard ${styles.board} ${styles.speed}`}>
       {topItems.map((item) => {
         const isSelf = self?.rank === item.rank;
         const hue = hashHue(item.avatarId);
