@@ -1,31 +1,30 @@
-import { useEffect, useMemo, useState } from "react";
+import { ElementType, useEffect, useMemo, useState } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
-import ProgressDots from "../components/ProgressDots";
-import TimerRing from "../components/TimerRing";
 import { useRoom } from "../context/RoomContext";
-import { prefetchImage } from "../utils/prefetch";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
-import { playTap } from "../utils/sfx";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
-import RahootResult from "../components/RahootResult";
-import {
-  AbsurdSumView,
-  AbsurdToastView,
-  DrunkReflexView,
-  FaceMimicView,
-  IconBattleView,
-  SilhouetteGuessView,
-  SoundPantomimeView,
-  TelepathSyncView,
-  TrophyRewardView,
-  VisualProvocationView,
-} from "./index";
-import styles from "./roundViews.module.css";
+import { prefetchImage } from "../utils/prefetch";
+import { playTap } from "../utils/sfx";
+import Triangle from "../components/rahoot/icons/Triangle";
+import Rhombus from "../components/rahoot/icons/Rhombus";
+import Circle from "../components/rahoot/icons/Circle";
+import Square from "../components/rahoot/icons/Square";
+import CricleCheck from "../components/rahoot/icons/CricleCheck";
+import CricleXmark from "../components/rahoot/icons/CricleXmark";
+import background from "../assets/rahoot/background.webp";
+import loader from "../assets/rahoot/loader.svg";
+import styles from "./rahootGame.module.css";
 
 const fallbackSrc = "/icons/icon-192.svg";
 const MAX_QUESTIONS = Math.min(15, questionBank.length);
-const PREPARE_DURATION_MS = 3000;
+const ANSWER_ICONS: ElementType[] = [Triangle, Rhombus, Circle, Square];
+const ANSWER_COLORS = [
+  styles.answerRed,
+  styles.answerBlue,
+  styles.answerYellow,
+  styles.answerGreen,
+];
 
 function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, AnswerOption, AnswerOption] {
   const answers = question.answers.map((answer) => ({
@@ -38,94 +37,26 @@ function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, An
   return answers.slice(0, 4) as [AnswerOption, AnswerOption, AnswerOption, AnswerOption];
 }
 
-function renderQuestionView(
-  question: QuestionRecord,
-  answers: [AnswerOption, AnswerOption, AnswerOption, AnswerOption],
-  onSelect: (index: number) => void,
-  selectedIndex: number | null,
-  revealState: "idle" | "reveal",
-) {
-  const baseProps = {
-    answers,
-    onSelect,
-    selectedIndex,
-    revealState,
-    correctIndex: question.correct_index,
-  };
-  const promptSrc = resolveAssetRef(question.prompt_image, fallbackSrc);
-
-  switch (question.category) {
-    case "telepath_sync":
-      return <TelepathSyncView promptSrc={promptSrc} {...baseProps} />;
-    case "drunk_reflex":
-      return (
-        <DrunkReflexView
-          triggerSrc={resolveAssetRef(question.trigger_asset_id ?? question.prompt_image, fallbackSrc)}
-          {...baseProps}
-        />
-      );
-    case "absurd_sum": {
-      const [leftId, rightId] = question.prompt_pair_ids ?? [question.prompt_image, question.prompt_image];
-      return (
-        <AbsurdSumView
-          leftSrc={resolveAssetRef(leftId, fallbackSrc)}
-          rightSrc={resolveAssetRef(rightId, fallbackSrc)}
-          {...baseProps}
-        />
-      );
-    }
-    case "face_mimic": {
-      const overlaySrcs = (question.face_overlay_ids ?? [question.prompt_image]).map((id) =>
-        resolveAssetRef(id, fallbackSrc),
-      );
-      return (
-        <FaceMimicView
-          cameraSrc={promptSrc}
-          overlaySrcs={overlaySrcs}
-          {...baseProps}
-        />
-      );
-    }
-    case "icon_battle": {
-      const [leftId, rightId] = question.battle_pair_ids ?? [question.prompt_image, question.prompt_image];
-      return (
-        <IconBattleView
-          leftSrc={resolveAssetRef(leftId, fallbackSrc)}
-          rightSrc={resolveAssetRef(rightId, fallbackSrc)}
-          {...baseProps}
-        />
-      );
-    }
-    case "sound_pantomime":
-      return (
-        <SoundPantomimeView
-          audioSrc={resolveAssetRef(question.audio_asset_id ?? question.prompt_image, fallbackSrc)}
-          {...baseProps}
-        />
-      );
-    case "absurd_toast":
-      return <AbsurdToastView moodSrc={promptSrc} {...baseProps} />;
-    case "silhouette_guess":
-      return (
-        <SilhouetteGuessView
-          silhouetteSrc={resolveAssetRef(question.silhouette_base_id ?? question.prompt_image, fallbackSrc)}
-          {...baseProps}
-        />
-      );
-    case "trophy_rewards":
-      return (
-        <TrophyRewardView
-          trophySrc={resolveAssetRef(question.trophy_stamp_id ?? question.prompt_image, fallbackSrc)}
-        />
-      );
-    case "visual_provocation":
-    default:
-      return <VisualProvocationView promptSrc={promptSrc} {...baseProps} />;
-  }
+function titleCase(value: string) {
+  return value
+    .replace(/_/g, " ")
+    .replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.slice(1));
 }
 
 export default function RoundGallery() {
-  const { phase, questionIndex, roundStartAt, sendAnswer, roomCode, currentQuestion, players, playerId, lastSelfPoints } = useRoom();
+  const {
+    phase,
+    questionIndex,
+    roundStartAt,
+    sendAnswer,
+    roomCode,
+    currentQuestion,
+    players,
+    playerId,
+    lastSelfPoints,
+    answerCounts,
+    wsStatus,
+  } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
@@ -137,15 +68,9 @@ export default function RoundGallery() {
     }
     return baseQuestion ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex) : undefined;
   }, [baseQuestion, currentQuestion, questionIndex, roomCode]);
-  const revealState = phase === "reveal" ? "reveal" : "idle";
-  const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const durationMs = activeQuestion?.duration_ms ?? 10000;
+  const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
-  const [prepareSecondsLeft, setPrepareSecondsLeft] = useState<number>(0);
-  const prepareTotalSeconds = Math.ceil(PREPARE_DURATION_MS / 1000);
-  const showPrepare = phase === "prepared";
-  const prepareDisplay = Math.max(1, prepareSecondsLeft);
-  const prepareRotation = 45 * (prepareTotalSeconds - prepareDisplay);
 
   useEffect(() => {
     setSelectedIndex(null);
@@ -166,30 +91,6 @@ export default function RoundGallery() {
     return () => window.clearInterval(intervalId);
   }, [durationMs, phase, timerStartAt]);
 
-  useEffect(() => {
-    if (phase !== "prepared") {
-      setPrepareSecondsLeft(0);
-      return;
-    }
-    const startAt = roundStartAt ?? Date.now() + PREPARE_DURATION_MS;
-    const tick = () => {
-      const remaining = Math.max(0, startAt - Date.now());
-      setPrepareSecondsLeft(Math.ceil(remaining / 1000));
-    };
-    tick();
-    const intervalId = window.setInterval(tick, 100);
-    return () => window.clearInterval(intervalId);
-  }, [phase, roundStartAt]);
-
-  const handleSelect = (index: number) => {
-    if (phase !== "round") {
-      return;
-    }
-    setSelectedIndex(index);
-    playTap();
-    sendAnswer(index);
-  };
-
   const answers = useMemo(
     () => (activeQuestion
       ? buildAnswers(activeQuestion)
@@ -209,9 +110,19 @@ export default function RoundGallery() {
       prefetchImage(fallbackSrc);
       return;
     }
+    const extraPromptIds = [
+      ...(activeQuestion.prompt_pair_ids ?? []),
+      ...(activeQuestion.battle_pair_ids ?? []),
+      ...(activeQuestion.face_overlay_ids ?? []),
+      activeQuestion.silhouette_base_id,
+      activeQuestion.trophy_stamp_id,
+      activeQuestion.trigger_asset_id,
+    ].filter(Boolean) as string[];
+    const extraPromptAssets = extraPromptIds.map((id) => resolveAssetRef(id, fallbackSrc));
     const assetsToPrefetch = [
       resolveAssetRef(activeQuestion.prompt_image, fallbackSrc),
       ...answers.map((answer) => answer.src),
+      ...extraPromptAssets,
     ];
     assetsToPrefetch.forEach((src) => prefetchImage(src));
   }, [activeQuestion, answers]);
@@ -220,80 +131,241 @@ export default function RoundGallery() {
   const hasAnswer = selectedIndex !== null;
   const isCorrect = hasAnswer && selectedIndex === correctIndex;
   const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct!" : "Wrong!";
-  const revealIcon = !hasAnswer ? "?" : isCorrect ? "OK" : "X";
-  const revealClass = isCorrect
-    ? styles.revealCorrect
-    : hasAnswer
-      ? styles.revealWrong
-      : styles.revealNeutral;
-  const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)}/${MAX_QUESTIONS}`;
+  const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`;
   const leaderboard = useMemo(() => [...players].sort((a, b) => b.score - a.score), [players]);
   const selfEntry = leaderboard.find((entry) => entry.id === playerId) ?? null;
   const selfRank = selfEntry ? leaderboard.findIndex((entry) => entry.id === playerId) + 1 : null;
   const aheadOfMe = selfRank && selfRank > 1 ? leaderboard[selfRank - 2]?.name ?? null : null;
+  const totalAnswered = answerCounts.reduce((sum, count) => sum + count, 0);
+
+  const questionTitle = activeQuestion?.humor_tag
+    ? titleCase(activeQuestion.humor_tag)
+    : activeQuestion?.category
+      ? titleCase(activeQuestion.category)
+      : `Question ${Math.min(questionIndex + 1, MAX_QUESTIONS)}`;
+
+  const promptSrc = activeQuestion ? resolveAssetRef(activeQuestion.prompt_image, fallbackSrc) : fallbackSrc;
+  const renderPrompt = () => {
+    if (!activeQuestion) {
+      return null;
+    }
+
+    switch (activeQuestion.category) {
+      case "absurd_sum": {
+        const [leftId, rightId] = activeQuestion.prompt_pair_ids ?? [
+          activeQuestion.prompt_image,
+          activeQuestion.prompt_image,
+        ];
+        return (
+          <div className={styles.promptPair}>
+            <img
+              alt={questionTitle}
+              src={resolveAssetRef(leftId, fallbackSrc)}
+              className={styles.pairImage}
+            />
+            <span className={styles.promptSymbol}>+</span>
+            <img
+              alt={questionTitle}
+              src={resolveAssetRef(rightId, fallbackSrc)}
+              className={styles.pairImage}
+            />
+          </div>
+        );
+      }
+      case "icon_battle": {
+        const [leftId, rightId] = activeQuestion.battle_pair_ids ?? [
+          activeQuestion.prompt_image,
+          activeQuestion.prompt_image,
+        ];
+        return (
+          <div className={styles.promptPair}>
+            <img
+              alt={questionTitle}
+              src={resolveAssetRef(leftId, fallbackSrc)}
+              className={styles.pairImage}
+            />
+            <span className={styles.promptSymbol}>VS</span>
+            <img
+              alt={questionTitle}
+              src={resolveAssetRef(rightId, fallbackSrc)}
+              className={styles.pairImage}
+            />
+          </div>
+        );
+      }
+      case "sound_pantomime": {
+        const audioSrc = resolveAssetRef(activeQuestion.audio_asset_id ?? activeQuestion.prompt_image, fallbackSrc);
+        return (
+          <audio className={styles.audioPlayer} controls src={audioSrc}>
+            Your browser does not support the audio element.
+          </audio>
+        );
+      }
+      case "face_mimic": {
+        const overlaySrcs = (activeQuestion.face_overlay_ids ?? []).map((id) =>
+          resolveAssetRef(id, fallbackSrc),
+        );
+        return (
+          <div className={styles.overlayStack}>
+            <img alt={questionTitle} src={promptSrc} className={styles.questionImage} />
+            {overlaySrcs.map((src, index) => (
+              <img key={`${src}-${index}`} alt=\"\" src={src} className={styles.overlayImage} />
+            ))}
+          </div>
+        );
+      }
+      case "drunk_reflex": {
+        const triggerSrc = resolveAssetRef(activeQuestion.trigger_asset_id ?? activeQuestion.prompt_image, fallbackSrc);
+        return <img alt={questionTitle} src={triggerSrc} className={styles.questionImage} />;
+      }
+      case "silhouette_guess": {
+        const silhouetteSrc = resolveAssetRef(
+          activeQuestion.silhouette_base_id ?? activeQuestion.prompt_image,
+          fallbackSrc,
+        );
+        return <img alt={questionTitle} src={silhouetteSrc} className={styles.questionImage} />;
+      }
+      case "trophy_rewards": {
+        const trophySrc = resolveAssetRef(activeQuestion.trophy_stamp_id ?? activeQuestion.prompt_image, fallbackSrc);
+        return <img alt={questionTitle} src={trophySrc} className={styles.questionImage} />;
+      }
+      default:
+        return (
+          <img
+            alt={questionTitle}
+            src={promptSrc}
+            className={styles.questionImage}
+          />
+        );
+    }
+  };
+
+  const handleSelect = (index: number) => {
+    if (phase !== "round" || selectedIndex !== null) {
+      return;
+    }
+    setSelectedIndex(index);
+    playTap();
+    sendAnswer(index);
+  };
+
+  const showWait = wsStatus !== "open" || phase === "join" || phase === "lobby";
+  const showPrepared = phase === "prepared";
+  const showRound = phase === "round";
+  const showReveal = phase === "reveal";
 
   return (
-    <div className={`${styles.shell} ${styles.gameTheme}`}>
-      {showPrepare && (
-        <div className={styles.prepOverlay} aria-live="polite">
-          <div className={styles.prepContent}>
-            <div className={styles.prepTitle}>Get ready</div>
-            <div className={styles.prepCountdown}>
-              <div
-                className={styles.prepShape}
-                style={{ transform: `rotate(${prepareRotation}deg)` }}
-              />
-              <div className={styles.prepNumber}>{prepareDisplay}</div>
+    <section className={styles.root}>
+      <div className={styles.background} aria-hidden="true">
+        <img className={styles.backgroundImage} src={background} alt="" />
+      </div>
+
+      <div className={styles.topBar}>
+        <div className={styles.questionBadge}>{questionLabel}</div>
+        <div />
+      </div>
+
+      {showWait && (
+        <section className={styles.centerWrap}>
+          <img className={styles.loader} src={loader} alt="loader" />
+          <h2 className={styles.waitTitle}>
+            {wsStatus !== "open" ? "Connecting..." : "Waiting for the host"}
+          </h2>
+        </section>
+      )}
+
+      {showPrepared && (
+        <section className={`${styles.centerWrap} ${styles.animShow}`}>
+          <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
+            Question #{Math.min(questionIndex + 1, MAX_QUESTIONS)}
+          </h2>
+          <div className={`${styles.preparedGrid} ${styles.animQuizz}`}>
+            {[...Array(4)].map((_, index) => {
+              const Icon = ANSWER_ICONS[index];
+              return (
+                <div
+                  key={index}
+                  className={`${styles.quizButton} ${ANSWER_COLORS[index]}`}
+                >
+                  <Icon className={styles.preparedIcon} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {showRound && (
+        <div className={styles.answersWrap}>
+          <div className={styles.questionBlock}>
+            <h2 className={styles.questionTitle}>{questionTitle}</h2>
+            {renderPrompt()}
+          </div>
+
+          <div>
+            <div className={styles.statsRow}>
+              <div className={styles.statPill}>
+                <span className={styles.statLabel}>Time</span>
+                <span>{secondsLeft}</span>
+              </div>
+              <div className={styles.statPill}>
+                <span className={styles.statLabel}>Answers</span>
+                <span>
+                  {totalAnswered}/{players.length}
+                </span>
+              </div>
             </div>
-            <div className={styles.prepHint}>
-              Round {Math.min(questionIndex + 1, MAX_QUESTIONS)}
+
+            <div className={styles.answersGrid}>
+              {answers.map((answer, index) => {
+                const Icon = ANSWER_ICONS[index];
+                return (
+                  <button
+                    key={answer.id}
+                    className={`${styles.answerButton} ${ANSWER_COLORS[index]}`}
+                    onClick={() => handleSelect(index)}
+                    disabled={selectedIndex !== null}
+                  >
+                    <Icon className={styles.answerIcon} />
+                    <span className={styles.answerLabel}>
+                      <img
+                        className={styles.answerMedia}
+                        src={answer.src}
+                        alt={`Answer ${index + 1}`}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       )}
-      <div className={styles.headerRow}>
-        <div className={styles.questionBadge} aria-label="question-count">
-          {questionLabel}
-        </div>
-        <ProgressDots total={Math.max(MAX_QUESTIONS, 1)} activeIndex={questionIndex} />
-        {phase === "prepared" && (
-          <div className={styles.timerStack}>
-            <TimerRing
-              durationMs={PREPARE_DURATION_MS}
-              startAt={(roundStartAt ?? Date.now() + PREPARE_DURATION_MS) - PREPARE_DURATION_MS}
-              size={64}
-              strokeWidth={6}
-            />
-            <div className={styles.prepBadge}>{prepareSecondsLeft}</div>
-          </div>
-        )}
-        {phase === "round" && (
-          <div className={styles.timerStack}>
-            <TimerRing durationMs={durationMs} startAt={timerStartAt} size={64} strokeWidth={6} />
-            <div className={styles.timerBadge}>{secondsLeft}</div>
-          </div>
-        )}
+
+      {showReveal && (
+        <section className={`${styles.centerWrap} ${styles.animShow}`}>
+          {isCorrect ? (
+            <CricleCheck className={styles.resultIcon} />
+          ) : (
+            <CricleXmark className={styles.resultIcon} />
+          )}
+          <h2 className={styles.resultMessage}>{revealMessage}</h2>
+          {selfRank ? (
+            <p className={styles.resultRank}>
+              You are top {selfRank}
+              {aheadOfMe ? `, behind ${aheadOfMe}` : ""}
+            </p>
+          ) : null}
+          {isCorrect ? (
+            <span className={styles.resultPoints}>+{lastSelfPoints}</span>
+          ) : null}
+        </section>
+      )}
+
+      <div className={styles.bottomBar}>
+        <p className={styles.bottomName}>{selfEntry?.name ?? "Player"}</p>
+        <div className={styles.bottomPoints}>{selfEntry?.score ?? 0}</div>
       </div>
-      <div className={styles.card}>
-        {phase === "reveal" && (
-          <RahootResult
-            correct={hasAnswer ? isCorrect : false}
-            message={revealMessage}
-            points={hasAnswer && isCorrect ? lastSelfPoints : 0}
-            rank={selfRank}
-            aheadOfMe={aheadOfMe}
-          />
-        )}
-        {phase === "reveal" && (
-          <div className={`${styles.revealBanner} ${revealClass}`}>
-            <span className={styles.revealIcon}>{revealIcon}</span>
-            <span className={styles.revealText}>{revealMessage}</span>
-          </div>
-        )}
-        {activeQuestion
-          ? renderQuestionView(activeQuestion, answers, handleSelect, selectedIndex, revealState)
-          : null}
-      </div>
-    </div>
+    </section>
   );
 }
