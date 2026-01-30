@@ -209,7 +209,7 @@ export default function RoundGallery() {
           <div className={styles.overlayStack}>
             <img alt={questionTitle} src={promptSrc} className={styles.questionImage} />
             {overlaySrcs.map((src, index) => (
-              <img key={`${src}-${index}`} alt=\"\" src={src} className={styles.overlayImage} />
+              <img key={`${src}-${index}`} alt="" src={src} className={styles.overlayImage} />
             ))}
           </div>
         );
