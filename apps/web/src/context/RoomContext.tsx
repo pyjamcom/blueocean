@@ -71,7 +71,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const sentQuestionsRef = useRef<Set<number>>(new Set());
   const autoStartRef = useRef(false);
 
-  const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
+  const wsUrl =
+    import.meta.env.VITE_WS_URL ??
+    (typeof window !== "undefined" && window.location.protocol === "https:"
+      ? "wss://ws.escapers.app"
+      : "ws://localhost:3001");
 
   const applyStage = useCallback((payload: StagePayload) => {
     setPhase(payload.phase);

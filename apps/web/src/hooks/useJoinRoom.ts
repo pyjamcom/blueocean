@@ -16,7 +16,11 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerNa
   const code = useMemo(() => roomCode ?? randomId(4), [roomCode]);
   const playerId = useMemo(() => getOrCreateClientId(), []);
 
-  const wsUrl = import.meta.env.VITE_WS_URL ?? "ws://localhost:3001";
+  const wsUrl =
+    import.meta.env.VITE_WS_URL ??
+    (typeof window !== "undefined" && window.location.protocol === "https:"
+      ? "wss://ws.escapers.app"
+      : "ws://localhost:3001");
 
   const { status, send } = useWsClient({
     url: wsUrl,
