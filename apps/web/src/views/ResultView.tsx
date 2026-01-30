@@ -20,7 +20,7 @@ export default function ResultView() {
 
   const leaderboard = useMemo(() => {
     if (!players.length) return [];
-    const sorted = [...players].sort((a, b) => b.score - a.score || b.correctCount - a.correctCount);
+    const sorted = [...players].sort((a, b) => b.score - a.score);
     return sorted.map((player, idx) => ({
       playerId: player.id,
       avatarId: player.avatarId,

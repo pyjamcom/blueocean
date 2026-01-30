@@ -73,13 +73,56 @@
 .tileCorrect,
 :global(.answer-tile--correct) {
   box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9), 0 0 34px rgba(99, 230, 190, 0.85);
+  border-color: rgba(99, 230, 190, 0.95);
   filter: saturate(1.15);
 }
 
 .tileWrong,
 :global(.answer-tile--wrong) {
   box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.6), 0 0 28px rgba(255, 107, 107, 0.85);
+  border-color: rgba(255, 107, 107, 0.95);
   filter: grayscale(0.15) brightness(0.9);
+}
+
+.tileDim,
+:global(.answer-tile--dim) {
+  opacity: 0.45;
+  filter: grayscale(0.45) brightness(0.75);
+  transform: scale(0.98);
+}
+
+.tileCorrect::after,
+:global(.answer-tile--correct)::after {
+  content: "OK";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(15, 24, 18, 0.75);
+  color: #63e6be;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.tileWrong::after,
+:global(.answer-tile--wrong)::after {
+  content: "X";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(32, 12, 12, 0.75);
+  color: #ff6b6b;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
 }
 
 .tileLocked,

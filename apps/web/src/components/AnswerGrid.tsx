@@ -87,6 +87,11 @@ export default function AnswerGrid({
       const isCorrect = revealCorrect(index);
       const isWrong = revealState === "reveal" && isSelected && correctIndex !== index;
       const isLocked = locked || revealState === "reveal";
+      const isDim =
+        revealState === "reveal" &&
+        typeof correctIndex === "number" &&
+        correctIndex !== index &&
+        selectedIndex !== index;
 
       const className = [
         "answer-tile",
@@ -95,10 +100,12 @@ export default function AnswerGrid({
         isCorrect ? "answer-tile--correct" : "",
         isWrong ? "answer-tile--wrong" : "",
         isLocked ? "answer-tile--locked" : "",
+        isDim ? "answer-tile--dim" : "",
         isSelected ? styles.tileSelected : "",
         isCorrect ? styles.tileCorrect : "",
         isWrong ? styles.tileWrong : "",
         isLocked ? styles.tileLocked : "",
+        isDim ? styles.tileDim : "",
       ]
         .filter(Boolean)
         .join(" ");

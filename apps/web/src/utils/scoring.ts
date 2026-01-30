@@ -20,13 +20,9 @@ export function calculateSpeedScore(input: ScoreInput): ScoreResult {
   if (!input.isCorrect) {
     return { points: 0, correctIncrement: 0, streakDelta: -1 };
   }
-  const pointsPossible = MAX_POINTS * input.pointsMultiplier;
-  if (input.responseTimeMs <= 500) {
-    return { points: pointsPossible, correctIncrement: 1, streakDelta: 1 };
-  }
-  const ratio = 1 - (input.responseTimeMs / input.questionTimeMs) / 2;
-  const clamped = Math.max(0, Math.min(1, ratio));
-  const points = Math.round(pointsPossible * clamped);
+  const durationMs = Math.max(1, input.questionTimeMs);
+  const rawPoints = MAX_POINTS - (MAX_POINTS / durationMs) * Math.max(0, input.responseTimeMs);
+  const points = Math.round(Math.max(0, Math.min(MAX_POINTS, rawPoints)));
   return { points, correctIncrement: 1, streakDelta: 1 };
 }
 

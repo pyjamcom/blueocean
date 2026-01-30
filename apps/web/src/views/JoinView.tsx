@@ -146,6 +146,16 @@ export default function JoinView() {
     }
   }, [qrSrc, roomCode, showQr, qrVisible]);
 
+  const clearHostWait = () => {
+    if (typeof window === "undefined") return;
+    const waitingForRoom = window.localStorage.getItem(HOST_WAIT_KEY);
+    if (!waitingForRoom) return;
+    const expectedRoom = roomCode ?? pendingRoomCode;
+    if (!expectedRoom || waitingForRoom === expectedRoom) {
+      window.localStorage.removeItem(HOST_WAIT_KEY);
+    }
+  };
+
   const handleScanClick = () => {
     if (!showQr) return;
     if (!roomCode) {
@@ -165,6 +175,7 @@ export default function JoinView() {
 
   const handlePlayClick = () => {
     joinRetryRef.current = 0;
+    clearHostWait();
     if (!roomCode) {
       const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
       joinRoom(target, avatarId, playerName);
@@ -197,7 +208,13 @@ export default function JoinView() {
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
       {qrVisible && qrSrc && showQr ? (
-        <div className={styles.qrOverlay} onClick={() => setQrVisible(false)}>
+        <div
+          className={styles.qrOverlay}
+          onClick={() => {
+            setQrVisible(false);
+            clearHostWait();
+          }}
+        >
           <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
             <img src={qrSrc} alt="" className={styles.qrImage} />
           </div>
