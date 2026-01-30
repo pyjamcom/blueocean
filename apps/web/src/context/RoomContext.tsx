@@ -203,9 +203,18 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       if (message.type === "question") {
         const payload = message.payload as (QuestionRecord & { questionIndex?: number }) | undefined;
         if (payload?.id) {
-          setCurrentQuestion(payload);
+          const incomingIndex =
+            typeof payload.questionIndex === "number" ? payload.questionIndex : questionIndex;
           if (typeof payload.questionIndex === "number") {
             setQuestionIndex(payload.questionIndex);
+          }
+          const resolvedIndex = mapStageToQuestionIndex(roomCode, incomingIndex, questionBank.length);
+          const baseQuestion = questionBank[resolvedIndex];
+          if (baseQuestion) {
+            const shuffled = shuffleQuestionAnswers(baseQuestion, roomCode, incomingIndex);
+            setCurrentQuestion({ ...shuffled, questionIndex: incomingIndex });
+          } else {
+            setCurrentQuestion(payload);
           }
         }
         return;
@@ -469,9 +478,26 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex)
       : undefined;
     if (question && !sentQuestionsRef.current.has(questionIndex)) {
+      const sanitizedAnswers = question.answers.map((answer) => {
+        const payload: { id: string; asset_id: string; image_url?: string } = {
+          id: answer.id,
+          asset_id: answer.asset_id ?? "",
+        };
+        if (answer.image_url) {
+          payload.image_url = answer.image_url;
+        }
+        return payload;
+      });
       send({
         type: "question",
-        payload: { ...question, questionIndex },
+        payload: {
+          id: question.id,
+          questionIndex,
+          prompt_image: question.prompt_image,
+          answers: sanitizedAnswers,
+          correct_index: question.correct_index,
+          duration_ms: question.duration_ms,
+        },
       });
       sentQuestionsRef.current.add(questionIndex);
     }
