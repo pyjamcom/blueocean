@@ -5,8 +5,7 @@ import HelpButton from "./components/HelpButton";
 import { RoomProvider, RoomPhase, useRoom } from "./context/RoomContext";
 import { registerErrorHandlers } from "./utils/telemetry";
 import RoundGallery from "./views/RoundGallery";
-import JoinPinView from "./views/JoinPinView";
-import JoinNameView from "./views/JoinNameView";
+import JoinView from "./views/JoinView";
 import LobbyView from "./views/LobbyView";
 import JoinWaitView from "./views/JoinWaitView";
 import ResultView from "./views/ResultView";
@@ -55,9 +54,7 @@ function StageNavigator() {
     const path = location.pathname.toUpperCase();
     const isManagerPath = location.pathname === "/manager";
     const isJoinPath =
-      location.pathname === "/join" ||
-      location.pathname === "/join/name" ||
-      /^\/[A-Z0-9]{4}$/.test(path);
+      location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
     const searchParams = new URLSearchParams(location.search);
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
@@ -162,9 +159,8 @@ export default function App() {
           <HelpButton />
           <StageNavigator />
           <Routes>
-            <Route path="/join" element={<JoinPinView />} />
-            <Route path="/join/name" element={<JoinNameView />} />
-            <Route path="/:code" element={<JoinNameView />} />
+            <Route path="/join" element={<JoinView />} />
+            <Route path="/:code" element={<JoinView />} />
             <Route path="/lobby" element={<LobbyView />} />
             <Route path="/game" element={<RoundGallery />} />
             <Route path="/result" element={<ResultView />} />
