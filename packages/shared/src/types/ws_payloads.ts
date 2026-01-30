@@ -47,7 +47,7 @@ export interface ScorePayload {
   leaderboardTop5: LeaderboardEntry[];
   podiumTopN: PodiumEntry[];
   self: ScoreSelfEntry;
-  mode: "speed" | "accuracy";
+  mode: "speed";
 }
 
 export interface NextPayload {
