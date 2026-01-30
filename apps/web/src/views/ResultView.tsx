@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import AnswerDistribution from "../components/AnswerDistribution";
-import Leaderboard from "../components/Leaderboard";
 import NextRoundButton from "../components/NextRoundButton";
 import ShareCard, { ShareCardHandle } from "../components/ShareCard";
+import RahootLeaderboard from "../components/RahootLeaderboard";
+import RahootPodium from "../components/RahootPodium";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
@@ -12,7 +12,7 @@ import { getStoredPlayerName } from "../utils/playerName";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, playerId, answerCounts, roomCode, createNextRoom, phase } = useRoom();
+  const { players, roomCode, createNextRoom, phase } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
   const navigate = useNavigate();
   const isFinal = phase === "end";
@@ -31,13 +31,19 @@ export default function ResultView() {
     }));
   }, [players]);
 
-  const selfEntry = useMemo(() => {
-    return leaderboard.find((entry) => entry.playerId === playerId) ?? null;
-  }, [leaderboard, playerId]);
-
   const podium = useMemo(() => {
     return leaderboard.slice(0, 3).map((entry) => ({ avatarId: entry.avatarId, rank: entry.rank }));
   }, [leaderboard]);
+
+  const rahootEntries = useMemo(
+    () =>
+      leaderboard.map((entry) => ({
+        id: entry.playerId,
+        name: entry.name ?? "Player",
+        points: entry.score,
+      })),
+    [leaderboard],
+  );
 
   const winner = useMemo(() => {
     return leaderboard.length ? { avatarId: leaderboard[0].avatarId } : null;
@@ -98,24 +104,12 @@ export default function ResultView() {
           qrUrl={qrUrl}
         />
       ) : null}
-      {isLeaderboard ? <AnswerDistribution counts={answerCounts} /> : null}
       {isLeaderboard ? (
-        <Leaderboard
-          items={leaderboard}
-          self={
-            selfEntry
-              ? {
-                  playerId: selfEntry.playerId,
-                  avatarId: selfEntry.avatarId,
-                  name: selfEntry.name,
-                  rank: selfEntry.rank,
-                  score: selfEntry.score,
-                  correctCount: selfEntry.correctCount,
-                }
-              : null
-          }
-          mode="speed"
-        />
+        phase === "leaderboard" ? (
+          <RahootLeaderboard entries={rahootEntries} />
+        ) : (
+          <RahootPodium title="Final" top={rahootEntries.slice(0, 3)} />
+        )
       ) : null}
       {isFinal && (
         <div className={styles.actions}>
