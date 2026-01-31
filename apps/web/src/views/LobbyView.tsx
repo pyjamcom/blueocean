@@ -11,7 +11,7 @@ import {
   setStoredAvatarId,
 } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
-import { getStoredPlayerName } from "../utils/playerName";
+import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import styles from "./LobbyView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -28,7 +28,7 @@ export default function LobbyView() {
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, players, playerId, setReady, setAvatar } = useRoom();
+  const { roomCode, players, playerId, setReady, setAvatar, setName } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
@@ -46,6 +46,8 @@ export default function LobbyView() {
   const touchStart = useRef<number | null>(null);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [showQr, setShowQr] = useState(false);
+  const [nameDraft, setNameDraft] = useState(() => getStoredPlayerName() || "Player");
+  const [editingName, setEditingName] = useState(false);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -92,7 +94,6 @@ export default function LobbyView() {
   const selfAvatar = AVATAR_IDS[avatarIndex];
   const selfPlayer = players.find((player) => player.id === playerId);
   const selfReady = selfPlayer?.ready ?? false;
-  const selfName = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
     : undefined;
@@ -105,6 +106,24 @@ export default function LobbyView() {
       setAvatar(selfAvatar);
     }
   }, [roomCode, selfAvatar, setAvatar]);
+
+  useEffect(() => {
+    if (editingName) return;
+    const resolved = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
+    setNameDraft(resolved);
+  }, [editingName, selfPlayer?.name]);
+
+  const commitName = (nextName?: string) => {
+    const safeName = (nextName ?? nameDraft).trim().slice(0, 18);
+    if (!safeName) {
+      const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
+      setNameDraft(fallback);
+      return;
+    }
+    setNameDraft(safeName);
+    setStoredPlayerName(safeName);
+    setName(safeName);
+  };
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
@@ -158,7 +177,35 @@ export default function LobbyView() {
         <div className={styles.selfAvatarCore}>
           {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
         </div>
-        <span className={styles.selfName}>{selfName}</span>
+        <div className={styles.selfNameRow}>
+          <input
+            type="text"
+            value={nameDraft}
+            onPointerDown={(event) => event.stopPropagation()}
+            onPointerUp={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+            onFocus={() => setEditingName(true)}
+            onBlur={() => {
+              setEditingName(false);
+              commitName();
+            }}
+            onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.currentTarget.blur();
+              }
+              if (event.key === "Escape") {
+                const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
+                setEditingName(false);
+                setNameDraft(fallback);
+                event.currentTarget.blur();
+              }
+            }}
+            className={styles.selfNameInput}
+            placeholder="Your name"
+            aria-label="player name"
+          />
+        </div>
         <span className={styles.selfPulse} />
       </div>
 
