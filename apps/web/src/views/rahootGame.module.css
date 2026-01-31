@@ -25,6 +25,22 @@
   width: 100%;
 }
 
+.hostButton {
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.hostButton:hover {
+  background: rgba(0, 0, 0, 0.72);
+}
+
 .questionBadge {
   background: #ffffff;
   color: #000000;
@@ -117,6 +133,14 @@
   justify-content: center;
   gap: 20px;
   padding: 0 16px;
+}
+
+.progressTrack {
+  width: min(680px, 100%);
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  height: 14px;
+  overflow: hidden;
 }
 
 .questionTitle {

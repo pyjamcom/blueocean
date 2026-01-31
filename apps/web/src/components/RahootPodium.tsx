@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { playLoop, playOneShot, stopLoop, SFX } from "../utils/sounds";
 import styles from "./RahootPodium.module.css";
 
 export interface RahootPodiumEntry {
@@ -18,6 +19,7 @@ export default function RahootPodium({
 
   useEffect(() => {
     setStep(0);
+    stopLoop(SFX.PODIUM_ROLL);
     const timer = window.setInterval(() => {
       setStep((prev) => {
         if (prev >= 4) {
@@ -29,6 +31,22 @@ export default function RahootPodium({
     }, 1600);
     return () => window.clearInterval(timer);
   }, [top]);
+
+  useEffect(() => {
+    if (step === 1) {
+      playOneShot(SFX.PODIUM_THREE, 0.4);
+    }
+    if (step === 2) {
+      playOneShot(SFX.PODIUM_SECOND, 0.45);
+    }
+    if (step === 3) {
+      playLoop(SFX.PODIUM_ROLL, { volume: 0.3, interrupt: true });
+    }
+    if (step === 4) {
+      stopLoop(SFX.PODIUM_ROLL);
+      playOneShot(SFX.PODIUM_FIRST, 0.5);
+    }
+  }, [step]);
 
   const first = top[0];
   const second = top[1];
