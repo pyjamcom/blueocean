@@ -95,13 +95,6 @@
   place-items: center;
 }
 
-.selfNameRow {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .selfNameInput {
   width: 150px;
   padding: 6px 12px;
@@ -122,6 +115,12 @@
   outline: none;
   border-color: rgba(99, 230, 190, 0.75);
   box-shadow: 0 0 0 2px rgba(99, 230, 190, 0.2);
+}
+
+.nameRow {
+  display: flex;
+  justify-content: center;
+  margin-top: -8px;
 }
 
 .selfPulse {
