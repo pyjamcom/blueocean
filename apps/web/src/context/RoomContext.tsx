@@ -52,6 +52,7 @@ interface RoomState {
 const RoomContext = createContext<RoomState | null>(null);
 
 const MIN_ROOM_PLAYERS = 3;
+const ANSWER_DURATION_MS = 15000;
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
@@ -213,7 +214,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           const baseQuestion = questionBank[resolvedIndex];
           if (baseQuestion) {
             const shuffled = shuffleQuestionAnswers(baseQuestion, roomCode, incomingIndex);
-            setCurrentQuestion({ ...shuffled, questionIndex: incomingIndex });
+            setCurrentQuestion({ ...shuffled, duration_ms: ANSWER_DURATION_MS, questionIndex: incomingIndex });
           } else {
             setCurrentQuestion(payload);
           }
@@ -499,7 +500,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           prompt_image: question.prompt_image,
           answers: sanitizedAnswers,
           correct_index: question.correct_index,
-          duration_ms: question.duration_ms,
+          duration_ms: ANSWER_DURATION_MS,
         },
       });
       sentQuestionsRef.current.add(questionIndex);

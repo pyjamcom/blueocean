@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { playLoop, playOneShot, stopLoop, SFX } from "../utils/sounds";
+import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
 import styles from "./RahootPodium.module.css";
 
 export interface RahootPodiumEntry {
   id: string;
   name: string;
   points: number;
+  avatarId?: string;
 }
 
 export default function RahootPodium({
@@ -52,12 +54,22 @@ export default function RahootPodium({
   const second = top[1];
   const third = top[2];
 
+  const renderAvatar = (entry: RahootPodiumEntry) => {
+    const src = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+    return (
+      <span className={styles.avatar} style={{ background: avatarColor(entry.avatarId ?? entry.id) }}>
+        {src ? <img src={src} alt="" /> : <span>{entry.name.charAt(0).toUpperCase()}</span>}
+      </span>
+    );
+  };
+
   return (
     <section className={styles.wrap}>
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.podium}>
         {second && (
           <div className={`${styles.place} ${styles.second} ${step >= 2 ? styles.show : ""}`}>
+            {renderAvatar(second)}
             <div className={styles.name}>{second.name}</div>
             <div className={styles.block}>
               <div className={styles.medal}>2</div>
@@ -67,6 +79,7 @@ export default function RahootPodium({
         )}
         {first && (
           <div className={`${styles.place} ${styles.first} ${step >= 3 ? styles.show : ""}`}>
+            {renderAvatar(first)}
             <div className={styles.name}>{first.name}</div>
             <div className={styles.block}>
               <div className={`${styles.medal} ${styles.medalGold}`}>1</div>
@@ -76,6 +89,7 @@ export default function RahootPodium({
         )}
         {third && (
           <div className={`${styles.place} ${styles.third} ${step >= 1 ? styles.show : ""}`}>
+            {renderAvatar(third)}
             <div className={styles.name}>{third.name}</div>
             <div className={styles.block}>
               <div className={`${styles.medal} ${styles.medalBronze}`}>3</div>
