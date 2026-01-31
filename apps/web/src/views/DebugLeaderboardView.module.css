@@ -1,0 +1,30 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  gap: 48px;
+  padding: 32px 20px 60px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(99, 230, 190, 0.2), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(255, 77, 109, 0.25), transparent 45%),
+    linear-gradient(160deg, #120f24, #0a0a14 65%);
+  color: #f3f5ff;
+}
+
+.section {
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(243, 245, 255, 0.7);
+}
