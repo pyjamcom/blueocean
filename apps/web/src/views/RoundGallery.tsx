@@ -1,4 +1,4 @@
-import { ElementType, useEffect, useMemo, useState } from "react";
+import { ElementType, useEffect, useMemo, useRef, useState } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
 import { useRoom } from "../context/RoomContext";
 import { questionBank, QuestionRecord } from "../data/questions";
@@ -6,6 +6,7 @@ import { resolveAssetRef } from "../utils/assets";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
 import { prefetchImage } from "../utils/prefetch";
 import { playTap } from "../utils/sfx";
+import { playLoop, playOneShot, stopLoop, SFX } from "../utils/sounds";
 import Triangle from "../components/rahoot/icons/Triangle";
 import Rhombus from "../components/rahoot/icons/Rhombus";
 import Circle from "../components/rahoot/icons/Circle";
@@ -49,6 +50,7 @@ export default function RoundGallery() {
     questionIndex,
     roundStartAt,
     sendAnswer,
+    sendStage,
     roomCode,
     currentQuestion,
     players,
@@ -149,6 +151,53 @@ export default function RoundGallery() {
   const selfRank = selfEntry ? leaderboard.findIndex((entry) => entry.id === playerId) + 1 : null;
   const aheadOfMe = selfRank && selfRank > 1 ? leaderboard[selfRank - 2]?.name ?? null : null;
   const totalAnswered = answerCounts.reduce((sum, count) => sum + count, 0);
+  const lastAnsweredRef = useRef(0);
+
+  const hostAction = useMemo(() => {
+    if (!isHost) return null;
+    if (phase === "prepared") {
+      return { label: "Start", next: { phase: "round" as const, roundStartAt: Date.now() } };
+    }
+    if (phase === "round") {
+      return { label: "Skip", next: { phase: "reveal" as const, roundStartAt: roundStartAt ?? Date.now() } };
+    }
+    if (phase === "reveal") {
+      return { label: "Leaderboard", next: { phase: "leaderboard" as const, roundStartAt: roundStartAt ?? Date.now() } };
+    }
+    return null;
+  }, [isHost, phase, roundStartAt]);
+
+  useEffect(() => {
+    if (phase === "prepared") {
+      playOneShot(SFX.BOUMP, 0.35);
+    }
+  }, [phase, questionIndex]);
+
+  useEffect(() => {
+    if (phase === "round") {
+      playOneShot(SFX.SHOW, 0.4);
+      playLoop(SFX.ANSWERS_MUSIC, { volume: 0.25, interrupt: true });
+      return;
+    }
+    stopLoop(SFX.ANSWERS_MUSIC);
+  }, [phase, questionIndex]);
+
+  useEffect(() => {
+    if (phase === "reveal") {
+      playOneShot(SFX.RESULTS, 0.4);
+    }
+  }, [phase, questionIndex]);
+
+  useEffect(() => {
+    if (phase !== "round") {
+      lastAnsweredRef.current = totalAnswered;
+      return;
+    }
+    if (totalAnswered > lastAnsweredRef.current) {
+      playOneShot(SFX.ANSWERS_POP, 0.12);
+    }
+    lastAnsweredRef.current = totalAnswered;
+  }, [phase, totalAnswered]);
 
   const questionTitle = activeQuestion?.humor_tag
     ? titleCase(activeQuestion.humor_tag)
@@ -258,6 +307,7 @@ export default function RoundGallery() {
     }
     setSelectedIndex(index);
     playTap();
+    playOneShot(SFX.ANSWERS_POP, 0.2);
     sendAnswer(index);
   };
 
@@ -328,7 +378,17 @@ export default function RoundGallery() {
 
       <div className={styles.topBar}>
         <div className={styles.questionBadge}>{questionLabel}</div>
-        <div />
+        {hostAction ? (
+          <button
+            className={styles.hostButton}
+            onClick={() => sendStage({ questionIndex, ...hostAction.next })}
+            type="button"
+          >
+            {hostAction.label}
+          </button>
+        ) : (
+          <div />
+        )}
       </div>
 
       {showWait && (
@@ -373,13 +433,19 @@ export default function RoundGallery() {
           <div className={styles.questionBlock}>
             <h2 className={styles.questionTitle}>{questionTitle}</h2>
             {renderPrompt()}
+            <div className={styles.progressTrack}>
+              <div
+                className={styles.progressBar}
+                style={{ animation: `progressBar ${durationMs / 1000}s linear forwards` }}
+              />
+            </div>
           </div>
 
           <div>
             <div className={styles.statsRow}>
               <div className={styles.statPill}>
                 <span className={styles.statLabel}>Time</span>
-                <span>{secondsLeft}</span>
+                <span className={styles.animTimer}>{secondsLeft}</span>
               </div>
               <div className={styles.statPill}>
                 <span className={styles.statLabel}>Answers</span>

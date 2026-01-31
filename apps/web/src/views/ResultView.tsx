@@ -9,14 +9,16 @@ import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { randomId } from "../utils/ids";
 import { getStoredPlayerName } from "../utils/playerName";
+import { questionBank } from "../data/questions";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, roomCode, createNextRoom, phase } = useRoom();
+  const { players, roomCode, createNextRoom, phase, isHost, questionIndex, sendStage } = useRoom();
   const shareRef = useRef<ShareCardHandle | null>(null);
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const isLeaderboard = phase === "leaderboard" || phase === "end";
+  const maxQuestions = Math.min(15, questionBank.length);
 
   const leaderboard = useMemo(() => {
     if (!players.length) return [];
@@ -94,6 +96,13 @@ export default function ResultView() {
     navigate("/join");
   };
 
+  const handleHostNext = () => {
+    if (!roomCode) return;
+    const nextIndex = questionIndex + 1;
+    const nextPhase = nextIndex >= maxQuestions ? "end" : "prepared";
+    sendStage({ phase: nextPhase, questionIndex: nextIndex });
+  };
+
   return (
     <div className={styles.wrap}>
       <div className={styles.phaseHeader}>
@@ -112,7 +121,17 @@ export default function ResultView() {
       ) : null}
       {isLeaderboard ? (
         phase === "leaderboard" ? (
-          <RahootLeaderboard entries={rahootEntries} previousEntries={previousEntries} />
+          <>
+            <RahootLeaderboard entries={rahootEntries} previousEntries={previousEntries} />
+            {isHost && (
+              <div className={styles.actions}>
+                <div className={styles.actionItem}>
+                  <NextRoundButton onClick={handleHostNext} />
+                  <span className={styles.actionLabel}>Next</span>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <RahootPodium title="Final" top={rahootEntries.slice(0, 3)} />
         )
