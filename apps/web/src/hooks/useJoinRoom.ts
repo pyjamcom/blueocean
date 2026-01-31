@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useWsClient } from "./useWsClient";
 import { getOrCreateClientId, randomId } from "../utils/ids";
+import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 
 export interface UseJoinRoomOptions {
@@ -9,7 +10,7 @@ export interface UseJoinRoomOptions {
   playerName?: string;
 }
 
-export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerName }: UseJoinRoomOptions) {
+export function useJoinRoom({ roomCode, avatarId, playerName }: UseJoinRoomOptions) {
   const [joinedRoom, setJoinedRoom] = useState<string | null>(null);
   const [errors, setErrors] = useState<unknown[]>([]);
 
@@ -22,11 +23,16 @@ export function useJoinRoom({ roomCode, avatarId = "avatar_raccoon_dj", playerNa
       ? "wss://ws.escapers.app"
       : "ws://localhost:3001");
 
+  const resolvedAvatarId = useMemo(
+    () => avatarId ?? getStoredAvatarId() ?? randomAvatarId(),
+    [avatarId],
+  );
+
   const { status, send } = useWsClient({
     url: wsUrl,
     onOpen: () => {
       const safeName = playerName?.trim();
-      const payload: Record<string, string> = { roomCode: code, playerId, avatarId };
+      const payload: Record<string, string> = { roomCode: code, playerId, avatarId: resolvedAvatarId };
       if (safeName) {
         payload.playerName = safeName.slice(0, 18);
       }
