@@ -177,36 +177,34 @@ export default function LobbyView() {
         <div className={styles.selfAvatarCore}>
           {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
         </div>
-        <div className={styles.selfNameRow}>
-          <input
-            type="text"
-            value={nameDraft}
-            onPointerDown={(event) => event.stopPropagation()}
-            onPointerUp={(event) => event.stopPropagation()}
-            onClick={(event) => event.stopPropagation()}
-            onFocus={() => setEditingName(true)}
-            onBlur={() => {
-              setEditingName(false);
-              commitName();
-            }}
-            onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.currentTarget.blur();
-              }
-              if (event.key === "Escape") {
-                const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
-                setEditingName(false);
-                setNameDraft(fallback);
-                event.currentTarget.blur();
-              }
-            }}
-            className={styles.selfNameInput}
-            placeholder="Your name"
-            aria-label="player name"
-          />
-        </div>
         <span className={styles.selfPulse} />
+      </div>
+
+      <div className={styles.nameRow}>
+        <input
+          type="text"
+          value={nameDraft}
+          onFocus={() => setEditingName(true)}
+          onBlur={() => {
+            setEditingName(false);
+            commitName();
+          }}
+          onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.currentTarget.blur();
+            }
+            if (event.key === "Escape") {
+              const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
+              setEditingName(false);
+              setNameDraft(fallback);
+              event.currentTarget.blur();
+            }
+          }}
+          className={styles.selfNameInput}
+          placeholder="Your name"
+          aria-label="player name"
+        />
       </div>
 
       <div className={styles.hintRow}>
