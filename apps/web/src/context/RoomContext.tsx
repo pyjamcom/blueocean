@@ -3,6 +3,7 @@ import { useWsClient } from "../hooks/useWsClient";
 import { getOrCreateClientId, randomId } from "../utils/ids";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questionShuffle";
+import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 
 export type RoomPhase = "join" | "lobby" | "prepared" | "round" | "reveal" | "leaderboard" | "end";
 
@@ -291,9 +292,10 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [flushJoin, wsStatus]);
 
   const joinRoom = useCallback(
-    (requestedRoom?: string, avatarId = "avatar_raccoon_dj", playerName?: string) => {
+    (requestedRoom?: string, avatarId?: string, playerName?: string) => {
       const room = requestedRoom ?? randomId(4);
-      pendingJoinRef.current = { roomCode: room, avatarId, playerName };
+      const resolvedAvatar = avatarId ?? getStoredAvatarId() ?? randomAvatarId();
+      pendingJoinRef.current = { roomCode: room, avatarId: resolvedAvatar, playerName };
       setErrors([]);
       joinSentRef.current = false;
       flushJoin();
@@ -324,9 +326,10 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [clearHostTimers]);
 
   const createNextRoom = useCallback(
-    (targetRoom = randomId(4), avatarId = "avatar_raccoon_dj", playerName?: string) => {
+    (targetRoom = randomId(4), avatarId?: string, playerName?: string) => {
       const nextRoom = targetRoom;
-      pendingJoinRef.current = { roomCode: nextRoom, avatarId, playerName };
+      const resolvedAvatar = avatarId ?? getStoredAvatarId() ?? randomAvatarId();
+      pendingJoinRef.current = { roomCode: nextRoom, avatarId: resolvedAvatar, playerName };
       joinSentRef.current = false;
       resetLocalState();
       if (roomCode && wsStatus === "open") {
