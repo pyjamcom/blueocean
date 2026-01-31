@@ -28,7 +28,7 @@ export default function LobbyView() {
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, players, playerId, setReady, setAvatar, startGame, isHost } = useRoom();
+  const { roomCode, players, playerId, setReady, setAvatar } = useRoom();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
@@ -98,7 +98,6 @@ export default function LobbyView() {
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
   const startLabel = selfReady ? "Waiting to start" : "Ready to play";
-  const canHostStart = isHost && players.length >= 3;
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -189,19 +188,6 @@ export default function LobbyView() {
         <span className={styles.startLabel}>{startLabel}</span>
       </div>
 
-      {isHost && (
-        <div className={styles.hostRow}>
-          <button
-            type="button"
-            className={styles.hostStart}
-            onClick={() => startGame()}
-            disabled={!canHostStart}
-          >
-            Start game
-          </button>
-          {!canHostStart && <span className={styles.hostHint}>Need 3+ players</span>}
-        </div>
-      )}
 
       {showQr && (
         <div className={styles.qrOverlay} onClick={() => setShowQr(false)}>

@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styles from "./RahootLeaderboard.module.css";
+import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
 
 export interface RahootLeaderboardEntry {
   id: string;
   name: string;
   points: number;
+  avatarId?: string;
 }
 
 interface AnimatedPointsProps {
@@ -91,6 +93,7 @@ export default function RahootLeaderboard({
       <div className={styles.list}>
         {entries.map((entry) => {
           const prev = prevMap.get(entry.id);
+          const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
           return (
             <div
               key={entry.id}
@@ -103,7 +106,19 @@ export default function RahootLeaderboard({
                 }
               }}
             >
-              <span className={styles.name}>{entry.name}</span>
+              <div className={styles.nameRow}>
+                <span
+                  className={styles.avatar}
+                  style={{ background: avatarColor(entry.avatarId ?? entry.id) }}
+                >
+                  {avatarSrc ? (
+                    <img src={avatarSrc} alt="" />
+                  ) : (
+                    <span>{entry.name.charAt(0).toUpperCase()}</span>
+                  )}
+                </span>
+                <span className={styles.name}>{entry.name}</span>
+              </div>
               {showAnimated ? (
                 <AnimatedPoints from={prev?.points ?? 0} to={entry.points} />
               ) : (

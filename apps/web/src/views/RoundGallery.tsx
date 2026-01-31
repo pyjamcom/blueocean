@@ -50,7 +50,6 @@ export default function RoundGallery() {
     questionIndex,
     roundStartAt,
     sendAnswer,
-    sendStage,
     roomCode,
     currentQuestion,
     players,
@@ -58,7 +57,6 @@ export default function RoundGallery() {
     lastSelfPoints,
     answerCounts,
     wsStatus,
-    isHost,
   } = useRoom();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [revealStep, setRevealStep] = useState<"answers" | "result">("answers");
@@ -72,7 +70,7 @@ export default function RoundGallery() {
     }
     return baseQuestion ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex) : undefined;
   }, [baseQuestion, currentQuestion, questionIndex, roomCode]);
-  const durationMs = activeQuestion?.duration_ms ?? 10000;
+  const durationMs = 15000;
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
   const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
 
@@ -114,7 +112,7 @@ export default function RoundGallery() {
           prompt_image: fallbackSrc,
           answers: [],
           correct_index: 0,
-          duration_ms: 10000,
+          duration_ms: 15000,
         })),
     [activeQuestion],
   );
@@ -152,20 +150,6 @@ export default function RoundGallery() {
   const aheadOfMe = selfRank && selfRank > 1 ? leaderboard[selfRank - 2]?.name ?? null : null;
   const totalAnswered = answerCounts.reduce((sum, count) => sum + count, 0);
   const lastAnsweredRef = useRef(0);
-
-  const hostAction = useMemo(() => {
-    if (!isHost) return null;
-    if (phase === "prepared") {
-      return { label: "Start", next: { phase: "round" as const, roundStartAt: Date.now() } };
-    }
-    if (phase === "round") {
-      return { label: "Skip", next: { phase: "reveal" as const, roundStartAt: roundStartAt ?? Date.now() } };
-    }
-    if (phase === "reveal") {
-      return { label: "Leaderboard", next: { phase: "leaderboard" as const, roundStartAt: roundStartAt ?? Date.now() } };
-    }
-    return null;
-  }, [isHost, phase, roundStartAt]);
 
   useEffect(() => {
     if (phase === "prepared") {
@@ -317,9 +301,8 @@ export default function RoundGallery() {
   const showReveal = phase === "reveal";
   const showAnsweredWait = showRound && selectedIndex !== null;
   const showAnswerGrid = showRound && selectedIndex === null;
-  const showRevealAnswers = showReveal && (!isHost && revealStep === "answers");
-  const showRevealResult = showReveal && (!isHost && revealStep === "result");
-  const showManagerResponses = showReveal && isHost;
+  const showRevealAnswers = showReveal && revealStep === "answers";
+  const showRevealResult = showReveal && revealStep === "result";
 
   const renderAnswerRevealGrid = () => (
     <div className={styles.answerRevealGrid}>
@@ -346,31 +329,6 @@ export default function RoundGallery() {
     </div>
   );
 
-  const renderResponsesChart = () => {
-    const totalCount = answerCounts.reduce((sum, count) => sum + count, 0);
-    return (
-      <div
-        className={styles.responsesChart}
-        style={{ gridTemplateColumns: `repeat(${answers.length}, minmax(0, 1fr))` }}
-      >
-        {answers.map((_, index) => {
-          const count = answerCounts[index] ?? 0;
-          const ratio = totalCount > 0 ? count / totalCount : 0;
-          const height = `${Math.max(8, Math.round(ratio * 100))}%`;
-          return (
-            <div
-              key={`resp-${index}`}
-              className={`${styles.responseColumn} ${ANSWER_COLORS[index]}`}
-              style={{ height }}
-            >
-              <span className={styles.responseCount}>{count}</span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
     <section className={styles.root}>
       <div className={styles.background} aria-hidden="true">
@@ -378,17 +336,7 @@ export default function RoundGallery() {
 
       <div className={styles.topBar}>
         <div className={styles.questionBadge}>{questionLabel}</div>
-        {hostAction ? (
-          <button
-            className={styles.hostButton}
-            onClick={() => sendStage({ questionIndex, ...hostAction.next })}
-            type="button"
-          >
-            {hostAction.label}
-          </button>
-        ) : (
-          <div />
-        )}
+        <div />
       </div>
 
       {showWait && (
@@ -435,6 +383,7 @@ export default function RoundGallery() {
             {renderPrompt()}
             <div className={styles.progressTrack}>
               <div
+                key={`${questionIndex}-${phase}`}
                 className={styles.progressBar}
                 style={{ animation: `progressBar ${durationMs / 1000}s linear forwards` }}
               />
@@ -479,15 +428,6 @@ export default function RoundGallery() {
             </div>
           </div>
         </div>
-      )}
-
-      {showManagerResponses && (
-        <section className={`${styles.centerWrap} ${styles.animShow}`}>
-          <h2 className={styles.questionTitle}>{questionTitle}</h2>
-          {renderPrompt()}
-          {renderResponsesChart()}
-          {renderAnswerRevealGrid()}
-        </section>
       )}
 
       {showRevealAnswers && (

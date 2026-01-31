@@ -1,6 +1,8 @@
 const SOUND_ENABLED_KEY = "sound_enabled";
 
 const audioCache = new Map<string, HTMLAudioElement>();
+const pendingLoops = new Set<string>();
+let unlockListenerBound = false;
 
 function isSoundEnabled() {
   if (typeof window === "undefined") return false;
@@ -17,6 +19,27 @@ function getAudio(src: string) {
   return audio;
 }
 
+function bindUnlockListener() {
+  if (unlockListenerBound || typeof window === "undefined") return;
+  unlockListenerBound = true;
+  const unlock = () => {
+    pendingLoops.forEach((src) => {
+      const audio = getAudio(src);
+      audio.loop = true;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => undefined);
+      }
+    });
+    pendingLoops.clear();
+    window.removeEventListener("pointerdown", unlock);
+    window.removeEventListener("touchstart", unlock);
+    unlockListenerBound = false;
+  };
+  window.addEventListener("pointerdown", unlock, { once: true });
+  window.addEventListener("touchstart", unlock, { once: true });
+}
+
 export function playLoop(
   src: string,
   { volume = 0.2, interrupt = false }: { volume?: number; interrupt?: boolean } = {},
@@ -30,7 +53,10 @@ export function playLoop(
   }
   const playPromise = audio.play();
   if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => undefined);
+    playPromise.catch(() => {
+      pendingLoops.add(src);
+      bindUnlockListener();
+    });
   }
 }
 
