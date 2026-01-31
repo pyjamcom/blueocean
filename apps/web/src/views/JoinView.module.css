@@ -50,6 +50,63 @@
   z-index: 2;
 }
 
+.authRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+
+.authButton {
+  min-width: 140px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.authButton:hover,
+.authButton:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.authButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.authGoogle {
+  background: rgba(66, 133, 244, 0.25);
+  border-color: rgba(66, 133, 244, 0.5);
+}
+
+.authApple {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.authStatus {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  z-index: 2;
+}
+
+.authError {
+  font-size: 12px;
+  color: #ff9aa6;
+  text-align: center;
+  z-index: 2;
+}
+
 .nameInput {
   width: min(80vw, 320px);
   padding: 12px 18px;

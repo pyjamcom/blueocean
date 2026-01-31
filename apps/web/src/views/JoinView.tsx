@@ -14,6 +14,12 @@ import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import { randomId } from "../utils/ids";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
+import {
+  isFirebaseEnabled,
+  onFirebaseUser,
+  signInWithApple,
+  signInWithGoogle,
+} from "../utils/firebase";
 import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -44,6 +50,7 @@ export default function JoinView() {
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
   const { roomCode, joinRoom, setAvatar, setName, isHost, players } = useRoom();
   const variant = resolveVariant(age);
+  const firebaseEnabled = isFirebaseEnabled();
   const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -61,6 +68,8 @@ export default function JoinView() {
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
   const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
+  const [authUser, setAuthUser] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
     if (!codeParam) return;
@@ -109,6 +118,28 @@ export default function JoinView() {
       setPendingRoomCode(null);
     }
   }, [roomCode]);
+
+  useEffect(() => {
+    if (!firebaseEnabled) return;
+    return onFirebaseUser((user) => {
+      if (!user) {
+        setAuthUser(null);
+        return;
+      }
+      const displayName =
+        user.displayName ?? (user.email ? user.email.split("@")[0] : "");
+      if (displayName) {
+        setAuthUser(displayName);
+        if (!playerName) {
+          setPlayerName(displayName);
+          setStoredPlayerName(displayName);
+          if (roomCode) {
+            setName(displayName);
+          }
+        }
+      }
+    });
+  }, [firebaseEnabled, playerName, roomCode, setName]);
 
   useEffect(() => {
     setQrSrc("");
@@ -201,6 +232,24 @@ export default function JoinView() {
     setAvatarOpen(false);
   };
 
+  const handleGoogleAuth = async () => {
+    setAuthError(null);
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      setAuthError("Google sign-in failed");
+    }
+  };
+
+  const handleAppleAuth = async () => {
+    setAuthError(null);
+    try {
+      await signInWithApple();
+    } catch (error) {
+      setAuthError("Apple sign-in failed");
+    }
+  };
+
   const currentAvatar = AVATAR_IDS[avatarIndex];
   const avatarAssetId = assetIds.length
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length]
@@ -246,6 +295,28 @@ export default function JoinView() {
           />
         </div>
       ) : null}
+      {showQr ? (
+        <div className={styles.authRow}>
+          <button
+            type="button"
+            className={`${styles.authButton} ${styles.authGoogle}`}
+            onClick={handleGoogleAuth}
+            disabled={!firebaseEnabled}
+          >
+            Google
+          </button>
+          <button
+            type="button"
+            className={`${styles.authButton} ${styles.authApple}`}
+            onClick={handleAppleAuth}
+            disabled={!firebaseEnabled}
+          >
+            Apple
+          </button>
+        </div>
+      ) : null}
+      {authUser ? <div className={styles.authStatus}>Signed in as {authUser}</div> : null}
+      {authError ? <div className={styles.authError}>{authError}</div> : null}
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>
           <button
