@@ -31,6 +31,47 @@
   font-size: 12px;
 }
 
+.teamChip {
+  position: relative;
+  overflow: hidden;
+}
+
+.teamBar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(99, 230, 190, 0.9), rgba(255, 217, 61, 0.9));
+  opacity: 0.9;
+}
+
+.teamActive {
+  background: rgba(99, 230, 190, 0.18);
+  border: 1px solid rgba(99, 230, 190, 0.35);
+}
+
+.teamPaused {
+  background: rgba(255, 217, 61, 0.16);
+  border: 1px solid rgba(255, 217, 61, 0.32);
+}
+
+.teamIdle {
+  opacity: 0.65;
+}
+
+.teamPulse {
+  animation: teamPulse 0.9s ease;
+}
+
+@keyframes teamPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 230, 190, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(99, 230, 190, 0);
+  }
+}
+
 .questCard {
   display: grid;
   gap: 6px;

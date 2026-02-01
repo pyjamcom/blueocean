@@ -36,6 +36,18 @@
       "ga4_events": ["team_streak_updated"],
       "notes": "Team streak progression for cooperative retention."
     },
+    "team_streak_day_completed": {
+      "ga4_events": ["team_streak_day_completed"],
+      "notes": "Team streak day completion event with completion rate."
+    },
+    "team_completion_rate": {
+      "ga4_events": ["team_completion_rate"],
+      "notes": "Daily team completion rate for streak analytics."
+    },
+    "team_streak_broken": {
+      "ga4_events": ["team_streak_broken"],
+      "notes": "Team streak broken or reset event."
+    },
     "season_rollover": {
       "ga4_events": ["season_rollover"],
       "notes": "Short season reset event."

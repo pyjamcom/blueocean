@@ -157,6 +157,12 @@ export default function LeaderboardView() {
       : `${Math.round(selfRatio * 100)}% glow`;
 
   const subtitle = useMemo(() => (period === "weekly" ? "This week" : "This season"), [period]);
+  const seasonHint = "Season % = leader score. 100% top, 50% half.";
+  const boardHint = loading
+    ? "Loading..."
+    : period === "season"
+      ? seasonHint
+      : "Keep it silly";
   const scopeLabel = engagement.group ? `Crew ${engagement.group.code}` : "Global";
   const boardTitle = engagement.group ? "Top crew" : "Top vibes";
 
@@ -209,7 +215,7 @@ export default function LeaderboardView() {
       <section className={styles.board}>
         <div className={styles.boardHeader}>
           <span className={styles.boardTitle}>{boardTitle}</span>
-          <span className={styles.boardHint}>{loading ? "Loading..." : "Keep it silly"}</span>
+          <span className={styles.boardHint}>{boardHint}</span>
         </div>
         <div className={styles.list}>
           {topList.map((entry) => {

@@ -146,6 +146,7 @@ app.post("/crew/create", async (req, res) => {
     seasonPoints: 0,
     correctCount: 0,
     streak: 0,
+    lastRoundDay: null,
     role: "owner",
     title: "Captain",
     updatedAt: Date.now(),
@@ -157,6 +158,7 @@ app.post("/crew/create", async (req, res) => {
     updatedAt: Date.now(),
     members: { [member.id]: member },
     banned: {},
+    teamStreak: { current: 0, lastDay: null, completionRate: 0 },
   };
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew), role: "owner" });
@@ -192,12 +194,14 @@ app.post("/crew/join", async (req, res) => {
     seasonPoints: crew.members[playerId]?.seasonPoints ?? 0,
     correctCount: crew.members[playerId]?.correctCount ?? 0,
     streak: crew.members[playerId]?.streak ?? 0,
+    lastRoundDay: crew.members[playerId]?.lastRoundDay ?? null,
     role: crew.members[playerId]?.role ?? "member",
     title: crew.members[playerId]?.title,
     updatedAt: Date.now(),
   };
   crew.updatedAt = Date.now();
   recomputeCrewTitles(crew);
+  applyTeamStreak(crew, false);
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew), role: crew.members[playerId].role });
 });
@@ -222,6 +226,7 @@ app.post("/crew/leave", async (req, res) => {
     return;
   }
   recomputeCrewTitles(crew);
+  applyTeamStreak(crew, false);
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew) });
 });
@@ -239,6 +244,7 @@ app.post("/crew/update", async (req, res) => {
     return;
   }
   const existing = crew.members[playerId];
+  const lastRoundDay = isDayKey(req.body?.lastRoundDay) ? req.body.lastRoundDay : existing?.lastRoundDay ?? null;
   const avatarId = req.body?.avatarId ?? existing?.avatarId ?? "unknown";
   const member: CrewMember = {
     id: playerId,
@@ -250,6 +256,7 @@ app.post("/crew/update", async (req, res) => {
     seasonPoints: typeof req.body?.seasonPoints === "number" ? req.body.seasonPoints : existing?.seasonPoints ?? 0,
     correctCount: typeof req.body?.correctCount === "number" ? req.body.correctCount : existing?.correctCount ?? 0,
     streak: typeof req.body?.streak === "number" ? req.body.streak : existing?.streak ?? 0,
+    lastRoundDay,
     role: existing?.role ?? "member",
     title: existing?.title,
     updatedAt: Date.now(),
@@ -257,6 +264,7 @@ app.post("/crew/update", async (req, res) => {
   crew.members[playerId] = member;
   crew.updatedAt = Date.now();
   recomputeCrewTitles(crew);
+  applyTeamStreak(crew, true);
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew), role: member.role });
 });
@@ -295,6 +303,7 @@ app.post("/crew/kick", async (req, res) => {
   delete crew.members[targetId];
   crew.updatedAt = Date.now();
   recomputeCrewTitles(crew);
+  applyTeamStreak(crew, false);
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew) });
 });
@@ -341,6 +350,7 @@ app.post("/crew/ban", async (req, res) => {
   delete crew.members[targetId];
   crew.updatedAt = Date.now();
   recomputeCrewTitles(crew);
+  applyTeamStreak(crew, false);
   await writeCrew(crew);
   res.json({ ok: true, crew: crewToResponse(crew) });
 });
@@ -516,6 +526,8 @@ const INCIDENT_LOG_LIMIT = 500;
 const PUBLIC_ROOM_CODE = "PLAY";
 const PUBLIC_ROOM_POINTER_KEY = "public:PLAY:next";
 const CREW_INDEX_KEY = "crew:index";
+const TEAM_COMPLETION_RATE = 0.6;
+const DAY_KEY_RE = /^\d{4}-\d{2}-\d{2}$/;
 let publicRoomPointerMemory: string | null = null;
 type RoomTimers = {
   reveal?: ReturnType<typeof setTimeout>;
@@ -537,9 +549,16 @@ interface CrewMember {
   seasonPoints: number;
   correctCount: number;
   streak: number;
+  lastRoundDay?: string | null;
   role: CrewRole;
   title?: string;
   updatedAt: number;
+}
+
+interface CrewTeamStreak {
+  current: number;
+  lastDay: string | null;
+  completionRate: number;
 }
 
 interface Crew {
@@ -549,6 +568,7 @@ interface Crew {
   updatedAt: number;
   members: Record<string, CrewMember>;
   banned: Record<string, { id: string; name?: string; avatarId?: string; bannedAt: number; bannedBy: string }>;
+  teamStreak: CrewTeamStreak;
 }
 
 type IncidentType =
@@ -583,6 +603,27 @@ const normalizeCrewCode = (raw?: string) =>
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, "")
     .slice(0, 6);
+
+const formatDayKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const parseDayKey = (dayKey: string) => {
+  const [year, month, day] = dayKey.split("-").map((part) => Number(part));
+  return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
+};
+
+const diffDays = (a: string, b: string) => {
+  const aDate = parseDayKey(a);
+  const bDate = parseDayKey(b);
+  const diffMs = bDate.getTime() - aDate.getTime();
+  return Math.floor(diffMs / (24 * 60 * 60 * 1000));
+};
+
+const isDayKey = (value: unknown): value is string => typeof value === "string" && DAY_KEY_RE.test(value);
 
 const sanitizeName = (name?: string) => {
   const trimmed = (name ?? "").trim().slice(0, 18);
@@ -631,6 +672,9 @@ async function readCrew(code: string): Promise<Crew | null> {
       if (!crew.banned) {
         crew.banned = {};
       }
+      if (!crew.teamStreak) {
+        crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
+      }
       return crew;
     } catch {
       return null;
@@ -639,6 +683,9 @@ async function readCrew(code: string): Promise<Crew | null> {
   const crew = crewStore.get(code) ?? null;
   if (crew && !crew.banned) {
     crew.banned = {};
+  }
+  if (crew && !crew.teamStreak) {
+    crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
   }
   return crew;
 }
@@ -681,10 +728,32 @@ function recomputeCrewTitles(crew: Crew) {
   });
 }
 
+function applyTeamStreak(crew: Crew, allowIncrement: boolean) {
+  const today = formatDayKey(new Date());
+  if (!crew.teamStreak) {
+    crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
+  }
+  if (crew.teamStreak.lastDay && crew.teamStreak.lastDay !== today) {
+    const gap = diffDays(crew.teamStreak.lastDay, today);
+    if (gap > 1) {
+      crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
+    }
+  }
+  const members = Object.values(crew.members);
+  const completed = members.filter((member) => member.lastRoundDay === today).length;
+  const completionRate = members.length ? completed / members.length : 0;
+  crew.teamStreak.completionRate = completionRate;
+  if (allowIncrement && completionRate >= TEAM_COMPLETION_RATE && crew.teamStreak.lastDay !== today) {
+    crew.teamStreak.current += 1;
+    crew.teamStreak.lastDay = today;
+  }
+}
+
 function crewToResponse(crew: Crew) {
   return {
     code: crew.code,
     name: crew.name,
+    teamStreak: crew.teamStreak,
     members: Object.values(crew.members).map((member) => ({
       id: member.id,
       name: member.name,

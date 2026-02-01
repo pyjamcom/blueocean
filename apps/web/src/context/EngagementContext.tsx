@@ -5,7 +5,6 @@ import {
   FEATURE_FLAGS,
   FAST_ANSWER_MS,
   GRACE_DAYS_PER_SEASON,
-  TEAM_COMPLETION_RATE,
 } from "../engagement/config";
 import {
   AnswerResultInput,
@@ -201,6 +200,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     seasonPoints: number;
     correct: number;
     streak: number;
+    lastRoundDay: string | null;
     at: number;
   } | null>(null);
 
@@ -219,22 +219,11 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     setState((prev) => applyRollover(prev, new Date()));
   }, []);
 
-  const recordRoundComplete = useCallback((input: RoundCompleteInput) => {
+  const recordRoundComplete = useCallback((_input: RoundCompleteInput) => {
     setState((prev) => {
       const now = new Date();
       const today = formatDayKey(now);
       let next = applyRollover(prev, now);
-      const completionRate = input.totalPlayers > 0 ? input.answeredCount / input.totalPlayers : 0;
-      const teamEligible = completionRate >= TEAM_COMPLETION_RATE;
-      if (next.group && teamEligible && next.teamStreak.lastDay !== today) {
-        next.teamStreak = {
-          ...next.teamStreak,
-          current: next.teamStreak.current + 1,
-          lastDay: today,
-          completionRate,
-        };
-        trackEvent("team_streak_updated", { count: next.teamStreak.current, completionRate });
-      }
       if (next.streak.lastDay !== today) {
         const current = next.streak.current + 1;
         next.streak = {
@@ -340,6 +329,9 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       if (!res.ok) return null;
       const data = await res.json();
       if (!data?.crew?.code) return null;
+      if (data?.crew?.teamStreak) {
+        setState((prev) => ({ ...prev, teamStreak: data.crew.teamStreak }));
+      }
       const group: EngagementGroup = {
         code: data.crew.code,
         name: data.crew.name ?? `Crew ${data.crew.code}`,
@@ -364,6 +356,9 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         if (!res.ok) return null;
         const data = await res.json();
         if (!data?.crew?.code) return null;
+        if (data?.crew?.teamStreak) {
+          setState((prev) => ({ ...prev, teamStreak: data.crew.teamStreak }));
+        }
         const group: EngagementGroup = {
           code: data.crew.code,
           name: data.crew.name ?? `Crew ${data.crew.code}`,
@@ -404,7 +399,8 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       lastSync.lastWeekPoints === state.week.lastWeekPoints &&
       lastSync.seasonPoints === state.seasonProgress.points &&
       lastSync.correct === state.stats.totalCorrect &&
-      lastSync.streak === state.streak.current
+      lastSync.streak === state.streak.current &&
+      lastSync.lastRoundDay === state.stats.lastRoundDay
     ) {
       return;
     }
@@ -414,6 +410,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       seasonPoints: state.seasonProgress.points,
       correct: state.stats.totalCorrect,
       streak: state.streak.current,
+      lastRoundDay: state.stats.lastRoundDay,
       at: now,
     };
     const { playerId, name, avatarId } = getIdentity();
@@ -430,14 +427,43 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         seasonPoints: state.seasonProgress.points,
         correctCount: state.stats.totalCorrect,
         streak: state.streak.current,
+        lastRoundDay: state.stats.lastRoundDay,
       }),
       keepalive: true,
-    }).catch(() => undefined);
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const nextTeam = data?.crew?.teamStreak;
+        if (!nextTeam) return;
+        setState((prev) => {
+          const prevTeam = prev.teamStreak;
+          const same =
+            prevTeam.current === nextTeam.current &&
+            prevTeam.lastDay === nextTeam.lastDay &&
+            prevTeam.completionRate === nextTeam.completionRate;
+          if (!same) {
+            if (nextTeam.current > prevTeam.current) {
+              trackEvent("team_streak_day_completed", {
+                count: nextTeam.current,
+                completionRate: nextTeam.completionRate,
+              });
+            } else if (nextTeam.current < prevTeam.current) {
+              trackEvent("team_streak_broken", { previous: prevTeam.current });
+            }
+            if (nextTeam.completionRate !== prevTeam.completionRate) {
+              trackEvent("team_completion_rate", { completionRate: nextTeam.completionRate });
+            }
+          }
+          return same ? prev : { ...prev, teamStreak: nextTeam };
+        });
+      })
+      .catch(() => undefined);
   }, [
     apiBase,
     getIdentity,
     state.group,
     state.stats.totalCorrect,
+    state.stats.lastRoundDay,
     state.streak.current,
     state.week.lastWeekPoints,
     state.week.points,

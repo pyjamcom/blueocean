@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, FEATURE_FLAGS } from "../../engagement/config";
 import { useEngagement } from "../../context/EngagementContext";
 import frames from "../../engagement/frames.module.css";
@@ -30,6 +30,18 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const [crewLoading, setCrewLoading] = useState(false);
   const selfId = getOrCreateClientId();
   const isOwner = state.group?.role === "owner";
+  const prevTeamStreak = useRef(state.teamStreak.current);
+  const [teamPulse, setTeamPulse] = useState(false);
+
+  useEffect(() => {
+    if (state.teamStreak.current > prevTeamStreak.current) {
+      setTeamPulse(true);
+      prevTeamStreak.current = state.teamStreak.current;
+      const timer = window.setTimeout(() => setTeamPulse(false), 900);
+      return () => window.clearTimeout(timer);
+    }
+    prevTeamStreak.current = state.teamStreak.current;
+  }, [state.teamStreak.current]);
 
   useEffect(() => {
     actions.refresh();
@@ -76,6 +88,13 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const equippedFrame = state.cosmetics.equipped.frame ?? null;
   const isSeasonStart = formatDayKey(new Date()) === state.season.startDay;
   const showQuest = mode === "lobby";
+  const todayKey = formatDayKey(new Date());
+  const teamStatus = !state.teamStreak.lastDay
+    ? "idle"
+    : state.teamStreak.lastDay === todayKey
+      ? "active"
+      : "paused";
+  const teamProgress = Math.min(1, Math.max(0, state.teamStreak.completionRate ?? 0));
   const cosmeticMap = useMemo(
     () => new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label])),
     [],
@@ -128,7 +147,16 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
           </span>
         ) : null}
         {FEATURE_FLAGS.teamStreaks && state.group && (
-          <span className={styles.chip}>
+          <span
+            className={`${styles.chip} ${styles.teamChip} ${teamPulse ? styles.teamPulse : ""} ${
+              teamStatus === "active"
+                ? styles.teamActive
+                : teamStatus === "paused"
+                  ? styles.teamPaused
+                  : styles.teamIdle
+            }`}
+          >
+            <span className={styles.teamBar} style={{ width: `${teamProgress * 100}%` }} />
             <span className={styles.chipIcon}>🤝</span>
             {state.teamStreak.current}
           </span>
@@ -305,6 +333,7 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
                     <div className={styles.groupHint}>No crew yet</div>
                   )}
                 </div>
+                <div className={styles.groupHint}>Boot/Ban — owner only</div>
                 <button
                   type="button"
                   className={styles.actionButton}

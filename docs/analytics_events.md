@@ -11,6 +11,14 @@
 - leaderboard_view
 - sharecard_generate
 - replay_click
+- team_streak_day_completed
+- team_completion_rate
+- team_streak_broken
+
+## Engagement payloads (selected)
+- team_streak_day_completed: { count, completionRate }
+- team_completion_rate: { completionRate }
+- team_streak_broken: { previous }
 
 ## KPI mappings
 - Time‑to‑Start = round_start - create_room
