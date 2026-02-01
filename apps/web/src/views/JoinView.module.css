@@ -137,7 +137,7 @@
 
 .iconRow {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   width: min(92vw, 620px);
   z-index: 2;
@@ -193,6 +193,11 @@
 .iconPlay {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><polygon points='7,5 20,12 7,19'/></svg>");
   background-color: rgba(255, 217, 61, 0.25);
+}
+
+.iconLeaderboard {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'><path d='M8 21h8'/><path d='M12 17V7'/><path d='M7 7h10'/><path d='M8 7l-3 3'/><path d='M16 7l3 3'/><path d='M5 10v4a7 7 0 0 0 14 0v-4'/></svg>");
+  background-color: rgba(114, 92, 255, 0.24);
 }
 
 .avatarOverlay {

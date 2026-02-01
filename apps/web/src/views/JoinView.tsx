@@ -225,6 +225,11 @@ export default function JoinView() {
     setJoinPending(true);
   };
 
+  const handleLeaderboardClick = () => {
+    clearHostWait();
+    navigate("/leaderboard");
+  };
+
   const handleAvatarStep = (direction: number) => {
     setAvatarIndex((prev) => {
       const next = (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length;
@@ -352,6 +357,15 @@ export default function JoinView() {
             onClick={handlePlayClick}
           />
           <span className={styles.iconLabel}>Join the game</span>
+        </div>
+        <div className={styles.iconItem}>
+          <button
+            type="button"
+            className={`${styles.iconBubble} ${styles.iconLeaderboard}`}
+            aria-label="leaderboard"
+            onClick={handleLeaderboardClick}
+          />
+          <span className={styles.iconLabel}>Leaderboard</span>
         </div>
       </div>
 
