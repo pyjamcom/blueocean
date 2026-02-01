@@ -423,6 +423,14 @@ export default function JoinView() {
         </div>
       )}
 
+      <div className={styles.legalFooter}>
+        <a href="/legal/privacy">Privacy</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/terms">Terms</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/data-deletion">Data deletion</a>
+      </div>
+
     </div>
   );
 }
