@@ -1,5 +1,6 @@
 import { ElementType, useEffect, useMemo, useRef, useState } from "react";
 import { AnswerOption } from "../components/AnswerGrid";
+import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
 import { questionBank, QuestionRecord } from "../data/questions";
 import { resolveAssetRef } from "../utils/assets";
@@ -58,8 +59,10 @@ export default function RoundGallery() {
     answerCounts,
     wsStatus,
   } = useRoom();
+  const { actions: engagementActions } = useEngagement();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [revealStep, setRevealStep] = useState<"answers" | "result">("answers");
+  const recordedRoundRef = useRef<number | null>(null);
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
   const activeQuestion = useMemo(() => {
@@ -77,6 +80,26 @@ export default function RoundGallery() {
   useEffect(() => {
     setSelectedIndex(null);
   }, [questionIndex]);
+
+  useEffect(() => {
+    if (phase !== "reveal" && phase !== "leaderboard") {
+      return;
+    }
+    if (recordedRoundRef.current === questionIndex) {
+      return;
+    }
+    recordedRoundRef.current = questionIndex;
+    const answeredCount = answerCounts.reduce((sum, count) => sum + count, 0);
+    engagementActions.recordRoundComplete({
+      answeredCount,
+      totalPlayers: players.length,
+    });
+  }, [answerCounts, engagementActions, phase, players.length, questionIndex]);
+
+  useEffect(() => {
+    if (!lastSelfPoints) return;
+    engagementActions.recordScoreDelta(lastSelfPoints);
+  }, [engagementActions, lastSelfPoints]);
 
   useEffect(() => {
     if (phase !== "reveal") {
@@ -292,6 +315,16 @@ export default function RoundGallery() {
     setSelectedIndex(index);
     playTap();
     playOneShot(SFX.ANSWERS_POP, 0.2);
+    const correctIndex = activeQuestion?.correct_index ?? 0;
+    const isCorrect = index === correctIndex;
+    const latencyMs = Math.max(0, Date.now() - timerStartAt);
+    const selfPlayer = players.find((player) => player.id === playerId);
+    const predictedStreak = isCorrect ? (selfPlayer?.streak ?? 0) + 1 : 0;
+    engagementActions.recordAnswerResult({
+      correct: isCorrect,
+      latencyMs,
+      streak: predictedStreak,
+    });
     sendAnswer(index);
   };
 

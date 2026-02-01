@@ -128,6 +128,187 @@ app.post("/client-error", (req, res) => {
   res.json({ ok: true });
 });
 
+app.post("/crew/create", async (req, res) => {
+  const playerId = req.body?.playerId;
+  if (typeof playerId !== "string" || !playerId.trim()) {
+    res.status(400).json({ ok: false, error: "playerId_required" });
+    return;
+  }
+  const code = normalizeCrewCode(req.body?.code) || randomCrewCode();
+  const name = sanitizeName(req.body?.name ?? `Crew ${code}`);
+  const avatarId = req.body?.avatarId ?? "unknown";
+  const member: CrewMember = {
+    id: playerId,
+    name: sanitizeName(req.body?.memberName ?? req.body?.name ?? "Player"),
+    avatarId,
+    weeklyPoints: 0,
+    correctCount: 0,
+    streak: 0,
+    role: "owner",
+    title: "Captain",
+    updatedAt: Date.now(),
+  };
+  const crew: Crew = {
+    code,
+    name,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    members: { [member.id]: member },
+  };
+  await writeCrew(crew);
+  res.json({ ok: true, crew: crewToResponse(crew), role: "owner" });
+});
+
+app.post("/crew/join", async (req, res) => {
+  const code = normalizeCrewCode(req.body?.code);
+  const playerId = req.body?.playerId;
+  if (!code || typeof playerId !== "string" || !playerId.trim()) {
+    res.status(400).json({ ok: false, error: "invalid_payload" });
+    return;
+  }
+  const crew = await readCrew(code);
+  if (!crew) {
+    res.status(404).json({ ok: false, error: "crew_not_found" });
+    return;
+  }
+  const avatarId = req.body?.avatarId ?? "unknown";
+  crew.members[playerId] = {
+    id: playerId,
+    name: sanitizeName(req.body?.name ?? "Player"),
+    avatarId,
+    weeklyPoints: crew.members[playerId]?.weeklyPoints ?? 0,
+    correctCount: crew.members[playerId]?.correctCount ?? 0,
+    streak: crew.members[playerId]?.streak ?? 0,
+    role: crew.members[playerId]?.role ?? "member",
+    title: crew.members[playerId]?.title,
+    updatedAt: Date.now(),
+  };
+  crew.updatedAt = Date.now();
+  recomputeCrewTitles(crew);
+  await writeCrew(crew);
+  res.json({ ok: true, crew: crewToResponse(crew), role: crew.members[playerId].role });
+});
+
+app.post("/crew/leave", async (req, res) => {
+  const code = normalizeCrewCode(req.body?.code);
+  const playerId = req.body?.playerId;
+  if (!code || typeof playerId !== "string" || !playerId.trim()) {
+    res.status(400).json({ ok: false, error: "invalid_payload" });
+    return;
+  }
+  const crew = await readCrew(code);
+  if (!crew) {
+    res.status(404).json({ ok: false, error: "crew_not_found" });
+    return;
+  }
+  delete crew.members[playerId];
+  crew.updatedAt = Date.now();
+  if (!Object.keys(crew.members).length) {
+    await deleteCrew(code);
+    res.json({ ok: true, crew: null });
+    return;
+  }
+  recomputeCrewTitles(crew);
+  await writeCrew(crew);
+  res.json({ ok: true, crew: crewToResponse(crew) });
+});
+
+app.post("/crew/update", async (req, res) => {
+  const code = normalizeCrewCode(req.body?.code);
+  const playerId = req.body?.playerId;
+  if (!code || typeof playerId !== "string" || !playerId.trim()) {
+    res.status(400).json({ ok: false, error: "invalid_payload" });
+    return;
+  }
+  const crew = await readCrew(code);
+  if (!crew) {
+    res.status(404).json({ ok: false, error: "crew_not_found" });
+    return;
+  }
+  const existing = crew.members[playerId];
+  const avatarId = req.body?.avatarId ?? existing?.avatarId ?? "unknown";
+  const member: CrewMember = {
+    id: playerId,
+    name: sanitizeName(req.body?.name ?? existing?.name ?? "Player"),
+    avatarId,
+    weeklyPoints: typeof req.body?.weeklyPoints === "number" ? req.body.weeklyPoints : existing?.weeklyPoints ?? 0,
+    correctCount: typeof req.body?.correctCount === "number" ? req.body.correctCount : existing?.correctCount ?? 0,
+    streak: typeof req.body?.streak === "number" ? req.body.streak : existing?.streak ?? 0,
+    role: existing?.role ?? "member",
+    title: existing?.title,
+    updatedAt: Date.now(),
+  };
+  crew.members[playerId] = member;
+  crew.updatedAt = Date.now();
+  recomputeCrewTitles(crew);
+  await writeCrew(crew);
+  res.json({ ok: true, crew: crewToResponse(crew), role: member.role });
+});
+
+app.get("/crew/:code", async (req, res) => {
+  const code = normalizeCrewCode(req.params.code);
+  if (!code) {
+    res.status(400).json({ ok: false, error: "invalid_code" });
+    return;
+  }
+  const crew = await readCrew(code);
+  if (!crew) {
+    res.status(404).json({ ok: false, error: "crew_not_found" });
+    return;
+  }
+  res.json({ ok: true, crew: crewToResponse(crew) });
+});
+
+app.get("/leaderboard", async (req, res) => {
+  const period = req.query.period === "season" ? "season" : "weekly";
+  const scope = req.query.scope === "group" ? "group" : "global";
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit ?? 10) || 10));
+  if (scope === "group") {
+    const code = normalizeCrewCode(String(req.query.crewCode ?? req.query.code ?? ""));
+    if (!code) {
+      res.status(400).json({ ok: false, error: "crew_code_required" });
+      return;
+    }
+    const crew = await readCrew(code);
+    if (!crew) {
+      res.status(404).json({ ok: false, error: "crew_not_found" });
+      return;
+    }
+    const members = Object.values(crew.members).sort((a, b) => b.weeklyPoints - a.weeklyPoints);
+    const top = members.slice(0, limit).map((member, index) => ({
+      displayName: member.name,
+      avatarId: member.avatarId,
+      funScore: member.weeklyPoints,
+      deltaPoints: member.weeklyPoints,
+      percentileBand: index / Math.max(1, members.length) <= 0.5 ? "Top 50%" : "Rising",
+    }));
+    const playerId = typeof req.query.playerId === "string" ? req.query.playerId : undefined;
+    const self = playerId ? crew.members[playerId] : undefined;
+    res.json({
+      period,
+      scope: "group",
+      generatedAt: new Date().toISOString(),
+      self: self
+        ? {
+            displayName: self.name,
+            avatarId: self.avatarId,
+            funScore: self.weeklyPoints,
+            deltaPoints: self.weeklyPoints,
+            percentileBand: "Top 50%",
+          }
+        : null,
+      top,
+    });
+    return;
+  }
+  res.json({
+    period,
+    scope: "global",
+    generatedAt: new Date().toISOString(),
+    top: [],
+  });
+});
+
 app.get("/metrics", async (_req, res) => {
   const roomsActive = await roomStore.count();
   res.json({
@@ -157,6 +338,7 @@ const validateQuestionFn = validateQuestion as (data: any) => boolean;
 const validateAnswerFn = validateAnswer as (data: any) => boolean;
 
 const ROOM_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const CREW_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const ROOM_TTL_MS = 1000 * 60 * 120;
 const MAX_ROOM_PLAYERS = 12;
 const MIN_ROOM_PLAYERS = 3;
@@ -171,6 +353,29 @@ type RoomTimers = {
   next?: ReturnType<typeof setTimeout>;
 };
 const roomTimers = new Map<string, RoomTimers>();
+const crewStore = new Map<string, Crew>();
+
+type CrewRole = "owner" | "member";
+
+interface CrewMember {
+  id: string;
+  name: string;
+  avatarId: string;
+  weeklyPoints: number;
+  correctCount: number;
+  streak: number;
+  role: CrewRole;
+  title?: string;
+  updatedAt: number;
+}
+
+interface Crew {
+  code: string;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+  members: Record<string, CrewMember>;
+}
 
 type IncidentType =
   | "rate_limit"
@@ -198,6 +403,91 @@ type RoomPhase = "join" | "lobby" | "prepared" | "round" | "reveal" | "leaderboa
 const allowedPhases = new Set<RoomPhase>(["join", "lobby", "prepared", "round", "reveal", "leaderboard", "end"]);
 const isRoomPhase = (value: unknown): value is RoomPhase =>
   typeof value === "string" && allowedPhases.has(value as RoomPhase);
+
+const normalizeCrewCode = (raw?: string) =>
+  (raw ?? "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 6);
+
+const sanitizeName = (name?: string) => {
+  const trimmed = (name ?? "").trim().slice(0, 18);
+  return trimmed || "Player";
+};
+
+const randomCrewCode = (length = 4) => {
+  let output = "";
+  for (let i = 0; i < length; i += 1) {
+    output += ROOM_CODE_CHARS[Math.floor(Math.random() * ROOM_CODE_CHARS.length)];
+  }
+  return output;
+};
+
+const crewKey = (code: string) => `crew:${code}`;
+
+async function readCrew(code: string): Promise<Crew | null> {
+  if (redis) {
+    const raw = await redis.get(crewKey(code));
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as Crew;
+    } catch {
+      return null;
+    }
+  }
+  return crewStore.get(code) ?? null;
+}
+
+async function writeCrew(crew: Crew) {
+  if (redis) {
+    await redis.set(crewKey(crew.code), JSON.stringify(crew), "PX", CREW_TTL_MS);
+    return;
+  }
+  crewStore.set(crew.code, crew);
+}
+
+async function deleteCrew(code: string) {
+  if (redis) {
+    await redis.del(crewKey(code));
+    return;
+  }
+  crewStore.delete(code);
+}
+
+function recomputeCrewTitles(crew: Crew) {
+  const members = Object.values(crew.members);
+  if (!members.length) return;
+  const topScore = [...members].sort((a, b) => b.weeklyPoints - a.weeklyPoints)[0];
+  const topCorrect = [...members].sort((a, b) => b.correctCount - a.correctCount)[0];
+  members.forEach((member) => {
+    let title: string | undefined;
+    if (topScore && topScore.weeklyPoints > 0 && member.id === topScore.id) {
+      title = "Score Boss";
+    } else if (topCorrect && topCorrect.correctCount > 0 && member.id === topCorrect.id) {
+      title = "Sharp Eye";
+    } else if (member.role === "owner") {
+      title = "Captain";
+    }
+    member.title = title;
+  });
+}
+
+function crewToResponse(crew: Crew) {
+  return {
+    code: crew.code,
+    name: crew.name,
+    members: Object.values(crew.members).map((member) => ({
+      id: member.id,
+      name: member.name,
+      avatarId: member.avatarId,
+      weeklyPoints: member.weeklyPoints,
+      correctCount: member.correctCount,
+      streak: member.streak,
+      title: member.title,
+      role: member.role,
+    })),
+  };
+}
 
 interface StagePayload {
   roomCode: string;

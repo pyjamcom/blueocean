@@ -1,0 +1,244 @@
+.panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  width: min(92vw, 520px);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  color: var(--ui-text);
+}
+
+.chipIcon {
+  font-size: 12px;
+}
+
+.questCard {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.questTop {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ui-muted);
+}
+
+.questLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.questDone {
+  color: #63e6be;
+}
+
+.questBar {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.questBarFill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(99, 230, 190, 0.9), rgba(255, 217, 61, 0.9));
+}
+
+.actionRow {
+  display: flex;
+  gap: 10px;
+}
+
+.actionButton {
+  border: none;
+  border-radius: 14px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ui-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 6px;
+}
+
+.badgeBubble {
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.toast {
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 217, 61, 0.9);
+  color: #111;
+  font-size: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.toastEmoji {
+  font-size: 14px;
+}
+
+.toastLabel {
+  font-weight: 700;
+}
+
+.seasonToast {
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(99, 230, 190, 0.9);
+  color: #0b0b12;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 8, 16, 0.7);
+  display: grid;
+  place-items: center;
+  z-index: 40;
+}
+
+.sheet {
+  width: min(90vw, 420px);
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(15, 15, 25, 0.95);
+  display: grid;
+  gap: 14px;
+}
+
+.sheetTitle {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ui-muted);
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gridItem {
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ui-text);
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+}
+
+.gridLocked {
+  opacity: 0.4;
+}
+
+.gridActive {
+  box-shadow: 0 0 0 2px rgba(99, 230, 190, 0.8);
+}
+
+.badgeEmoji {
+  font-size: 18px;
+}
+
+.badgeLabel {
+  font-size: 11px;
+  text-align: center;
+}
+
+.groupBlock {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.groupInput {
+  width: 140px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ui-text);
+  text-align: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.groupCode {
+  font-size: 20px;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+
+@media (max-width: 540px) {
+  .panel {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .chip {
+    font-size: 11px;
+  }
+
+  .actionRow {
+    flex-wrap: wrap;
+  }
+
+  .actionButton {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .questCard {
+    padding: 10px;
+  }
+}

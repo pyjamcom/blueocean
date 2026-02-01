@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useEngagement } from "../context/EngagementContext";
+import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
 import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
 import styles from "./LeaderboardView.module.css";
@@ -32,8 +34,8 @@ const fallbackTop: PublicLeaderboardEntry[] = [
 
 function formatDelta(value?: number | null) {
   if (value === null || value === undefined) return null;
-  const sign = value >= 0 ? "+" : "";
-  return `${sign}${value}`;
+  if (value <= 0) return null;
+  return `+${value}`;
 }
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
@@ -69,6 +71,7 @@ export default function LeaderboardView() {
   const [period, setPeriod] = useState<Period>("weekly");
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const { state: engagement } = useEngagement();
 
   useEffect(() => {
     trackEvent("leaderboard_view", { period });
@@ -80,7 +83,12 @@ export default function LeaderboardView() {
     const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
     const url = new URL(`${apiBase}/leaderboard`);
     url.searchParams.set("period", period);
-    url.searchParams.set("scope", "global");
+    const scope = engagement.group ? "group" : "global";
+    url.searchParams.set("scope", scope);
+    if (engagement.group) {
+      url.searchParams.set("crewCode", engagement.group.code);
+      url.searchParams.set("playerId", getOrCreateClientId());
+    }
     url.searchParams.set("limit", "10");
 
     fetch(url.toString())
@@ -118,10 +126,23 @@ export default function LeaderboardView() {
   }, [period]);
 
   const topList = data?.top?.length ? data.top : fallbackTop;
-  const selfEntry = data?.self ?? null;
-  const percentile = data?.percentile ?? selfEntry?.percentileBand ?? null;
+  const fallbackSelf =
+    period === "weekly"
+      ? {
+          displayName: "You",
+          funScore: engagement.week.points,
+          deltaPoints: engagement.week.points - engagement.week.lastWeekPoints,
+          percentileBand: engagement.week.points > engagement.week.lastWeekPoints ? "Top 50%" : "Rising",
+        }
+      : null;
+  const selfEntry = data?.self ?? fallbackSelf;
+  const percentile =
+    data?.percentile ??
+    selfEntry?.percentileBand ??
+    (selfEntry?.deltaPoints && selfEntry.deltaPoints > 0 ? "Top 50%" : "Rising");
 
   const subtitle = useMemo(() => (period === "weekly" ? "This week" : "This season"), [period]);
+  const scopeLabel = engagement.group ? `Crew ${engagement.group.code}` : "Global";
 
   return (
     <div className={styles.wrap}>
@@ -131,7 +152,7 @@ export default function LeaderboardView() {
           <h1 className={styles.title}>Funboard</h1>
           <span className={styles.titleEmoji}>🔥</span>
         </div>
-        <p className={styles.subtitle}>{subtitle}</p>
+        <p className={styles.subtitle}>{subtitle} · {scopeLabel}</p>
       </header>
 
       <div className={styles.tabs}>
@@ -160,7 +181,7 @@ export default function LeaderboardView() {
           </div>
           <div className={styles.heroMetaRow}>
             {percentile ? <span className={styles.heroPill}>{percentile}</span> : null}
-            {selfEntry?.deltaPoints !== undefined ? (
+            {selfEntry?.deltaPoints !== undefined && formatDelta(selfEntry.deltaPoints) ? (
               <span className={styles.heroDelta}>{formatDelta(selfEntry.deltaPoints)}</span>
             ) : (
               <span className={styles.heroDeltaMuted}>Play a round to join the party</span>
@@ -189,11 +210,15 @@ export default function LeaderboardView() {
                   <span className={styles.name}>{entry.displayName}</span>
                   {entry.percentileBand ? (
                     <span className={styles.band}>{entry.percentileBand}</span>
-                  ) : null}
+                  ) : entry.deltaPoints && entry.deltaPoints > 0 ? (
+                    <span className={styles.band}>Top 50%</span>
+                  ) : (
+                    <span className={styles.band}>Rising</span>
+                  )}
                 </div>
                 <div className={styles.scoreBlock}>
                   <span className={styles.score}>{entry.funScore}</span>
-                  {entry.deltaPoints !== undefined ? (
+                  {entry.deltaPoints !== undefined && formatDelta(entry.deltaPoints) ? (
                     <span className={styles.delta}>{formatDelta(entry.deltaPoints)}</span>
                   ) : null}
                 </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NextRoundButton from "../components/NextRoundButton";
 import RahootLeaderboard from "../components/RahootLeaderboard";
 import RahootPodium from "../components/RahootPodium";
+import EngagementPanel from "../components/engagement/EngagementPanel";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
@@ -29,6 +30,20 @@ export default function ResultView() {
     }));
   }, [players]);
 
+  const titleMap = useMemo(() => {
+    if (!players.length) return new Map<string, string>();
+    const topScore = [...players].sort((a, b) => b.score - a.score)[0];
+    const topCorrect = [...players].sort((a, b) => b.correctCount - a.correctCount)[0];
+    const map = new Map<string, string>();
+    if (topScore) {
+      map.set(topScore.id, "Score Boss");
+    }
+    if (topCorrect && !map.has(topCorrect.id) && topCorrect.correctCount > 0) {
+      map.set(topCorrect.id, "Sharp Eye");
+    }
+    return map;
+  }, [players]);
+
   const rahootEntries = useMemo(
     () =>
       leaderboard.map((entry) => ({
@@ -36,8 +51,9 @@ export default function ResultView() {
         name: entry.name ?? "Player",
         points: entry.score,
         avatarId: entry.avatarId,
+        title: titleMap.get(entry.playerId),
       })),
-    [leaderboard],
+    [leaderboard, titleMap],
   );
   const previousEntriesRef = useRef<typeof rahootEntries | null>(null);
   const previousEntries = previousEntriesRef.current ?? undefined;
@@ -72,6 +88,7 @@ export default function ResultView() {
         <span className={styles.phasePill}>{isFinal ? "Final" : "Leaderboard"}</span>
         {!isFinal && <span className={styles.phaseHint}>Next round incoming</span>}
       </div>
+      <EngagementPanel mode="result" />
       {isLeaderboard ? (
         phase === "leaderboard" ? (
           <RahootLeaderboard entries={rahootEntries} previousEntries={previousEntries} />

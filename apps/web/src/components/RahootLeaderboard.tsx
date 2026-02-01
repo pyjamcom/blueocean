@@ -7,6 +7,7 @@ export interface RahootLeaderboardEntry {
   name: string;
   points: number;
   avatarId?: string;
+  title?: string;
 }
 
 interface AnimatedPointsProps {
@@ -118,6 +119,7 @@ export default function RahootLeaderboard({
                   )}
                 </span>
                 <span className={styles.name}>{entry.name}</span>
+                {entry.title ? <span className={styles.titleBadge}>{entry.title}</span> : null}
               </div>
               {showAnimated ? (
                 <AnimatedPoints from={prev?.points ?? 0} to={entry.points} />

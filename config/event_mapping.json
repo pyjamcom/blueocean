@@ -31,6 +31,42 @@
     "streak_updated": {
       "ga4_events": ["streak_updated"],
       "notes": "Retention milestone updates."
+    },
+    "team_streak_updated": {
+      "ga4_events": ["team_streak_updated"],
+      "notes": "Team streak progression for cooperative retention."
+    },
+    "season_rollover": {
+      "ga4_events": ["season_rollover"],
+      "notes": "Short season reset event."
+    },
+    "progress_points": {
+      "ga4_events": ["progress_points"],
+      "notes": "Weekly progress scoring for progress leaderboard."
+    },
+    "badge_unlocked": {
+      "ga4_events": ["badge_unlocked"],
+      "notes": "Mastery badge unlock event."
+    },
+    "grace_used": {
+      "ga4_events": ["grace_used"],
+      "notes": "Grace day consumption for streak safety."
+    },
+    "cosmetic_unlocked": {
+      "ga4_events": ["cosmetic_unlocked"],
+      "notes": "Cosmetic reward unlock for collections."
+    },
+    "cosmetic_equipped": {
+      "ga4_events": ["cosmetic_equipped"],
+      "notes": "Cosmetic equip event."
+    },
+    "group_joined": {
+      "ga4_events": ["group_joined"],
+      "notes": "Private group join event."
+    },
+    "group_left": {
+      "ga4_events": ["group_left"],
+      "notes": "Private group leave event."
     }
   }
 }

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation } from "react-router-dom";
+import EngagementPanel from "../components/engagement/EngagementPanel";
+import { useEngagement } from "../context/EngagementContext";
 import SoundToggle from "../components/SoundToggle";
 import { useRoom } from "../context/RoomContext";
 import {
@@ -12,6 +14,7 @@ import {
 } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
+import frames from "../engagement/frames.module.css";
 import styles from "./LobbyView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -29,6 +32,7 @@ export default function LobbyView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
   const { roomCode, players, playerId, setReady, setAvatar, setName } = useRoom();
+  const { state: engagement } = useEngagement();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
@@ -99,6 +103,9 @@ export default function LobbyView() {
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
   const startLabel = selfReady ? "Waiting to start" : "Ready to play";
+  const frameClass = engagement.cosmetics.equipped.frame
+    ? frames[engagement.cosmetics.equipped.frame] ?? ""
+    : "";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -144,6 +151,8 @@ export default function LobbyView() {
           }
         />
       </div>
+
+      <EngagementPanel mode="lobby" />
       <div className={styles.players}>
         {players.map((player) => {
           const playerAssetId = lobbyAssets.length
@@ -174,7 +183,7 @@ export default function LobbyView() {
         onClick={() => handleAvatarCycle(1)}
         aria-label={selfAvatar}
       >
-        <div className={styles.selfAvatarCore}>
+        <div className={`${styles.selfAvatarCore} ${frameClass}`}>
           {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
         </div>
         <span className={styles.selfPulse} />

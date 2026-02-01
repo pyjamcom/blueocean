@@ -519,6 +519,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setLastSelfPoints(0);
   }, [questionIndex]);
 
+
   const value: RoomState = {
     roomCode,
     playerId,

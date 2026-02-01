@@ -40,6 +40,16 @@
   gap: 12px;
 }
 
+.titleBadge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ui-muted);
+}
+
 .avatar {
   width: 44px;
   height: 44px;

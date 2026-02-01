@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AgeGate from "./components/AgeGate";
 import HelpButton from "./components/HelpButton";
+import { EngagementProvider } from "./context/EngagementContext";
 import { RoomProvider, RoomPhase, useRoom } from "./context/RoomContext";
 import { registerErrorHandlers } from "./utils/telemetry";
 import RoundGallery from "./views/RoundGallery";
@@ -154,32 +155,34 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <RoomProvider>
-        <div className="app">
-          {gateStatus !== "accepted" && (
-            <AgeGate
-              status={gateStatus === "blocked" ? "blocked" : "prompt"}
-              onAccept={handleAccept}
-              onReject={handleReject}
-              onExit={handleExit}
-            />
-          )}
-          <HelpButton />
-          <StageNavigator />
-          <Routes>
-            <Route path="/join" element={<JoinView />} />
-            <Route path="/:code" element={<JoinView />} />
-            <Route path="/lobby" element={<LobbyView />} />
-            <Route path="/game" element={<RoundGallery />} />
-            <Route path="/result" element={<ResultView />} />
-            <Route path="/manager" element={<ManagerView />} />
-            <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
-            <Route path="/leaderboard" element={<LeaderboardView />} />
-            <Route path="/wait" element={<JoinWaitView />} />
-            <Route path="*" element={<Navigate to="/join" replace />} />
-          </Routes>
-        </div>
-      </RoomProvider>
+      <EngagementProvider>
+        <RoomProvider>
+          <div className="app">
+            {gateStatus !== "accepted" && (
+              <AgeGate
+                status={gateStatus === "blocked" ? "blocked" : "prompt"}
+                onAccept={handleAccept}
+                onReject={handleReject}
+                onExit={handleExit}
+              />
+            )}
+            <HelpButton />
+            <StageNavigator />
+            <Routes>
+              <Route path="/join" element={<JoinView />} />
+              <Route path="/:code" element={<JoinView />} />
+              <Route path="/lobby" element={<LobbyView />} />
+              <Route path="/game" element={<RoundGallery />} />
+              <Route path="/result" element={<ResultView />} />
+              <Route path="/manager" element={<ManagerView />} />
+              <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
+              <Route path="/leaderboard" element={<LeaderboardView />} />
+              <Route path="/wait" element={<JoinWaitView />} />
+              <Route path="*" element={<Navigate to="/join" replace />} />
+            </Routes>
+          </div>
+        </RoomProvider>
+      </EngagementProvider>
     </BrowserRouter>
   );
 }
