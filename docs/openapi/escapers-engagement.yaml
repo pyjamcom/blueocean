@@ -1,0 +1,955 @@
+openapi: 3.0.3
+info:
+  title: Escapers Engagement API
+  version: 0.1.0
+  description: Engagement endpoints for streaks, quests, badges, cosmetics, and progress leaderboards.
+servers:
+  - url: https://api.escapers.app/v1
+    description: Production
+  - url: http://localhost:3001/v1
+    description: Local dev
+security:
+  - PlayerSession: []
+paths:
+  /me:
+    get:
+      summary: Get current player profile
+      responses:
+        '200':
+          description: Current player profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerProfile'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /me/name:
+    post:
+      summary: Update player display name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerNameUpdate'
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerProfile'
+        '400':
+          description: Invalid name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /me/avatar:
+    post:
+      summary: Update player avatar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerAvatarUpdate'
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerProfile'
+        '400':
+          description: Invalid avatar id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Avatar not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /groups:
+    post:
+      summary: Create a private group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreate'
+      responses:
+        '200':
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCreateResponse'
+        '400':
+          description: Invalid group payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Group limit reached or name conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /groups/join:
+    post:
+      summary: Join a group by invite code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupJoin'
+      responses:
+        '200':
+          description: Group joined
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSummary'
+        '400':
+          description: Invalid invite code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Invite code not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Already a member or group full
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /groups/{groupId}:
+    get:
+      summary: Get group detail
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDetail'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not a member of this group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /streaks:
+    get:
+      summary: Get user and group streaks
+      responses:
+        '200':
+          description: Streaks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StreaksResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /streaks/grace/use:
+    post:
+      summary: Use grace day
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraceUse'
+      responses:
+        '200':
+          description: Updated streaks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StreaksResponse'
+        '400':
+          description: Invalid scope or missing groupId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Grace day not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /seasons/current:
+    get:
+      summary: Get current season
+      responses:
+        '200':
+          description: Current season
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Season'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /seasons/{seasonId}/progress:
+    get:
+      summary: Get season progress
+      parameters:
+        - in: path
+          name: seasonId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Season progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonProgress'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Season not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quests/daily:
+    get:
+      summary: Get daily quests
+      responses:
+        '200':
+          description: Daily quests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyQuests'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quests/{questId}/claim:
+    post:
+      summary: Claim quest reward
+      parameters:
+        - in: path
+          name: questId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rewards granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestClaimResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Quest not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Quest already claimed or incomplete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /badges:
+    get:
+      summary: Get badges
+      responses:
+        '200':
+          description: Badges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadgesResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /leaderboard/progress:
+    get:
+      summary: Get progress leaderboard
+      parameters:
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: period
+          required: false
+          schema:
+            type: string
+            enum: [week, season]
+            default: week
+      responses:
+        '200':
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressLeaderboard'
+        '400':
+          description: Invalid groupId or period
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not a member of this group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Group or leaderboard not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /cosmetics:
+    get:
+      summary: Get cosmetics inventory
+      responses:
+        '200':
+          description: Cosmetics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CosmeticsResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /cosmetics/equip:
+    post:
+      summary: Equip a cosmetic item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CosmeticEquip'
+      responses:
+        '200':
+          description: Updated equipment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CosmeticsResponse'
+        '400':
+          description: Invalid slot or itemId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cosmetic item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Item not owned or slot locked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /telemetry:
+    post:
+      summary: Send telemetry events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryBatch'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    PlayerSession:
+      type: apiKey
+      in: header
+      name: X-Session-Id
+  schemas:
+    PlayerProfile:
+      type: object
+      required: [id, displayName, avatarId, streak]
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        avatarId:
+          type: string
+        ageBand:
+          type: string
+          nullable: true
+        groupIds:
+          type: array
+          items:
+            type: string
+        streak:
+          $ref: '#/components/schemas/Streak'
+        season:
+          $ref: '#/components/schemas/Season'
+    PlayerNameUpdate:
+      type: object
+      required: [displayName]
+      properties:
+        displayName:
+          type: string
+          maxLength: 18
+    PlayerAvatarUpdate:
+      type: object
+      required: [avatarId]
+      properties:
+        avatarId:
+          type: string
+    GroupCreate:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [family, class, friends]
+    GroupCreateResponse:
+      type: object
+      required: [groupId, inviteCode]
+      properties:
+        groupId:
+          type: string
+        inviteCode:
+          type: string
+    GroupJoin:
+      type: object
+      required: [inviteCode]
+      properties:
+        inviteCode:
+          type: string
+    GroupSummary:
+      type: object
+      required: [id, name, type]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        membersCount:
+          type: integer
+    GroupDetail:
+      type: object
+      required: [id, name, type, members, streak]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+        completionRate:
+          type: number
+          format: float
+        streak:
+          $ref: '#/components/schemas/Streak'
+    GroupMember:
+      type: object
+      required: [id, displayName, avatarId, role]
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        avatarId:
+          type: string
+        role:
+          type: string
+    StreaksResponse:
+      type: object
+      required: [user, groups]
+      properties:
+        user:
+          $ref: '#/components/schemas/Streak'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupStreak'
+    Streak:
+      type: object
+      required: [current, longest, lastActiveDate, graceBalance]
+      properties:
+        current:
+          type: integer
+        longest:
+          type: integer
+        lastActiveDate:
+          type: string
+          format: date
+        graceBalance:
+          type: integer
+    GroupStreak:
+      allOf:
+        - $ref: '#/components/schemas/Streak'
+        - type: object
+          required: [groupId, completionRate]
+          properties:
+            groupId:
+              type: string
+            completionRate:
+              type: number
+              format: float
+    GraceUse:
+      type: object
+      required: [scope]
+      properties:
+        scope:
+          type: string
+          enum: [user, group]
+        groupId:
+          type: string
+          nullable: true
+    Season:
+      type: object
+      required: [id, startAt, endAt, daysLeft]
+      properties:
+        id:
+          type: string
+        startAt:
+          type: string
+          format: date
+        endAt:
+          type: string
+          format: date
+        daysLeft:
+          type: integer
+    SeasonProgress:
+      type: object
+      required: [user, group]
+      properties:
+        user:
+          $ref: '#/components/schemas/ProgressSummary'
+        group:
+          $ref: '#/components/schemas/ProgressSummary'
+    ProgressSummary:
+      type: object
+      required: [points, rounds, deltaPoints, percentileBand]
+      properties:
+        points:
+          type: integer
+        rounds:
+          type: integer
+        deltaPoints:
+          type: integer
+        percentileBand:
+          type: string
+    DailyQuests:
+      type: object
+      required: [quests]
+      properties:
+        quests:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quest'
+    Quest:
+      type: object
+      required: [id, title, progress, target, reward]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        progress:
+          type: integer
+        target:
+          type: integer
+        reward:
+          $ref: '#/components/schemas/Reward'
+    Reward:
+      type: object
+      properties:
+        xp:
+          type: integer
+        badgeId:
+          type: string
+        cosmeticId:
+          type: string
+    QuestClaimResponse:
+      type: object
+      required: [awarded]
+      properties:
+        awarded:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reward'
+    BadgesResponse:
+      type: object
+      required: [earned, available]
+      properties:
+        earned:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+        available:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+    Badge:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        rarity:
+          type: string
+    ProgressLeaderboard:
+      type: object
+      required: [percentile, deltaPoints, list]
+      properties:
+        percentile:
+          type: string
+        deltaPoints:
+          type: integer
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeaderboardEntry'
+    LeaderboardEntry:
+      type: object
+      required: [name, deltaPoints, band]
+      properties:
+        name:
+          type: string
+        deltaPoints:
+          type: integer
+        band:
+          type: string
+    CosmeticsResponse:
+      type: object
+      required: [owned, available, equipped]
+      properties:
+        owned:
+          type: array
+          items:
+            $ref: '#/components/schemas/CosmeticItem'
+        available:
+          type: array
+          items:
+            $ref: '#/components/schemas/CosmeticItem'
+        equipped:
+          type: object
+          properties:
+            avatar:
+              type: string
+            frame:
+              type: string
+            effect:
+              type: string
+    CosmeticItem:
+      type: object
+      required: [id, type, name]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [avatar, frame, effect]
+        name:
+          type: string
+    CosmeticEquip:
+      type: object
+      required: [slot, itemId]
+      properties:
+        slot:
+          type: string
+          enum: [avatar, frame, effect]
+        itemId:
+          type: string
+    TelemetryBatch:
+      type: object
+      required: [events]
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelemetryEvent'
+    TelemetryEvent:
+      type: object
+      required: [event_name, time]
+      properties:
+        event_name:
+          type: string
+        time:
+          type: integer
+        props:
+          type: object
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: Stable error code
+        message:
+          type: string
+        requestId:
+          type: string
+          nullable: true
+    ValidationErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          properties:
+            fields:
+              type: array
+              items:
+                $ref: '#/components/schemas/FieldError'
+    FieldError:
+      type: object
+      required: [field, code]
+      properties:
+        field:
+          type: string
+        code:
+          type: string
+        message:
+          type: string

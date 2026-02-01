@@ -25,6 +25,62 @@
         {"id": "glow_trend_boost", "weight": 0.33}
       ],
       "metrics": ["activation", "d1_retention", "k_factor"]
+    },
+    {
+      "id": "engagement_team_streak",
+      "description": "Team streaks with grace day vs control.",
+      "assignment_unit": "group",
+      "variants": [
+        {"id": "control", "weight": 0.5},
+        {"id": "team_streak_grace", "weight": 0.5}
+      ],
+      "primary_metrics": ["d7_retention"],
+      "secondary_metrics": ["sessions_per_user", "rounds_completed"],
+      "guardrails": ["churn_7d", "opt_out_rate"],
+      "min_sample_per_variant": 3000,
+      "min_duration_days": 21
+    },
+    {
+      "id": "engagement_progress_leaderboard",
+      "description": "Progress-based leaderboard vs absolute leaderboard.",
+      "assignment_unit": "group",
+      "variants": [
+        {"id": "absolute", "weight": 0.5},
+        {"id": "progress", "weight": 0.5}
+      ],
+      "primary_metrics": ["sessions_per_user"],
+      "secondary_metrics": ["d7_retention", "leaderboard_view_rate"],
+      "guardrails": ["churn_7d", "report_rate"],
+      "min_sample_per_variant": 2500,
+      "min_duration_days": 21
+    },
+    {
+      "id": "engagement_quests_badges",
+      "description": "Daily quests + mastery badges vs control.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "control", "weight": 0.5},
+        {"id": "quests_badges", "weight": 0.5}
+      ],
+      "primary_metrics": ["d1_retention", "d7_retention"],
+      "secondary_metrics": ["quest_completion_rate", "sessions_per_user"],
+      "guardrails": ["churn_7d", "opt_out_rate"],
+      "min_sample_per_variant": 3000,
+      "min_duration_days": 21
+    },
+    {
+      "id": "engagement_cosmetics_unlocks",
+      "description": "Cosmetic unlocks enabled vs disabled.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "control", "weight": 0.5},
+        {"id": "cosmetics", "weight": 0.5}
+      ],
+      "primary_metrics": ["sessions_per_user"],
+      "secondary_metrics": ["cosmetic_equip_rate", "d7_retention"],
+      "guardrails": ["churn_7d", "opt_out_rate"],
+      "min_sample_per_variant": 2500,
+      "min_duration_days": 21
     }
   ]
 }
