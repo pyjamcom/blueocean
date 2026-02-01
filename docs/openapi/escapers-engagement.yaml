@@ -435,6 +435,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /leaderboard:
+    get:
+      summary: Get public leaderboard (weekly/season)
+      parameters:
+        - in: query
+          name: period
+          required: false
+          schema:
+            type: string
+            enum: [weekly, season]
+            default: weekly
+        - in: query
+          name: scope
+          required: false
+          schema:
+            type: string
+            enum: [global, group]
+            default: group
+        - in: query
+          name: groupId
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Public leaderboard response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLeaderboardResponse'
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: Missing or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not allowed to view this leaderboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /leaderboard/progress:
     get:
       summary: Get progress leaderboard
@@ -852,6 +918,45 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LeaderboardEntry'
+    PublicLeaderboardResponse:
+      type: object
+      required: [period, scope, generatedAt, top]
+      properties:
+        period:
+          type: string
+          enum: [weekly, season]
+        scope:
+          type: string
+          enum: [global, group]
+        generatedAt:
+          type: string
+          format: date-time
+        percentile:
+          type: string
+          nullable: true
+        self:
+          $ref: '#/components/schemas/PublicLeaderboardEntry'
+        top:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicLeaderboardEntry'
+    PublicLeaderboardEntry:
+      type: object
+      required: [displayName, funScore]
+      properties:
+        displayName:
+          type: string
+        avatarId:
+          type: string
+          nullable: true
+        funScore:
+          type: integer
+        deltaPoints:
+          type: integer
+          nullable: true
+        percentileBand:
+          type: string
+          nullable: true
     LeaderboardEntry:
       type: object
       required: [name, deltaPoints, band]

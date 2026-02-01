@@ -31,6 +31,14 @@
     "streak_updated": {
       "ga4_events": ["streak_updated"],
       "notes": "Retention milestone updates."
+    },
+    "funscore_updated": {
+      "ga4_events": ["funscore_updated", "fun_score_updated"],
+      "notes": "FunScore recompute or leaderboard scoring update."
+    },
+    "leaderboard_view": {
+      "ga4_events": ["leaderboard_view", "leaderboard_open"],
+      "notes": "Leaderboard page view (weekly/season)."
     }
   }
 }
