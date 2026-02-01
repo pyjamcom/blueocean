@@ -17,6 +17,7 @@ import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import {
   isFirebaseEnabled,
   onFirebaseUser,
+  handleAppleRedirectResult,
   signInWithApple,
   signInWithGoogle,
 } from "../utils/firebase";
@@ -140,6 +141,13 @@ export default function JoinView() {
       }
     });
   }, [firebaseEnabled, playerName, roomCode, setName]);
+
+  useEffect(() => {
+    if (!firebaseEnabled) return;
+    handleAppleRedirectResult().catch(() => {
+      setAuthError("Apple sign-in failed");
+    });
+  }, [firebaseEnabled]);
 
   useEffect(() => {
     setQrSrc("");

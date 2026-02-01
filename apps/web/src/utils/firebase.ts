@@ -4,7 +4,9 @@ import {
   GoogleAuthProvider,
   OAuthProvider,
   onAuthStateChanged,
+  signInWithRedirect,
   signInWithPopup,
+  getRedirectResult,
   type User,
 } from "firebase/auth";
 
@@ -24,6 +26,14 @@ function getFirebaseAuth() {
   if (!firebaseEnabled) return null;
   const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   return getAuth(app);
+}
+
+function isIOSDevice() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const iOSDevice = /iPhone|iPad|iPod/i.test(ua);
+  const iPadDesktop = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  return iOSDevice || iPadDesktop;
 }
 
 export function isFirebaseEnabled() {
@@ -50,5 +60,14 @@ export async function signInWithApple() {
   const provider = new OAuthProvider("apple.com");
   provider.addScope("email");
   provider.addScope("name");
+  if (isIOSDevice()) {
+    return signInWithRedirect(auth, provider);
+  }
   return signInWithPopup(auth, provider);
+}
+
+export async function handleAppleRedirectResult() {
+  const auth = getFirebaseAuth();
+  if (!auth) return null;
+  return getRedirectResult(auth);
 }
