@@ -3,6 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   OAuthProvider,
+  TwitterAuthProvider,
   onAuthStateChanged,
   signInWithRedirect,
   signInWithPopup,
@@ -60,6 +61,16 @@ export async function signInWithApple() {
   const provider = new OAuthProvider("apple.com");
   provider.addScope("email");
   provider.addScope("name");
+  if (isIOSDevice()) {
+    return signInWithRedirect(auth, provider);
+  }
+  return signInWithPopup(auth, provider);
+}
+
+export async function signInWithTwitter() {
+  const auth = getFirebaseAuth();
+  if (!auth) return null;
+  const provider = new TwitterAuthProvider();
   if (isIOSDevice()) {
     return signInWithRedirect(auth, provider);
   }

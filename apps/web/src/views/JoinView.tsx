@@ -20,6 +20,7 @@ import {
   handleAppleRedirectResult,
   signInWithApple,
   signInWithGoogle,
+  signInWithTwitter,
 } from "../utils/firebase";
 import styles from "./JoinView.module.css";
 
@@ -263,6 +264,15 @@ export default function JoinView() {
     }
   };
 
+  const handleTwitterAuth = async () => {
+    setAuthError(null);
+    try {
+      await signInWithTwitter();
+    } catch (error) {
+      setAuthError("Twitter sign-in failed");
+    }
+  };
+
   const currentAvatar = AVATAR_IDS[avatarIndex];
   const avatarAssetId = assetIds.length
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length]
@@ -325,6 +335,14 @@ export default function JoinView() {
             disabled={!firebaseEnabled}
           >
             Apple
+          </button>
+          <button
+            type="button"
+            className={`${styles.authButton} ${styles.authTwitter}`}
+            onClick={handleTwitterAuth}
+            disabled={!firebaseEnabled}
+          >
+            Twitter
           </button>
         </div>
       ) : null}
