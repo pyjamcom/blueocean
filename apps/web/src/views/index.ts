@@ -10,3 +10,4 @@ export { default as SilhouetteGuessView } from "./SilhouetteGuessView";
 export { default as TrophyRewardView } from "./TrophyRewardView";
 export { default as LobbyView } from "./LobbyView";
 export { default as JoinWaitView } from "./JoinWaitView";
+export { default as LeaderboardView } from "./LeaderboardView";

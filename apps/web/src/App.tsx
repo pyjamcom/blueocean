@@ -11,6 +11,7 @@ import JoinWaitView from "./views/JoinWaitView";
 import ResultView from "./views/ResultView";
 import ManagerView from "./views/ManagerView";
 import DebugLeaderboardView from "./views/DebugLeaderboardView";
+import LeaderboardView from "./views/LeaderboardView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -54,6 +55,7 @@ function StageNavigator() {
   useEffect(() => {
     const path = location.pathname.toUpperCase();
     const isDebugPath = location.pathname.startsWith("/debug");
+    const isLeaderboardPath = location.pathname === "/leaderboard";
     const isManagerPath = location.pathname === "/manager";
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
@@ -61,7 +63,7 @@ function StageNavigator() {
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
 
-    if (isDebugPath && allowPreview) {
+    if ((isDebugPath && allowPreview) || isLeaderboardPath) {
       return;
     }
 
@@ -172,6 +174,7 @@ export default function App() {
             <Route path="/result" element={<ResultView />} />
             <Route path="/manager" element={<ManagerView />} />
             <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
+            <Route path="/leaderboard" element={<LeaderboardView />} />
             <Route path="/wait" element={<JoinWaitView />} />
             <Route path="*" element={<Navigate to="/join" replace />} />
           </Routes>
