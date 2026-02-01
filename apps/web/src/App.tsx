@@ -13,6 +13,7 @@ import ResultView from "./views/ResultView";
 import ManagerView from "./views/ManagerView";
 import DebugLeaderboardView from "./views/DebugLeaderboardView";
 import LeaderboardView from "./views/LeaderboardView";
+import LegalView from "./views/LegalView";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -58,13 +59,14 @@ function StageNavigator() {
     const isDebugPath = location.pathname.startsWith("/debug");
     const isLeaderboardPath = location.pathname === "/leaderboard";
     const isManagerPath = location.pathname === "/manager";
+    const isLegalPath = location.pathname.startsWith("/legal");
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
     const searchParams = new URLSearchParams(location.search);
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
 
-    if ((isDebugPath && allowPreview) || isLeaderboardPath) {
+    if ((isDebugPath && allowPreview) || isLeaderboardPath || isLegalPath) {
       return;
     }
 
@@ -174,6 +176,9 @@ export default function App() {
               <Route path="/lobby" element={<LobbyView />} />
               <Route path="/game" element={<RoundGallery />} />
               <Route path="/result" element={<ResultView />} />
+              <Route path="/legal/privacy" element={<LegalView doc="privacy" />} />
+              <Route path="/legal/terms" element={<LegalView doc="terms" />} />
+              <Route path="/legal/data-deletion" element={<LegalView doc="data-deletion" />} />
               <Route path="/manager" element={<ManagerView />} />
               <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
               <Route path="/leaderboard" element={<LeaderboardView />} />
