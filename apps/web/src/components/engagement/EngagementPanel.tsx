@@ -4,18 +4,32 @@ import { useEngagement } from "../../context/EngagementContext";
 import frames from "../../engagement/frames.module.css";
 import styles from "./EngagementPanel.module.css";
 import { formatDayKey } from "../../engagement/time";
+import { avatarColor, getAvatarImageUrl } from "../../utils/avatar";
+import { getOrCreateClientId } from "../../utils/ids";
 
 type PanelMode = "lobby" | "result";
+type CrewMember = {
+  id: string;
+  name: string;
+  avatarId?: string | null;
+  title?: string | null;
+  role?: string | null;
+};
 
 const badgeMap = new Map(BADGE_DEFINITIONS.map((badge) => [badge.id, badge]));
 
 export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const { state, actions } = useEngagement();
+  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
   const [showCosmetics, setShowCosmetics] = useState(false);
   const [showBadges, setShowBadges] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
   const [groupInput, setGroupInput] = useState("");
   const [toastBadge, setToastBadge] = useState<string | null>(null);
+  const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
+  const [crewLoading, setCrewLoading] = useState(false);
+  const selfId = getOrCreateClientId();
+  const isOwner = state.group?.role === "owner";
 
   useEffect(() => {
     actions.refresh();
@@ -28,6 +42,29 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     return () => window.clearTimeout(timer);
   }, [state.badges.lastEarned]);
 
+  useEffect(() => {
+    if (!showGroup || !state.group) return;
+    let active = true;
+    setCrewLoading(true);
+    fetch(`${apiBase}/crew/${state.group.code}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active) return;
+        const members = Array.isArray(data?.crew?.members) ? data.crew.members : [];
+        setCrewMembers(members);
+      })
+      .catch(() => {
+        if (!active) return;
+        setCrewMembers([]);
+      })
+      .finally(() => {
+        if (active) setCrewLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [apiBase, showGroup, state.group?.code]);
+
   const daysLeft = useMemo(() => {
     const end = new Date(state.season.endDay);
     const now = new Date();
@@ -35,11 +72,14 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     return Math.max(0, diff);
   }, [state.season.endDay]);
 
-  const quest = state.quests.daily[0];
-  const questProgress = quest ? Math.min(1, quest.progress / quest.target) : 0;
+  const quests = state.quests.daily.slice(0, 2);
   const equippedFrame = state.cosmetics.equipped.frame ?? null;
   const isSeasonStart = formatDayKey(new Date()) === state.season.startDay;
   const showQuest = mode === "lobby";
+  const cosmeticMap = useMemo(
+    () => new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label])),
+    [],
+  );
 
   const unlockedBadges = state.badges.unlocked
     .map((id) => badgeMap.get(id))
@@ -47,6 +87,30 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     .slice(-4) as { id: string; label: string; emoji: string }[];
 
   const showActions = mode === "lobby";
+
+  const runCrewAction = async (action: "kick" | "ban", targetId: string) => {
+    if (!state.group) return;
+    try {
+      const res = await fetch(`${apiBase}/crew/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: state.group.code,
+          requesterId: selfId,
+          targetId,
+        }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data?.crew?.members)) {
+        setCrewMembers(data.crew.members);
+      } else {
+        setCrewMembers((prev) => prev.filter((member) => member.id !== targetId));
+      }
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <section className={styles.panel}>
@@ -81,17 +145,26 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
         </span>
       </div>
 
-      {FEATURE_FLAGS.miniQuests && quest && showQuest && (
-        <div className={styles.questCard}>
-          <div className={styles.questTop}>
-            <span className={styles.questLabel}>{quest.label}</span>
-            {quest.completedAt ? <span className={styles.questDone}>✓</span> : null}
-          </div>
-          <div className={styles.questBar}>
-            <span className={styles.questBarFill} style={{ width: `${questProgress * 100}%` }} />
-          </div>
+      {FEATURE_FLAGS.miniQuests && showQuest && quests.length ? (
+        <div className={styles.questStack}>
+          {quests.map((quest) => {
+            const questProgress = Math.min(1, quest.progress / quest.target);
+            const rewardLabel = quest.rewardId ? cosmeticMap.get(quest.rewardId) : null;
+            return (
+              <div key={quest.id} className={styles.questCard}>
+                <div className={styles.questTop}>
+                  <span className={styles.questLabel}>{quest.label}</span>
+                  {rewardLabel ? <span className={styles.questReward}>+{rewardLabel}</span> : null}
+                  {quest.completedAt ? <span className={styles.questDone}>✓</span> : null}
+                </div>
+                <div className={styles.questBar}>
+                  <span className={styles.questBarFill} style={{ width: `${questProgress * 100}%` }} />
+                </div>
+              </div>
+            );
+          })}
         </div>
-      )}
+      ) : null}
 
       {showActions ? (
         <div className={styles.actionRow}>
@@ -188,6 +261,50 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
             {state.group ? (
               <div className={styles.groupBlock}>
                 <div className={styles.groupCode}>{state.group.code}</div>
+                <div className={styles.groupList}>
+                  {crewLoading ? (
+                    <div className={styles.groupHint}>Loading crew...</div>
+                  ) : crewMembers.length ? (
+                    crewMembers.map((member) => {
+                      const avatarSrc = member.avatarId ? getAvatarImageUrl(member.avatarId) : null;
+                      const canModerate = Boolean(isOwner) && member.id !== selfId && member.role !== "owner";
+                      return (
+                        <div key={member.id} className={styles.groupRow}>
+                          <span
+                            className={styles.groupAvatar}
+                            style={{ background: avatarColor(member.avatarId ?? member.name) }}
+                          >
+                            {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{member.name.charAt(0)}</span>}
+                          </span>
+                          <span className={styles.groupName}>{member.name}</span>
+                          <span className={styles.groupMeta}>
+                            {member.title ? <span className={styles.groupTitle}>{member.title}</span> : null}
+                            {canModerate ? (
+                              <span className={styles.groupActions}>
+                                <button
+                                  type="button"
+                                  className={styles.groupKick}
+                                  onClick={() => runCrewAction("kick", member.id)}
+                                >
+                                  Boot
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.groupBan}
+                                  onClick={() => runCrewAction("ban", member.id)}
+                                >
+                                  Ban
+                                </button>
+                              </span>
+                            ) : null}
+                          </span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className={styles.groupHint}>No crew yet</div>
+                  )}
+                </div>
                 <button
                   type="button"
                   className={styles.actionButton}

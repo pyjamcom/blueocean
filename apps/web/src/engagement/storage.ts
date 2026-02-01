@@ -24,6 +24,10 @@ export function buildDefaultState(now = new Date()): EngagementState {
     version: 1,
     updatedAt: Date.now(),
     season,
+    seasonProgress: {
+      points: 0,
+      lastSeasonPoints: 0,
+    },
     week: {
       id: getWeekKey(now),
       points: 0,
@@ -62,6 +66,7 @@ export function buildDefaultState(now = new Date()): EngagementState {
       totalCorrect: 0,
       roundsPlayed: 0,
       lastRoundDay: null,
+      lastActiveHour: null,
     },
     group: null,
   };
@@ -71,18 +76,42 @@ export function loadEngagementState(): EngagementState {
   if (typeof window === "undefined") {
     return buildDefaultState();
   }
+  const base = buildDefaultState();
   const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
-    return buildDefaultState();
+    return base;
   }
   try {
     const parsed = JSON.parse(raw) as EngagementState;
     if (!parsed || typeof parsed !== "object") {
-      return buildDefaultState();
+      return base;
     }
-    return { ...buildDefaultState(), ...parsed };
+    return {
+      ...base,
+      ...parsed,
+      season: { ...base.season, ...(parsed.season ?? {}) },
+      seasonProgress: { ...base.seasonProgress, ...(parsed.seasonProgress ?? {}) },
+      week: { ...base.week, ...(parsed.week ?? {}) },
+      streak: { ...base.streak, ...(parsed.streak ?? {}) },
+      teamStreak: { ...base.teamStreak, ...(parsed.teamStreak ?? {}) },
+      badges: { ...base.badges, ...(parsed.badges ?? {}) },
+      quests: {
+        ...base.quests,
+        ...(parsed.quests ?? {}),
+        daily: parsed.quests?.daily ?? base.quests.daily,
+        lastAssignedDay: parsed.quests?.lastAssignedDay ?? base.quests.lastAssignedDay,
+        lastQuestIds: parsed.quests?.lastQuestIds ?? base.quests.lastQuestIds,
+      },
+      cosmetics: {
+        ...base.cosmetics,
+        ...(parsed.cosmetics ?? {}),
+        equipped: { ...base.cosmetics.equipped, ...(parsed.cosmetics?.equipped ?? {}) },
+      },
+      stats: { ...base.stats, ...(parsed.stats ?? {}) },
+      group: parsed.group ?? base.group,
+    };
   } catch {
-    return buildDefaultState();
+    return base;
   }
 }
 
@@ -96,12 +125,29 @@ export function resetEngagementState() {
   window.localStorage.removeItem(STORAGE_KEY);
 }
 
-export function buildDailyQuestSet(state: EngagementState, today: string) {
+export function buildDailyQuestSet(state: EngagementState, today: string, now = new Date()) {
   const lastQuestIds = state.quests.lastQuestIds ?? [];
+  const hour = state.stats.lastActiveHour ?? now.getHours();
+  const early = hour >= 5 && hour < 11;
+  const late = hour >= 20 || hour < 5;
   const active = state.streak.current >= 3;
-  const preferred = active
-    ? ["answer_fast", "streak_two", "answer_correct"]
-    : ["play_round", "answer_correct", "streak_two"];
+  const fresh = state.stats.roundsPlayed === 0;
+  let preferred: string[] = [];
+
+  if (fresh) {
+    preferred = ["play_round", "answer_correct"];
+  } else if (late) {
+    preferred = ["answer_fast", "streak_two"];
+  } else if (early) {
+    preferred = ["play_round", "answer_correct"];
+  } else {
+    preferred = ["answer_correct", "streak_two"];
+  }
+
+  if (active) {
+    preferred = ["streak_two", ...preferred];
+  }
+
   const ordered = [...preferred, ...QUEST_DEFINITIONS.map((quest) => quest.id)];
   const pick = ordered
     .map((id) => QUEST_DEFINITIONS.find((quest) => quest.id === id))

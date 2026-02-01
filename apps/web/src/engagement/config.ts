@@ -28,7 +28,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
 export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   { id: "badge_hot_streak", label: "Hot streak", emoji: "🔥" },
   { id: "badge_speedy", label: "Quick hands", emoji: "⚡" },
-  { id: "badge_sharp", label: "Sharp shot", emoji: "🎯" },
+  { id: "badge_sharp", label: "Clean run", emoji: "🧼" },
 ];
 
 export const COSMETIC_DEFINITIONS: CosmeticDefinition[] = [

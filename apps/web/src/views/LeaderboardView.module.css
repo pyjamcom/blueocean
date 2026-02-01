@@ -93,18 +93,33 @@
 }
 
 .heroScore {
-  font-size: 36px;
-  font-weight: 700;
-  display: flex;
-  align-items: baseline;
+  display: grid;
   gap: 10px;
+  justify-items: center;
+  width: 100%;
 }
 
-.heroScoreSuffix {
-  font-size: 12px;
+.heroMeter {
+  width: min(70vw, 260px);
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.heroMeterFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #63e6be, #ffd166);
+}
+
+.heroValue {
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--ui-muted);
+  color: var(--ui-text);
 }
 
 .heroMetaRow {
@@ -211,19 +226,31 @@
   color: var(--ui-muted);
 }
 
-.scoreBlock {
+.progressBlock {
   display: grid;
-  gap: 4px;
+  gap: 6px;
   justify-items: end;
 }
 
-.score {
-  font-size: 16px;
-  font-weight: 700;
+.progressBar {
+  width: 80px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.delta {
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #63e6be, #7aa6ff);
+}
+
+.progressValue {
   font-size: 11px;
-  color: #63e6be;
-  letter-spacing: 0.05em;
+  color: var(--ui-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }

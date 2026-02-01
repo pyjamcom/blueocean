@@ -25,18 +25,12 @@ interface PublicLeaderboardResponse {
 }
 
 const fallbackTop: PublicLeaderboardEntry[] = [
-  { displayName: "Nova", funScore: 980 },
-  { displayName: "Atlas", funScore: 910 },
-  { displayName: "Pixel", funScore: 860 },
-  { displayName: "Mara", funScore: 820 },
-  { displayName: "Echo", funScore: 780 },
+  { displayName: "Nova", funScore: 980, deltaPoints: 120, percentileBand: "Top 50%" },
+  { displayName: "Atlas", funScore: 910, deltaPoints: 90, percentileBand: "Top 50%" },
+  { displayName: "Pixel", funScore: 860, deltaPoints: 70, percentileBand: "Top 50%" },
+  { displayName: "Mara", funScore: 820, deltaPoints: 45, percentileBand: "Rising" },
+  { displayName: "Echo", funScore: 780, deltaPoints: 25, percentileBand: "Rising" },
 ];
-
-function formatDelta(value?: number | null) {
-  if (value === null || value === undefined) return null;
-  if (value <= 0) return null;
-  return `+${value}`;
-}
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
   if (!raw) return null;
@@ -87,8 +81,8 @@ export default function LeaderboardView() {
     url.searchParams.set("scope", scope);
     if (engagement.group) {
       url.searchParams.set("crewCode", engagement.group.code);
-      url.searchParams.set("playerId", getOrCreateClientId());
     }
+    url.searchParams.set("playerId", getOrCreateClientId());
     url.searchParams.set("limit", "10");
 
     fetch(url.toString())
@@ -134,15 +128,37 @@ export default function LeaderboardView() {
           deltaPoints: engagement.week.points - engagement.week.lastWeekPoints,
           percentileBand: engagement.week.points > engagement.week.lastWeekPoints ? "Top 50%" : "Rising",
         }
-      : null;
+      : {
+          displayName: "You",
+          funScore: engagement.seasonProgress.points,
+        };
   const selfEntry = data?.self ?? fallbackSelf;
   const percentile =
     data?.percentile ??
     selfEntry?.percentileBand ??
     (selfEntry?.deltaPoints && selfEntry.deltaPoints > 0 ? "Top 50%" : "Rising");
 
+  const metricValue = (entry: PublicLeaderboardEntry | null) => {
+    if (!entry) return 0;
+    return period === "weekly" ? entry.deltaPoints ?? 0 : entry.funScore ?? 0;
+  };
+  const maxMetric = Math.max(
+    1,
+    metricValue(selfEntry),
+    ...topList.map((entry) => metricValue(entry)),
+  );
+  const selfMetric = metricValue(selfEntry);
+  const selfRatio = Math.min(1, selfMetric / maxMetric);
+  const selfLabel =
+    period === "weekly"
+      ? selfMetric > 0
+        ? `+${selfMetric}`
+        : "No boost yet"
+      : `${Math.round(selfRatio * 100)}% glow`;
+
   const subtitle = useMemo(() => (period === "weekly" ? "This week" : "This season"), [period]);
   const scopeLabel = engagement.group ? `Crew ${engagement.group.code}` : "Global";
+  const boardTitle = engagement.group ? "Top crew" : "Top vibes";
 
   return (
     <div className={styles.wrap}>
@@ -176,28 +192,36 @@ export default function LeaderboardView() {
         <div className={styles.heroCard}>
           <div className={styles.heroLabel}>Your vibe</div>
           <div className={styles.heroScore}>
-            {selfEntry?.funScore ?? "—"}
-            <span className={styles.heroScoreSuffix}>FunScore</span>
+            <div className={styles.heroMeter}>
+              <span className={styles.heroMeterFill} style={{ width: `${selfRatio * 100}%` }} />
+            </div>
+            <span className={styles.heroValue}>{selfLabel}</span>
           </div>
           <div className={styles.heroMetaRow}>
             {percentile ? <span className={styles.heroPill}>{percentile}</span> : null}
-            {selfEntry?.deltaPoints !== undefined && formatDelta(selfEntry.deltaPoints) ? (
-              <span className={styles.heroDelta}>{formatDelta(selfEntry.deltaPoints)}</span>
-            ) : (
+            {period === "weekly" && selfMetric <= 0 ? (
               <span className={styles.heroDeltaMuted}>Play a round to join the party</span>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
 
       <section className={styles.board}>
         <div className={styles.boardHeader}>
-          <span className={styles.boardTitle}>Top crew</span>
+          <span className={styles.boardTitle}>{boardTitle}</span>
           <span className={styles.boardHint}>{loading ? "Loading..." : "Keep it silly"}</span>
         </div>
         <div className={styles.list}>
           {topList.map((entry) => {
             const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+            const entryMetric = metricValue(entry);
+            const entryRatio = Math.min(1, entryMetric / maxMetric);
+            const entryLabel =
+              period === "weekly"
+                ? entryMetric > 0
+                  ? `+${entryMetric}`
+                  : "—"
+                : `${Math.round(entryRatio * 100)}%`;
             return (
               <div key={`${entry.displayName}-${entry.funScore}`} className={styles.row}>
                 <div
@@ -216,11 +240,11 @@ export default function LeaderboardView() {
                     <span className={styles.band}>Rising</span>
                   )}
                 </div>
-                <div className={styles.scoreBlock}>
-                  <span className={styles.score}>{entry.funScore}</span>
-                  {entry.deltaPoints !== undefined && formatDelta(entry.deltaPoints) ? (
-                    <span className={styles.delta}>{formatDelta(entry.deltaPoints)}</span>
-                  ) : null}
+                <div className={styles.progressBlock}>
+                  <div className={styles.progressBar}>
+                    <span className={styles.progressFill} style={{ width: `${entryRatio * 100}%` }} />
+                  </div>
+                  <span className={styles.progressValue}>{entryLabel}</span>
                 </div>
               </div>
             );

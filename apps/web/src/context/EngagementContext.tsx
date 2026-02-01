@@ -48,6 +48,10 @@ function applyRollover(prev: EngagementState, now: Date) {
     next = {
       ...next,
       season,
+      seasonProgress: {
+        points: 0,
+        lastSeasonPoints: prev.seasonProgress?.points ?? 0,
+      },
       streak: {
         ...next.streak,
         graceLeft: GRACE_DAYS_PER_SEASON,
@@ -86,8 +90,19 @@ function applyRollover(prev: EngagementState, now: Date) {
       }
     }
   }
+  if (prev.teamStreak.lastDay && prev.teamStreak.lastDay !== today) {
+    const gap = diffDays(prev.teamStreak.lastDay, today);
+    if (gap > 1) {
+      next.teamStreak = {
+        ...next.teamStreak,
+        current: 0,
+        lastDay: null,
+        completionRate: 0,
+      };
+    }
+  }
   if (prev.quests.lastAssignedDay !== today) {
-    const questSet = buildDailyQuestSet(next, today);
+    const questSet = buildDailyQuestSet(next, today, now);
     next.quests = {
       daily: questSet.daily,
       lastAssignedDay: today,
@@ -180,7 +195,14 @@ function updateQuestProgress(state: EngagementState, type: string, amount: numbe
 export function EngagementProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<EngagementState>(() => loadEngagementState());
   const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
-  const lastSyncRef = useRef<{ points: number; correct: number; streak: number; at: number } | null>(null);
+  const lastSyncRef = useRef<{
+    points: number;
+    lastWeekPoints: number;
+    seasonPoints: number;
+    correct: number;
+    streak: number;
+    at: number;
+  } | null>(null);
 
   const getIdentity = useCallback(() => {
     const playerId = getOrCreateClientId();
@@ -227,6 +249,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         ...next.stats,
         roundsPlayed: next.stats.roundsPlayed + 1,
         lastRoundDay: today,
+        lastActiveHour: now.getHours(),
       };
       next = updateQuestProgress(next, "round", 1, today);
       return { ...next, updatedAt: Date.now() };
@@ -250,17 +273,23 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
           next = updateQuestProgress(next, "fast", 1, today);
         }
       }
+      next.stats = {
+        ...next.stats,
+        lastActiveHour: now.getHours(),
+      };
       if (typeof input.streak === "number" && input.streak >= 2) {
         next = updateQuestProgress(next, "streak", 1, today);
-      }
-      if (next.stats.totalCorrect >= 10) {
-        next = unlockBadge(next, "badge_sharp");
       }
       if (next.stats.fastCorrects >= 3) {
         next = unlockBadge(next, "badge_speedy");
       }
-      if (typeof input.streak === "number" && input.streak >= 5) {
-        next = unlockBadge(next, "badge_hot_streak");
+      if (typeof input.streak === "number") {
+        if (input.streak >= 3) {
+          next = unlockBadge(next, "badge_sharp");
+        }
+        if (input.streak >= 5) {
+          next = unlockBadge(next, "badge_hot_streak");
+        }
       }
       return { ...next, updatedAt: Date.now() };
     });
@@ -274,6 +303,10 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       next.week = {
         ...next.week,
         points: next.week.points + points,
+      };
+      next.seasonProgress = {
+        ...next.seasonProgress,
+        points: next.seasonProgress.points + points,
       };
       trackEvent("progress_points", { points, weekId: next.week.id });
       return { ...next, updatedAt: Date.now() };
@@ -368,6 +401,8 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       lastSync &&
       now - lastSync.at < 1500 &&
       lastSync.points === state.week.points &&
+      lastSync.lastWeekPoints === state.week.lastWeekPoints &&
+      lastSync.seasonPoints === state.seasonProgress.points &&
       lastSync.correct === state.stats.totalCorrect &&
       lastSync.streak === state.streak.current
     ) {
@@ -375,6 +410,8 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     }
     lastSyncRef.current = {
       points: state.week.points,
+      lastWeekPoints: state.week.lastWeekPoints,
+      seasonPoints: state.seasonProgress.points,
       correct: state.stats.totalCorrect,
       streak: state.streak.current,
       at: now,
@@ -389,6 +426,8 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         name,
         avatarId,
         weeklyPoints: state.week.points,
+        lastWeekPoints: state.week.lastWeekPoints,
+        seasonPoints: state.seasonProgress.points,
         correctCount: state.stats.totalCorrect,
         streak: state.streak.current,
       }),
@@ -400,7 +439,9 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     state.group,
     state.stats.totalCorrect,
     state.streak.current,
+    state.week.lastWeekPoints,
     state.week.points,
+    state.seasonProgress.points,
   ]);
 
   const value = useMemo(

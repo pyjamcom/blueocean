@@ -41,6 +41,11 @@ export interface EngagementSeason {
   lengthDays: number;
 }
 
+export interface EngagementSeasonProgress {
+  points: number;
+  lastSeasonPoints: number;
+}
+
 export interface EngagementWeek {
   id: string;
   points: number;
@@ -85,6 +90,7 @@ export interface EngagementStats {
   totalCorrect: number;
   roundsPlayed: number;
   lastRoundDay: string | null;
+  lastActiveHour: number | null;
 }
 
 export interface EngagementGroup {
@@ -97,6 +103,7 @@ export interface EngagementState {
   version: number;
   updatedAt: number;
   season: EngagementSeason;
+  seasonProgress: EngagementSeasonProgress;
   week: EngagementWeek;
   streak: EngagementStreak;
   teamStreak: TeamStreak;
