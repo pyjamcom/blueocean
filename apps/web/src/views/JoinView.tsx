@@ -269,7 +269,7 @@ export default function JoinView() {
     try {
       await signInWithTwitter();
     } catch (error) {
-      setAuthError("Twitter sign-in failed");
+      setAuthError("X sign-in failed");
     }
   };
 
@@ -326,7 +326,10 @@ export default function JoinView() {
             onClick={handleGoogleAuth}
             disabled={!firebaseEnabled}
           >
-            Google
+            <span className={`${styles.authIcon} ${styles.iconGoogle}`} aria-hidden="true">
+              G
+            </span>
+            Login with Google
           </button>
           <button
             type="button"
@@ -334,7 +337,10 @@ export default function JoinView() {
             onClick={handleAppleAuth}
             disabled={!firebaseEnabled}
           >
-            Apple
+            <span className={`${styles.authIcon} ${styles.iconApple}`} aria-hidden="true">
+              
+            </span>
+            Login with Apple
           </button>
           <button
             type="button"
@@ -342,7 +348,10 @@ export default function JoinView() {
             onClick={handleTwitterAuth}
             disabled={!firebaseEnabled}
           >
-            Twitter
+            <span className={`${styles.authIcon} ${styles.iconX}`} aria-hidden="true">
+              X
+            </span>
+            Login with X
           </button>
         </div>
       ) : null}
