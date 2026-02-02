@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-01-29T23:21:02.673Z",
+  "ok": false,
+  "roomCode": "APII61Z",
+  "phases": [
+    "prepared",
+    "round"
+  ],
+  "scores": null,
+  "errors": [
+    "Error: answer_host_400"
+  ],
+  "finishedAt": "2026-01-29T23:21:04.802Z"
+}

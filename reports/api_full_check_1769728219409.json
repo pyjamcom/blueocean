@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-01-29T23:10:01.959Z",
+  "steps": [
+    {
+      "step": "create_room",
+      "roomCode": "T2494"
+    },
+    {
+      "step": "add_player_p2"
+    },
+    {
+      "step": "add_player_p3"
+    },
+    {
+      "step": "ready_all"
+    },
+    {
+      "step": "stage_prepared"
+    },
+    {
+      "step": "set_question"
+    },
+    {
+      "step": "wait_prepared_to_round"
+    },
+    {
+      "step": "phase_after_prepared",
+      "phase": "lobby"
+    },
+    {
+      "step": "submit_answers"
+    },
+    {
+      "step": "wait_round_to_reveal"
+    },
+    {
+      "step": "phase_after_round",
+      "phase": "lobby"
+    },
+    {
+      "step": "wait_reveal_to_leaderboard"
+    },
+    {
+      "step": "phase_after_reveal",
+      "phase": "round"
+    },
+    {
+      "step": "wait_leaderboard_to_end"
+    },
+    {
+      "step": "phase_after_leaderboard",
+      "phase": "reveal"
+    },
+    {
+      "step": "scores",
+      "players": [
+        {
+          "id": "host-1769728201960",
+          "score": 1000,
+          "correctCount": 1
+        },
+        {
+          "id": "p2-1769728201960",
+          "score": 0,
+          "correctCount": 0
+        },
+        {
+          "id": "p3-1769728201960",
+          "score": 0,
+          "correctCount": 0
+        }
+      ]
+    },
+    {
+      "step": "cleanup"
+    }
+  ],
+  "errors": [
+    {
+      "step": "stage_prepared",
+      "res": {
+        "ok": false,
+        "status": 400,
+        "json": {
+          "ok": false,
+          "error": "invalid phase"
+        }
+      }
+    },
+    {
+      "step": "phase_after_prepared",
+      "expected": "round",
+      "actual": "lobby"
+    },
+    {
+      "step": "phase_after_round",
+      "expected": "reveal",
+      "actual": "lobby"
+    },
+    {
+      "step": "phase_after_reveal",
+      "expected": "leaderboard",
+      "actual": "round"
+    },
+    {
+      "step": "phase_after_leaderboard",
+      "expected": "end",
+      "actual": "reveal"
+    }
+  ]
+}

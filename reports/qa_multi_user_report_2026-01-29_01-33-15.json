@@ -1,0 +1,302 @@
+{
+  "timestamp": "2026-01-29T01:33:15.044Z",
+  "ok": true,
+  "steps": [
+    {
+      "name": "create_room",
+      "ok": true,
+      "status": 200,
+      "roomCode": "API78"
+    },
+    {
+      "name": "ws_join_all",
+      "ok": true
+    },
+    {
+      "name": "roster_4_players",
+      "ok": true
+    },
+    {
+      "name": "stage_round",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "question",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "question_broadcast",
+      "ok": true
+    },
+    {
+      "name": "score_broadcast",
+      "ok": true
+    },
+    {
+      "name": "stage_reveal",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "stage_leaderboard",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "stage_broadcast",
+      "ok": true
+    },
+    {
+      "name": "get_room",
+      "ok": true,
+      "status": 200,
+      "scores": [
+        {
+          "score": 1000,
+          "correctCount": 1
+        },
+        {
+          "score": 0,
+          "correctCount": 0
+        },
+        {
+          "score": 0,
+          "correctCount": 0
+        },
+        {
+          "score": 0,
+          "correctCount": 0
+        }
+      ]
+    },
+    {
+      "name": "reset",
+      "ok": true,
+      "status": 200
+    }
+  ],
+  "clients": {
+    "host-1769650395044": {
+      "playerId": "host-1769650395044",
+      "avatarId": "avatar_robot_party",
+      "joined": true,
+      "ready": false,
+      "roster": {
+        "roomCode": "API78",
+        "players": [
+          {
+            "id": "host-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p3-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p4-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p2-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          }
+        ],
+        "hostId": "host-1769650395044"
+      },
+      "stages": [
+        "round",
+        "reveal",
+        "leaderboard"
+      ],
+      "questions": 1,
+      "answers": 4,
+      "scores": 4,
+      "errors": [],
+      "closed": false
+    },
+    "p2-1769650395044": {
+      "playerId": "p2-1769650395044",
+      "avatarId": "avatar_robot_party",
+      "joined": true,
+      "ready": false,
+      "roster": {
+        "roomCode": "API78",
+        "players": [
+          {
+            "id": "host-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p3-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p4-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p2-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          }
+        ],
+        "hostId": "host-1769650395044"
+      },
+      "stages": [
+        "round",
+        "reveal",
+        "leaderboard"
+      ],
+      "questions": 1,
+      "answers": 4,
+      "scores": 4,
+      "errors": [],
+      "closed": false
+    },
+    "p3-1769650395044": {
+      "playerId": "p3-1769650395044",
+      "avatarId": "avatar_robot_party",
+      "joined": true,
+      "ready": false,
+      "roster": {
+        "roomCode": "API78",
+        "players": [
+          {
+            "id": "host-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p3-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p4-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p2-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          }
+        ],
+        "hostId": "host-1769650395044"
+      },
+      "stages": [
+        "round",
+        "reveal",
+        "leaderboard"
+      ],
+      "questions": 1,
+      "answers": 4,
+      "scores": 4,
+      "errors": [],
+      "closed": false
+    },
+    "p4-1769650395044": {
+      "playerId": "p4-1769650395044",
+      "avatarId": "avatar_robot_party",
+      "joined": true,
+      "ready": false,
+      "roster": {
+        "roomCode": "API78",
+        "players": [
+          {
+            "id": "host-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p3-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p4-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          },
+          {
+            "id": "p2-1769650395044",
+            "avatarId": "avatar_robot_party",
+            "ready": true,
+            "score": 0,
+            "correctCount": 0,
+            "streak": 0
+          }
+        ],
+        "hostId": "host-1769650395044"
+      },
+      "stages": [
+        "round",
+        "reveal",
+        "leaderboard"
+      ],
+      "questions": 1,
+      "answers": 4,
+      "scores": 4,
+      "errors": [],
+      "closed": false
+    }
+  },
+  "deviations": [],
+  "limitations": [
+    "UI/QR/визуальные сценарии не тестируются через API/WS. Нужна ручная проверка в браузере."
+  ]
+}

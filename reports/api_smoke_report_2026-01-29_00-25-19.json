@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-01-29T00:25:19.655Z",
+  "http": {
+    "escapers": {
+      "ok": true,
+      "status": 200
+    },
+    "www": {
+      "ok": true,
+      "status": 200
+    },
+    "wsHealth": {
+      "ok": true,
+      "status": 200
+    }
+  },
+  "ws": {
+    "ok": true,
+    "joined": true,
+    "answered": true,
+    "errors": []
+  }
+}

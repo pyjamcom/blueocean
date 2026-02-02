@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-01-29T23:22:15.395Z",
+  "ok": false,
+  "roomCode": "API2YAQ",
+  "phases": [
+    "prepared",
+    "round"
+  ],
+  "scores": null,
+  "errors": [
+    "Error: answer_host_400_{\"ok\":false,\"error\":\"invalid answer\",\"details\":[{\"instancePath\":\"/roomCode\",\"schemaPath\":\"#/properties/roomCode/maxLength\",\"keyword\":\"maxLength\",\"params\":{\"limit\":6},\"message\":\"must NOT have more than 6 characters\"}]}"
+  ],
+  "finishedAt": "2026-01-29T23:22:17.457Z"
+}

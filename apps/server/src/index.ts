@@ -22,6 +22,9 @@ const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
 const METRICS_ALERT_WEBHOOK = process.env.METRICS_ALERT_WEBHOOK;
 const METRICS_ALERT_TOKEN = process.env.METRICS_ALERT_TOKEN;
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TELEGRAM_THREAD_ID = process.env.TELEGRAM_THREAD_ID;
 const ROUND_DEFAULT_MS = 10000;
 const PREPARED_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 5000;
@@ -613,27 +616,29 @@ app.get("/metrics/engagement", async (req, res) => {
   const week = typeof req.query.week === "string" ? req.query.week : undefined;
   const lastRaw = await redis.get(metricsKeys.rollupStatus);
   const last = lastRaw ? JSON.parse(lastRaw) : null;
+  const periodSweepRaw = await redis.get(metricsKeys.periodSweepStatus);
+  const periodSweep = periodSweepRaw ? JSON.parse(periodSweepRaw) : null;
 
   if (period === "weekly") {
     const targetWeek = week ?? last?.week;
     if (!targetWeek) {
-      res.json({ ok: true, period, last });
+      res.json({ ok: true, period, last, periodSweep });
       return;
     }
     const summaryRaw = await redis.get(metricsKeys.weeklySummary(targetWeek));
     const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
-    res.json({ ok: true, period, week: targetWeek, summary, last });
+    res.json({ ok: true, period, week: targetWeek, summary, last, periodSweep });
     return;
   }
 
   const targetDay = day ?? last?.day;
   if (!targetDay) {
-    res.json({ ok: true, period, last });
+    res.json({ ok: true, period, last, periodSweep });
     return;
   }
   const summaryRaw = await redis.get(metricsKeys.dailySummary(targetDay));
   const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
-  res.json({ ok: true, period, day: targetDay, summary, last });
+  res.json({ ok: true, period, day: targetDay, summary, last, periodSweep });
 });
 
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -683,6 +688,16 @@ const crewIndex = new Set<string>();
 let lastPeriodSweepDay: string | null = null;
 let lastPeriodSweepSeason: string | null = null;
 let periodSweepInFlight = false;
+
+type PeriodSweepResult = {
+  ok: boolean;
+  skipped: boolean;
+  day: string;
+  seasonId: string;
+  seasonChanged: boolean;
+  crewCount: number;
+  error?: string;
+};
 
 type CrewRole = "owner" | "member";
 
@@ -783,6 +798,7 @@ const metricsKeys = {
   dailySummary: (dayKey: string) => `metrics:summary:${dayKey}`,
   weeklySummary: (weekKey: string) => `metrics:summary:week:${weekKey}`,
   rollupStatus: "metrics:rollup:last",
+  periodSweepStatus: "metrics:period_sweep:last",
 };
 
 const parseDayKey = (dayKey: string) => {
@@ -933,23 +949,60 @@ async function listCrewCodes(): Promise<string[]> {
   return Array.from(crewIndex);
 }
 
-async function sweepCrewPeriods(now = new Date()) {
-  if (periodSweepInFlight) return;
+async function sweepCrewPeriods(now = new Date()): Promise<PeriodSweepResult> {
+  const dayKey = formatDayKey(now);
+  const season = getSeasonInfo(now);
+  if (periodSweepInFlight) {
+    return {
+      ok: false,
+      skipped: true,
+      day: dayKey,
+      seasonId: season.id,
+      seasonChanged: false,
+      crewCount: 0,
+      error: "in_flight",
+    };
+  }
   periodSweepInFlight = true;
+  let crewCount = 0;
+  const seasonChanged = season.id !== lastPeriodSweepSeason;
   try {
-    const dayKey = formatDayKey(now);
-    const season = getSeasonInfo(now);
     if (dayKey === lastPeriodSweepDay && season.id === lastPeriodSweepSeason) {
-      return;
+      return {
+        ok: true,
+        skipped: true,
+        day: dayKey,
+        seasonId: season.id,
+        seasonChanged: false,
+        crewCount: 0,
+      };
     }
     lastPeriodSweepDay = dayKey;
     lastPeriodSweepSeason = season.id;
     const codes = await listCrewCodes();
     for (const code of codes) {
       await readCrew(code);
+      crewCount += 1;
     }
+    return {
+      ok: true,
+      skipped: false,
+      day: dayKey,
+      seasonId: season.id,
+      seasonChanged,
+      crewCount,
+    };
   } catch (err) {
     console.error("period:sweep:error", err);
+    return {
+      ok: false,
+      skipped: false,
+      day: dayKey,
+      seasonId: season.id,
+      seasonChanged,
+      crewCount,
+      error: err instanceof Error ? err.message : String(err),
+    };
   } finally {
     periodSweepInFlight = false;
   }
@@ -1190,8 +1243,104 @@ async function storeWeeklySummary(weekKey: string, summary: Record<string, unkno
   await redis.set(metricsKeys.weeklySummary(weekKey), JSON.stringify(summary), "EX", METRICS_TTL_SEC);
 }
 
+async function storePeriodSweepStatus(status: Record<string, unknown>) {
+  if (!redis) {
+    return;
+  }
+  await redis.set(metricsKeys.periodSweepStatus, JSON.stringify(status), "EX", METRICS_TTL_SEC);
+}
+
+const TELEGRAM_API_BASE = TELEGRAM_BOT_TOKEN ? `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}` : null;
+
+const formatMetricCount = (value: unknown) =>
+  typeof value === "number" && Number.isFinite(value) ? Math.round(value) : null;
+
+const formatMetricPct = (value: unknown) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return "n/a";
+  }
+  return `${Math.round(value * 1000) / 10}%`;
+};
+
+async function sendTelegramMessage(text: string, opts: { silent?: boolean } = {}) {
+  if (!TELEGRAM_API_BASE || !TELEGRAM_CHAT_ID) {
+    return;
+  }
+  if (typeof fetch !== "function") {
+    console.error("telegram:missing_fetch");
+    return;
+  }
+  const payload: Record<string, unknown> = {
+    chat_id: TELEGRAM_CHAT_ID,
+    text,
+    disable_web_page_preview: true,
+  };
+  if (opts.silent) {
+    payload.disable_notification = true;
+  }
+  if (TELEGRAM_THREAD_ID) {
+    const threadId = Number(TELEGRAM_THREAD_ID);
+    if (!Number.isNaN(threadId)) {
+      payload.message_thread_id = threadId;
+    }
+  }
+  try {
+    await fetch(`${TELEGRAM_API_BASE}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error("telegram:send:error", err);
+  }
+}
+
+function formatMetricsTelegramMessage(payload: Record<string, unknown>) {
+  const type = payload.type;
+  if (typeof type !== "string") {
+    return null;
+  }
+  const summary = payload.summary as Record<string, unknown> | undefined;
+  if (type === "metrics_daily" || type === "metrics_alert") {
+    const day = typeof payload.day === "string" ? payload.day : "unknown-day";
+    const users = formatMetricCount(summary?.users);
+    const sessions = formatMetricCount(summary?.sessions);
+    const d1 = formatMetricPct(summary?.d1_retention);
+    const d7 = formatMetricPct(summary?.d7_retention);
+    const streak = formatMetricCount(summary?.streak_completed);
+    const alerts =
+      Array.isArray(payload.alerts) && payload.alerts.length
+        ? `\nalerts: ${payload.alerts.join(", ")}`
+        : "";
+    const prefix = type === "metrics_alert" ? "⚠️" : "✅";
+    return (
+      `${prefix} Metrics daily ${day}\n` +
+      `users: ${users ?? "n/a"} | sessions: ${sessions ?? "n/a"}\n` +
+      `D1: ${d1} | D7: ${d7}\n` +
+      `streak: ${streak ?? "n/a"}` +
+      alerts
+    );
+  }
+  if (type === "metrics_weekly") {
+    const week = typeof payload.week === "string" ? payload.week : "unknown-week";
+    const users = formatMetricCount(summary?.users_7d);
+    const sessions = formatMetricCount(summary?.sessions_7d);
+    const d7 = formatMetricPct(summary?.d7_retention);
+    return (
+      `📊 Metrics weekly ${week}\n` +
+      `users_7d: ${users ?? "n/a"} | sessions_7d: ${sessions ?? "n/a"}\n` +
+      `D7: ${d7}`
+    );
+  }
+  return null;
+}
+
 async function sendMetricsWebhook(payload: Record<string, unknown>) {
   if (!METRICS_ALERT_WEBHOOK) {
+    const telegramMessage = formatMetricsTelegramMessage(payload);
+    if (telegramMessage) {
+      await sendTelegramMessage(telegramMessage);
+    }
     return;
   }
   if (typeof fetch !== "function") {
@@ -1207,6 +1356,10 @@ async function sendMetricsWebhook(payload: Record<string, unknown>) {
       },
       body: JSON.stringify(payload),
     });
+    const telegramMessage = formatMetricsTelegramMessage(payload);
+    if (telegramMessage) {
+      await sendTelegramMessage(telegramMessage, { silent: payload.type === "metrics_daily" });
+    }
   } catch (err) {
     console.error("metrics:webhook:error", err);
   }
@@ -3263,8 +3416,37 @@ if (runRollupOnly || runMetricsOnly) {
     try {
       if (runRollupOnly) {
         console.log("period:sweep:manual:start");
-        await sweepCrewPeriods();
-        console.log("period:sweep:manual:done");
+        const startedAt = Date.now();
+        const result = await sweepCrewPeriods();
+        const durationMs = Date.now() - startedAt;
+        const status = { ...result, durationMs, at: Date.now() };
+        await storePeriodSweepStatus(status);
+        if (result.skipped && result.error === "in_flight") {
+          await sendTelegramMessage(`⚠️ Nightly rollup skipped (already running) ${result.day}`);
+        } else if (!result.skipped) {
+          if (result.ok) {
+            await sendTelegramMessage(
+              `✅ Nightly rollup OK ${result.day}\ncrews: ${result.crewCount} | duration: ${durationMs}ms`,
+              { silent: true },
+            );
+            if (result.seasonChanged) {
+              const season = getSeasonInfo(new Date());
+              await sendTelegramMessage(
+                `🎉 Season rollover\nseason: ${season.id}\nwindow: ${season.startDay} → ${season.endDay}`,
+              );
+            }
+          } else {
+            await sendTelegramMessage(
+              `❌ Nightly rollup FAILED ${result.day}\nseason: ${result.seasonId}\nerror: ${
+                result.error ?? "unknown"
+              }`,
+            );
+          }
+        }
+        if (!result.ok && !result.skipped) {
+          throw new Error(result.error ?? "period sweep failed");
+        }
+        console.log("period:sweep:manual:done", result);
       }
       if (runMetricsOnly) {
         console.log("metrics:rollup:manual:start", metricsPeriod);
@@ -3274,6 +3456,9 @@ if (runRollupOnly || runMetricsOnly) {
       process.exit(0);
     } catch (err) {
       console.error("maintenance:error", err);
+      await sendTelegramMessage(
+        `❌ Maintenance job failed\nerror: ${err instanceof Error ? err.message : String(err)}`,
+      );
       process.exit(1);
     }
   })();

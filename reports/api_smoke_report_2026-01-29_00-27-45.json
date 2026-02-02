@@ -1,0 +1,67 @@
+{
+  "timestamp": "2026-01-29T00:27:45.209Z",
+  "steps": [
+    {
+      "name": "create_room",
+      "ok": true,
+      "status": 200,
+      "roomCode": "API05",
+      "hostId": "api-host-1769646465210"
+    },
+    {
+      "name": "add_player",
+      "ok": true,
+      "status": 200,
+      "playerId": "api-player-1769646465210"
+    },
+    {
+      "name": "stage_round",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "question",
+      "ok": false,
+      "status": 400
+    },
+    {
+      "name": "answer_host",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "answer_player",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "stage_reveal",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "stage_leaderboard",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "get_room",
+      "ok": true,
+      "status": 200,
+      "scores": [
+        {
+          "score": 0
+        },
+        {
+          "score": 0
+        }
+      ]
+    },
+    {
+      "name": "reset",
+      "ok": true,
+      "status": 200
+    }
+  ],
+  "ok": false
+}

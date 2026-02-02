@@ -20,6 +20,12 @@
 - Ежедневный rollup метрик (D1/D7, churn, sessions/user) сохраняется в Redis.
 - GET `/metrics/engagement?period=daily&day=YYYY-MM-DD` — дневной отчёт.
 - GET `/metrics/engagement?period=weekly&week=YYYY-W##` — недельный отчёт.
+- `/metrics/engagement` также возвращает `periodSweep` со статусом ночных rollup‑джоб.
+
+## Уведомления (Telegram)
+- `TELEGRAM_BOT_TOKEN` — токен бота.
+- `TELEGRAM_CHAT_ID` — id чата/канала для алертов.
+- `TELEGRAM_THREAD_ID` — опционально, для форум‑топика.
 
 ## Алерты (рекомендации)
 - рост joinFail > 10% за 5 мин

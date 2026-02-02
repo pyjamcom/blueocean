@@ -1,0 +1,292 @@
+{
+  "started_at": "2026-01-28T23:52:31.364185Z",
+  "base": "https://ws.escapers.app/test",
+  "steps": [
+    {
+      "name": "create_room",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "lobby",
+            "questionIndex": 0
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651551505
+        }
+      },
+      "expect": "200 ok with roomCode"
+    },
+    {
+      "name": "get_room_after_create",
+      "status": 404,
+      "detail": {
+        "ok": false,
+        "error": "room_not_found"
+      },
+      "expect": "stage=lobby, hostId=host1"
+    },
+    {
+      "name": "add_player_p1",
+      "status": 404,
+      "detail": {
+        "ok": false,
+        "error": "room_not_found"
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "add_player_p2",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "lobby",
+            "questionIndex": 0
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            },
+            {
+              "id": "p2",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651551903
+        }
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "stage_by_non_host",
+      "status": 403,
+      "detail": "{\"ok\":false,\"error\":\"not host\"}",
+      "expect": "403 not host"
+    },
+    {
+      "name": "stage_round_host",
+      "status": 404,
+      "detail": {
+        "ok": false,
+        "error": "room_not_found"
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "send_question",
+      "status": 404,
+      "detail": "{\"ok\":false,\"error\":\"room_not_found\"}",
+      "expect": "200 ok"
+    },
+    {
+      "name": "answer_host1",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "lobby",
+            "questionIndex": 0
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            },
+            {
+              "id": "p2",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651552425
+        }
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "answer_p1",
+      "status": 404,
+      "detail": {
+        "ok": false,
+        "error": "room_not_found"
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "answer_p2",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "lobby",
+            "questionIndex": 0
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            },
+            {
+              "id": "p2",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651552689
+        }
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "get_room_after_answers",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "lobby",
+            "questionIndex": 0
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            },
+            {
+              "id": "p2",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651552689
+        }
+      },
+      "expect": "host1 score > 0"
+    },
+    {
+      "name": "stage_reveal",
+      "status": 404,
+      "detail": {
+        "ok": false,
+        "error": "room_not_found"
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "stage_leaderboard",
+      "status": 200,
+      "detail": {
+        "ok": true,
+        "room": {
+          "roomCode": "JKU9",
+          "hostId": "host1",
+          "stage": {
+            "roomCode": "JKU9",
+            "phase": "leaderboard"
+          },
+          "currentQuestionIndex": 0,
+          "players": [
+            {
+              "id": "host1",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            },
+            {
+              "id": "p2",
+              "avatarId": "avatar_robot_party",
+              "ready": true,
+              "score": 0,
+              "correctCount": 0,
+              "streak": 0
+            }
+          ],
+          "expiresAt": 1769651553089
+        }
+      },
+      "expect": "200 ok"
+    },
+    {
+      "name": "reset_room",
+      "status": 404,
+      "detail": "{\"ok\":false,\"error\":\"room_not_found\"}",
+      "expect": "200 ok"
+    }
+  ],
+  "deviations": [
+    "GET /rooms/{code} не возвращает ожидаемый ответ",
+    "Не удалось добавить игрока p1",
+    "Хост не смог перевести комнату в round",
+    "Не удалось отправить вопрос",
+    "Не удалось принять ответ игрока p1",
+    "Очки за правильный ответ не начислены (host1 score <= 0)",
+    "Не удалось перевести в reveal"
+  ],
+  "finished_at": "2026-01-28T23:52:33.233002Z"
+}

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /game
+Disallow: /lobby
+Disallow: /result
+Disallow: /wait
+Disallow: /manager
+Disallow: /debug
+Disallow: /PLAY
+Disallow: /*?*
+
+Sitemap: https://escapers.app/sitemap.xml

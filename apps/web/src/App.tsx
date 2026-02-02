@@ -49,6 +49,119 @@ const phaseRoutes: Record<RoomPhase, string> = {
 
 const MIN_PLAYERS = 3;
 
+type SeoConfig = {
+  title: string;
+  description: string;
+  keywords?: string;
+  canonical?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
+  robots: string;
+};
+
+const SEO_JOIN: SeoConfig = {
+  title: "Escapers - Party Games & Meme Quiz with Friends",
+  description:
+    "Jump into party games, a meme game, and funny quiz rounds. Create or join a room and play online with friends in fast icebreaker games.",
+  keywords:
+    "party games, meme game, funny quiz, party quiz, friends quiz, icebreaker games, online quiz, group game, fun party games",
+  canonical: "https://escapers.app/join",
+  ogTitle: "Escapers - Party Games & Meme Quiz with Friends",
+  ogDescription: "Fast party games, meme game chaos, and funny quiz rounds with friends.",
+  ogUrl: "https://escapers.app/join",
+  robots: "index, follow",
+};
+
+const SEO_LEADERBOARD: SeoConfig = {
+  title: "Escapers Leaderboard - Party Quiz & Friends Quiz",
+  description:
+    "See rankings from party games, meme game rounds, and friends quiz battles. Track fun party games progress.",
+  keywords:
+    "party games, party quiz, friends quiz, meme game, group game, fun party games, hilarious party games",
+  canonical: "https://escapers.app/leaderboard",
+  ogTitle: "Escapers Leaderboard - Party Quiz & Friends Quiz",
+  ogDescription: "Party games rankings and friends quiz scores in Escapers.",
+  ogUrl: "https://escapers.app/leaderboard",
+  robots: "index, follow",
+};
+
+const SEO_DEFAULT: SeoConfig = {
+  title: "Escapers",
+  description: "Party games and meme quiz with friends.",
+  robots: "noindex, nofollow",
+};
+
+function setMetaTag(attr: "name" | "property", value: string, content?: string) {
+  const selector = `meta[${attr}=\"${value}\"]`;
+  const existing = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!content) {
+    if (existing) {
+      existing.remove();
+    }
+    return;
+  }
+  const tag = existing ?? document.createElement("meta");
+  tag.setAttribute(attr, value);
+  tag.setAttribute("content", content);
+  if (!existing) {
+    document.head.appendChild(tag);
+  }
+}
+
+function setCanonicalLink(href?: string) {
+  const existing = document.head.querySelector<HTMLLinkElement>("link[rel=\"canonical\"]");
+  if (!href) {
+    if (existing) {
+      existing.remove();
+    }
+    return;
+  }
+  const link = existing ?? document.createElement("link");
+  link.setAttribute("rel", "canonical");
+  link.setAttribute("href", href);
+  if (!existing) {
+    document.head.appendChild(link);
+  }
+}
+
+function SeoManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname;
+    const upper = path.toUpperCase();
+    const isJoin = path === "/" || path === "/join";
+    const isLeaderboard = path === "/leaderboard";
+    const isJoinCode = /^\/[A-Z0-9]{4}$/.test(upper);
+
+    const config = isJoin ? SEO_JOIN : isLeaderboard ? SEO_LEADERBOARD : SEO_DEFAULT;
+    const robots = isJoin || isLeaderboard ? config.robots : "noindex, nofollow";
+
+    document.title = config.title;
+    setMetaTag("name", "description", config.description);
+    setMetaTag("name", "keywords", config.keywords);
+    setMetaTag("name", "robots", robots);
+
+    setMetaTag("property", "og:title", config.ogTitle ?? config.title);
+    setMetaTag("property", "og:description", config.ogDescription ?? config.description);
+    setMetaTag("property", "og:type", "website");
+    setMetaTag("property", "og:url", config.ogUrl ?? window.location.href);
+
+    if (isJoin) {
+      setCanonicalLink(SEO_JOIN.canonical);
+    } else if (isLeaderboard) {
+      setCanonicalLink(SEO_LEADERBOARD.canonical);
+    } else if (isJoinCode) {
+      setCanonicalLink(SEO_JOIN.canonical);
+    } else {
+      setCanonicalLink(undefined);
+    }
+  }, [location.pathname]);
+
+  return null;
+}
+
 function StageNavigator() {
   const { phase, roomCode, joinedAt, roundStartAt, isHost, players } = useRoom();
   const location = useLocation();
@@ -169,6 +282,7 @@ export default function App() {
               />
             )}
             <HelpButton />
+            <SeoManager />
             <StageNavigator />
             <Routes>
               <Route path="/join" element={<JoinView />} />

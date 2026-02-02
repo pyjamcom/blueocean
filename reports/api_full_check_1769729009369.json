@@ -1,0 +1,31 @@
+{
+  "startedAt": "2026-01-29T23:23:15.123Z",
+  "ok": true,
+  "roomCode": "APXOOC",
+  "phases": [
+    "prepared",
+    "round",
+    "reveal",
+    "leaderboard",
+    "end"
+  ],
+  "scores": [
+    {
+      "name": "Host",
+      "score": 1000,
+      "correctCount": 1
+    },
+    {
+      "name": "P2",
+      "score": 0,
+      "correctCount": 0
+    },
+    {
+      "name": "P3",
+      "score": 850,
+      "correctCount": 1
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-01-29T23:23:29.369Z"
+}
