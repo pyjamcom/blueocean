@@ -2865,59 +2865,78 @@ wss.on("connection", (socket, request) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`server listening on ${PORT}`);
-});
+const runRollupOnly =
+  process.argv.includes("--rollup") ||
+  process.argv.includes("--rollup-once") ||
+  process.env.ROLLUP_ONCE === "1";
 
-schedulePeriodSweep();
-
-setInterval(() => {
-  const now = Date.now();
-  wss.clients.forEach((client) => {
-    const state = socketState.get(client);
-    if (!state) {
-      return;
-    }
-    if (client.readyState !== WebSocket.OPEN) {
-      return;
-    }
-    if (state.lastPong && now - state.lastPong > HEARTBEAT_TIMEOUT_MS) {
-      client.terminate();
-      return;
-    }
+if (runRollupOnly) {
+  (async () => {
     try {
-      client.ping();
-    } catch (_err) {
-      client.terminate();
+      console.log("period:sweep:manual:start");
+      await sweepCrewPeriods();
+      console.log("period:sweep:manual:done");
+      process.exit(0);
+    } catch (err) {
+      console.error("period:sweep:manual:error", err);
+      process.exit(1);
     }
+  })();
+} else {
+  server.listen(PORT, () => {
+    console.log(`server listening on ${PORT}`);
   });
-  void pruneStalePlayers();
-  void autoStartEligibleRooms();
-}, HEARTBEAT_INTERVAL_MS);
 
-setInterval(async () => {
-  const now = Date.now();
-  const rooms = await roomStore.list();
-  for (const room of rooms) {
-    if (room.expiresAt <= now) {
-      await roomStore.delete(room.code);
-      clearRoomTimers(room.code);
-      metrics.roomsExpired += 1;
+  schedulePeriodSweep();
+
+  setInterval(() => {
+    const now = Date.now();
+    wss.clients.forEach((client) => {
+      const state = socketState.get(client);
+      if (!state) {
+        return;
+      }
+      if (client.readyState !== WebSocket.OPEN) {
+        return;
+      }
+      if (state.lastPong && now - state.lastPong > HEARTBEAT_TIMEOUT_MS) {
+        client.terminate();
+        return;
+      }
+      try {
+        client.ping();
+      } catch (_err) {
+        client.terminate();
+      }
+    });
+    void pruneStalePlayers();
+    void autoStartEligibleRooms();
+  }, HEARTBEAT_INTERVAL_MS);
+
+  setInterval(async () => {
+    const now = Date.now();
+    const rooms = await roomStore.list();
+    for (const room of rooms) {
+      if (room.expiresAt <= now) {
+        await roomStore.delete(room.code);
+        clearRoomTimers(room.code);
+        metrics.roomsExpired += 1;
+      }
     }
-  }
-  const cutoff = now - LOG_TTL_MS;
-  while (complianceEvents.length > 0) {
-    const first = complianceEvents[0];
-    if (!first || first.at >= cutoff) {
-      break;
+    const cutoff = now - LOG_TTL_MS;
+    while (complianceEvents.length > 0) {
+      const first = complianceEvents[0];
+      if (!first || first.at >= cutoff) {
+        break;
+      }
+      complianceEvents.shift();
     }
-    complianceEvents.shift();
-  }
-  while (analyticsEvents.length > 0) {
-    const first = analyticsEvents[0];
-    if (!first || first.at >= cutoff) {
-      break;
+    while (analyticsEvents.length > 0) {
+      const first = analyticsEvents[0];
+      if (!first || first.at >= cutoff) {
+        break;
+      }
+      analyticsEvents.shift();
     }
-    analyticsEvents.shift();
-  }
-}, 1000 * 60 * 5);
+  }, 1000 * 60 * 5);
+}
