@@ -1,0 +1,11 @@
+{
+  "teamStreaks": true,
+  "seasons": true,
+  "progressLeaderboard": true,
+  "graceDay": true,
+  "masteryBadges": true,
+  "miniQuests": true,
+  "cosmetics": true,
+  "groups": true,
+  "notifications": true
+}

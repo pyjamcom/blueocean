@@ -1,0 +1,155 @@
+{
+  "name": "Escapers Engagement System",
+  "schemaVersion": 1,
+  "document": {
+    "id": "0:0",
+    "type": "DOCUMENT",
+    "children": [
+      {
+        "id": "1:1",
+        "type": "CANVAS",
+        "name": "Core Flow",
+        "children": [
+          {
+            "id": "1:10",
+            "type": "FRAME",
+            "name": "Lobby - Streak + Quest + Reminder",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "RECT", "name": "Background" },
+              { "type": "COMPONENT_INSTANCE", "name": "StreakChip" },
+              { "type": "COMPONENT_INSTANCE", "name": "QuestCard" },
+              { "type": "COMPONENT_INSTANCE", "name": "ReminderToggle" },
+              { "type": "COMPONENT_INSTANCE", "name": "HintBubble" }
+            ]
+          },
+          {
+            "id": "1:20",
+            "type": "FRAME",
+            "name": "Result - Progress Leaderboard",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "RECT", "name": "Background" },
+              { "type": "COMPONENT_INSTANCE", "name": "ProgressLeaderboard" },
+              { "type": "TEXT", "name": "PercentileBand" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2:1",
+        "type": "CANVAS",
+        "name": "Streaks & Quests",
+        "children": [
+          {
+            "id": "2:10",
+            "type": "FRAME",
+            "name": "Daily Streak Summary",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "StreakChip" },
+              { "type": "COMPONENT_INSTANCE", "name": "GraceDayIndicator" },
+              { "type": "COMPONENT_INSTANCE", "name": "TeamStreakBar" }
+            ]
+          },
+          {
+            "id": "2:20",
+            "type": "FRAME",
+            "name": "Daily Quest",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "QuestCard" },
+              { "type": "COMPONENT_INSTANCE", "name": "ProgressBar" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3:1",
+        "type": "CANVAS",
+        "name": "Badges & Mastery",
+        "children": [
+          {
+            "id": "3:10",
+            "type": "FRAME",
+            "name": "Badge Gallery",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "BadgeTile" },
+              { "type": "COMPONENT_INSTANCE", "name": "BadgeTile" }
+            ]
+          },
+          {
+            "id": "3:20",
+            "type": "FRAME",
+            "name": "Badge Earned",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "BadgeEarnedModal" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4:1",
+        "type": "CANVAS",
+        "name": "Cosmetics",
+        "children": [
+          {
+            "id": "4:10",
+            "type": "FRAME",
+            "name": "Inventory",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "CosmeticItemCard" },
+              { "type": "COMPONENT_INSTANCE", "name": "EquipTag" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5:1",
+        "type": "CANVAS",
+        "name": "Groups & Safety",
+        "children": [
+          {
+            "id": "5:10",
+            "type": "FRAME",
+            "name": "Group Home",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "GroupStreakCard" },
+              { "type": "COMPONENT_INSTANCE", "name": "ProgressLeaderboard" }
+            ]
+          },
+          {
+            "id": "5:20",
+            "type": "FRAME",
+            "name": "Invite Modal",
+            "layout": { "width": 390, "height": 844 },
+            "nodes": [
+              { "type": "COMPONENT_INSTANCE", "name": "InviteModal" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "components": {
+    "StreakChip": { "type": "COMPONENT", "description": "Compact streak indicator" },
+    "QuestCard": { "type": "COMPONENT", "description": "Daily quest card" },
+    "GraceDayIndicator": { "type": "COMPONENT", "description": "Grace day balance" },
+    "ProgressBar": { "type": "COMPONENT", "description": "Quest progress" },
+    "BadgeTile": { "type": "COMPONENT", "description": "Badge tile" },
+    "BadgeEarnedModal": { "type": "COMPONENT", "description": "Badge earned modal" },
+    "RewardBanner": { "type": "COMPONENT", "description": "Reward banner" },
+    "ProgressLeaderboard": { "type": "COMPONENT", "description": "Safe progress leaderboard" },
+    "CosmeticItemCard": { "type": "COMPONENT", "description": "Cosmetic inventory item" },
+    "EquipTag": { "type": "COMPONENT", "description": "Equip/locked tag" },
+    "GroupStreakCard": { "type": "COMPONENT", "description": "Group streak summary" },
+    "InviteModal": { "type": "COMPONENT", "description": "Invite to group" },
+    "ReminderToggle": { "type": "COMPONENT", "description": "Opt-in reminder toggle" },
+    "HintBubble": { "type": "COMPONENT", "description": "One-time hint bubble" },
+    "TeamStreakBar": { "type": "COMPONENT", "description": "Team completion bar" }
+  }
+}

@@ -1,7 +1,4 @@
-import {
-  GRACE_DAYS_PER_SEASON,
-  QUEST_DEFINITIONS,
-} from "./config";
+import { GRACE_DAYS_PER_WEEK, QUEST_DEFINITIONS, QUIET_HOURS_DEFAULT } from "./config";
 import { EngagementState, QuestDefinition, QuestProgress } from "./types";
 import { formatDayKey, getSeasonInfo, getWeekKey } from "./time";
 
@@ -37,7 +34,7 @@ export function buildDefaultState(now = new Date()): EngagementState {
       current: 0,
       best: 0,
       lastDay: null,
-      graceLeft: GRACE_DAYS_PER_SEASON,
+      graceLeft: GRACE_DAYS_PER_WEEK,
       graceUsedOn: null,
     },
     teamStreak: {
@@ -60,13 +57,25 @@ export function buildDefaultState(now = new Date()): EngagementState {
         frame: null,
         effect: null,
       },
+      lastUnlocked: null,
     },
     stats: {
       fastCorrects: 0,
       totalCorrect: 0,
+      totalAnswers: 0,
       roundsPlayed: 0,
       lastRoundDay: null,
       lastActiveHour: null,
+    },
+    notifications: {
+      enabled: false,
+      quietStart: QUIET_HOURS_DEFAULT.start,
+      quietEnd: QUIET_HOURS_DEFAULT.end,
+      lastPromptDay: null,
+    },
+    hints: {
+      streakHintShown: false,
+      questHintShown: false,
     },
     group: null,
   };
@@ -106,8 +115,11 @@ export function loadEngagementState(): EngagementState {
         ...base.cosmetics,
         ...(parsed.cosmetics ?? {}),
         equipped: { ...base.cosmetics.equipped, ...(parsed.cosmetics?.equipped ?? {}) },
+        lastUnlocked: parsed.cosmetics?.lastUnlocked ?? base.cosmetics.lastUnlocked,
       },
       stats: { ...base.stats, ...(parsed.stats ?? {}) },
+      notifications: { ...base.notifications, ...(parsed.notifications ?? {}) },
+      hints: { ...base.hints, ...(parsed.hints ?? {}) },
       group: parsed.group ?? base.group,
     };
   } catch {

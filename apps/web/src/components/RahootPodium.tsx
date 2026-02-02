@@ -8,6 +8,7 @@ export interface RahootPodiumEntry {
   name: string;
   points: number;
   avatarId?: string;
+  frameClass?: string;
 }
 
 export default function RahootPodium({
@@ -57,7 +58,10 @@ export default function RahootPodium({
   const renderAvatar = (entry: RahootPodiumEntry) => {
     const src = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
     return (
-      <span className={styles.avatar} style={{ background: avatarColor(entry.avatarId ?? entry.id) }}>
+      <span
+        className={`${styles.avatar} ${entry.frameClass ?? ""}`}
+        style={{ background: avatarColor(entry.avatarId ?? entry.id) }}
+      >
         {src ? <img src={src} alt="" /> : <span>{entry.name.charAt(0).toUpperCase()}</span>}
       </span>
     );

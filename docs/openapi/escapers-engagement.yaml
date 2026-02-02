@@ -1,0 +1,662 @@
+openapi: 3.0.3
+info:
+  title: Escapers Engagement API
+  version: 1.0.0
+  description: >-
+    Engagement endpoints for crews (team streaks), leaderboards, analytics,
+    and lightweight compliance tracking. Base URL is configured via VITE_API_URL
+    in the web client.
+servers:
+  - url: http://localhost:3001
+    description: Local dev
+  - url: https://ws.escapers.app
+    description: Production (set by VITE_API_URL)
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+  /feature-flags:
+    get:
+      summary: Resolve feature flags
+      responses:
+        "200":
+          description: Feature flags payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureFlagsResponse"
+  /compliance/age:
+    post:
+      summary: Record age gate acceptance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComplianceAgeRequest"
+      responses:
+        "200":
+          description: Logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /analytics:
+    post:
+      summary: Log analytics event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyticsEventRequest"
+      responses:
+        "200":
+          description: Logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /client-error:
+    post:
+      summary: Log client error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientErrorRequest"
+      responses:
+        "200":
+          description: Logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/create:
+    post:
+      summary: Create crew
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewCreateRequest"
+      responses:
+        "200":
+          description: Crew created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/join:
+    post:
+      summary: Join crew
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewJoinRequest"
+      responses:
+        "200":
+          description: Crew joined
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Crew banned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/leave:
+    post:
+      summary: Leave crew
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewLeaveRequest"
+      responses:
+        "200":
+          description: Crew left (crew may be null if deleted)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/update:
+    post:
+      summary: Update crew member stats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewUpdateRequest"
+      responses:
+        "200":
+          description: Crew updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/kick:
+    post:
+      summary: Kick member from crew (owner only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewModerationRequest"
+      responses:
+        "200":
+          description: Member removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/ban:
+    post:
+      summary: Ban member from crew (owner only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewModerationRequest"
+      responses:
+        "200":
+          description: Member banned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /crew/{code}:
+    get:
+      summary: Get crew by code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Crew payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewResponse"
+        "400":
+          description: Invalid code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /leaderboard:
+    get:
+      summary: Fetch leaderboard
+      parameters:
+        - name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [weekly, season]
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [global, group]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+        - name: crewCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: playerId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Leaderboard payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaderboardResponse"
+        "400":
+          description: Missing crew code for group scope
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Crew not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /metrics:
+    get:
+      summary: Internal metrics snapshot
+      responses:
+        "200":
+          description: Metrics payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsResponse"
+components:
+  schemas:
+    OkResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required: [ok]
+    ErrorResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        error:
+          type: string
+      required: [ok, error]
+    FeatureFlags:
+      type: object
+      properties:
+        teamStreaks:
+          type: boolean
+        seasons:
+          type: boolean
+        progressLeaderboard:
+          type: boolean
+        graceDay:
+          type: boolean
+        masteryBadges:
+          type: boolean
+        miniQuests:
+          type: boolean
+        cosmetics:
+          type: boolean
+        groups:
+          type: boolean
+        notifications:
+          type: boolean
+      additionalProperties: false
+    FeatureFlagsResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        flags:
+          $ref: "#/components/schemas/FeatureFlags"
+      required: [ok, flags]
+    ComplianceAgeRequest:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+      required: [accepted]
+    AnalyticsEventRequest:
+      type: object
+      properties:
+        event:
+          type: string
+        at:
+          type: integer
+        sessionId:
+          type: string
+        meta:
+          type: object
+      required: [event]
+    ClientErrorRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        source:
+          type: string
+        lineno:
+          type: integer
+        colno:
+          type: integer
+      required: [message]
+    CrewCreateRequest:
+      type: object
+      properties:
+        playerId:
+          type: string
+        name:
+          type: string
+        memberName:
+          type: string
+        avatarId:
+          type: string
+        code:
+          type: string
+      required: [playerId]
+    CrewJoinRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        playerId:
+          type: string
+        name:
+          type: string
+        avatarId:
+          type: string
+      required: [code, playerId]
+    CrewLeaveRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        playerId:
+          type: string
+      required: [code, playerId]
+    CrewUpdateRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        playerId:
+          type: string
+        name:
+          type: string
+        avatarId:
+          type: string
+        weeklyPoints:
+          type: number
+        lastWeekPoints:
+          type: number
+        seasonPoints:
+          type: number
+        correctCount:
+          type: number
+        streak:
+          type: number
+        lastRoundDay:
+          type: string
+          format: date
+      required: [code, playerId]
+    CrewModerationRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        requesterId:
+          type: string
+        targetId:
+          type: string
+      required: [code, requesterId, targetId]
+    CrewTeamStreak:
+      type: object
+      properties:
+        current:
+          type: integer
+        lastDay:
+          type: string
+          nullable: true
+        completionRate:
+          type: number
+      required: [current, completionRate]
+    CrewMember:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        avatarId:
+          type: string
+        weeklyPoints:
+          type: number
+        lastWeekPoints:
+          type: number
+        seasonPoints:
+          type: number
+        correctCount:
+          type: number
+        streak:
+          type: number
+        title:
+          type: string
+          nullable: true
+        role:
+          type: string
+          enum: [owner, member]
+      required: [id, name, avatarId, weeklyPoints, lastWeekPoints, seasonPoints, correctCount, streak, role]
+    Crew:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        teamStreak:
+          $ref: "#/components/schemas/CrewTeamStreak"
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrewMember"
+      required: [code, name, teamStreak, members]
+    CrewResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        crew:
+          oneOf:
+            - $ref: "#/components/schemas/Crew"
+            - type: "null"
+        role:
+          type: string
+          enum: [owner, member]
+      required: [ok, crew]
+    LeaderboardEntry:
+      type: object
+      properties:
+        displayName:
+          type: string
+        avatarId:
+          type: string
+          nullable: true
+        funScore:
+          type: number
+        deltaPoints:
+          type: number
+          nullable: true
+        progressPercent:
+          type: number
+          nullable: true
+        percentileBand:
+          type: string
+          nullable: true
+      required: [displayName, funScore]
+    LeaderboardResponse:
+      type: object
+      properties:
+        period:
+          type: string
+          enum: [weekly, season]
+        scope:
+          type: string
+          enum: [global, group]
+        generatedAt:
+          type: string
+          format: date-time
+        self:
+          oneOf:
+            - $ref: "#/components/schemas/LeaderboardEntry"
+            - type: "null"
+        top:
+          type: array
+          items:
+            $ref: "#/components/schemas/LeaderboardEntry"
+      required: [period, scope, generatedAt, top]
+    MetricsResponse:
+      type: object
+      properties:
+        wsConnections:
+          type: integer
+        wsDisconnects:
+          type: integer
+        joinSuccess:
+          type: integer
+        joinFail:
+          type: integer
+        answerAccepted:
+          type: integer
+        answerRejected:
+          type: integer
+        roomsCreated:
+          type: integer
+        roomsExpired:
+          type: integer
+        incidents:
+          type: integer
+        roomsActive:
+          type: integer
+        uptimeSec:
+          type: integer
+      required:
+        - wsConnections
+        - wsDisconnects
+        - joinSuccess
+        - joinFail
+        - answerAccepted
+        - answerRejected
+        - roomsCreated
+        - roomsExpired
+        - incidents
+        - roomsActive
+        - uptimeSec

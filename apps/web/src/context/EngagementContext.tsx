@@ -4,7 +4,8 @@ import {
   COSMETIC_UNLOCKS,
   FEATURE_FLAGS,
   FAST_ANSWER_MS,
-  GRACE_DAYS_PER_SEASON,
+  GRACE_DAYS_PER_WEEK,
+  QUIET_HOURS_DEFAULT,
 } from "../engagement/config";
 import {
   AnswerResultInput,
@@ -24,6 +25,10 @@ interface EngagementActions {
   recordAnswerResult: (input: AnswerResultInput) => void;
   recordScoreDelta: (points: number) => void;
   equipCosmetic: (frameId: string | null) => void;
+  markCosmeticSeen: () => void;
+  setNotificationsEnabled: (enabled: boolean) => void;
+  markReminderPrompted: (day: string) => void;
+  markHintShown: (hint: "streak" | "quest") => void;
   setGroup: (group: EngagementGroup | null) => void;
   createGroup: () => Promise<EngagementGroup | null>;
   joinGroup: (code: string) => Promise<EngagementGroup | null>;
@@ -53,8 +58,9 @@ function applyRollover(prev: EngagementState, now: Date) {
       },
       streak: {
         ...next.streak,
-        graceLeft: GRACE_DAYS_PER_SEASON,
+        graceLeft: GRACE_DAYS_PER_WEEK,
         graceUsedOn: null,
+        outageGraceDay: null,
       },
     };
     trackEvent("season_rollover", { seasonId: season.id });
@@ -68,12 +74,24 @@ function applyRollover(prev: EngagementState, now: Date) {
         points: 0,
         lastWeekPoints: prev.week.points,
       },
+      streak: {
+        ...next.streak,
+        graceLeft: GRACE_DAYS_PER_WEEK,
+        graceUsedOn: null,
+        outageGraceDay: null,
+      },
     };
   }
   if (prev.streak.lastDay && prev.streak.lastDay !== today) {
     const gap = diffDays(prev.streak.lastDay, today);
     if (gap > 1) {
-      if (prev.streak.graceLeft > 0 && gap === 2) {
+      if (prev.streak.outageGraceDay === today) {
+        next.streak = {
+          ...next.streak,
+          outageGraceDay: null,
+        };
+        trackEvent("outage_grace_used", { gap });
+      } else if (prev.streak.graceLeft > 0 && gap === 2) {
         next.streak = {
           ...next.streak,
           graceLeft: prev.streak.graceLeft - 1,
@@ -142,6 +160,7 @@ function unlockBadge(state: EngagementState, badgeId: string) {
       cosmetics: {
         ...next.cosmetics,
         unlocked: Array.from(unlocked),
+        lastUnlocked: cosmetics[cosmetics.length - 1] ?? next.cosmetics.lastUnlocked ?? null,
       },
     };
   }
@@ -168,6 +187,7 @@ function completeQuest(state: EngagementState, questId: string, today: string) {
       cosmetics: {
         ...next.cosmetics,
         unlocked: Array.from(unlocked),
+        lastUnlocked: rewardId ?? next.cosmetics.lastUnlocked ?? null,
       },
     };
     trackEvent("cosmetic_unlocked", { rewardId });
@@ -193,6 +213,7 @@ function updateQuestProgress(state: EngagementState, type: string, amount: numbe
 
 export function EngagementProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<EngagementState>(() => loadEngagementState());
+  const [flags, setFlags] = useState(() => FEATURE_FLAGS);
   const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
   const lastSyncRef = useRef<{
     points: number;
@@ -215,9 +236,90 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     saveEngagementState(state);
   }, [state]);
 
+  useEffect(() => {
+    let active = true;
+    const overrideRaw =
+      typeof window !== "undefined" ? window.localStorage.getItem("escapers_flags_override") : null;
+    const override =
+      overrideRaw && overrideRaw.trim()
+        ? (JSON.parse(overrideRaw) as Partial<typeof FEATURE_FLAGS>)
+        : null;
+    const mergeFlags = (incoming?: Partial<typeof FEATURE_FLAGS>) => {
+      if (!incoming) return FEATURE_FLAGS;
+      const next = { ...FEATURE_FLAGS };
+      (Object.keys(next) as Array<keyof typeof FEATURE_FLAGS>).forEach((key) => {
+        if (typeof incoming[key] === "boolean") {
+          next[key] = incoming[key] as boolean;
+        }
+      });
+      return next;
+    };
+    const applyFlags = (incoming?: Partial<typeof FEATURE_FLAGS>) => {
+      const merged = mergeFlags({ ...incoming, ...(override ?? {}) });
+      if (active) setFlags(merged);
+    };
+    fetch(`${apiBase}/feature-flags`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        applyFlags(data?.flags ?? null);
+      })
+      .catch(() => applyFlags(null));
+    return () => {
+      active = false;
+    };
+  }, [apiBase]);
+
   const refresh = useCallback(() => {
     setState((prev) => applyRollover(prev, new Date()));
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    let failStreak = 0;
+    const checkHealth = () => {
+      fetch(`${apiBase}/health`)
+        .then((res) => {
+          if (!active) return;
+          if (res.ok) {
+            failStreak = 0;
+            return;
+          }
+          failStreak += 1;
+          if (failStreak >= 2) {
+            setState((prev) => {
+              const today = formatDayKey(new Date());
+              if (prev.streak.outageGraceDay === today) return prev;
+              trackEvent("outage_detected", { day: today });
+              return {
+                ...prev,
+                streak: { ...prev.streak, outageGraceDay: today },
+              };
+            });
+          }
+        })
+        .catch(() => {
+          if (!active) return;
+          failStreak += 1;
+          if (failStreak >= 2) {
+            setState((prev) => {
+              const today = formatDayKey(new Date());
+              if (prev.streak.outageGraceDay === today) return prev;
+              trackEvent("outage_detected", { day: today });
+              return {
+                ...prev,
+                streak: { ...prev.streak, outageGraceDay: today },
+              };
+            });
+          }
+        });
+    };
+    const timer = window.setInterval(checkHealth, 120000);
+    checkHealth();
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [apiBase]);
 
   const recordRoundComplete = useCallback((_input: RoundCompleteInput) => {
     setState((prev) => {
@@ -250,27 +352,30 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       const now = new Date();
       const today = formatDayKey(now);
       let next = applyRollover(prev, now);
+      const nextStats = {
+        ...next.stats,
+        totalAnswers: next.stats.totalAnswers + 1,
+        lastActiveHour: now.getHours(),
+      };
       if (input.correct) {
-        next.stats = {
-          ...next.stats,
-          totalCorrect: next.stats.totalCorrect + 1,
-          fastCorrects:
-            input.latencyMs <= FAST_ANSWER_MS ? next.stats.fastCorrects + 1 : next.stats.fastCorrects,
-        };
+        nextStats.totalCorrect += 1;
+        if (input.latencyMs <= FAST_ANSWER_MS) {
+          nextStats.fastCorrects += 1;
+        }
         next = updateQuestProgress(next, "correct", 1, today);
         if (input.latencyMs <= FAST_ANSWER_MS) {
           next = updateQuestProgress(next, "fast", 1, today);
         }
       }
-      next.stats = {
-        ...next.stats,
-        lastActiveHour: now.getHours(),
-      };
+      next.stats = nextStats;
       if (typeof input.streak === "number" && input.streak >= 2) {
         next = updateQuestProgress(next, "streak", 1, today);
       }
       if (next.stats.fastCorrects >= 3) {
         next = unlockBadge(next, "badge_speedy");
+      }
+      if (next.stats.fastCorrects >= 5) {
+        next = unlockBadge(next, "badge_lightning");
       }
       if (typeof input.streak === "number") {
         if (input.streak >= 3) {
@@ -279,6 +384,20 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         if (input.streak >= 5) {
           next = unlockBadge(next, "badge_hot_streak");
         }
+        if (input.streak >= 8) {
+          next = unlockBadge(next, "badge_blaze");
+        }
+        if (input.streak >= 3 && next.stats.fastCorrects >= 3) {
+          next = unlockBadge(next, "badge_combo");
+        }
+      }
+      const accuracy =
+        next.stats.totalAnswers > 0 ? next.stats.totalCorrect / next.stats.totalAnswers : 0;
+      if (next.stats.totalAnswers >= 10 && accuracy >= 0.8) {
+        next = unlockBadge(next, "badge_marksman");
+      }
+      if (next.stats.totalAnswers >= 20 && accuracy >= 0.9) {
+        next = unlockBadge(next, "badge_sniper");
       }
       return { ...next, updatedAt: Date.now() };
     });
@@ -311,6 +430,52 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       },
     }));
     trackEvent("cosmetic_equipped", { frameId });
+  }, []);
+
+  const markCosmeticSeen = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      cosmetics: {
+        ...prev.cosmetics,
+        lastUnlocked: null,
+      },
+    }));
+  }, []);
+
+  const setNotificationsEnabled = useCallback((enabled: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        enabled,
+        quietStart: prev.notifications.quietStart ?? QUIET_HOURS_DEFAULT.start,
+        quietEnd: prev.notifications.quietEnd ?? QUIET_HOURS_DEFAULT.end,
+      },
+    }));
+    trackEvent(enabled ? "reminder_opt_in" : "reminder_opt_out", { enabled });
+  }, []);
+
+  const markReminderPrompted = useCallback((day: string) => {
+    setState((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        lastPromptDay: day,
+      },
+    }));
+    trackEvent("reminder_prompted", { day });
+  }, []);
+
+  const markHintShown = useCallback((hint: "streak" | "quest") => {
+    setState((prev) => ({
+      ...prev,
+      hints: {
+        ...prev.hints,
+        streakHintShown:
+          hint === "streak" ? true : prev.hints.streakHintShown,
+        questHintShown: hint === "quest" ? true : prev.hints.questHintShown,
+      },
+    }));
   }, []);
 
   const setGroup = useCallback((group: EngagementGroup | null) => {
@@ -473,12 +638,16 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
   const value = useMemo(
     () => ({
       state,
-      flags: FEATURE_FLAGS,
+      flags,
       actions: {
         recordRoundComplete,
         recordAnswerResult,
         recordScoreDelta,
         equipCosmetic,
+        markCosmeticSeen,
+        setNotificationsEnabled,
+        markReminderPrompted,
+        markHintShown,
         setGroup,
         createGroup,
         joinGroup,
@@ -486,7 +655,23 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         refresh,
       },
     }),
-    [recordAnswerResult, recordRoundComplete, recordScoreDelta, equipCosmetic, refresh, setGroup, state],
+    [
+      flags,
+      recordAnswerResult,
+      recordRoundComplete,
+      recordScoreDelta,
+      equipCosmetic,
+      markCosmeticSeen,
+      setNotificationsEnabled,
+      markReminderPrompted,
+      markHintShown,
+      refresh,
+      setGroup,
+      createGroup,
+      joinGroup,
+      leaveGroup,
+      state,
+    ],
   );
 
   return <EngagementContext.Provider value={value}>{children}</EngagementContext.Provider>;

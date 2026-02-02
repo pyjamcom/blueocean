@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "required": ["event", "at"],
+  "events": {
+    "streak_updated": {"count": "number"},
+    "grace_used": {"gap": "number"},
+    "outage_detected": {"day": "string"},
+    "outage_grace_used": {"gap": "number"},
+    "team_streak_day_completed": {"count": "number", "completionRate": "number"},
+    "team_completion_rate": {"completionRate": "number"},
+    "team_streak_broken": {"previous": "number"},
+    "season_rollover": {"seasonId": "string"},
+    "progress_points": {"points": "number", "weekId": "string"},
+    "leaderboard_view": {"period": "string"},
+    "fun_score": {"period": "string", "score": "number"},
+    "quest_assigned": {"day": "string"},
+    "quest_completed": {"questId": "string"},
+    "badge_unlocked": {"badgeId": "string"},
+    "cosmetic_unlocked": {"rewardId": "string"},
+    "cosmetic_equipped": {"frameId": "string"},
+    "answer_rejected": {"reason": "string", "playerId": "string", "roomCode": "string"},
+    "group_joined": {"groupCode": "string"},
+    "group_left": {"groupCode": "string"},
+    "reminder_opt_in": {"enabled": "boolean"},
+    "reminder_opt_out": {"enabled": "boolean"},
+    "reminder_prompted": {"day": "string"}
+  }
+}

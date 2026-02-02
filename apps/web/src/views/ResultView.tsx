@@ -5,17 +5,23 @@ import RahootLeaderboard from "../components/RahootLeaderboard";
 import RahootPodium from "../components/RahootPodium";
 import EngagementPanel from "../components/engagement/EngagementPanel";
 import { useRoom } from "../context/RoomContext";
+import { useEngagement } from "../context/EngagementContext";
 import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { randomId } from "../utils/ids";
 import { getStoredPlayerName } from "../utils/playerName";
+import frames from "../engagement/frames.module.css";
 import styles from "./ResultView.module.css";
 
 export default function ResultView() {
-  const { players, roomCode, createNextRoom, phase } = useRoom();
+  const { players, roomCode, createNextRoom, phase, playerId } = useRoom();
+  const { state: engagement } = useEngagement();
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const isLeaderboard = phase === "leaderboard" || phase === "end";
+  const equippedFrame = engagement.cosmetics.equipped.frame
+    ? frames[engagement.cosmetics.equipped.frame] ?? ""
+    : "";
 
   const leaderboard = useMemo(() => {
     if (!players.length) return [];
@@ -52,8 +58,9 @@ export default function ResultView() {
         points: entry.score,
         avatarId: entry.avatarId,
         title: titleMap.get(entry.playerId),
+        frameClass: entry.playerId === playerId ? equippedFrame : undefined,
       })),
-    [leaderboard, titleMap],
+    [equippedFrame, leaderboard, playerId, titleMap],
   );
   const previousEntriesRef = useRef<typeof rahootEntries | null>(null);
   const previousEntries = previousEntriesRef.current ?? undefined;

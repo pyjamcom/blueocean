@@ -32,6 +32,22 @@
       "ga4_events": ["streak_updated"],
       "notes": "Retention milestone updates."
     },
+    "answer_rejected": {
+      "ga4_events": ["answer_rejected"],
+      "notes": "Anti-cheat signal for duplicate/rate-limit answers."
+    },
+    "grace_used": {
+      "ga4_events": ["grace_used"],
+      "notes": "Grace day consumption for streak safety."
+    },
+    "outage_detected": {
+      "ga4_events": ["outage_detected"],
+      "notes": "Backend outage detection for streak protection."
+    },
+    "outage_grace_used": {
+      "ga4_events": ["outage_grace_used"],
+      "notes": "Automatic streak protection on outage day."
+    },
     "team_streak_updated": {
       "ga4_events": ["team_streak_updated"],
       "notes": "Team streak progression for cooperative retention."
@@ -56,13 +72,17 @@
       "ga4_events": ["progress_points"],
       "notes": "Weekly progress scoring for progress leaderboard."
     },
+    "leaderboard_view": {
+      "ga4_events": ["leaderboard_view"],
+      "notes": "Leaderboard page impression with period payload."
+    },
+    "fun_score": {
+      "ga4_events": ["fun_score"],
+      "notes": "Derived fun score metric (period + score)."
+    },
     "badge_unlocked": {
       "ga4_events": ["badge_unlocked"],
       "notes": "Mastery badge unlock event."
-    },
-    "grace_used": {
-      "ga4_events": ["grace_used"],
-      "notes": "Grace day consumption for streak safety."
     },
     "cosmetic_unlocked": {
       "ga4_events": ["cosmetic_unlocked"],
@@ -79,6 +99,18 @@
     "group_left": {
       "ga4_events": ["group_left"],
       "notes": "Private group leave event."
+    },
+    "reminder_opt_in": {
+      "ga4_events": ["reminder_opt_in"],
+      "notes": "User opted into reminders."
+    },
+    "reminder_opt_out": {
+      "ga4_events": ["reminder_opt_out"],
+      "notes": "User opted out of reminders."
+    },
+    "reminder_prompted": {
+      "ga4_events": ["reminder_prompted"],
+      "notes": "In-app reminder prompt shown."
     }
   }
 }

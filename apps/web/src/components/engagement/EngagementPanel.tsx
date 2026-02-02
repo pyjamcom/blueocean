@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, FEATURE_FLAGS } from "../../engagement/config";
+import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS } from "../../engagement/config";
 import { useEngagement } from "../../context/EngagementContext";
 import frames from "../../engagement/frames.module.css";
 import styles from "./EngagementPanel.module.css";
@@ -19,13 +19,17 @@ type CrewMember = {
 const badgeMap = new Map(BADGE_DEFINITIONS.map((badge) => [badge.id, badge]));
 
 export default function EngagementPanel({ mode }: { mode: PanelMode }) {
-  const { state, actions } = useEngagement();
+  const { state, actions, flags } = useEngagement();
   const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
   const [showCosmetics, setShowCosmetics] = useState(false);
   const [showBadges, setShowBadges] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
   const [groupInput, setGroupInput] = useState("");
   const [toastBadge, setToastBadge] = useState<string | null>(null);
+  const [toastQuest, setToastQuest] = useState<string | null>(null);
+  const [toastReminder, setToastReminder] = useState(false);
+  const [dismissedQuestIds, setDismissedQuestIds] = useState<string[]>([]);
+  const seenQuestRef = useRef<Set<string>>(new Set());
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [crewLoading, setCrewLoading] = useState(false);
   const selfId = getOrCreateClientId();
@@ -53,6 +57,32 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     const timer = window.setTimeout(() => setToastBadge(null), 2200);
     return () => window.clearTimeout(timer);
   }, [state.badges.lastEarned]);
+
+  useEffect(() => {
+    seenQuestRef.current.clear();
+    setDismissedQuestIds([]);
+  }, [state.quests.lastAssignedDay]);
+
+  useEffect(() => {
+    const timers: number[] = [];
+    state.quests.daily.forEach((quest) => {
+      if (quest.completedAt && !seenQuestRef.current.has(quest.id)) {
+        seenQuestRef.current.add(quest.id);
+        setToastQuest(quest.id);
+        timers.push(window.setTimeout(() => setToastQuest(null), 1800));
+        timers.push(
+          window.setTimeout(() => {
+            setDismissedQuestIds((prev) =>
+              prev.includes(quest.id) ? prev : [...prev, quest.id],
+            );
+          }, 900),
+        );
+      }
+    });
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [state.quests.daily]);
 
   useEffect(() => {
     if (!showGroup || !state.group) return;
@@ -84,7 +114,7 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     return Math.max(0, diff);
   }, [state.season.endDay]);
 
-  const quests = state.quests.daily.slice(0, 2);
+  const quests = state.quests.daily.filter((quest) => !dismissedQuestIds.includes(quest.id)).slice(0, 2);
   const equippedFrame = state.cosmetics.equipped.frame ?? null;
   const isSeasonStart = formatDayKey(new Date()) === state.season.startDay;
   const showQuest = mode === "lobby";
@@ -95,10 +125,21 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
       ? "active"
       : "paused";
   const teamProgress = Math.min(1, Math.max(0, state.teamStreak.completionRate ?? 0));
+  const notificationsEnabled = state.notifications.enabled;
   const cosmeticMap = useMemo(
     () => new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label])),
     [],
   );
+  const equippedLabel = equippedFrame ? cosmeticMap.get(equippedFrame) : "None";
+  const questLabelMap = useMemo(
+    () => new Map(state.quests.daily.map((quest) => [quest.id, quest.label])),
+    [state.quests.daily],
+  );
+  const cosmeticNewId = state.cosmetics.lastUnlocked ?? null;
+  const closeCosmetics = () => {
+    setShowCosmetics(false);
+    actions.markCosmeticSeen();
+  };
 
   const unlockedBadges = state.badges.unlocked
     .map((id) => badgeMap.get(id))
@@ -106,6 +147,42 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     .slice(-4) as { id: string; label: string; emoji: string }[];
 
   const showActions = mode === "lobby";
+  const showStreakHint = showActions && !state.hints.streakHintShown;
+  const showQuestHint =
+    showQuest && flags.miniQuests && quests.length > 0 && !state.hints.questHintShown;
+  const quietStart = state.notifications.quietStart;
+  const quietEnd = state.notifications.quietEnd;
+  const hour = new Date().getHours();
+  const isQuietHours =
+    quietStart < quietEnd
+      ? hour >= quietStart && hour < quietEnd
+      : hour >= quietStart || hour < quietEnd;
+  const shouldPrompt =
+    notificationsEnabled &&
+    showActions &&
+    !isQuietHours &&
+    state.stats.lastRoundDay !== todayKey &&
+    state.notifications.lastPromptDay !== todayKey;
+
+  useEffect(() => {
+    if (!showStreakHint) return;
+    const timer = window.setTimeout(() => actions.markHintShown("streak"), 2200);
+    return () => window.clearTimeout(timer);
+  }, [actions, showStreakHint]);
+
+  useEffect(() => {
+    if (!showQuestHint) return;
+    const timer = window.setTimeout(() => actions.markHintShown("quest"), 2400);
+    return () => window.clearTimeout(timer);
+  }, [actions, showQuestHint]);
+
+  useEffect(() => {
+    if (!shouldPrompt) return;
+    setToastReminder(true);
+    actions.markReminderPrompted(todayKey);
+    const timer = window.setTimeout(() => setToastReminder(false), 2000);
+    return () => window.clearTimeout(timer);
+  }, [actions, shouldPrompt, todayKey]);
 
   const runCrewAction = async (action: "kick" | "ban", targetId: string) => {
     if (!state.group) return;
@@ -134,19 +211,19 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   return (
     <section className={styles.panel}>
       <div className={styles.chipRow}>
-        {FEATURE_FLAGS.seasons && (
+        {flags.seasons && (
           <span className={styles.chip}>
             <span className={styles.chipIcon}>⏳</span>
             {daysLeft}d
           </span>
         )}
-        {FEATURE_FLAGS.groups && state.group ? (
+        {flags.groups && state.group ? (
           <span className={styles.chip}>
             <span className={styles.chipIcon}>👥</span>
             {state.group.code}
           </span>
         ) : null}
-        {FEATURE_FLAGS.teamStreaks && state.group && (
+        {flags.teamStreaks && state.group && (
           <span
             className={`${styles.chip} ${styles.teamChip} ${teamPulse ? styles.teamPulse : ""} ${
               teamStatus === "active"
@@ -161,11 +238,23 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
             {state.teamStreak.current}
           </span>
         )}
-        {FEATURE_FLAGS.graceDay && (
+        {flags.graceDay && (
           <span className={styles.chip}>
             <span className={styles.chipIcon}>🛡️</span>
             {state.streak.graceLeft}
           </span>
+        )}
+        {flags.notifications && (
+          <button
+            type="button"
+            className={`${styles.chip} ${styles.chipButton} ${
+              notificationsEnabled ? styles.chipActive : ""
+            }`}
+            onClick={() => actions.setNotificationsEnabled(!notificationsEnabled)}
+          >
+            <span className={styles.chipIcon}>🔔</span>
+            {notificationsEnabled ? "On" : "Off"}
+          </button>
         )}
         <span className={styles.chip}>
           <span className={styles.chipIcon}>🔥</span>
@@ -173,17 +262,21 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
         </span>
       </div>
 
-      {FEATURE_FLAGS.miniQuests && showQuest && quests.length ? (
+      {showStreakHint ? <div className={styles.hint}>🔥 streak</div> : null}
+      {showQuestHint ? <div className={styles.hint}>🗺️ quest</div> : null}
+
+      {flags.miniQuests && showQuest && quests.length ? (
         <div className={styles.questStack}>
           {quests.map((quest) => {
             const questProgress = Math.min(1, quest.progress / quest.target);
             const rewardLabel = quest.rewardId ? cosmeticMap.get(quest.rewardId) : null;
+            const questDone = Boolean(quest.completedAt);
             return (
-              <div key={quest.id} className={styles.questCard}>
+              <div key={quest.id} className={`${styles.questCard} ${questDone ? styles.questDoneCard : ""}`}>
                 <div className={styles.questTop}>
                   <span className={styles.questLabel}>{quest.label}</span>
                   {rewardLabel ? <span className={styles.questReward}>+{rewardLabel}</span> : null}
-                  {quest.completedAt ? <span className={styles.questDone}>✓</span> : null}
+                  {questDone ? <span className={styles.questDone}>✓</span> : null}
                 </div>
                 <div className={styles.questBar}>
                   <span className={styles.questBarFill} style={{ width: `${questProgress * 100}%` }} />
@@ -196,17 +289,17 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
 
       {showActions ? (
         <div className={styles.actionRow}>
-          {FEATURE_FLAGS.groups && (
+          {flags.groups && (
             <button type="button" className={styles.actionButton} onClick={() => setShowGroup(true)}>
               Crew
             </button>
           )}
-          {FEATURE_FLAGS.masteryBadges && (
+          {flags.masteryBadges && (
             <button type="button" className={styles.actionButton} onClick={() => setShowBadges(true)}>
               Brags
             </button>
           )}
-          {FEATURE_FLAGS.cosmetics && (
+          {flags.cosmetics && (
             <button type="button" className={styles.actionButton} onClick={() => setShowCosmetics(true)}>
               Drip
             </button>
@@ -227,34 +320,57 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
       {toastBadge ? (
         <div className={styles.toast}>
           <span className={styles.toastEmoji}>{badgeMap.get(toastBadge)?.emoji ?? "✨"}</span>
-          <span className={styles.toastLabel}>Badge pop!</span>
+          <span className={styles.toastLabel}>{badgeMap.get(toastBadge)?.label ?? "Badge pop!"}</span>
+        </div>
+      ) : null}
+      {toastQuest ? (
+        <div className={`${styles.toast} ${styles.questToast}`}>
+          <span className={styles.toastEmoji}>🏁</span>
+          <span className={styles.toastLabel}>{questLabelMap.get(toastQuest) ?? "Quest done!"}</span>
+        </div>
+      ) : null}
+      {toastReminder ? (
+        <div className={`${styles.toast} ${styles.reminderToast}`}>
+          <span className={styles.toastEmoji}>🕺</span>
+          <span className={styles.toastLabel}>One quick round?</span>
         </div>
       ) : null}
 
       {isSeasonStart ? (
         <div className={styles.seasonToast}>
-          <span>✨ New season</span>
+          <span>✨ Fresh season</span>
         </div>
       ) : null}
 
       {showCosmetics ? (
-        <div className={styles.overlay} onClick={() => setShowCosmetics(false)}>
+        <div className={styles.overlay} onClick={closeCosmetics}>
           <div className={styles.sheet} onClick={(event) => event.stopPropagation()}>
             <div className={styles.sheetTitle}>Your style</div>
+            <div className={styles.sheetSub}>Equipped: {equippedLabel ?? "None"}</div>
             <div className={styles.grid}>
               {COSMETIC_DEFINITIONS.filter((item) => item.type === "frame").map((item) => {
                 const unlocked = state.cosmetics.unlocked.includes(item.id);
                 const active = equippedFrame === item.id;
+                const rareClass = item.rarity === "rare" ? styles.gridRare : "";
+                const isNew = unlocked && cosmeticNewId === item.id;
+                const tagLabel = active ? "Equipped" : isNew ? "New" : unlocked ? "Use" : "Locked";
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    className={`${styles.gridItem} ${frames[item.id] ?? ""} ${
+                    className={`${styles.gridItem} ${frames[item.id] ?? ""} ${rareClass} ${
                       active ? styles.gridActive : ""
                     } ${!unlocked ? styles.gridLocked : ""}`}
                     onClick={() => unlocked && actions.equipCosmetic(active ? null : item.id)}
                   >
                     <span>{item.label}</span>
+                    <span
+                      className={`${styles.gridTag} ${active ? styles.gridTagActive : ""} ${
+                        isNew ? styles.gridTagNew : ""
+                      } ${!unlocked ? styles.gridTagLocked : ""}`}
+                    >
+                      {tagLabel}
+                    </span>
                   </button>
                 );
               })}
@@ -270,8 +386,12 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
             <div className={styles.grid}>
               {BADGE_DEFINITIONS.map((badge) => {
                 const unlocked = state.badges.unlocked.includes(badge.id);
+                const rareClass = badge.rarity === "rare" ? styles.gridRare : "";
                 return (
-                  <div key={badge.id} className={`${styles.gridItem} ${unlocked ? "" : styles.gridLocked}`}>
+                  <div
+                    key={badge.id}
+                    className={`${styles.gridItem} ${rareClass} ${unlocked ? "" : styles.gridLocked}`}
+                  >
                     <span className={styles.badgeEmoji}>{badge.emoji}</span>
                     <span className={styles.badgeLabel}>{badge.label}</span>
                   </div>

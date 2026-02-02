@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEngagement } from "../context/EngagementContext";
 import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
@@ -12,6 +12,7 @@ interface PublicLeaderboardEntry {
   avatarId?: string | null;
   funScore: number;
   deltaPoints?: number | null;
+  progressPercent?: number | null;
   percentileBand?: string | null;
 }
 
@@ -25,11 +26,11 @@ interface PublicLeaderboardResponse {
 }
 
 const fallbackTop: PublicLeaderboardEntry[] = [
-  { displayName: "Nova", funScore: 980, deltaPoints: 120, percentileBand: "Top 50%" },
-  { displayName: "Atlas", funScore: 910, deltaPoints: 90, percentileBand: "Top 50%" },
-  { displayName: "Pixel", funScore: 860, deltaPoints: 70, percentileBand: "Top 50%" },
-  { displayName: "Mara", funScore: 820, deltaPoints: 45, percentileBand: "Rising" },
-  { displayName: "Echo", funScore: 780, deltaPoints: 25, percentileBand: "Rising" },
+  { displayName: "Nova", funScore: 0, progressPercent: 120, percentileBand: "Top 10%" },
+  { displayName: "Atlas", funScore: 0, progressPercent: 90, percentileBand: "Top 25%" },
+  { displayName: "Pixel", funScore: 0, progressPercent: 70, percentileBand: "Top 50%" },
+  { displayName: "Mara", funScore: 0, progressPercent: 45, percentileBand: "Rising" },
+  { displayName: "Echo", funScore: 0, progressPercent: 25, percentileBand: "Rising" },
 ];
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
@@ -42,6 +43,7 @@ function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
     avatarId: raw.avatarId ?? raw.avatar_id ?? null,
     funScore,
     deltaPoints: raw.deltaPoints ?? raw.delta_points ?? null,
+    progressPercent: raw.progressPercent ?? raw.progress_percent ?? null,
     percentileBand: raw.percentileBand ?? raw.percentile_band ?? null,
   };
 }
@@ -66,6 +68,7 @@ export default function LeaderboardView() {
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const { state: engagement } = useEngagement();
+  const funScoreSentRef = useRef<string>("");
 
   useEffect(() => {
     trackEvent("leaderboard_view", { period });
@@ -120,19 +123,33 @@ export default function LeaderboardView() {
   }, [period]);
 
   const topList = data?.top?.length ? data.top : fallbackTop;
+  const computeProgressPercent = (current: number, previous: number) => {
+    if (previous <= 0) {
+      return current > 0 ? 100 : 0;
+    }
+    const delta = Math.max(0, current - previous);
+    const raw = Math.round((delta / Math.max(1, previous)) * 100);
+    return Math.min(200, raw);
+  };
+  const fallbackWeeklyProgress = computeProgressPercent(
+    engagement.week.points,
+    engagement.week.lastWeekPoints,
+  );
   const fallbackSelf =
     period === "weekly"
       ? {
           displayName: "You",
-          funScore: engagement.week.points,
+          funScore: 0,
           deltaPoints: engagement.week.points - engagement.week.lastWeekPoints,
-          percentileBand: engagement.week.points > engagement.week.lastWeekPoints ? "Top 50%" : "Rising",
+          progressPercent: fallbackWeeklyProgress,
+          percentileBand: fallbackWeeklyProgress > 0 ? "Top 50%" : "Rising",
         }
       : {
           displayName: "You",
           funScore: engagement.seasonProgress.points,
         };
   const selfEntry = data?.self ?? fallbackSelf;
+  const funScoreValue = selfEntry?.funScore ?? 0;
   const percentile =
     data?.percentile ??
     selfEntry?.percentileBand ??
@@ -140,7 +157,9 @@ export default function LeaderboardView() {
 
   const metricValue = (entry: PublicLeaderboardEntry | null) => {
     if (!entry) return 0;
-    return period === "weekly" ? entry.deltaPoints ?? 0 : entry.funScore ?? 0;
+    return period === "weekly"
+      ? entry.progressPercent ?? entry.deltaPoints ?? 0
+      : entry.funScore ?? 0;
   };
   const maxMetric = Math.max(
     1,
@@ -152,7 +171,7 @@ export default function LeaderboardView() {
   const selfLabel =
     period === "weekly"
       ? selfMetric > 0
-        ? `+${selfMetric}`
+        ? `+${selfMetric}%`
         : "No boost yet"
       : `${Math.round(selfRatio * 100)}% glow`;
 
@@ -162,9 +181,16 @@ export default function LeaderboardView() {
     ? "Loading..."
     : period === "season"
       ? seasonHint
-      : "Keep it silly";
+      : "Progress vs last week";
   const scopeLabel = engagement.group ? `Crew ${engagement.group.code}` : "Global";
   const boardTitle = engagement.group ? "Top crew" : "Top vibes";
+
+  useEffect(() => {
+    const key = `${period}:${funScoreValue}`;
+    if (funScoreSentRef.current === key) return;
+    funScoreSentRef.current = key;
+    trackEvent("fun_score", { period, score: funScoreValue });
+  }, [funScoreValue, period]);
 
   return (
     <div className={styles.wrap}>
@@ -218,18 +244,18 @@ export default function LeaderboardView() {
           <span className={styles.boardHint}>{boardHint}</span>
         </div>
         <div className={styles.list}>
-          {topList.map((entry) => {
+          {topList.map((entry, index) => {
             const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
             const entryMetric = metricValue(entry);
             const entryRatio = Math.min(1, entryMetric / maxMetric);
             const entryLabel =
               period === "weekly"
                 ? entryMetric > 0
-                  ? `+${entryMetric}`
+                  ? `+${entryMetric}%`
                   : "—"
                 : `${Math.round(entryRatio * 100)}%`;
             return (
-              <div key={`${entry.displayName}-${entry.funScore}`} className={styles.row}>
+              <div key={`${entry.displayName}-${entryMetric}-${index}`} className={styles.row}>
                 <div
                   className={styles.avatar}
                   style={{ background: avatarColor(entry.avatarId ?? entry.displayName) }}

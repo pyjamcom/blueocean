@@ -8,6 +8,7 @@ export interface RahootLeaderboardEntry {
   points: number;
   avatarId?: string;
   title?: string;
+  frameClass?: string;
 }
 
 interface AnimatedPointsProps {
@@ -109,7 +110,7 @@ export default function RahootLeaderboard({
             >
               <div className={styles.nameRow}>
                 <span
-                  className={styles.avatar}
+                  className={`${styles.avatar} ${entry.frameClass ?? ""}`}
                   style={{ background: avatarColor(entry.avatarId ?? entry.id) }}
                 >
                   {avatarSrc ? (

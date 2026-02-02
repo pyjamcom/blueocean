@@ -47,6 +47,46 @@ const corsOrigins = (process.env.CORS_ORIGINS ?? "")
   .filter(Boolean);
 const allowedCorsOrigins = corsOrigins.length > 0 ? corsOrigins : defaultCorsOrigins;
 
+const DEFAULT_FEATURE_FLAGS = {
+  teamStreaks: true,
+  seasons: true,
+  progressLeaderboard: true,
+  graceDay: true,
+  masteryBadges: true,
+  miniQuests: true,
+  cosmetics: true,
+  groups: true,
+  notifications: true,
+} as const;
+
+const FEATURE_FLAGS_JSON = process.env.FEATURE_FLAGS_JSON;
+const FEATURE_FLAGS_PATH = process.env.FEATURE_FLAGS_PATH;
+
+function resolveFeatureFlags() {
+  let override: Record<string, boolean> = {};
+  if (FEATURE_FLAGS_JSON) {
+    try {
+      override = JSON.parse(FEATURE_FLAGS_JSON) as Record<string, boolean>;
+    } catch (err) {
+      console.error("feature_flags:invalid_json", err);
+    }
+  } else if (FEATURE_FLAGS_PATH) {
+    try {
+      const raw = fs.readFileSync(FEATURE_FLAGS_PATH, "utf-8");
+      override = JSON.parse(raw) as Record<string, boolean>;
+    } catch (err) {
+      console.error("feature_flags:invalid_file", err);
+    }
+  }
+  const resolved: Record<string, boolean> = { ...DEFAULT_FEATURE_FLAGS };
+  Object.keys(resolved).forEach((key) => {
+    if (typeof override[key] === "boolean") {
+      resolved[key] = override[key];
+    }
+  });
+  return resolved;
+}
+
 function isTestAuthorized(req: express.Request) {
   if (!TEST_API_ENABLED) {
     return false;
@@ -90,8 +130,19 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/feature-flags", (_req, res) => {
+  res.json({ ok: true, flags: resolveFeatureFlags() });
+});
+
 const complianceEvents: { at: number; accepted: boolean }[] = [];
 const analyticsEvents: { at: number; event: string; sessionId?: string; meta?: unknown }[] = [];
+
+function logAnalyticsEvent(event: string, meta?: unknown) {
+  analyticsEvents.push({ at: Date.now(), event, meta });
+  if (analyticsEvents.length > 2000) {
+    analyticsEvents.shift();
+  }
+}
 
 app.post("/compliance/age", (req, res) => {
   const accepted = req.body?.accepted === true;
@@ -134,6 +185,9 @@ app.post("/crew/create", async (req, res) => {
     res.status(400).json({ ok: false, error: "playerId_required" });
     return;
   }
+  const now = new Date();
+  const season = getSeasonInfo(now);
+  const weekId = getWeekKey(now);
   const code = normalizeCrewCode(req.body?.code) || randomCrewCode();
   const name = sanitizeName(req.body?.name ?? `Crew ${code}`);
   const avatarId = req.body?.avatarId ?? "unknown";
@@ -144,6 +198,10 @@ app.post("/crew/create", async (req, res) => {
     weeklyPoints: 0,
     lastWeekPoints: 0,
     seasonPoints: 0,
+    lastSeasonPoints: 0,
+    lastSeasonId: undefined,
+    weekId,
+    seasonId: season.id,
     correctCount: 0,
     streak: 0,
     lastRoundDay: null,
@@ -156,6 +214,11 @@ app.post("/crew/create", async (req, res) => {
     name,
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    seasonId: season.id,
+    seasonStartDay: season.startDay,
+    seasonEndDay: season.endDay,
+    seasonLengthDays: season.lengthDays,
+    weekId,
     members: { [member.id]: member },
     banned: {},
     teamStreak: { current: 0, lastDay: null, completionRate: 0 },
@@ -184,6 +247,9 @@ app.post("/crew/join", async (req, res) => {
     res.status(403).json({ ok: false, error: "crew_banned" });
     return;
   }
+  const now = new Date();
+  const season = getSeasonInfo(now);
+  const weekId = getWeekKey(now);
   const avatarId = req.body?.avatarId ?? "unknown";
   crew.members[playerId] = {
     id: playerId,
@@ -192,6 +258,10 @@ app.post("/crew/join", async (req, res) => {
     weeklyPoints: crew.members[playerId]?.weeklyPoints ?? 0,
     lastWeekPoints: crew.members[playerId]?.lastWeekPoints ?? 0,
     seasonPoints: crew.members[playerId]?.seasonPoints ?? 0,
+    lastSeasonPoints: crew.members[playerId]?.lastSeasonPoints ?? 0,
+    lastSeasonId: crew.members[playerId]?.lastSeasonId,
+    weekId: crew.members[playerId]?.weekId ?? weekId,
+    seasonId: crew.members[playerId]?.seasonId ?? season.id,
     correctCount: crew.members[playerId]?.correctCount ?? 0,
     streak: crew.members[playerId]?.streak ?? 0,
     lastRoundDay: crew.members[playerId]?.lastRoundDay ?? null,
@@ -200,6 +270,7 @@ app.post("/crew/join", async (req, res) => {
     updatedAt: Date.now(),
   };
   crew.updatedAt = Date.now();
+  ensureCrewPeriods(crew, now);
   recomputeCrewTitles(crew);
   applyTeamStreak(crew, false);
   await writeCrew(crew);
@@ -243,6 +314,7 @@ app.post("/crew/update", async (req, res) => {
     res.status(404).json({ ok: false, error: "crew_not_found" });
     return;
   }
+  const period = ensureCrewPeriods(crew, new Date());
   const existing = crew.members[playerId];
   const lastRoundDay = isDayKey(req.body?.lastRoundDay) ? req.body.lastRoundDay : existing?.lastRoundDay ?? null;
   const avatarId = req.body?.avatarId ?? existing?.avatarId ?? "unknown";
@@ -254,6 +326,10 @@ app.post("/crew/update", async (req, res) => {
     lastWeekPoints:
       typeof req.body?.lastWeekPoints === "number" ? req.body.lastWeekPoints : existing?.lastWeekPoints ?? 0,
     seasonPoints: typeof req.body?.seasonPoints === "number" ? req.body.seasonPoints : existing?.seasonPoints ?? 0,
+    lastSeasonPoints: existing?.lastSeasonPoints ?? 0,
+    lastSeasonId: existing?.lastSeasonId,
+    weekId: existing?.weekId ?? period.weekId,
+    seasonId: existing?.seasonId ?? period.season.id,
     correctCount: typeof req.body?.correctCount === "number" ? req.body.correctCount : existing?.correctCount ?? 0,
     streak: typeof req.body?.streak === "number" ? req.body.streak : existing?.streak ?? 0,
     lastRoundDay,
@@ -373,6 +449,66 @@ app.get("/leaderboard", async (req, res) => {
   const period = req.query.period === "season" ? "season" : "weekly";
   const scope = req.query.scope === "group" ? "group" : "global";
   const limit = Math.min(50, Math.max(1, Number(req.query.limit ?? 10) || 10));
+  const playerId = typeof req.query.playerId === "string" ? req.query.playerId : undefined;
+
+  const computeProgressPercent = (current: number, previous: number) => {
+    if (previous <= 0) {
+      return current > 0 ? 100 : 0;
+    }
+    const delta = Math.max(0, current - previous);
+    const raw = Math.round((delta / Math.max(1, previous)) * 100);
+    return Math.min(200, raw);
+  };
+
+  const bandForIndex = (index: number, total: number) => {
+    if (!total) return "Rising";
+    const ratio = (index + 1) / total;
+    if (ratio <= 0.1) return "Top 10%";
+    if (ratio <= 0.25) return "Top 25%";
+    if (ratio <= 0.5) return "Top 50%";
+    return "Rising";
+  };
+
+  const buildEntries = (members: CrewMember[]) => {
+    const scored = members.map((member) => {
+      const lastWeek = member.lastWeekPoints ?? 0;
+      const weeklyPoints = member.weeklyPoints ?? 0;
+      const weeklyDelta = Math.max(0, weeklyPoints - lastWeek);
+      const progressPercent = computeProgressPercent(weeklyPoints, lastWeek);
+      const seasonPoints = member.seasonPoints ?? 0;
+      const funScore = period === "season" ? seasonPoints : weeklyDelta;
+      return { member, funScore, weeklyDelta, progressPercent };
+    });
+    const sorted =
+      period === "weekly"
+        ? scored.sort((a, b) => b.progressPercent - a.progressPercent || b.weeklyDelta - a.weeklyDelta)
+        : scored.sort((a, b) => b.funScore - a.funScore);
+    const total = sorted.length;
+    const top = sorted.slice(0, limit).map((entry, index) => ({
+      displayName: entry.member.name,
+      avatarId: entry.member.avatarId,
+      funScore: entry.funScore,
+      deltaPoints: period === "weekly" ? entry.weeklyDelta : null,
+      progressPercent: period === "weekly" ? entry.progressPercent : null,
+      percentileBand: bandForIndex(index, total),
+    }));
+    const selfIndex = playerId
+      ? sorted.findIndex((entry) => entry.member.id === playerId)
+      : -1;
+    const selfEntry = selfIndex >= 0 ? sorted[selfIndex] : undefined;
+    const self = selfEntry
+      ? {
+          displayName: selfEntry.member.name,
+          avatarId: selfEntry.member.avatarId,
+          funScore: selfEntry.funScore,
+          deltaPoints: period === "weekly" ? selfEntry.weeklyDelta : null,
+          progressPercent: period === "weekly" ? selfEntry.progressPercent : null,
+          percentileBand: bandForIndex(selfIndex, total),
+        }
+      : null;
+    return { top, self };
+  };
+
   if (scope === "group") {
     const code = normalizeCrewCode(String(req.query.crewCode ?? req.query.code ?? ""));
     if (!code) {
@@ -384,45 +520,12 @@ app.get("/leaderboard", async (req, res) => {
       res.status(404).json({ ok: false, error: "crew_not_found" });
       return;
     }
-    const members = Object.values(crew.members);
-    const scored = members.map((member) => {
-      const lastWeek = member.lastWeekPoints ?? 0;
-      const seasonPoints = member.seasonPoints ?? 0;
-      const weeklyDelta = Math.max(0, member.weeklyPoints - lastWeek);
-      const funScore = period === "season" ? seasonPoints : member.weeklyPoints;
-      const deltaPoints = period === "weekly" && weeklyDelta > 0 ? weeklyDelta : null;
-      const percentileBand = period === "weekly" ? (weeklyDelta > 0 ? "Top 50%" : "Rising") : null;
-      return { member, funScore, deltaPoints, percentileBand, weeklyDelta };
-    });
-    const sorted =
-      period === "weekly"
-        ? scored.sort((a, b) => b.weeklyDelta - a.weeklyDelta)
-        : scored.sort((a, b) => b.funScore - a.funScore);
-    const top = sorted.slice(0, limit).map((entry) => ({
-      displayName: entry.member.name,
-      avatarId: entry.member.avatarId,
-      funScore: entry.funScore,
-      deltaPoints: entry.deltaPoints,
-      percentileBand: entry.percentileBand,
-    }));
-    const playerId = typeof req.query.playerId === "string" ? req.query.playerId : undefined;
-    const self = playerId ? crew.members[playerId] : undefined;
-    const selfLastWeek = self?.lastWeekPoints ?? 0;
-    const selfSeasonPoints = self?.seasonPoints ?? 0;
-    const selfDelta = self ? Math.max(0, self.weeklyPoints - selfLastWeek) : 0;
+    const { top, self } = buildEntries(Object.values(crew.members));
     res.json({
       period,
       scope: "group",
       generatedAt: new Date().toISOString(),
-      self: self
-        ? {
-            displayName: self.name,
-            avatarId: self.avatarId,
-            funScore: period === "season" ? selfSeasonPoints : self.weeklyPoints,
-            deltaPoints: period === "weekly" && selfDelta > 0 ? selfDelta : null,
-            percentileBand: period === "weekly" ? (selfDelta > 0 ? "Top 50%" : "Rising") : null,
-          }
-        : null,
+      self,
       top,
     });
     return;
@@ -445,45 +548,12 @@ app.get("/leaderboard", async (req, res) => {
       }
     });
   }
-  const allMembers = Array.from(membersMap.values());
-  const scored = allMembers.map((member) => {
-    const lastWeek = member.lastWeekPoints ?? 0;
-    const seasonPoints = member.seasonPoints ?? 0;
-    const weeklyDelta = Math.max(0, member.weeklyPoints - lastWeek);
-    const funScore = period === "season" ? seasonPoints : member.weeklyPoints;
-    const deltaPoints = period === "weekly" && weeklyDelta > 0 ? weeklyDelta : null;
-    const percentileBand = period === "weekly" ? (weeklyDelta > 0 ? "Top 50%" : "Rising") : null;
-    return { member, funScore, deltaPoints, percentileBand, weeklyDelta };
-  });
-  const sorted =
-    period === "weekly"
-      ? scored.sort((a, b) => b.weeklyDelta - a.weeklyDelta)
-      : scored.sort((a, b) => b.funScore - a.funScore);
-  const top = sorted.slice(0, limit).map((entry) => ({
-    displayName: entry.member.name,
-    avatarId: entry.member.avatarId,
-    funScore: entry.funScore,
-    deltaPoints: entry.deltaPoints,
-    percentileBand: entry.percentileBand,
-  }));
-  const playerId = typeof req.query.playerId === "string" ? req.query.playerId : undefined;
-  const self = playerId ? membersMap.get(playerId) : undefined;
-  const selfLastWeek = self?.lastWeekPoints ?? 0;
-  const selfSeasonPoints = self?.seasonPoints ?? 0;
-  const selfDelta = self ? Math.max(0, self.weeklyPoints - selfLastWeek) : 0;
+  const { top, self } = buildEntries(Array.from(membersMap.values()));
   res.json({
     period,
     scope: "global",
     generatedAt: new Date().toISOString(),
-    self: self
-      ? {
-          displayName: self.name,
-          avatarId: self.avatarId,
-          funScore: period === "season" ? selfSeasonPoints : self.weeklyPoints,
-          deltaPoints: period === "weekly" && selfDelta > 0 ? selfDelta : null,
-          percentileBand: period === "weekly" ? (selfDelta > 0 ? "Top 50%" : "Rising") : null,
-        }
-      : null,
+    self,
     top,
   });
 });
@@ -527,6 +597,10 @@ const PUBLIC_ROOM_CODE = "PLAY";
 const PUBLIC_ROOM_POINTER_KEY = "public:PLAY:next";
 const CREW_INDEX_KEY = "crew:index";
 const TEAM_COMPLETION_RATE = 0.6;
+const SEASON_ANCHOR_DAY = "2026-02-01";
+const SEASON_LENGTH_DAYS = 14;
+const WEEK_START_DAY = 1;
+const PERIOD_SWEEP_INTERVAL_MS = 1000 * 60 * 30;
 const DAY_KEY_RE = /^\d{4}-\d{2}-\d{2}$/;
 let publicRoomPointerMemory: string | null = null;
 type RoomTimers = {
@@ -537,6 +611,9 @@ type RoomTimers = {
 const roomTimers = new Map<string, RoomTimers>();
 const crewStore = new Map<string, Crew>();
 const crewIndex = new Set<string>();
+let lastPeriodSweepDay: string | null = null;
+let lastPeriodSweepSeason: string | null = null;
+let periodSweepInFlight = false;
 
 type CrewRole = "owner" | "member";
 
@@ -547,6 +624,10 @@ interface CrewMember {
   weeklyPoints: number;
   lastWeekPoints: number;
   seasonPoints: number;
+  lastSeasonPoints?: number;
+  lastSeasonId?: string;
+  weekId?: string;
+  seasonId?: string;
   correctCount: number;
   streak: number;
   lastRoundDay?: string | null;
@@ -561,11 +642,23 @@ interface CrewTeamStreak {
   completionRate: number;
 }
 
+interface SeasonInfo {
+  id: string;
+  startDay: string;
+  endDay: string;
+  lengthDays: number;
+}
+
 interface Crew {
   code: string;
   name: string;
   createdAt: number;
   updatedAt: number;
+  seasonId?: string;
+  seasonStartDay?: string;
+  seasonEndDay?: string;
+  seasonLengthDays?: number;
+  weekId?: string;
   members: Record<string, CrewMember>;
   banned: Record<string, { id: string; name?: string; avatarId?: string; bannedAt: number; bannedBy: string }>;
   teamStreak: CrewTeamStreak;
@@ -623,6 +716,42 @@ const diffDays = (a: string, b: string) => {
   return Math.floor(diffMs / (24 * 60 * 60 * 1000));
 };
 
+const startOfWeek = (date: Date, weekStartDay = WEEK_START_DAY) => {
+  const day = date.getDay();
+  const diff = (day < weekStartDay ? 7 : 0) + day - weekStartDay;
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  result.setDate(date.getDate() - diff);
+  return result;
+};
+
+const getWeekKey = (date: Date) => {
+  const weekStart = startOfWeek(date, WEEK_START_DAY);
+  const year = weekStart.getFullYear();
+  const firstWeekStart = startOfWeek(new Date(year, 0, 1), WEEK_START_DAY);
+  const diffMs = weekStart.getTime() - firstWeekStart.getTime();
+  const weekIndex = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return `${year}-W${String(weekIndex).padStart(2, "0")}`;
+};
+
+const getSeasonInfo = (now: Date): SeasonInfo => {
+  const anchor = parseDayKey(SEASON_ANCHOR_DAY);
+  const diff = Math.max(0, Math.floor((now.getTime() - anchor.getTime()) / (24 * 60 * 60 * 1000)));
+  const seasonIndex = Math.floor(diff / SEASON_LENGTH_DAYS);
+  const start = new Date(anchor);
+  start.setDate(anchor.getDate() + seasonIndex * SEASON_LENGTH_DAYS);
+  const end = new Date(start);
+  end.setDate(start.getDate() + SEASON_LENGTH_DAYS - 1);
+  return {
+    id: `S${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(
+      start.getDate(),
+    ).padStart(2, "0")}`,
+    startDay: formatDayKey(start),
+    endDay: formatDayKey(end),
+    lengthDays: SEASON_LENGTH_DAYS,
+  };
+};
+
 const isDayKey = (value: unknown): value is string => typeof value === "string" && DAY_KEY_RE.test(value);
 
 const sanitizeName = (name?: string) => {
@@ -663,6 +792,35 @@ async function listCrewCodes(): Promise<string[]> {
   return Array.from(crewIndex);
 }
 
+async function sweepCrewPeriods(now = new Date()) {
+  if (periodSweepInFlight) return;
+  periodSweepInFlight = true;
+  try {
+    const dayKey = formatDayKey(now);
+    const season = getSeasonInfo(now);
+    if (dayKey === lastPeriodSweepDay && season.id === lastPeriodSweepSeason) {
+      return;
+    }
+    lastPeriodSweepDay = dayKey;
+    lastPeriodSweepSeason = season.id;
+    const codes = await listCrewCodes();
+    for (const code of codes) {
+      await readCrew(code);
+    }
+  } catch (err) {
+    console.error("period:sweep:error", err);
+  } finally {
+    periodSweepInFlight = false;
+  }
+}
+
+function schedulePeriodSweep() {
+  void sweepCrewPeriods();
+  setInterval(() => {
+    void sweepCrewPeriods();
+  }, PERIOD_SWEEP_INTERVAL_MS);
+}
+
 async function readCrew(code: string): Promise<Crew | null> {
   if (redis) {
     const raw = await redis.get(crewKey(code));
@@ -675,6 +833,10 @@ async function readCrew(code: string): Promise<Crew | null> {
       if (!crew.teamStreak) {
         crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
       }
+      const period = ensureCrewPeriods(crew);
+      if (period.changed) {
+        await writeCrew(crew);
+      }
       return crew;
     } catch {
       return null;
@@ -686,6 +848,12 @@ async function readCrew(code: string): Promise<Crew | null> {
   }
   if (crew && !crew.teamStreak) {
     crew.teamStreak = { current: 0, lastDay: null, completionRate: 0 };
+  }
+  if (crew) {
+    const period = ensureCrewPeriods(crew);
+    if (period.changed) {
+      await writeCrew(crew);
+    }
   }
   return crew;
 }
@@ -726,6 +894,48 @@ function recomputeCrewTitles(crew: Crew) {
     }
     member.title = title;
   });
+}
+
+function ensureCrewPeriods(crew: Crew, now = new Date()) {
+  const weekId = getWeekKey(now);
+  const season = getSeasonInfo(now);
+  let changed = false;
+  for (const member of Object.values(crew.members)) {
+    if (!member.weekId) {
+      member.weekId = weekId;
+      changed = true;
+    } else if (member.weekId !== weekId) {
+      member.lastWeekPoints = member.weeklyPoints;
+      member.weeklyPoints = 0;
+      member.weekId = weekId;
+      changed = true;
+    }
+    if (!member.seasonId) {
+      member.seasonId = season.id;
+      changed = true;
+    } else if (member.seasonId !== season.id) {
+      member.lastSeasonId = member.seasonId;
+      member.lastSeasonPoints = member.seasonPoints ?? 0;
+      member.seasonPoints = 0;
+      member.seasonId = season.id;
+      changed = true;
+    }
+  }
+  if (!crew.seasonId || crew.seasonId !== season.id) {
+    crew.seasonId = season.id;
+    crew.seasonStartDay = season.startDay;
+    crew.seasonEndDay = season.endDay;
+    crew.seasonLengthDays = season.lengthDays;
+    changed = true;
+  }
+  if (!crew.weekId || crew.weekId !== weekId) {
+    crew.weekId = weekId;
+    changed = true;
+  }
+  if (changed) {
+    crew.updatedAt = Date.now();
+  }
+  return { changed, weekId, season };
 }
 
 function applyTeamStreak(crew: Crew, allowIncrement: boolean) {
@@ -2494,6 +2704,11 @@ wss.on("connection", (socket, request) => {
         if (!validateAnswerFn(answerPayload)) {
           send(socket, { type: "error", errors: validateAnswer.errors });
           logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "answer" });
+          logAnalyticsEvent("answer_rejected", {
+            reason: "invalid_payload",
+            playerId: answerPayload?.playerId,
+            roomCode: answerPayload?.roomCode,
+          });
           metrics.answerRejected += 1;
           return;
         }
@@ -2506,6 +2721,11 @@ wss.on("connection", (socket, request) => {
             roomCode: answerPayload.roomCode,
             playerId: answerPayload.playerId,
             detail: "answer",
+          });
+          logAnalyticsEvent("answer_rejected", {
+            reason: "rate_limit",
+            playerId: answerPayload.playerId,
+            roomCode: answerPayload.roomCode,
           });
           metrics.answerRejected += 1;
           return;
@@ -2520,12 +2740,18 @@ wss.on("connection", (socket, request) => {
             roomCode: answerPayload.roomCode,
             playerId: answerPayload.playerId,
           });
+          logAnalyticsEvent("answer_rejected", {
+            reason: "cooldown",
+            playerId: answerPayload.playerId,
+            roomCode: answerPayload.roomCode,
+          });
           metrics.answerRejected += 1;
           return;
         }
         answerCooldowns.set(cooldownKey, Date.now());
         let scorePayload: ReturnType<typeof buildScorePayload> | null = null;
         let autoStage: StagePayload | null = null;
+        let duplicateAnswer = false;
         const room = await updateRoom(
           answerPayload.roomCode,
           (roomValue) => {
@@ -2541,6 +2767,7 @@ wss.on("connection", (socket, request) => {
             }
             const answeredSet = roomValue.answeredByIndex.get(questionIndex) ?? new Set<string>();
             if (answeredSet.has(answerPayload.playerId)) {
+              duplicateAnswer = true;
               return;
             }
             answeredSet.add(answerPayload.playerId);
@@ -2577,6 +2804,23 @@ wss.on("connection", (socket, request) => {
           },
           { createIfMissing: false },
         );
+        if (duplicateAnswer) {
+          logIncident({
+            at: Date.now(),
+            type: "spam_drop",
+            ip: state.ip,
+            roomCode: answerPayload.roomCode,
+            playerId: answerPayload.playerId,
+            detail: "duplicate_answer",
+          });
+          logAnalyticsEvent("answer_rejected", {
+            reason: "duplicate",
+            playerId: answerPayload.playerId,
+            roomCode: answerPayload.roomCode,
+          });
+          metrics.answerRejected += 1;
+          return;
+        }
         if (room && scorePayload) {
           broadcastToRoom(room.code, { type: "score", payload: scorePayload });
         }
@@ -2624,6 +2868,8 @@ wss.on("connection", (socket, request) => {
 server.listen(PORT, () => {
   console.log(`server listening on ${PORT}`);
 });
+
+schedulePeriodSweep();
 
 setInterval(() => {
   const now = Date.now();

@@ -25,6 +25,76 @@
         {"id": "glow_trend_boost", "weight": 0.33}
       ],
       "metrics": ["activation", "d1_retention", "k_factor"]
+    },
+    {
+      "id": "team_streaks_on",
+      "description": "Enable team streaks vs control.",
+      "assignment_unit": "group",
+      "variants": [
+        {"id": "off", "weight": 0.5},
+        {"id": "on", "weight": 0.5}
+      ],
+      "primary_metrics": ["d1_retention", "team_streak_day_completed"],
+      "secondary_metrics": ["sessions_per_user", "quest_completed"],
+      "guardrails": ["answer_rejected_rate", "client_error_rate"],
+      "duration_days": 14,
+      "min_sample": 500
+    },
+    {
+      "id": "progress_leaderboard",
+      "description": "Progress leaderboard vs absolute leaderboard.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "absolute", "weight": 0.5},
+        {"id": "progress", "weight": 0.5}
+      ],
+      "primary_metrics": ["d7_retention", "leaderboard_view"],
+      "secondary_metrics": ["sessions_per_user"],
+      "guardrails": ["churn_rate"],
+      "duration_days": 14,
+      "min_sample": 800
+    },
+    {
+      "id": "daily_quests",
+      "description": "Mini-quests enabled vs disabled.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "off", "weight": 0.5},
+        {"id": "on", "weight": 0.5}
+      ],
+      "primary_metrics": ["quest_completed", "d1_retention"],
+      "secondary_metrics": ["sessions_per_user"],
+      "guardrails": ["client_error_rate"],
+      "duration_days": 10,
+      "min_sample": 600
+    },
+    {
+      "id": "cosmetics_collection",
+      "description": "Cosmetics collection panel on vs off.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "off", "weight": 0.5},
+        {"id": "on", "weight": 0.5}
+      ],
+      "primary_metrics": ["cosmetic_unlocked", "d7_retention"],
+      "secondary_metrics": ["sessions_per_user"],
+      "guardrails": ["client_error_rate"],
+      "duration_days": 14,
+      "min_sample": 600
+    },
+    {
+      "id": "reminder_opt_in",
+      "description": "Reminder opt-in prompt vs silent default.",
+      "assignment_unit": "user",
+      "variants": [
+        {"id": "silent", "weight": 0.5},
+        {"id": "prompt", "weight": 0.5}
+      ],
+      "primary_metrics": ["d1_retention", "reminder_opt_in"],
+      "secondary_metrics": ["sessions_per_user"],
+      "guardrails": ["churn_rate"],
+      "duration_days": 10,
+      "min_sample": 500
     }
   ]
 }

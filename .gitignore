@@ -30,6 +30,16 @@ docs/*
 !docs/data_governance.md
 !docs/iteration_loop.md
 !docs/release_checklist.md
+!docs/ab_plan.md
+!docs/leaderboards.sql
+!docs/reward_thresholds.md
+!docs/rollup_jobs.md
+!docs/analytics_event_schema.json
+!docs/engagement_api.md
+!docs/figma/
+!docs/figma/escapers_engagement_skeleton.json
+!docs/openapi/
+!docs/openapi/escapers-engagement.yaml
 entity_source_schengen_facts.txt
 report_blue_ocean.html
 reports/blue_ocean_plan_report.html

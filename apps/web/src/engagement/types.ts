@@ -6,7 +6,8 @@ export type EngagementFlagKey =
   | "masteryBadges"
   | "miniQuests"
   | "cosmetics"
-  | "groups";
+  | "groups"
+  | "notifications";
 
 export interface QuestDefinition {
   id: string;
@@ -25,6 +26,7 @@ export interface BadgeDefinition {
   id: string;
   label: string;
   emoji: string;
+  rarity?: "common" | "rare";
 }
 
 export interface CosmeticDefinition {
@@ -58,6 +60,7 @@ export interface EngagementStreak {
   lastDay: string | null;
   graceLeft: number;
   graceUsedOn?: string | null;
+  outageGraceDay?: string | null;
 }
 
 export interface TeamStreak {
@@ -83,14 +86,28 @@ export interface EngagementCosmetics {
     frame?: string | null;
     effect?: string | null;
   };
+  lastUnlocked?: string | null;
 }
 
 export interface EngagementStats {
   fastCorrects: number;
   totalCorrect: number;
+  totalAnswers: number;
   roundsPlayed: number;
   lastRoundDay: string | null;
   lastActiveHour: number | null;
+}
+
+export interface EngagementNotifications {
+  enabled: boolean;
+  quietStart: number;
+  quietEnd: number;
+  lastPromptDay: string | null;
+}
+
+export interface EngagementHints {
+  streakHintShown: boolean;
+  questHintShown: boolean;
 }
 
 export interface EngagementGroup {
@@ -111,6 +128,8 @@ export interface EngagementState {
   quests: EngagementQuests;
   cosmetics: EngagementCosmetics;
   stats: EngagementStats;
+  notifications: EngagementNotifications;
+  hints: EngagementHints;
   group: EngagementGroup | null;
 }
 
