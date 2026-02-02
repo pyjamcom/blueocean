@@ -40,7 +40,9 @@ const fallbackAvatars = [
 export const AVATAR_IDS = avatarFiles.length ? avatarFiles : fallbackAvatars;
 
 export function randomAvatarId() {
-  return AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)];
+  const fallback = fallbackAvatars[0] ?? "avatar_raccoon_dj";
+  if (!AVATAR_IDS.length) return fallback;
+  return AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)] ?? AVATAR_IDS[0] ?? fallback;
 }
 
 const AVATAR_STORAGE_KEY = "avatar_id";
@@ -84,5 +86,6 @@ export function getAvatarImageUrl(id: string) {
     return `/avatars/${id}`;
   }
   const idx = avatarIconIndex(id) % avatarFiles.length;
-  return `/avatars/${avatarFiles[idx]}`;
+  const resolved = avatarFiles[idx] ?? avatarFiles[0];
+  return resolved ? `/avatars/${resolved}` : null;
 }

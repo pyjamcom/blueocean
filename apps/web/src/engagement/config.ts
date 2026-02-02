@@ -10,7 +10,7 @@ export const FEATURE_FLAGS = {
   cosmetics: true,
   groups: true,
   notifications: true,
-} as const;
+};
 
 export const SEASON_ANCHOR_DAY = "2026-02-01";
 export const SEASON_LENGTH_DAYS = 14;

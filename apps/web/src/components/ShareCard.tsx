@@ -46,7 +46,7 @@ const ShareCard = forwardRef<ShareCardHandle, ShareCardProps>(function ShareCard
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [qrSrc, setQrSrc] = useState<string | null>(null);
 
-  const palette = useMemo(
+  const palette = useMemo<[string, string]>(
     () => [
       `hsl(${hashHue(stampId)} 70% 55%)`,
       `hsl(${hashHue(medalSetId)} 70% 60%)`,
@@ -90,7 +90,8 @@ const ShareCard = forwardRef<ShareCardHandle, ShareCardProps>(function ShareCard
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, size, size);
 
-      ctx.fillStyle = palette[0];
+      const [primaryColor, accentColor] = palette;
+      ctx.fillStyle = primaryColor;
       ctx.globalAlpha = 0.3;
       ctx.beginPath();
       ctx.arc(size * 0.18, size * 0.2, size * 0.12, 0, Math.PI * 2);
@@ -99,21 +100,25 @@ const ShareCard = forwardRef<ShareCardHandle, ShareCardProps>(function ShareCard
 
       const podiumY = size * 0.7;
       const barW = size * 0.18;
-      const heights = [size * 0.3, size * 0.24, size * 0.2];
-      const xs = [size * 0.2, size * 0.41, size * 0.62];
-      const podiumColors = ["#ffd166", "#e9ecef", "#f4a261"];
+      const heights: [number, number, number] = [size * 0.3, size * 0.24, size * 0.2];
+      const xs: [number, number, number] = [size * 0.2, size * 0.41, size * 0.62];
+      const podiumColors: [string, string, string] = ["#ffd166", "#e9ecef", "#f4a261"];
 
       heights.forEach((h, idx) => {
-        ctx.fillStyle = podiumColors[idx];
+        const x = xs[idx] ?? 0;
+        const color = podiumColors[idx] ?? podiumColors[0];
+        ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.roundRect(xs[idx], podiumY - h, barW, h, 18);
+        ctx.roundRect(x, podiumY - h, barW, h, 18);
         ctx.fill();
       });
 
       podiumTop3.slice(0, 3).forEach((item, idx) => {
         const hue = hashHue(item.avatarId);
-        const cx = xs[idx] + barW / 2;
-        const cy = podiumY - heights[idx] - 40;
+        const x = xs[idx] ?? 0;
+        const h = heights[idx] ?? 0;
+        const cx = x + barW / 2;
+        const cy = podiumY - h - 40;
         ctx.fillStyle = `hsl(${hue} 70% 60%)`;
         ctx.beginPath();
         ctx.arc(cx, cy, 32, 0, Math.PI * 2);
@@ -130,7 +135,7 @@ const ShareCard = forwardRef<ShareCardHandle, ShareCardProps>(function ShareCard
       ctx.arc(size * 0.5, size * 0.2, 46, 0, Math.PI * 2);
       ctx.stroke();
 
-      ctx.strokeStyle = palette[1];
+      ctx.strokeStyle = accentColor;
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(size * 0.82, size * 0.22, 44, 0, Math.PI * 2);

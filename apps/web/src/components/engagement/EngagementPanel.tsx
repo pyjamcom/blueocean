@@ -10,7 +10,7 @@ import { getOrCreateClientId } from "../../utils/ids";
 type PanelMode = "lobby" | "result";
 type InfoPayload = {
   title: string;
-  lines: string[];
+  lines: ReadonlyArray<string>;
   ctaLabel?: string;
   onCta?: () => void;
 };

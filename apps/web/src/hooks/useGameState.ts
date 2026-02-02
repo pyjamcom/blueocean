@@ -114,6 +114,9 @@ export function useGameState({
         }
 
         const question = prev.questions[prev.questionIndex];
+        if (!question) {
+          return prev;
+        }
         const isCorrect = answerIndex === question.correct_index;
         answersRef.current[playerId] = { playerId, answerIndex, responseTimeMs };
 
@@ -151,6 +154,9 @@ export function useGameState({
     clearTimers();
     if (state.phase === "round" && state.roundStartAt) {
       const question = state.questions[state.questionIndex];
+      if (!question) {
+        return clearTimers;
+      }
       const remaining = question.duration_ms - (Date.now() - state.roundStartAt);
       const timerId = window.setTimeout(() => endRound(), Math.max(0, remaining));
       timersRef.current.push(timerId);

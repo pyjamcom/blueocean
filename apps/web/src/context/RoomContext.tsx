@@ -109,10 +109,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           }
         | undefined,
     ) => {
-    if (!payload?.players) return;
+    const incomingPlayers = payload?.players;
+    if (!incomingPlayers) return;
     setPlayers((prev) => {
       const prevMap = new Map(prev.map((player) => [player.id, player]));
-      return payload.players.map((player) => {
+      return incomingPlayers.map((player) => {
         const existing = prevMap.get(player.id);
         return {
           id: player.id,
@@ -194,8 +195,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         if (effectiveIndex === questionIndex) {
           setAnswerCounts((prev) => {
             const next = [...prev] as [number, number, number, number];
-            if (payload.answerIndex >= 0 && payload.answerIndex < 4) {
-              next[payload.answerIndex] = (next[payload.answerIndex] ?? 0) + 1;
+            const idx = payload.answerIndex;
+            if (typeof idx === "number" && idx >= 0 && idx < 4) {
+              next[idx] = (next[idx] ?? 0) + 1;
             }
             return next;
           });
@@ -225,12 +227,13 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         const payload = message.payload as
           | { players?: Array<{ id: string; avatarId: string; name?: string; ready?: boolean; score?: number; correctCount?: number; streak?: number }> }
           | undefined;
-        if (!payload?.players) {
+        const incomingPlayers = payload?.players;
+        if (!incomingPlayers) {
           return;
         }
         setPlayers((prev) => {
           const prevMap = new Map(prev.map((player) => [player.id, player]));
-          const nextPlayers = payload.players.map((player) => ({
+          const nextPlayers = incomingPlayers.map((player) => ({
             id: player.id,
             avatarId: player.avatarId,
             name: player.name,

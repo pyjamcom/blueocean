@@ -243,7 +243,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     const override =
       overrideRaw && overrideRaw.trim()
         ? (JSON.parse(overrideRaw) as Partial<typeof FEATURE_FLAGS>)
-        : null;
+        : undefined;
     const mergeFlags = (incoming?: Partial<typeof FEATURE_FLAGS>) => {
       if (!incoming) return FEATURE_FLAGS;
       const next = { ...FEATURE_FLAGS };
@@ -261,9 +261,9 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     fetch(`${apiBase}/feature-flags`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        applyFlags(data?.flags ?? null);
+        applyFlags(data?.flags);
       })
-      .catch(() => applyFlags(null));
+      .catch(() => applyFlags());
     return () => {
       active = false;
     };

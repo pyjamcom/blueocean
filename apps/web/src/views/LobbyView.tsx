@@ -95,11 +95,11 @@ export default function LobbyView() {
     touchStart.current = null;
   };
 
-  const selfAvatar = AVATAR_IDS[avatarIndex];
+  const selfAvatar = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
   const selfPlayer = players.find((player) => player.id === playerId);
   const selfReady = selfPlayer?.ready ?? false;
   const selfAssetId = lobbyAssets.length
-    ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length]
+    ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length] ?? lobbyAssets[0]
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
   const startLabel = selfReady ? "Waiting to start" : "Ready to play";

@@ -388,7 +388,7 @@ export default function RoundGallery() {
           </h2>
           <div className={`${styles.preparedGrid} ${styles.animQuizz}`}>
             {[...Array(4)].map((_, index) => {
-              const Icon = ANSWER_ICONS[index];
+              const Icon = ANSWER_ICONS[index] ?? Triangle;
               return (
                 <div
                   key={index}
@@ -439,7 +439,7 @@ export default function RoundGallery() {
 
             <div className={styles.answersGrid}>
               {answers.map((answer, index) => {
-                const Icon = ANSWER_ICONS[index];
+                const Icon = ANSWER_ICONS[index] ?? Triangle;
                 return (
                   <button
                     key={answer.id}

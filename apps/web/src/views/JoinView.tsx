@@ -239,7 +239,7 @@ export default function JoinView() {
   };
 
   const handleAvatarSelect = () => {
-    const selected = AVATAR_IDS[avatarIndex];
+    const selected = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
     setAvatarId(selected);
     setAvatar(selected);
     setStoredAvatarId(selected);
@@ -273,9 +273,9 @@ export default function JoinView() {
     }
   };
 
-  const currentAvatar = AVATAR_IDS[avatarIndex];
+  const currentAvatar = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
   const avatarAssetId = assetIds.length
-    ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length]
+    ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length] ?? assetIds[0]
     : undefined;
   const avatarAssetSrc = getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId);
 
