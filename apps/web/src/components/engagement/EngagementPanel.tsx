@@ -8,6 +8,12 @@ import { avatarColor, getAvatarImageUrl } from "../../utils/avatar";
 import { getOrCreateClientId } from "../../utils/ids";
 
 type PanelMode = "lobby" | "result";
+type InfoPayload = {
+  title: string;
+  lines: string[];
+  ctaLabel?: string;
+  onCta?: () => void;
+};
 type CrewMember = {
   id: string;
   name: string;
@@ -17,6 +23,239 @@ type CrewMember = {
 };
 
 const badgeMap = new Map(BADGE_DEFINITIONS.map((badge) => [badge.id, badge]));
+const CHIP_INFO = {
+  season: {
+    title: "Season Sprint",
+    lines: [
+      "What: a 14-day chaos sprint for everyone.",
+      "How: auto-starts; timer shows days left. Cosmetics stay.",
+      "Standout: fresh start = instant flex vs old whales.",
+      "Funny: new season, new excuses.",
+    ],
+  },
+  shield: {
+    title: "Streak Shield",
+    lines: [
+      "What: 1 free miss without losing your streak.",
+      "How: auto-recharges weekly; spends on a 1-day gap.",
+      "Standout: you keep streaks while others cry.",
+      "Funny: we forgive you before you lie.",
+    ],
+  },
+  reminder: {
+    title: "Party Ping",
+    lines: [
+      "What: tiny 'one round?' reminder.",
+      "How: you toggle it. We never spam.",
+      "Standout: keeps streaks alive with zero effort.",
+      "Funny: your phone whispers 'play, coward.'",
+    ],
+  },
+  streak: {
+    title: "Hot Streak",
+    lines: [
+      "What: days in a row you played.",
+      "How: 1 round today = +1 day.",
+      "Standout: higher number = louder flex.",
+      "Funny: streaks are like tacos; drop one, sadness.",
+    ],
+  },
+  crew: {
+    title: "Your Crew",
+    lines: [
+      "What: private squad + shared streak.",
+      "How: create crew -> code; friends join by code.",
+      "Standout: titles pop (Captain/Score Boss/Sharp Eye).",
+      "Funny: instant gang, zero paperwork.",
+    ],
+  },
+  crewStreak: {
+    title: "Crew Streak",
+    lines: [
+      "What: team streak day for the whole crew.",
+      "How: 60% of crew plays today -> +1 for everyone.",
+      "Standout: you can carry the squad.",
+      "Funny: even the lazy guy gets credit.",
+    ],
+  },
+  badges: {
+    title: "Badges",
+    lines: [
+      "What: skill trophies (not just logins).",
+      "How: earn via accuracy, speed, streaks.",
+      "Standout: shows your real flex.",
+      "Funny: serious awards for unserious memes.",
+    ],
+  },
+  style: {
+    title: "Your Style",
+    lines: [
+      "What: free cosmetics, zero paywalls.",
+      "How: unlock via quests + badges.",
+      "Standout: your panel looks louder.",
+      "Funny: drip earned by chaos.",
+    ],
+  },
+} as const;
+
+const BADGE_INFO: Record<string, { title: string; lines: string[] }> = {
+  badge_sharp: {
+    title: "Clean Run",
+    lines: [
+      "What: no-mistake mini run.",
+      "How: 3 correct in a row.",
+      "Standout: shows you're not just lucky.",
+      "Funny: your brain took a shower.",
+    ],
+  },
+  badge_speedy: {
+    title: "Quick Hands",
+    lines: [
+      "What: fast-correct badge.",
+      "How: 3 fast corrects.",
+      "Standout: you tap before the question finishes.",
+      "Funny: finger ninja energy.",
+    ],
+  },
+  badge_marksman: {
+    title: "Sure Shot",
+    lines: [
+      "What: accuracy badge.",
+      "How: >=80% over 10 answers.",
+      "Standout: the crew trusts your guesses.",
+      "Funny: too serious for a meme game.",
+    ],
+  },
+  badge_hot_streak: {
+    title: "Hot Streak",
+    lines: [
+      "What: long correct streak badge.",
+      "How: 5 correct in a row.",
+      "Standout: you're on fire.",
+      "Funny: toaster-level brain heat.",
+    ],
+  },
+  badge_lightning: {
+    title: "Turbo Tap",
+    lines: [
+      "What: ultra-fast streak badge.",
+      "How: 5 fast corrects.",
+      "Standout: speedrun reputation.",
+      "Funny: fingers on caffeine.",
+    ],
+  },
+  badge_combo: {
+    title: "Combo Wizard",
+    lines: [
+      "What: speed + streak combo badge.",
+      "How: 3 fast + 3 streak in one flow.",
+      "Standout: rare combo flex.",
+      "Funny: you found the cheat code.",
+    ],
+  },
+  badge_blaze: {
+    title: "Blaze Mode",
+    lines: [
+      "What: insane streak badge.",
+      "How: 8 correct in a row.",
+      "Standout: elite status.",
+      "Funny: volcano in a hoodie.",
+    ],
+  },
+  badge_sniper: {
+    title: "Laser Eyes",
+    lines: [
+      "What: elite accuracy badge.",
+      "How: >=90% over 20 answers.",
+      "Standout: sniper vibes.",
+      "Funny: no-scope in a quiz.",
+    ],
+  },
+};
+
+const FRAME_INFO: Record<string, { title: string; lines: string[] }> = {
+  frame_bubble: {
+    title: "Bubble",
+    lines: [
+      "What: starter bubble frame.",
+      "How: complete '1 round boom'.",
+      "Standout: proof you actually played.",
+      "Funny: baby-step flex.",
+    ],
+  },
+  frame_gummy: {
+    title: "Gummy",
+    lines: [
+      "What: sweet gummy frame.",
+      "How: quest '2 hits' OR Clean Run badge.",
+      "Standout: you're sticky-accurate.",
+      "Funny: sugar-rush brain.",
+    ],
+  },
+  frame_spark: {
+    title: "Spark",
+    lines: [
+      "What: sparkly frame.",
+      "How: quest '3 right-ish' OR Sure Shot badge.",
+      "Standout: you light up the list.",
+      "Funny: fireworks, no safety.",
+    ],
+  },
+  frame_mint: {
+    title: "Mint",
+    lines: [
+      "What: minty fresh frame.",
+      "How: quest 'Turbo tap x2' OR Combo Wizard badge.",
+      "Standout: clean speed flex.",
+      "Funny: minty brain breath.",
+    ],
+  },
+  frame_comet: {
+    title: "Comet",
+    lines: [
+      "What: comet-trail frame.",
+      "How: quest 'Mini streak' OR Hot Streak badge.",
+      "Standout: you keep flying.",
+      "Funny: your answers have a tail.",
+    ],
+  },
+  frame_neon: {
+    title: "Neon",
+    lines: [
+      "What: neon speed frame.",
+      "How: quest 'Speed tap' OR Quick Hands badge.",
+      "Standout: you glow like a maniac.",
+      "Funny: nightclub fingers.",
+    ],
+  },
+  frame_blaze: {
+    title: "Blaze",
+    lines: [
+      "What: fire frame.",
+      "How: Blaze Mode badge.",
+      "Standout: top-tier flex.",
+      "Funny: too hot for quizzes.",
+    ],
+  },
+  frame_frost: {
+    title: "Frost",
+    lines: [
+      "What: ice frame.",
+      "How: Turbo Tap badge.",
+      "Standout: cold speed legend.",
+      "Funny: frozen fingers, still fast.",
+    ],
+  },
+  frame_vortex: {
+    title: "Vortex",
+    lines: [
+      "What: portal frame.",
+      "How: Laser Eyes badge.",
+      "Standout: accuracy warlock.",
+      "Funny: you bent reality for points.",
+    ],
+  },
+};
 
 export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const { state, actions, flags } = useEngagement();
@@ -32,6 +271,7 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const seenQuestRef = useRef<Set<string>>(new Set());
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [crewLoading, setCrewLoading] = useState(false);
+  const [info, setInfo] = useState<InfoPayload | null>(null);
   const selfId = getOrCreateClientId();
   const isOwner = state.group?.role === "owner";
   const prevTeamStreak = useRef(state.teamStreak.current);
@@ -140,6 +380,15 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     setShowCosmetics(false);
     actions.markCosmeticSeen();
   };
+  const openInfo = (payload: InfoPayload, closeSheets = true) => {
+    if (closeSheets) {
+      setShowCosmetics(false);
+      setShowBadges(false);
+      setShowGroup(false);
+    }
+    setInfo(payload);
+  };
+  const closeInfo = () => setInfo(null);
 
   const unlockedBadges = state.badges.unlocked
     .map((id) => badgeMap.get(id))
@@ -212,37 +461,51 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
     <section className={styles.panel}>
       <div className={styles.chipRow}>
         {flags.seasons && (
-          <span className={styles.chip}>
+          <button
+            type="button"
+            className={`${styles.chip} ${styles.chipButton}`}
+            onClick={() => openInfo(CHIP_INFO.season)}
+          >
             <span className={styles.chipIcon}>⏳</span>
             {daysLeft}d
-          </span>
+          </button>
         )}
         {flags.groups && state.group ? (
-          <span className={styles.chip}>
+          <button
+            type="button"
+            className={`${styles.chip} ${styles.chipButton}`}
+            onClick={() => openInfo(CHIP_INFO.crew)}
+          >
             <span className={styles.chipIcon}>👥</span>
             {state.group.code}
-          </span>
+          </button>
         ) : null}
         {flags.teamStreaks && state.group && (
-          <span
+          <button
+            type="button"
             className={`${styles.chip} ${styles.teamChip} ${teamPulse ? styles.teamPulse : ""} ${
               teamStatus === "active"
                 ? styles.teamActive
                 : teamStatus === "paused"
                   ? styles.teamPaused
                   : styles.teamIdle
-            }`}
+            } ${styles.chipButton}`}
+            onClick={() => openInfo(CHIP_INFO.crewStreak)}
           >
             <span className={styles.teamBar} style={{ width: `${teamProgress * 100}%` }} />
             <span className={styles.chipIcon}>🤝</span>
             {state.teamStreak.current}
-          </span>
+          </button>
         )}
         {flags.graceDay && (
-          <span className={styles.chip}>
+          <button
+            type="button"
+            className={`${styles.chip} ${styles.chipButton}`}
+            onClick={() => openInfo(CHIP_INFO.shield)}
+          >
             <span className={styles.chipIcon}>🛡️</span>
             {state.streak.graceLeft}
-          </span>
+          </button>
         )}
         {flags.notifications && (
           <button
@@ -250,16 +513,23 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
             className={`${styles.chip} ${styles.chipButton} ${
               notificationsEnabled ? styles.chipActive : ""
             }`}
-            onClick={() => actions.setNotificationsEnabled(!notificationsEnabled)}
+            onClick={() => {
+              actions.setNotificationsEnabled(!notificationsEnabled);
+              openInfo(CHIP_INFO.reminder);
+            }}
           >
             <span className={styles.chipIcon}>🔔</span>
             {notificationsEnabled ? "On" : "Off"}
           </button>
         )}
-        <span className={styles.chip}>
+        <button
+          type="button"
+          className={`${styles.chip} ${styles.chipButton}`}
+          onClick={() => openInfo(CHIP_INFO.streak)}
+        >
           <span className={styles.chipIcon}>🔥</span>
           {state.streak.current}
-        </span>
+        </button>
       </div>
 
       {showStreakHint ? <div className={styles.hint}>🔥 streak</div> : null}
@@ -296,12 +566,12 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
           )}
           {flags.masteryBadges && (
             <button type="button" className={styles.actionButton} onClick={() => setShowBadges(true)}>
-              Brags
+              Badges
             </button>
           )}
           {flags.cosmetics && (
             <button type="button" className={styles.actionButton} onClick={() => setShowCosmetics(true)}>
-              Drip
+              Style
             </button>
           )}
         </div>
@@ -345,7 +615,14 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
       {showCosmetics ? (
         <div className={styles.overlay} onClick={closeCosmetics}>
           <div className={styles.sheet} onClick={(event) => event.stopPropagation()}>
-            <div className={styles.sheetTitle}>Your style</div>
+            <div
+              className={styles.sheetTitle}
+              onClick={() => openInfo(CHIP_INFO.style)}
+              role="button"
+              tabIndex={0}
+            >
+              Your Style
+            </div>
             <div className={styles.sheetSub}>Equipped: {equippedLabel ?? "None"}</div>
             <div className={styles.grid}>
               {COSMETIC_DEFINITIONS.filter((item) => item.type === "frame").map((item) => {
@@ -361,7 +638,17 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
                     className={`${styles.gridItem} ${frames[item.id] ?? ""} ${rareClass} ${
                       active ? styles.gridActive : ""
                     } ${!unlocked ? styles.gridLocked : ""}`}
-                    onClick={() => unlocked && actions.equipCosmetic(active ? null : item.id)}
+                    onClick={() => {
+                      const base = FRAME_INFO[item.id] ?? { title: item.label, lines: [] };
+                      const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                      const onCta = unlocked
+                        ? () => {
+                            actions.equipCosmetic(active ? null : item.id);
+                            closeInfo();
+                          }
+                        : undefined;
+                      openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
+                    }}
                   >
                     <span>{item.label}</span>
                     <span
@@ -382,19 +669,35 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
       {showBadges ? (
         <div className={styles.overlay} onClick={() => setShowBadges(false)}>
           <div className={styles.sheet} onClick={(event) => event.stopPropagation()}>
-            <div className={styles.sheetTitle}>Your badges</div>
+            <div
+              className={styles.sheetTitle}
+              onClick={() => openInfo(CHIP_INFO.badges)}
+              role="button"
+              tabIndex={0}
+            >
+              Your Badges
+            </div>
             <div className={styles.grid}>
               {BADGE_DEFINITIONS.map((badge) => {
                 const unlocked = state.badges.unlocked.includes(badge.id);
                 const rareClass = badge.rarity === "rare" ? styles.gridRare : "";
                 return (
-                  <div
+                  <button
                     key={badge.id}
+                    type="button"
                     className={`${styles.gridItem} ${rareClass} ${unlocked ? "" : styles.gridLocked}`}
+                    onClick={() => {
+                      const info = BADGE_INFO[badge.id];
+                      if (info) {
+                        openInfo(info);
+                      } else {
+                        openInfo({ title: badge.label, lines: [] });
+                      }
+                    }}
                   >
                     <span className={styles.badgeEmoji}>{badge.emoji}</span>
                     <span className={styles.badgeLabel}>{badge.label}</span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -405,7 +708,14 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
       {showGroup ? (
         <div className={styles.overlay} onClick={() => setShowGroup(false)}>
           <div className={styles.sheet} onClick={(event) => event.stopPropagation()}>
-            <div className={styles.sheetTitle}>Your crew</div>
+            <div
+              className={styles.sheetTitle}
+              onClick={() => openInfo(CHIP_INFO.crew)}
+              role="button"
+              tabIndex={0}
+            >
+              Your Crew
+            </div>
             {state.group ? (
               <div className={styles.groupBlock}>
                 <div className={styles.groupCode}>{state.group.code}</div>
@@ -453,7 +763,7 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
                     <div className={styles.groupHint}>No crew yet</div>
                   )}
                 </div>
-                <div className={styles.groupHint}>Boot/Ban — owner only</div>
+                <div className={styles.groupHint}>Boot/Ban - owner only</div>
                 <button
                   type="button"
                   className={styles.actionButton}
@@ -497,6 +807,31 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      ) : null}
+
+      {info ? (
+        <div className={styles.overlay} onClick={closeInfo}>
+          <div className={styles.infoCard} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.infoTitle}>{info.title}</div>
+            <div className={styles.infoList}>
+              {info.lines.map((line) => (
+                <div key={line} className={styles.infoItem}>
+                  {line}
+                </div>
+              ))}
+            </div>
+            {info.ctaLabel && info.onCta ? (
+              <button
+                type="button"
+                className={styles.infoCta}
+                onClick={info.onCta}
+              >
+                {info.ctaLabel}
+              </button>
+            ) : null}
+            <div className={styles.infoHint}>Tap anywhere to close</div>
           </div>
         </div>
       ) : null}

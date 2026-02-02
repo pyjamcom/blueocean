@@ -233,9 +233,63 @@
   position: fixed;
   inset: 0;
   background: rgba(8, 8, 16, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: grid;
   place-items: center;
   z-index: 40;
+}
+
+.infoCard {
+  width: min(92vw, 360px);
+  background: rgba(16, 16, 28, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  color: #f5f4ff;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.infoTitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.infoList {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(245, 244, 255, 0.88);
+}
+
+.infoItem {
+  line-height: 1.35;
+}
+
+.infoItem strong {
+  color: #fff;
+}
+
+.infoCta {
+  margin-top: 6px;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(120deg, #ffd66b, #ff9bd1);
+  color: #0c0c12;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.infoHint {
+  font-size: 11px;
+  color: rgba(245, 244, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
 }
 
 .sheet {
