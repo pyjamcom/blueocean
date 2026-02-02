@@ -1119,7 +1119,11 @@ async function unionCount(keys: string[], tempKey: string) {
     return 0;
   }
   if (keys.length === 1) {
-    return redis.scard(keys[0]);
+    const single = keys[0];
+    if (!single) {
+      return 0;
+    }
+    return redis.scard(single);
   }
   await redis.sunionstore(tempKey, ...keys);
   await redis.expire(tempKey, 3600);
@@ -1131,7 +1135,11 @@ async function intersectCount(keys: string[], tempKey: string) {
     return 0;
   }
   if (keys.length === 1) {
-    return redis.scard(keys[0]);
+    const single = keys[0];
+    if (!single) {
+      return 0;
+    }
+    return redis.scard(single);
   }
   await redis.sinterstore(tempKey, ...keys);
   await redis.expire(tempKey, 3600);
