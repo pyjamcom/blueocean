@@ -282,6 +282,12 @@ export default function JoinView() {
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
+      <div className={styles.seoHeader}>
+        <h1 className={styles.seoTitle}>Party Games &amp; Meme Quiz - Join Escapers</h1>
+        <h2 className={styles.seoSubtitle}>
+          Funny party quiz with friends: icebreaker games and online group game rooms.
+        </h2>
+      </div>
       {qrVisible && qrSrc && showQr ? (
         <div
           className={styles.qrOverlay}

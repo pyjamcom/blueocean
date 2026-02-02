@@ -13,6 +13,30 @@
   color: var(--ui-text);
 }
 
+.seoHeader {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+  max-width: 520px;
+  z-index: 2;
+}
+
+.seoTitle {
+  margin: 0;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.seoSubtitle {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ui-muted);
+  line-height: 1.2;
+}
+
 .qrFrame {
   width: min(80vw, 360px);
   aspect-ratio: 1 / 1;

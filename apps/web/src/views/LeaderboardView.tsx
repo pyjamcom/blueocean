@@ -197,10 +197,15 @@ export default function LeaderboardView() {
       <header className={styles.header}>
         <div className={styles.titleRow}>
           <span className={styles.titleEmoji}>🎉</span>
-          <h1 className={styles.title}>Funboard</h1>
+          <h1 className={styles.title}>Party Quiz Leaderboard</h1>
           <span className={styles.titleEmoji}>🔥</span>
         </div>
-        <p className={styles.subtitle}>{subtitle} · {scopeLabel}</p>
+        <h2 className={styles.seoSubtitle}>
+          Friends quiz + meme game vibes in fun party games.
+        </h2>
+        <p className={styles.subtitle}>
+          {subtitle} · {scopeLabel}
+        </p>
       </header>
 
       <div className={styles.tabs}>
