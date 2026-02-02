@@ -25,3 +25,4 @@ and lightweight analytics. For full schema details and error codes, see:
 
 ## Internal
 - GET `/metrics` — process + room counters (for monitoring).
+- GET `/metrics/engagement` — daily/weekly engagement summaries from rollup.

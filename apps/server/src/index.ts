@@ -20,6 +20,8 @@ const REDIS_URL = process.env.REDIS_URL;
 const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
 const INSTANCE_ID = process.env.INSTANCE_ID ?? crypto.randomUUID();
+const METRICS_ALERT_WEBHOOK = process.env.METRICS_ALERT_WEBHOOK;
+const METRICS_ALERT_TOKEN = process.env.METRICS_ALERT_TOKEN;
 const ROUND_DEFAULT_MS = 10000;
 const PREPARED_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 5000;
@@ -28,6 +30,19 @@ const MAX_QUESTIONS = 15;
 const HEARTBEAT_INTERVAL_MS = 15000;
 const HEARTBEAT_TIMEOUT_MS = 35000;
 const STALE_PLAYER_MS = 45000;
+const METRICS_TTL_DAYS = 60;
+const METRICS_TTL_SEC = METRICS_TTL_DAYS * 24 * 60 * 60;
+
+const DEFAULT_METRICS_ALERTS = {
+  daily: {
+    streakDropPct: 0.15,
+    d1DropPct: 0.08,
+  },
+  weekly: {
+    d7DropPct: 0.1,
+  },
+  lookbackDays: 7,
+} as const;
 
 const redis = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
 const redisSub = REDIS_ENABLED ? new Redis(REDIS_URL as string) : null;
@@ -61,6 +76,8 @@ const DEFAULT_FEATURE_FLAGS = {
 
 const FEATURE_FLAGS_JSON = process.env.FEATURE_FLAGS_JSON;
 const FEATURE_FLAGS_PATH = process.env.FEATURE_FLAGS_PATH;
+const METRICS_ALERTS_JSON = process.env.METRICS_ALERTS_JSON;
+const METRICS_ALERTS_PATH = process.env.METRICS_ALERTS_PATH;
 
 function resolveFeatureFlags() {
   let override: Record<string, boolean> = {};
@@ -85,6 +102,29 @@ function resolveFeatureFlags() {
     }
   });
   return resolved;
+}
+
+function resolveMetricsAlerts() {
+  let override: Partial<typeof DEFAULT_METRICS_ALERTS> = {};
+  if (METRICS_ALERTS_JSON) {
+    try {
+      override = JSON.parse(METRICS_ALERTS_JSON) as Partial<typeof DEFAULT_METRICS_ALERTS>;
+    } catch (err) {
+      console.error("metrics_alerts:invalid_json", err);
+    }
+  } else if (METRICS_ALERTS_PATH) {
+    try {
+      const raw = fs.readFileSync(METRICS_ALERTS_PATH, "utf-8");
+      override = JSON.parse(raw) as Partial<typeof DEFAULT_METRICS_ALERTS>;
+    } catch (err) {
+      console.error("metrics_alerts:invalid_file", err);
+    }
+  }
+  return {
+    daily: { ...DEFAULT_METRICS_ALERTS.daily, ...(override.daily ?? {}) },
+    weekly: { ...DEFAULT_METRICS_ALERTS.weekly, ...(override.weekly ?? {}) },
+    lookbackDays: override.lookbackDays ?? DEFAULT_METRICS_ALERTS.lookbackDays,
+  };
 }
 
 function isTestAuthorized(req: express.Request) {
@@ -135,13 +175,10 @@ app.get("/feature-flags", (_req, res) => {
 });
 
 const complianceEvents: { at: number; accepted: boolean }[] = [];
-const analyticsEvents: { at: number; event: string; sessionId?: string; meta?: unknown }[] = [];
+const analyticsEvents: { at: number; event: string; sessionId?: string; clientId?: string; meta?: unknown }[] = [];
 
 function logAnalyticsEvent(event: string, meta?: unknown) {
-  analyticsEvents.push({ at: Date.now(), event, meta });
-  if (analyticsEvents.length > 2000) {
-    analyticsEvents.shift();
-  }
+  void recordAnalyticsEvent({ event, meta });
 }
 
 app.post("/compliance/age", (req, res) => {
@@ -154,12 +191,15 @@ app.post("/compliance/age", (req, res) => {
 });
 
 app.post("/analytics", (req, res) => {
-  const { event, at, sessionId, meta } = req.body ?? {};
+  const { event, at, sessionId, clientId, meta } = req.body ?? {};
   if (typeof event === "string") {
-    analyticsEvents.push({ at: typeof at === "number" ? at : Date.now(), event, sessionId, meta });
-    if (analyticsEvents.length > 2000) {
-      analyticsEvents.shift();
-    }
+    void recordAnalyticsEvent({
+      event,
+      at: typeof at === "number" ? at : Date.now(),
+      sessionId: typeof sessionId === "string" ? sessionId : undefined,
+      clientId: typeof clientId === "string" ? clientId : undefined,
+      meta,
+    });
   }
   res.json({ ok: true });
 });
@@ -167,14 +207,10 @@ app.post("/analytics", (req, res) => {
 app.post("/client-error", (req, res) => {
   const { message, source, lineno, colno } = req.body ?? {};
   if (typeof message === "string") {
-    analyticsEvents.push({
-      at: Date.now(),
+    void recordAnalyticsEvent({
       event: "client_error",
       meta: { message, source, lineno, colno },
     });
-    if (analyticsEvents.length > 2000) {
-      analyticsEvents.shift();
-    }
   }
   res.json({ ok: true });
 });
@@ -567,6 +603,39 @@ app.get("/metrics", async (_req, res) => {
   });
 });
 
+app.get("/metrics/engagement", async (req, res) => {
+  if (!redis) {
+    res.status(503).json({ ok: false, error: "redis_unavailable" });
+    return;
+  }
+  const period = req.query.period === "weekly" ? "weekly" : "daily";
+  const day = typeof req.query.day === "string" ? req.query.day : undefined;
+  const week = typeof req.query.week === "string" ? req.query.week : undefined;
+  const lastRaw = await redis.get(metricsKeys.rollupStatus);
+  const last = lastRaw ? JSON.parse(lastRaw) : null;
+
+  if (period === "weekly") {
+    const targetWeek = week ?? last?.week;
+    if (!targetWeek) {
+      res.json({ ok: true, period, last });
+      return;
+    }
+    const summaryRaw = await redis.get(metricsKeys.weeklySummary(targetWeek));
+    const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
+    res.json({ ok: true, period, week: targetWeek, summary, last });
+    return;
+  }
+
+  const targetDay = day ?? last?.day;
+  if (!targetDay) {
+    res.json({ ok: true, period, last });
+    return;
+  }
+  const summaryRaw = await redis.get(metricsKeys.dailySummary(targetDay));
+  const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
+  res.json({ ok: true, period, day: targetDay, summary, last });
+});
+
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 
@@ -704,6 +773,18 @@ const formatDayKey = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const metricsKeys = {
+  dailyUsers: (dayKey: string) => `metrics:daily:users:${dayKey}`,
+  dailyNewUsers: (dayKey: string) => `metrics:daily:new_users:${dayKey}`,
+  dailySessions: (dayKey: string) => `metrics:daily:sessions:${dayKey}`,
+  dailyEvents: (dayKey: string) => `metrics:daily:events:${dayKey}`,
+  allUsers: "metrics:users:all",
+  firstSeen: "metrics:users:first_seen",
+  dailySummary: (dayKey: string) => `metrics:summary:${dayKey}`,
+  weeklySummary: (weekKey: string) => `metrics:summary:week:${weekKey}`,
+  rollupStatus: "metrics:rollup:last",
+};
+
 const parseDayKey = (dayKey: string) => {
   const [year, month, day] = dayKey.split("-").map((part) => Number(part));
   return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
@@ -753,6 +834,66 @@ const getSeasonInfo = (now: Date): SeasonInfo => {
 };
 
 const isDayKey = (value: unknown): value is string => typeof value === "string" && DAY_KEY_RE.test(value);
+
+async function recordAnalyticsEvent(params: {
+  event: string;
+  at?: number;
+  sessionId?: string;
+  clientId?: string;
+  meta?: unknown;
+}) {
+  const eventAt = typeof params.at === "number" ? params.at : Date.now();
+  analyticsEvents.push({
+    at: eventAt,
+    event: params.event,
+    sessionId: params.sessionId,
+    clientId: params.clientId,
+    meta: params.meta,
+  });
+  if (analyticsEvents.length > 2000) {
+    analyticsEvents.shift();
+  }
+  if (!redis) {
+    return;
+  }
+  const dayKey = formatDayKey(new Date(eventAt));
+  const sessionId = typeof params.sessionId === "string" ? params.sessionId : undefined;
+  const clientId = typeof params.clientId === "string" ? params.clientId : undefined;
+  const userId = clientId ?? sessionId;
+
+  const eventsKey = metricsKeys.dailyEvents(dayKey);
+  const sessionsKey = metricsKeys.dailySessions(dayKey);
+  const usersKey = metricsKeys.dailyUsers(dayKey);
+  const pipeline = redis.pipeline();
+  pipeline.hincrby(eventsKey, params.event, 1);
+  pipeline.expire(eventsKey, METRICS_TTL_SEC);
+  if (sessionId) {
+    pipeline.sadd(sessionsKey, sessionId);
+    pipeline.expire(sessionsKey, METRICS_TTL_SEC);
+  }
+  if (userId) {
+    pipeline.sadd(usersKey, userId);
+    pipeline.expire(usersKey, METRICS_TTL_SEC);
+    pipeline.sadd(metricsKeys.allUsers, userId);
+  }
+  try {
+    await pipeline.exec();
+  } catch (err) {
+    console.error("metrics:event_store:error", err);
+  }
+  if (userId) {
+    try {
+      const inserted = await redis.hsetnx(metricsKeys.firstSeen, userId, dayKey);
+      if (inserted === 1) {
+        const newUsersKey = metricsKeys.dailyNewUsers(dayKey);
+        await redis.sadd(newUsersKey, userId);
+        await redis.expire(newUsersKey, METRICS_TTL_SEC);
+      }
+    } catch (err) {
+      console.error("metrics:first_seen:error", err);
+    }
+  }
+}
 
 const sanitizeName = (name?: string) => {
   const trimmed = (name ?? "").trim().slice(0, 18);
@@ -956,6 +1097,238 @@ function applyTeamStreak(crew: Crew, allowIncrement: boolean) {
   if (allowIncrement && completionRate >= TEAM_COMPLETION_RATE && crew.teamStreak.lastDay !== today) {
     crew.teamStreak.current += 1;
     crew.teamStreak.lastDay = today;
+  }
+}
+
+const addDays = (dayKey: string, delta: number) => {
+  const date = parseDayKey(dayKey);
+  date.setDate(date.getDate() + delta);
+  return formatDayKey(date);
+};
+
+const buildDayRange = (endDayKey: string, days: number) => {
+  const output: string[] = [];
+  for (let i = days - 1; i >= 0; i -= 1) {
+    output.push(addDays(endDayKey, -i));
+  }
+  return output;
+};
+
+async function unionCount(keys: string[], tempKey: string) {
+  if (!redis || keys.length === 0) {
+    return 0;
+  }
+  if (keys.length === 1) {
+    return redis.scard(keys[0]);
+  }
+  await redis.sunionstore(tempKey, ...keys);
+  await redis.expire(tempKey, 3600);
+  return redis.scard(tempKey);
+}
+
+async function intersectCount(keys: string[], tempKey: string) {
+  if (!redis || keys.length === 0) {
+    return 0;
+  }
+  if (keys.length === 1) {
+    return redis.scard(keys[0]);
+  }
+  await redis.sinterstore(tempKey, ...keys);
+  await redis.expire(tempKey, 3600);
+  return redis.scard(tempKey);
+}
+
+async function computeRetention(cohortDayKey: string, returnDayKey: string) {
+  if (!redis) {
+    return null;
+  }
+  const cohortKey = metricsKeys.dailyNewUsers(cohortDayKey);
+  const returnKey = metricsKeys.dailyUsers(returnDayKey);
+  const cohortCount = await redis.scard(cohortKey);
+  if (cohortCount === 0) {
+    return null;
+  }
+  const tempKey = `metrics:tmp:retain:${cohortDayKey}:${returnDayKey}`;
+  const retained = await intersectCount([cohortKey, returnKey], tempKey);
+  return retained / cohortCount;
+}
+
+async function loadDailySummary(dayKey: string) {
+  if (!redis) {
+    return null;
+  }
+  const raw = await redis.get(metricsKeys.dailySummary(dayKey));
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+async function storeDailySummary(dayKey: string, summary: Record<string, unknown>) {
+  if (!redis) {
+    return;
+  }
+  await redis.set(metricsKeys.dailySummary(dayKey), JSON.stringify(summary), "EX", METRICS_TTL_SEC);
+}
+
+async function storeWeeklySummary(weekKey: string, summary: Record<string, unknown>) {
+  if (!redis) {
+    return;
+  }
+  await redis.set(metricsKeys.weeklySummary(weekKey), JSON.stringify(summary), "EX", METRICS_TTL_SEC);
+}
+
+async function sendMetricsWebhook(payload: Record<string, unknown>) {
+  if (!METRICS_ALERT_WEBHOOK) {
+    return;
+  }
+  if (typeof fetch !== "function") {
+    console.error("metrics:webhook:missing_fetch");
+    return;
+  }
+  try {
+    await fetch(METRICS_ALERT_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(METRICS_ALERT_TOKEN ? { Authorization: `Bearer ${METRICS_ALERT_TOKEN}` } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error("metrics:webhook:error", err);
+  }
+}
+
+async function runMetricsRollup(period: "daily" | "weekly") {
+  if (!redis) {
+    console.error("metrics:rollup:missing_redis");
+    return;
+  }
+  const alertsConfig = resolveMetricsAlerts();
+  const now = new Date();
+  const yesterday = formatDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  const dayKeys = buildDayRange(yesterday, alertsConfig.lookbackDays);
+
+  const dailyUsersKey = metricsKeys.dailyUsers(yesterday);
+  const dailySessionsKey = metricsKeys.dailySessions(yesterday);
+  const dailyEventsKey = metricsKeys.dailyEvents(yesterday);
+  const dailyUsers = await redis.scard(dailyUsersKey);
+  const dailySessions = await redis.scard(dailySessionsKey);
+  const eventCounts = await redis.hgetall(dailyEventsKey);
+  const streakCompleted = Number(eventCounts.team_streak_day_completed ?? 0);
+
+  const last7Days = buildDayRange(yesterday, 7);
+  const usersUnionKey = `metrics:tmp:users:${yesterday}`;
+  const sessionsUnionKey = `metrics:tmp:sessions:${yesterday}`;
+  const activeUsers7d = await unionCount(
+    last7Days.map((day) => metricsKeys.dailyUsers(day)),
+    usersUnionKey,
+  );
+  const sessions7d = await unionCount(
+    last7Days.map((day) => metricsKeys.dailySessions(day)),
+    sessionsUnionKey,
+  );
+  const totalUsers = await redis.scard(metricsKeys.allUsers);
+  const sessionsPerUser7d = activeUsers7d > 0 ? sessions7d / activeUsers7d : null;
+  const churnProxy7d = totalUsers > 0 ? 1 - activeUsers7d / totalUsers : null;
+
+  const d1CohortDay = addDays(yesterday, -1);
+  const d7CohortDay = addDays(yesterday, -7);
+  const d1Retention = await computeRetention(d1CohortDay, yesterday);
+  const d7Retention = await computeRetention(d7CohortDay, yesterday);
+
+  const dailySummary = {
+    day: yesterday,
+    users: dailyUsers,
+    sessions: dailySessions,
+    sessions_per_user_7d: sessionsPerUser7d,
+    churn_proxy_7d: churnProxy7d,
+    d1_retention: d1Retention,
+    d7_retention: d7Retention,
+    d1_cohort_day: d1CohortDay,
+    d7_cohort_day: d7CohortDay,
+    streak_completed: streakCompleted,
+    events: eventCounts,
+    generated_at: new Date().toISOString(),
+  };
+
+  await storeDailySummary(yesterday, dailySummary);
+
+  if (period === "daily") {
+    const priorDay = addDays(yesterday, -1);
+    const priorSummary = (await loadDailySummary(priorDay)) ?? {};
+    const priorStreak = Number((priorSummary as any).streak_completed ?? 0);
+    const alerts: string[] = [];
+    if (priorStreak > 0 && streakCompleted < priorStreak * (1 - alertsConfig.daily.streakDropPct)) {
+      alerts.push("streak_completion_drop");
+    }
+
+    const lookbackSummaries = await Promise.all(
+      dayKeys.slice(0, -1).map((day) => loadDailySummary(day)),
+    );
+    const d1Values = lookbackSummaries
+      .map((s) => (typeof (s as any)?.d1_retention === "number" ? (s as any).d1_retention : null))
+      .filter((v): v is number => typeof v === "number");
+    const d1Average = d1Values.length ? d1Values.reduce((sum, v) => sum + v, 0) / d1Values.length : null;
+    if (d1Average !== null && d1Retention !== null && d1Retention < d1Average * (1 - alertsConfig.daily.d1DropPct)) {
+      alerts.push("d1_retention_drop");
+    }
+
+    await redis.set(
+      metricsKeys.rollupStatus,
+      JSON.stringify({
+        at: Date.now(),
+        period: "daily",
+        day: yesterday,
+        ok: true,
+        alerts,
+      }),
+      "EX",
+      METRICS_TTL_SEC,
+    );
+
+    await sendMetricsWebhook({
+      type: alerts.length ? "metrics_alert" : "metrics_daily",
+      day: yesterday,
+      summary: dailySummary,
+      alerts,
+    });
+  }
+
+  if (period === "weekly") {
+    const weekKey = getWeekKey(parseDayKey(yesterday));
+    const weeklySummary = {
+      week: weekKey,
+      window_end: yesterday,
+      users_7d: activeUsers7d,
+      sessions_7d: sessions7d,
+      sessions_per_user_7d: sessionsPerUser7d,
+      churn_proxy_7d: churnProxy7d,
+      d7_retention: d7Retention,
+      generated_at: new Date().toISOString(),
+    };
+    await storeWeeklySummary(weekKey, weeklySummary);
+    await redis.set(
+      metricsKeys.rollupStatus,
+      JSON.stringify({
+        at: Date.now(),
+        period: "weekly",
+        week: weekKey,
+        ok: true,
+      }),
+      "EX",
+      METRICS_TTL_SEC,
+    );
+    await sendMetricsWebhook({
+      type: "metrics_weekly",
+      week: weekKey,
+      summary: weeklySummary,
+    });
   }
 }
 
@@ -2869,16 +3242,30 @@ const runRollupOnly =
   process.argv.includes("--rollup") ||
   process.argv.includes("--rollup-once") ||
   process.env.ROLLUP_ONCE === "1";
+const runMetricsOnly =
+  process.argv.includes("--metrics-rollup") ||
+  process.argv.includes("--metrics-daily") ||
+  process.argv.includes("--metrics-weekly") ||
+  process.env.METRICS_ROLLUP === "1";
+const metricsPeriod =
+  process.argv.includes("--metrics-weekly") || process.env.METRICS_PERIOD === "weekly" ? "weekly" : "daily";
 
-if (runRollupOnly) {
+if (runRollupOnly || runMetricsOnly) {
   (async () => {
     try {
-      console.log("period:sweep:manual:start");
-      await sweepCrewPeriods();
-      console.log("period:sweep:manual:done");
+      if (runRollupOnly) {
+        console.log("period:sweep:manual:start");
+        await sweepCrewPeriods();
+        console.log("period:sweep:manual:done");
+      }
+      if (runMetricsOnly) {
+        console.log("metrics:rollup:manual:start", metricsPeriod);
+        await runMetricsRollup(metricsPeriod);
+        console.log("metrics:rollup:manual:done", metricsPeriod);
+      }
       process.exit(0);
     } catch (err) {
-      console.error("period:sweep:manual:error", err);
+      console.error("maintenance:error", err);
       process.exit(1);
     }
   })();

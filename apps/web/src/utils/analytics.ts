@@ -1,4 +1,4 @@
-import { randomId } from "./ids";
+import { getOrCreateClientId, randomId } from "./ids";
 
 const SESSION_KEY = "analytics_session";
 
@@ -18,6 +18,7 @@ export function trackEvent(event: string, meta: Record<string, unknown> = {}) {
     event,
     at: Date.now(),
     sessionId: getSessionId(),
+    clientId: getOrCreateClientId(),
     meta,
   };
 
