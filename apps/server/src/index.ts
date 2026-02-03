@@ -620,7 +620,10 @@ app.get("/metrics/engagement", async (req, res) => {
   const periodSweep = periodSweepRaw ? JSON.parse(periodSweepRaw) : null;
 
   if (period === "weekly") {
-    const targetWeek = week ?? last?.week;
+    const now = new Date();
+    const yesterdayKey = formatDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+    const fallbackWeek = getWeekKey(parseDayKey(yesterdayKey));
+    const targetWeek = week ?? last?.week ?? fallbackWeek;
     if (!targetWeek) {
       res.json({ ok: true, period, last, periodSweep });
       return;
