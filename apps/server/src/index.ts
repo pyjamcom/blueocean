@@ -509,7 +509,7 @@ app.get("/leaderboard", async (req, res) => {
   };
 
   const buildEntries = (members: CrewMember[]) => {
-    const scored = members.map((member) => {
+    const scoredAll = members.map((member) => {
       const lastWeek = member.lastWeekPoints ?? 0;
       const weeklyPoints = member.weeklyPoints ?? 0;
       const weeklyDelta = Math.max(0, weeklyPoints - lastWeek);
@@ -518,6 +518,10 @@ app.get("/leaderboard", async (req, res) => {
       const funScore = period === "season" ? seasonPoints : weeklyDelta;
       return { member, funScore, weeklyDelta, progressPercent };
     });
+    const scored =
+      period === "weekly"
+        ? scoredAll.filter((entry) => entry.weeklyDelta > 0 || entry.progressPercent > 0)
+        : scoredAll.filter((entry) => entry.funScore > 0);
     const sorted =
       period === "weekly"
         ? scored.sort((a, b) => b.progressPercent - a.progressPercent || b.weeklyDelta - a.weeklyDelta)
@@ -532,9 +536,9 @@ app.get("/leaderboard", async (req, res) => {
       percentileBand: bandForIndex(index, total),
     }));
     const selfIndex = playerId
-      ? sorted.findIndex((entry) => entry.member.id === playerId)
+      ? scoredAll.findIndex((entry) => entry.member.id === playerId)
       : -1;
-    const selfEntry = selfIndex >= 0 ? sorted[selfIndex] : undefined;
+    const selfEntry = selfIndex >= 0 ? scoredAll[selfIndex] : undefined;
     const self = selfEntry
       ? {
           displayName: selfEntry.member.name,
@@ -542,7 +546,10 @@ app.get("/leaderboard", async (req, res) => {
           funScore: selfEntry.funScore,
           deltaPoints: period === "weekly" ? selfEntry.weeklyDelta : null,
           progressPercent: period === "weekly" ? selfEntry.progressPercent : null,
-          percentileBand: bandForIndex(selfIndex, total),
+          percentileBand:
+            total > 0 && selfEntry.funScore > 0
+              ? bandForIndex(selfIndex, total)
+              : "Rising",
         }
       : null;
     return { top, self };
