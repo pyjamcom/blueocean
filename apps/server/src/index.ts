@@ -501,6 +501,7 @@ app.get("/leaderboard", async (req, res) => {
 
   const bandForIndex = (index: number, total: number) => {
     if (!total) return "Rising";
+    if (total <= 1) return "Top 10%";
     const ratio = (index + 1) / total;
     if (ratio <= 0.1) return "Top 10%";
     if (ratio <= 0.25) return "Top 25%";
