@@ -2,13 +2,16 @@ const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 
-const allowedPattern = /^[A-Za-z0-9_:/.-]+$/;
+const allowedPattern = /^[A-Za-z0-9_:/.+-]+$/;
 
 function collectStrings(value, out) {
   if (value === null || value === undefined) {
     return;
   }
   if (typeof value === "string") {
+    if (value.length === 0) {
+      return;
+    }
     out.push(value);
     return;
   }

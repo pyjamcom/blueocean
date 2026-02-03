@@ -89,6 +89,11 @@ function run() {
   assert.strictEqual(result.valid, true, "trophy_rewards passes with trophy_stamp_id");
 
   result = validateQuestions([
+    baseQuestion({ answers: [makeAnswer("a1", "AB12"), makeAnswer("a2", "2"), makeAnswer("a3", "3"), makeAnswer("a4", "4")] }),
+  ], schema);
+  assert.strictEqual(result.valid, true, "asset_id with letters should pass");
+
+  result = validateQuestions([
     baseQuestion({ answers: [makeAnswer("a1", "12-A"), makeAnswer("a2", "2"), makeAnswer("a3", "3"), makeAnswer("a4", "4")] }),
   ], schema);
   assert.strictEqual(result.valid, false, "asset_id with symbols should fail");

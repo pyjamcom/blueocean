@@ -1167,34 +1167,42 @@ const buildDayRange = (endDayKey: string, days: number) => {
   return output;
 };
 
-async function unionCount(keys: string[], tempKey: string) {
+async function unionCount(keys: Array<string | undefined>, tempKey: string) {
   if (!redis || keys.length === 0) {
     return 0;
   }
-  if (keys.length === 1) {
-    const single = keys[0];
+  const filtered = keys.filter((key): key is string => typeof key === "string" && key.length > 0);
+  if (filtered.length === 0) {
+    return 0;
+  }
+  if (filtered.length === 1) {
+    const single = filtered[0];
     if (!single) {
       return 0;
     }
     return redis.scard(single);
   }
-  await redis.sunionstore(tempKey, ...keys);
+  await redis.sunionstore(tempKey, ...filtered);
   await redis.expire(tempKey, 3600);
   return redis.scard(tempKey);
 }
 
-async function intersectCount(keys: string[], tempKey: string) {
+async function intersectCount(keys: Array<string | undefined>, tempKey: string) {
   if (!redis || keys.length === 0) {
     return 0;
   }
-  if (keys.length === 1) {
-    const single = keys[0];
+  const filtered = keys.filter((key): key is string => typeof key === "string" && key.length > 0);
+  if (filtered.length === 0) {
+    return 0;
+  }
+  if (filtered.length === 1) {
+    const single = filtered[0];
     if (!single) {
       return 0;
     }
     return redis.scard(single);
   }
-  await redis.sinterstore(tempKey, ...keys);
+  await redis.sinterstore(tempKey, ...filtered);
   await redis.expire(tempKey, 3600);
   return redis.scard(tempKey);
 }
