@@ -8,12 +8,12 @@ import { avatarColor, getAvatarImageUrl } from "../../utils/avatar";
 import { getOrCreateClientId } from "../../utils/ids";
 
 type PanelMode = "lobby" | "result";
-type InfoPayload = {
+type InfoPayload = Readonly<{
   title: string;
   lines: ReadonlyArray<string>;
   ctaLabel?: string;
   onCta?: () => void;
-};
+}>;
 type CrewMember = {
   id: string;
   name: string;
