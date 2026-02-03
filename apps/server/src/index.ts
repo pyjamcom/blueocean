@@ -629,7 +629,18 @@ app.get("/metrics/engagement", async (req, res) => {
       return;
     }
     const summaryRaw = await redis.get(metricsKeys.weeklySummary(targetWeek));
-    const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
+    let summary = summaryRaw ? JSON.parse(summaryRaw) : null;
+    if (!summary && !week && targetWeek === fallbackWeek) {
+      const prevWeekKey = getWeekKey(parseDayKey(addDays(yesterdayKey, -7)));
+      if (prevWeekKey && prevWeekKey !== targetWeek) {
+        const prevSummaryRaw = await redis.get(metricsKeys.weeklySummary(prevWeekKey));
+        if (prevSummaryRaw) {
+          summary = JSON.parse(prevSummaryRaw);
+          res.json({ ok: true, period, week: prevWeekKey, summary, last, periodSweep });
+          return;
+        }
+      }
+    }
     res.json({ ok: true, period, week: targetWeek, summary, last, periodSweep });
     return;
   }
