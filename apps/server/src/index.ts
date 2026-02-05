@@ -697,6 +697,11 @@ const SEASON_ANCHOR_DAY = "2026-02-01";
 const SEASON_LENGTH_DAYS = 14;
 const WEEK_START_DAY = 1;
 const PERIOD_SWEEP_INTERVAL_MS = 1000 * 60 * 30;
+const SCHEDULE_WATCHDOG_INTERVAL_MS = 1000 * 60 * 15;
+const DAILY_ALERT_HOUR_UTC = 5;
+const WEEKLY_ALERT_HOUR_UTC = 6;
+const ALERT_TTL_DAY_SEC = 60 * 60 * 24;
+const ALERT_TTL_WEEK_SEC = 60 * 60 * 24 * 7;
 const DAY_KEY_RE = /^\d{4}-\d{2}-\d{2}$/;
 let publicRoomPointerMemory: string | null = null;
 type RoomTimers = {
@@ -1035,6 +1040,73 @@ function schedulePeriodSweep() {
   setInterval(() => {
     void sweepCrewPeriods();
   }, PERIOD_SWEEP_INTERVAL_MS);
+}
+
+async function sendMissedAlertOnce(key: string, message: string, ttlSec = ALERT_TTL_DAY_SEC) {
+  if (!redis) {
+    return;
+  }
+  const result = await redis.set(key, "1", "EX", ttlSec, "NX");
+  if (result === "OK") {
+    await sendTelegramMessage(message);
+  }
+}
+
+async function checkScheduledJobs() {
+  if (!redis) {
+    return;
+  }
+  try {
+    const now = new Date();
+    const nowHour = now.getUTCHours();
+    const today = formatDayKey(now);
+    const yesterday = formatDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+
+    if (nowHour >= DAILY_ALERT_HOUR_UTC) {
+      const periodSweepRaw = await redis.get(metricsKeys.periodSweepStatus);
+      const periodSweep = periodSweepRaw ? JSON.parse(periodSweepRaw) : null;
+      const sweepDay = typeof periodSweep?.day === "string" ? periodSweep.day : null;
+      if (sweepDay !== today) {
+        await sendMissedAlertOnce(
+          `metrics:alert:missed:period_sweep:${today}`,
+          `❌ Nightly rollup missing\nexpected: ${today}\nlast: ${sweepDay ?? "none"}`,
+        );
+      }
+    }
+
+    if (nowHour >= DAILY_ALERT_HOUR_UTC) {
+      const dailySummaryRaw = await redis.get(metricsKeys.dailySummary(yesterday));
+      if (!dailySummaryRaw) {
+        await sendMissedAlertOnce(
+          `metrics:alert:missed:daily:${yesterday}`,
+          `❌ Daily metrics rollup missing\nexpected day: ${yesterday}`,
+        );
+      }
+    }
+
+    const utcDay = now.getUTCDay();
+    const shouldCheckWeekly = utcDay > 1 || (utcDay === 1 && nowHour >= WEEKLY_ALERT_HOUR_UTC);
+    if (shouldCheckWeekly) {
+      const weekKey = getWeekKey(parseDayKey(yesterday));
+      const weeklySummaryRaw = await redis.get(metricsKeys.weeklySummary(weekKey));
+      if (!weeklySummaryRaw) {
+        await sendMissedAlertOnce(
+          `metrics:alert:missed:weekly:${weekKey}`,
+          `❌ Weekly metrics rollup missing\nexpected week: ${weekKey}`,
+          ALERT_TTL_WEEK_SEC,
+        );
+      }
+    }
+  } catch (err) {
+    console.error("metrics:watchdog:error", err);
+  }
+}
+
+function scheduleScheduledJobWatchdog() {
+  void checkScheduledJobs();
+  setInterval(() => {
+    void checkScheduledJobs();
+  }, SCHEDULE_WATCHDOG_INTERVAL_MS);
 }
 
 async function readCrew(code: string): Promise<Crew | null> {
@@ -3498,6 +3570,7 @@ if (runRollupOnly || runMetricsOnly) {
   });
 
   schedulePeriodSweep();
+  scheduleScheduledJobWatchdog();
 
   setInterval(() => {
     const now = Date.now();
