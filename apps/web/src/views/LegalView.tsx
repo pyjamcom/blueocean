@@ -26,7 +26,7 @@ const docs: Record<DocKey, LegalDoc> = {
       {
         heading: "Information we collect",
         body: [
-          "Account info: display name, email address, and auth provider identifiers (Google, Apple, X, Facebook) when you choose to sign in.",
+          "Account info: display name, email address, and auth provider identifiers (Google, Apple, X, Twitch, Facebook) when you choose to sign in.",
           "Gameplay info: room code, answers, scores, and timestamps generated during a game.",
           "Device and log data: IP address, browser type, device identifiers, and diagnostic logs.",
           "Analytics: basic usage events collected through Google Analytics and Firebase Analytics.",
@@ -173,7 +173,7 @@ const docs: Record<DocKey, LegalDoc> = {
         heading: "How to request deletion",
         body: [
           "Email support@escapers.app with subject \"Data Deletion Request\".",
-          "Include the email address and provider you used to sign in (Google, Apple, X, Facebook).",
+          "Include the email address and provider you used to sign in (Google, Apple, X, Twitch, Facebook).",
           "If you used a nickname only, include the nickname and approximate date/time of play.",
         ],
       },

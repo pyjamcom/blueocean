@@ -18,6 +18,7 @@ import {
   isFirebaseEnabled,
   onFirebaseUser,
   handleAppleRedirectResult,
+  signInWithFacebook,
   signInWithApple,
   signInWithGoogle,
   signInWithTwitter,
@@ -50,6 +51,14 @@ export default function JoinView() {
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
+  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiOrigin = useMemo(() => {
+    try {
+      return new URL(apiBase).origin;
+    } catch (error) {
+      return typeof window === "undefined" ? "http://localhost:3001" : window.location.origin;
+    }
+  }, [apiBase]);
   const { roomCode, joinRoom, setAvatar, setName, isHost, players } = useRoom();
   const variant = resolveVariant(age);
   const firebaseEnabled = isFirebaseEnabled();
@@ -71,6 +80,8 @@ export default function JoinView() {
   const showQr = !codeParam;
   const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
   const [authUser, setAuthUser] = useState<string | null>(null);
+  const [authEmail, setAuthEmail] = useState<string | null>(null);
+  const [authProvider, setAuthProvider] = useState<"firebase" | "twitch" | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
@@ -125,13 +136,19 @@ export default function JoinView() {
     if (!firebaseEnabled) return;
     return onFirebaseUser((user) => {
       if (!user) {
-        setAuthUser(null);
+        if (!authProvider || authProvider === "firebase") {
+          setAuthUser(null);
+          setAuthEmail(null);
+          setAuthProvider(null);
+        }
         return;
       }
       const displayName =
         user.displayName ?? (user.email ? user.email.split("@")[0] : "");
       if (displayName) {
+        setAuthProvider("firebase");
         setAuthUser(displayName);
+        setAuthEmail(user.email ?? null);
         if (!playerName) {
           setPlayerName(displayName);
           setStoredPlayerName(displayName);
@@ -141,7 +158,7 @@ export default function JoinView() {
         }
       }
     });
-  }, [firebaseEnabled, playerName, roomCode, setName]);
+  }, [authProvider, firebaseEnabled, playerName, roomCode, setName]);
 
   useEffect(() => {
     if (!firebaseEnabled) return;
@@ -149,6 +166,37 @@ export default function JoinView() {
       setAuthError("Apple sign-in failed");
     });
   }, [firebaseEnabled]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== apiOrigin) return;
+      const data = event.data as { type?: string; payload?: Record<string, unknown> };
+      if (!data || data.type !== "twitch_auth") return;
+      const payload = data.payload ?? {};
+      if (payload.ok !== true) {
+        setAuthError("Twitch sign-in failed");
+        return;
+      }
+      const displayName = typeof payload.displayName === "string" ? payload.displayName : "";
+      const email = typeof payload.email === "string" ? payload.email : null;
+      const resolvedName = displayName || (email ? email.split("@")[0] : "");
+      setAuthProvider("twitch");
+      setAuthUser(resolvedName || null);
+      setAuthEmail(email);
+      if (resolvedName && !playerName) {
+        setPlayerName(resolvedName);
+        setStoredPlayerName(resolvedName);
+        if (roomCode) {
+          setName(resolvedName);
+        }
+      }
+      trackEvent("auth_twitch_success");
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [apiOrigin, playerName, roomCode, setName]);
 
   useEffect(() => {
     setQrSrc("");
@@ -255,6 +303,15 @@ export default function JoinView() {
     }
   };
 
+  const handleFacebookAuth = async () => {
+    setAuthError(null);
+    try {
+      await signInWithFacebook();
+    } catch (error) {
+      setAuthError("Facebook sign-in failed");
+    }
+  };
+
   const handleAppleAuth = async () => {
     setAuthError(null);
     try {
@@ -270,6 +327,23 @@ export default function JoinView() {
       await signInWithTwitter();
     } catch (error) {
       setAuthError("X sign-in failed");
+    }
+  };
+
+  const handleTwitchAuth = () => {
+    setAuthError(null);
+    const loginUrl = new URL(`${apiBase}/auth/twitch/login`);
+    if (typeof window !== "undefined") {
+      loginUrl.searchParams.set("origin", window.location.origin);
+    }
+    trackEvent("auth_twitch_start");
+    const popup = window.open(
+      loginUrl.toString(),
+      "twitch-auth",
+      "width=480,height=720,menubar=no,location=no,resizable=yes,scrollbars=yes,status=no",
+    );
+    if (!popup) {
+      window.location.href = loginUrl.toString();
     }
   };
 
@@ -339,6 +413,19 @@ export default function JoinView() {
           </button>
           <button
             type="button"
+            className={`${styles.authButton} ${styles.authFacebook}`}
+            onClick={handleFacebookAuth}
+            disabled={!firebaseEnabled}
+          >
+            <span className={`${styles.authIcon} ${styles.iconFacebook}`} aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M9.197 21.5v-7.707H6.5V10.5h2.697V8.074c0-2.672 1.59-4.174 4.03-4.174 1.154 0 2.36.206 2.36.206v2.604H14.26c-1.203 0-1.577.764-1.577 1.548V10.5h2.684l-.43 3.293h-2.254V21.5H9.197Z" />
+              </svg>
+            </span>
+            Login with Facebook
+          </button>
+          <button
+            type="button"
             className={`${styles.authButton} ${styles.authApple}`}
             onClick={handleAppleAuth}
             disabled={!firebaseEnabled}
@@ -359,9 +446,26 @@ export default function JoinView() {
             </span>
             Login with X
           </button>
+          <button
+            type="button"
+            className={`${styles.authButton} ${styles.authTwitch}`}
+            onClick={handleTwitchAuth}
+          >
+            <span className={`${styles.authIcon} ${styles.iconTwitch}`} aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
+              </svg>
+            </span>
+            Login with Twitch
+          </button>
         </div>
       ) : null}
-      {authUser ? <div className={styles.authStatus}>Signed in as {authUser}</div> : null}
+      {authUser ? (
+        <div className={styles.authStatus}>
+          <div>Signed in as {authUser}</div>
+          {authEmail ? <div className={styles.authEmail}>{authEmail}</div> : null}
+        </div>
+      ) : null}
       {authError ? <div className={styles.authError}>{authError}</div> : null}
       <div className={styles.iconRow}>
         <div className={styles.iconItem}>

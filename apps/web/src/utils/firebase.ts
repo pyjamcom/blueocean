@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth,
+  FacebookAuthProvider,
   GoogleAuthProvider,
   OAuthProvider,
   TwitterAuthProvider,
@@ -52,6 +53,17 @@ export async function signInWithGoogle() {
   if (!auth) return null;
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
+  return signInWithPopup(auth, provider);
+}
+
+export async function signInWithFacebook() {
+  const auth = getFirebaseAuth();
+  if (!auth) return null;
+  const provider = new FacebookAuthProvider();
+  provider.addScope("email");
+  if (isIOSDevice()) {
+    return signInWithRedirect(auth, provider);
+  }
   return signInWithPopup(auth, provider);
 }
 

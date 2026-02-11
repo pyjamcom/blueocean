@@ -25,6 +25,10 @@ const METRICS_ALERT_TOKEN = process.env.METRICS_ALERT_TOKEN;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const TELEGRAM_THREAD_ID = process.env.TELEGRAM_THREAD_ID;
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
+const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
+const TWITCH_REDIRECT_URI = process.env.TWITCH_REDIRECT_URI;
+const TWITCH_SCOPES = process.env.TWITCH_SCOPES ?? "user:read:email";
 const ROUND_DEFAULT_MS = 10000;
 const PREPARED_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 5000;
@@ -64,6 +68,12 @@ const corsOrigins = (process.env.CORS_ORIGINS ?? "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 const allowedCorsOrigins = corsOrigins.length > 0 ? corsOrigins : defaultCorsOrigins;
+const authOrigins = new Set([
+  ...allowedCorsOrigins,
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:4173",
+]);
 
 const DEFAULT_FEATURE_FLAGS = {
   teamStreaks: true,
@@ -76,6 +86,10 @@ const DEFAULT_FEATURE_FLAGS = {
   groups: true,
   notifications: true,
 } as const;
+
+const TWITCH_STATE_TTL_MS = 1000 * 60 * 10;
+const TWITCH_STATE_PREFIX = "escapers:twitch:state:";
+const twitchStateCache = new Map<string, { origin: string; createdAt: number }>();
 
 const FEATURE_FLAGS_JSON = process.env.FEATURE_FLAGS_JSON;
 const FEATURE_FLAGS_PATH = process.env.FEATURE_FLAGS_PATH;
@@ -130,6 +144,91 @@ function resolveMetricsAlerts() {
   };
 }
 
+function resolveAuthOrigin(value?: string) {
+  if (!value) {
+    return allowedCorsOrigins[0] ?? "https://escapers.app";
+  }
+  try {
+    const origin = new URL(value).origin;
+    if (authOrigins.has(origin)) {
+      return origin;
+    }
+  } catch (err) {
+    if (authOrigins.has(value)) {
+      return value;
+    }
+  }
+  return allowedCorsOrigins[0] ?? "https://escapers.app";
+}
+
+async function storeTwitchState(state: string, origin: string) {
+  const payload = JSON.stringify({ origin, createdAt: Date.now() });
+  if (redis) {
+    await redis.set(`${TWITCH_STATE_PREFIX}${state}`, payload, "PX", TWITCH_STATE_TTL_MS);
+    return;
+  }
+  twitchStateCache.set(state, { origin, createdAt: Date.now() });
+  const timeout = setTimeout(() => {
+    twitchStateCache.delete(state);
+  }, TWITCH_STATE_TTL_MS);
+  timeout.unref?.();
+}
+
+async function consumeTwitchState(state: string) {
+  if (redis) {
+    const key = `${TWITCH_STATE_PREFIX}${state}`;
+    const raw = await redis.get(key);
+    if (!raw) {
+      return null;
+    }
+    await redis.del(key);
+    return JSON.parse(raw) as { origin: string; createdAt: number };
+  }
+  const cached = twitchStateCache.get(state);
+  if (!cached) {
+    return null;
+  }
+  twitchStateCache.delete(state);
+  if (Date.now() - cached.createdAt > TWITCH_STATE_TTL_MS) {
+    return null;
+  }
+  return cached;
+}
+
+function renderTwitchAuthHtml(origin: string, payload: Record<string, unknown>) {
+  const serialized = JSON.stringify(payload).replace(/</g, "\\u003c");
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Twitch Login</title>
+    <style>
+      body { font-family: system-ui, sans-serif; background:#0b0b12; color:#fff; margin:0; padding:24px; }
+      .card { max-width:420px; margin:12vh auto 0; background:#151528; padding:24px; border-radius:16px; box-shadow:0 18px 50px rgba(0,0,0,0.4); }
+      h1 { font-size:18px; margin:0 0 8px; }
+      p { font-size:14px; line-height:1.4; margin:0; color:#c7c7dd; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Signed in</h1>
+      <p>You can close this window and return to Escapers.</p>
+    </div>
+    <script>
+      (function() {
+        const payload = ${serialized};
+        const origin = ${JSON.stringify(origin)};
+        if (window.opener && origin) {
+          window.opener.postMessage({ type: "twitch_auth", payload }, origin);
+        }
+        window.close();
+      })();
+    </script>
+  </body>
+</html>`;
+}
+
 function isTestAuthorized(req: express.Request) {
   if (!TEST_API_ENABLED) {
     return false;
@@ -171,6 +270,171 @@ app.use((req, res, next) => {
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
+});
+
+app.get("/auth/twitch/login", async (req, res) => {
+  if (!TWITCH_CLIENT_ID || !TWITCH_REDIRECT_URI) {
+    res.status(503).send(
+      renderTwitchAuthHtml(resolveAuthOrigin(), {
+        ok: false,
+        provider: "twitch",
+        error: "twitch_not_configured",
+      }),
+    );
+    return;
+  }
+  const originParam = typeof req.query.origin === "string" ? req.query.origin : undefined;
+  const origin = resolveAuthOrigin(originParam);
+  const state = crypto.randomBytes(16).toString("hex");
+  await storeTwitchState(state, origin);
+  const authUrl = new URL("https://id.twitch.tv/oauth2/authorize");
+  authUrl.searchParams.set("client_id", TWITCH_CLIENT_ID);
+  authUrl.searchParams.set("redirect_uri", TWITCH_REDIRECT_URI);
+  authUrl.searchParams.set("response_type", "code");
+  authUrl.searchParams.set("scope", TWITCH_SCOPES);
+  authUrl.searchParams.set("state", state);
+  res.redirect(authUrl.toString());
+});
+
+app.get("/auth/twitch/callback", async (req, res) => {
+  const error = typeof req.query.error === "string" ? req.query.error : undefined;
+  const errorDescription =
+    typeof req.query.error_description === "string" ? req.query.error_description : undefined;
+  const state = typeof req.query.state === "string" ? req.query.state : undefined;
+  const code = typeof req.query.code === "string" ? req.query.code : undefined;
+  const storedState = state ? await consumeTwitchState(state) : null;
+  const origin = resolveAuthOrigin(storedState?.origin);
+
+  if (error) {
+    res
+      .status(200)
+      .setHeader("Cache-Control", "no-store")
+      .send(
+        renderTwitchAuthHtml(origin, {
+          ok: false,
+          provider: "twitch",
+          error,
+          errorDescription,
+        }),
+      );
+    return;
+  }
+
+  if (!code || !state || !storedState) {
+    res
+      .status(400)
+      .setHeader("Cache-Control", "no-store")
+      .send(
+        renderTwitchAuthHtml(origin, {
+          ok: false,
+          provider: "twitch",
+          error: "invalid_state",
+        }),
+      );
+    return;
+  }
+
+  if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET || !TWITCH_REDIRECT_URI) {
+    res
+      .status(503)
+      .setHeader("Cache-Control", "no-store")
+      .send(
+        renderTwitchAuthHtml(origin, {
+          ok: false,
+          provider: "twitch",
+          error: "twitch_not_configured",
+        }),
+      );
+    return;
+  }
+
+  try {
+    const tokenParams = new URLSearchParams({
+      client_id: TWITCH_CLIENT_ID,
+      client_secret: TWITCH_CLIENT_SECRET,
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: TWITCH_REDIRECT_URI,
+    });
+    const tokenRes = await fetch(`https://id.twitch.tv/oauth2/token?${tokenParams.toString()}`, {
+      method: "POST",
+    });
+    const tokenPayload = (await tokenRes.json()) as {
+      access_token?: string;
+      error?: string;
+      message?: string;
+    };
+    if (!tokenRes.ok || !tokenPayload.access_token) {
+      res
+        .status(200)
+        .setHeader("Cache-Control", "no-store")
+        .send(
+          renderTwitchAuthHtml(origin, {
+            ok: false,
+            provider: "twitch",
+            error: tokenPayload.error ?? "token_exchange_failed",
+            errorDescription: tokenPayload.message,
+          }),
+        );
+      return;
+    }
+
+    const userRes = await fetch("https://api.twitch.tv/helix/users", {
+      headers: {
+        Authorization: `Bearer ${tokenPayload.access_token}`,
+        "Client-Id": TWITCH_CLIENT_ID,
+      },
+    });
+    const userPayload = (await userRes.json()) as {
+      data?: Array<{
+        id?: string;
+        login?: string;
+        display_name?: string;
+        email?: string;
+      }>;
+      error?: string;
+      message?: string;
+    };
+    const user = userPayload.data?.[0];
+    if (!user) {
+      res
+        .status(200)
+        .setHeader("Cache-Control", "no-store")
+        .send(
+          renderTwitchAuthHtml(origin, {
+            ok: false,
+            provider: "twitch",
+            error: userPayload.error ?? "user_fetch_failed",
+            errorDescription: userPayload.message,
+          }),
+        );
+      return;
+    }
+
+    res
+      .status(200)
+      .setHeader("Cache-Control", "no-store")
+      .send(
+        renderTwitchAuthHtml(origin, {
+          ok: true,
+          provider: "twitch",
+          displayName: user.display_name ?? user.login ?? "",
+          email: user.email ?? null,
+          twitchId: user.id ?? null,
+        }),
+      );
+  } catch (err) {
+    res
+      .status(200)
+      .setHeader("Cache-Control", "no-store")
+      .send(
+        renderTwitchAuthHtml(origin, {
+          ok: false,
+          provider: "twitch",
+          error: "unexpected_error",
+        }),
+      );
+  }
 });
 
 app.get("/feature-flags", (_req, res) => {
