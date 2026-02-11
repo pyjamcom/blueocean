@@ -25,6 +25,7 @@ const pages = [
     ogImages: [
       { url: "https://escapers.app/og/join.png", width: 1200, height: 630 },
       { url: "https://escapers.app/og/join-square.png", width: 1200, height: 1200 },
+      { url: "https://escapers.app/og/join-2x1.png", width: 1600, height: 800 },
     ],
     twitterImage: "https://escapers.app/og/join.png",
   },
@@ -41,6 +42,7 @@ const pages = [
     ogImages: [
       { url: "https://escapers.app/og/leaderboard.png", width: 1200, height: 630 },
       { url: "https://escapers.app/og/leaderboard-square.png", width: 1200, height: 1200 },
+      { url: "https://escapers.app/og/leaderboard-2x1.png", width: 1600, height: 800 },
     ],
     twitterImage: "https://escapers.app/og/leaderboard.png",
   },
