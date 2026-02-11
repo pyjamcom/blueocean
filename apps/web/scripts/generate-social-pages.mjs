@@ -22,7 +22,11 @@ const pages = [
     ogTitle: "Escapers - Party Games & Meme Quiz with Friends",
     ogDescription: joinDescription,
     ogUrl: "https://escapers.app/join",
-    ogImage: "https://escapers.app/og/join.png",
+    ogImages: [
+      { url: "https://escapers.app/og/join.png", width: 1200, height: 630 },
+      { url: "https://escapers.app/og/join-square.png", width: 1200, height: 1200 },
+    ],
+    twitterImage: "https://escapers.app/og/join.png",
   },
   {
     slug: "leaderboard",
@@ -34,11 +38,26 @@ const pages = [
     ogTitle: "Escapers Leaderboard - Party Quiz & Friends Quiz",
     ogDescription: joinDescription,
     ogUrl: "https://escapers.app/leaderboard",
-    ogImage: "https://escapers.app/og/leaderboard.png",
+    ogImages: [
+      { url: "https://escapers.app/og/leaderboard.png", width: 1200, height: 630 },
+      { url: "https://escapers.app/og/leaderboard-square.png", width: 1200, height: 1200 },
+    ],
+    twitterImage: "https://escapers.app/og/leaderboard.png",
   },
 ];
 
-const renderMeta = (page) => `
+const renderMeta = (page) => {
+  const ogImages = (page.ogImages ?? []).map(
+    (image) => `
+    <meta property="og:image" content="${image.url}" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="${image.width}" />
+    <meta property="og:image:height" content="${image.height}" />
+    <meta property="og:image:alt" content="${page.ogTitle}" />
+`,
+  );
+
+  return `
     <meta name="description" content="${page.description}" />
     <meta name="keywords" content="${page.keywords}" />
     <meta name="robots" content="index, follow" />
@@ -47,16 +66,14 @@ const renderMeta = (page) => `
     <meta property="og:description" content="${page.ogDescription}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${page.ogUrl}" />
-    <meta property="og:image" content="${page.ogImage}" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="${page.ogTitle}" />
+${ogImages.join("")}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${page.ogTitle}" />
     <meta name="twitter:description" content="${page.ogDescription}" />
-    <meta name="twitter:image" content="${page.ogImage}" />
+    <meta name="twitter:image" content="${page.twitterImage ?? page.ogImages?.[0]?.url ?? ""}" />
+    <meta name="twitter:image:alt" content="${page.ogTitle}" />
 `;
+};
 
 const setTitle = (html, title) =>
   html.replace(new RegExp("<title>[^<]*</title>", "i"), `<title>${title}</title>`);
