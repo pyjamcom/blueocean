@@ -10,6 +10,7 @@ import JoinView from "./views/JoinView";
 import LobbyView from "./views/LobbyView";
 import JoinWaitView from "./views/JoinWaitView";
 import ResultView from "./views/ResultView";
+import DebugPodiumView from "./views/DebugPodiumView";
 import ManagerView from "./views/ManagerView";
 import DebugLeaderboardView from "./views/DebugLeaderboardView";
 import LeaderboardView from "./views/LeaderboardView";
@@ -312,6 +313,7 @@ export default function App() {
               <Route path="/legal/data-deletion" element={<LegalView doc="data-deletion" />} />
               <Route path="/manager" element={<ManagerView />} />
               <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
+              <Route path="/debug/podium" element={<DebugPodiumView />} />
               <Route path="/leaderboard" element={<LeaderboardView />} />
               <Route path="/wait" element={<JoinWaitView />} />
               <Route path="*" element={<Navigate to="/join" replace />} />
