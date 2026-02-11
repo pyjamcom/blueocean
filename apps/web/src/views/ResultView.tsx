@@ -10,7 +10,7 @@ import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { randomId } from "../utils/ids";
 import { getStoredPlayerName } from "../utils/playerName";
-import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
+import { LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import frames from "../engagement/frames.module.css";
 import styles from "./ResultView.module.css";
 
@@ -86,7 +86,11 @@ export default function ResultView() {
 
   const shareUrl = "https://escapers.app/leaderboard";
   const shareTitle = LEADERBOARD_SHARE_TITLE;
-  const shareText = JOIN_META_DESCRIPTION;
+  const shareText = "I just hit the podium in Escapers 🏆 Meme quiz chaos awaits.";
+  const shareTextX = "I just hit the podium in Escapers 🏆 Meme quiz chaos →";
+  const shareTextReddit = "I just hit the podium in Escapers 🏆 Meme quiz chaos — come play:";
+  const shareTextInstagram = "I just hit the podium in Escapers 🏆 Meme quiz chaos. Join us:";
+  const shareTextTwitch = "Podium secured in Escapers 🏆 Meme quiz chaos. Hop in:";
 
   const setHint = (message: string) => {
     setShareHint(message);
@@ -106,13 +110,14 @@ export default function ResultView() {
     };
   }, []);
 
-  const copyShareLink = async (label: string) => {
+  const copyShareLink = async (label: string, content?: string) => {
     try {
+      const payload = content ?? shareUrl;
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(payload);
       } else {
         const temp = document.createElement("textarea");
-        temp.value = shareUrl;
+        temp.value = payload;
         document.body.appendChild(temp);
         temp.select();
         document.execCommand("copy");
@@ -146,9 +151,9 @@ export default function ResultView() {
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
   const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
     shareUrl,
-  )}&title=${encodeURIComponent(shareTitle)}`;
+  )}&title=${encodeURIComponent(shareTextReddit)}`;
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    shareText,
+    shareTextX,
   )}&url=${encodeURIComponent(shareUrl)}`;
 
   const handleNext = () => {
@@ -191,7 +196,7 @@ export default function ResultView() {
             <button
               type="button"
               className={`${styles.shareButton} ${styles.shareInstagram}`}
-              onClick={() => copyShareLink("Instagram")}
+              onClick={() => copyShareLink("Instagram", `${shareTextInstagram} ${shareUrl}`)}
             >
               <span className={styles.shareIcon}>IG</span>
               Instagram
@@ -199,7 +204,7 @@ export default function ResultView() {
             <button
               type="button"
               className={`${styles.shareButton} ${styles.shareTwitch}`}
-              onClick={() => copyShareLink("Twitch")}
+              onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
             >
               <span className={styles.shareIcon}>TW</span>
               Twitch
