@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useEngagement } from "../context/EngagementContext";
 import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
+import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
 import styles from "./LeaderboardView.module.css";
 
@@ -196,8 +197,8 @@ export default function LeaderboardView() {
 
   const shareUrl =
     typeof window !== "undefined" ? window.location.href : "https://escapers.app/leaderboard";
-  const shareTitle = "Escapers Leaderboard";
-  const shareText = "Party quiz vibes — check the Escapers leaderboard.";
+  const shareTitle = LEADERBOARD_SHARE_TITLE;
+  const shareText = JOIN_META_DESCRIPTION;
 
   const setHint = (message: string) => {
     setShareHint(message);

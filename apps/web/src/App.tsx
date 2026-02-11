@@ -14,6 +14,7 @@ import ManagerView from "./views/ManagerView";
 import DebugLeaderboardView from "./views/DebugLeaderboardView";
 import LeaderboardView from "./views/LeaderboardView";
 import LegalView from "./views/LegalView";
+import { JOIN_META_DESCRIPTION, JOIN_SHARE_IMAGE, LEADERBOARD_SHARE_IMAGE } from "./utils/seo";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
   join: { "--accent": "#ff6b6b" } as React.CSSProperties,
@@ -57,32 +58,39 @@ type SeoConfig = {
   ogTitle?: string;
   ogDescription?: string;
   ogUrl?: string;
+  ogImage?: string;
+  twitterCard?: string;
+  twitterImage?: string;
   robots: string;
 };
 
 const SEO_JOIN: SeoConfig = {
   title: "Escapers - Party Games & Meme Quiz with Friends",
-  description:
-    "Jump into party games, a meme game, and funny quiz rounds. Create or join a room and play online with friends in fast icebreaker games.",
+  description: JOIN_META_DESCRIPTION,
   keywords:
     "party games, meme game, funny quiz, party quiz, friends quiz, icebreaker games, online quiz, group game, fun party games",
   canonical: "https://escapers.app/join",
   ogTitle: "Escapers - Party Games & Meme Quiz with Friends",
-  ogDescription: "Fast party games, meme game chaos, and funny quiz rounds with friends.",
+  ogDescription: JOIN_META_DESCRIPTION,
   ogUrl: "https://escapers.app/join",
+  ogImage: JOIN_SHARE_IMAGE,
+  twitterCard: "summary_large_image",
+  twitterImage: JOIN_SHARE_IMAGE,
   robots: "index, follow",
 };
 
 const SEO_LEADERBOARD: SeoConfig = {
   title: "Escapers Leaderboard - Party Quiz & Friends Quiz",
-  description:
-    "See rankings from party games, meme game rounds, and friends quiz battles. Track fun party games progress.",
+  description: JOIN_META_DESCRIPTION,
   keywords:
     "party games, party quiz, friends quiz, meme game, group game, fun party games, hilarious party games",
   canonical: "https://escapers.app/leaderboard",
   ogTitle: "Escapers Leaderboard - Party Quiz & Friends Quiz",
-  ogDescription: "Party games rankings and friends quiz scores in Escapers.",
+  ogDescription: JOIN_META_DESCRIPTION,
   ogUrl: "https://escapers.app/leaderboard",
+  ogImage: LEADERBOARD_SHARE_IMAGE,
+  twitterCard: "summary_large_image",
+  twitterImage: LEADERBOARD_SHARE_IMAGE,
   robots: "index, follow",
 };
 
@@ -147,6 +155,15 @@ function SeoManager() {
     setMetaTag("property", "og:description", config.ogDescription ?? config.description);
     setMetaTag("property", "og:type", "website");
     setMetaTag("property", "og:url", config.ogUrl ?? window.location.href);
+    setMetaTag("property", "og:image", config.ogImage);
+    setMetaTag("property", "og:image:width", config.ogImage ? "1200" : undefined);
+    setMetaTag("property", "og:image:height", config.ogImage ? "630" : undefined);
+    setMetaTag("property", "og:image:alt", config.ogTitle ?? config.title);
+
+    setMetaTag("name", "twitter:card", config.twitterCard);
+    setMetaTag("name", "twitter:title", config.ogTitle ?? config.title);
+    setMetaTag("name", "twitter:description", config.ogDescription ?? config.description);
+    setMetaTag("name", "twitter:image", config.twitterImage ?? config.ogImage);
 
     if (isJoin) {
       setCanonicalLink(SEO_JOIN.canonical);
