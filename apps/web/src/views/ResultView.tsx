@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NextRoundButton from "../components/NextRoundButton";
 import RahootLeaderboard from "../components/RahootLeaderboard";
@@ -10,6 +10,7 @@ import { trackEvent } from "../utils/analytics";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { randomId } from "../utils/ids";
 import { getStoredPlayerName } from "../utils/playerName";
+import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import frames from "../engagement/frames.module.css";
 import styles from "./ResultView.module.css";
 
@@ -19,6 +20,8 @@ export default function ResultView() {
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const isLeaderboard = phase === "leaderboard" || phase === "end";
+  const [shareHint, setShareHint] = useState<string | null>(null);
+  const shareTimeoutRef = useRef<number | null>(null);
   const equippedFrame = engagement.cosmetics.equipped.frame
     ? frames[engagement.cosmetics.equipped.frame] ?? ""
     : "";
@@ -81,6 +84,73 @@ export default function ResultView() {
     previousEntriesRef.current = rahootEntries;
   }, [rahootEntries]);
 
+  const shareUrl = "https://escapers.app/leaderboard";
+  const shareTitle = LEADERBOARD_SHARE_TITLE;
+  const shareText = JOIN_META_DESCRIPTION;
+
+  const setHint = (message: string) => {
+    setShareHint(message);
+    if (shareTimeoutRef.current) {
+      window.clearTimeout(shareTimeoutRef.current);
+    }
+    shareTimeoutRef.current = window.setTimeout(() => {
+      setShareHint(null);
+    }, 2800);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (shareTimeoutRef.current) {
+        window.clearTimeout(shareTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const copyShareLink = async (label: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const temp = document.createElement("textarea");
+        temp.value = shareUrl;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+      }
+      setHint(`${label} link copied — paste it anywhere.`);
+    } catch (error) {
+      setHint("Copy failed — try again.");
+    }
+  };
+
+  const openShare = (url: string, channel: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+    trackEvent("podium_share", { channel });
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+        trackEvent("podium_share", { channel: "native" });
+        return;
+      } catch {
+        // fall back to copy if user cancels or share fails
+      }
+    }
+    await copyShareLink("Share");
+    trackEvent("podium_share", { channel: "copy" });
+  };
+
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+  const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
+    shareUrl,
+  )}&title=${encodeURIComponent(shareTitle)}`;
+  const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    shareText,
+  )}&url=${encodeURIComponent(shareUrl)}`;
+
   const handleNext = () => {
     const avatarId = getStoredAvatarId() ?? randomAvatarId();
     const playerName = getStoredPlayerName();
@@ -103,6 +173,57 @@ export default function ResultView() {
           <RahootPodium title="Final" top={rahootEntries.slice(0, 3)} />
         )
       ) : null}
+      {isFinal && (
+        <section className={styles.shareStrip}>
+          <button type="button" className={styles.sharePrimary} onClick={handleNativeShare}>
+            <span className={styles.shareIcon}>📲</span>
+            Share
+          </button>
+          <div className={styles.shareRow}>
+            <button
+              type="button"
+              className={`${styles.shareButton} ${styles.shareFacebook}`}
+              onClick={() => openShare(facebookUrl, "facebook")}
+            >
+              <span className={styles.shareIcon}>f</span>
+              Facebook
+            </button>
+            <button
+              type="button"
+              className={`${styles.shareButton} ${styles.shareInstagram}`}
+              onClick={() => copyShareLink("Instagram")}
+            >
+              <span className={styles.shareIcon}>IG</span>
+              Instagram
+            </button>
+            <button
+              type="button"
+              className={`${styles.shareButton} ${styles.shareTwitch}`}
+              onClick={() => copyShareLink("Twitch")}
+            >
+              <span className={styles.shareIcon}>TW</span>
+              Twitch
+            </button>
+            <button
+              type="button"
+              className={`${styles.shareButton} ${styles.shareReddit}`}
+              onClick={() => openShare(redditUrl, "reddit")}
+            >
+              <span className={styles.shareIcon}>👽</span>
+              Reddit
+            </button>
+            <button
+              type="button"
+              className={`${styles.shareButton} ${styles.shareX}`}
+              onClick={() => openShare(xUrl, "x")}
+            >
+              <span className={styles.shareIcon}>X</span>
+              X
+            </button>
+          </div>
+          {shareHint ? <div className={styles.shareHint}>{shareHint}</div> : null}
+        </section>
+      )}
       {isFinal && (
         <div className={styles.actions}>
           <div className={styles.actionItem}>
