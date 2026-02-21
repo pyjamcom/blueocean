@@ -78,7 +78,7 @@ export default function JoinWaitView() {
         </div>
 
         <header className={styles.statusCard}>
-          <h1 className={styles.statusTitle}>Waiting for other players</h1>
+          <h1 className={styles.statusTitle}>Waiting for the other players...</h1>
           <div className={styles.metaRow}>
             <span className={styles.rankBadge}>🏆 {selfRank || 3}</span>
             <span className={styles.nameBadge}>{badgeLabel}</span>

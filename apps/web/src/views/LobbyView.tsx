@@ -85,7 +85,7 @@ export default function LobbyView() {
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
   const startLabel = selfReady ? "Join game" : "Ready to play";
-  const startCardTitle = selfReady ? "Waiting for other players" : "Start game";
+  const startCardTitle = selfReady ? "Waiting for the other players..." : "Let's play!";
   const badgeLabel = (selfPlayer?.name ?? "WEEEP").slice(0, 12);
   const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
   const topPreview = scoreSorted.slice(0, 3);
