@@ -9,9 +9,17 @@
     linear-gradient(160deg, #1a1335, #0a0a14 65%);
   position: relative;
   overflow: hidden;
-  padding: 0 20px 0;
+  padding: 0 20px;
   gap: 8px;
   color: var(--ui-text);
+}
+
+.guest {
+  padding-bottom: 128px;
+}
+
+.authorized {
+  padding-bottom: 0;
 }
 
 .topBar {
@@ -661,6 +669,10 @@
   min-height: 128px;
   display: grid;
   grid-template-rows: 76px 52px;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
   z-index: 2;
 }
 
@@ -808,6 +820,14 @@
   letter-spacing: 0.01em;
   color: rgba(245, 247, 255, 0.65);
   z-index: 2;
+}
+
+.authorized .legalFooter {
+  position: fixed;
+  left: 50%;
+  bottom: 27px;
+  transform: translateX(-50%);
+  z-index: 4;
 }
 
 .legalFooter a {

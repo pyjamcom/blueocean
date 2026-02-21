@@ -376,7 +376,9 @@ export default function JoinView() {
   const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
 
   return (
-    <div className={`${styles.join} ${styles[variant]}`}>
+    <div
+      className={`${styles.join} ${styles[variant]} ${isAuthorized ? styles.authorized : styles.guest}`}
+    >
       <div className={styles.pulse} />
       <div className={styles.topBar}>
         <span className={styles.statusTime}>9:41</span>
