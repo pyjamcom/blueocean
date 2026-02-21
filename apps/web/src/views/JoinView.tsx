@@ -385,23 +385,20 @@ export default function JoinView() {
           ▂▃▅
         </span>
       </div>
+      <header className={styles.srOnly}>
+        <h1>Party Games &amp; Meme Quiz - Join Escapers</h1>
+        <h2>Funny party quiz with friends: icebreaker games and online group game rooms.</h2>
+      </header>
       {isAuthorized ? (
         <section className={`${styles.sectionCard} ${styles.startCard}`}>
-          <h1 className={styles.startCardTitle}>Start game</h1>
+          <h2 className={styles.startCardTitle}>Start game</h2>
           <div className={styles.startCardMeta}>
             <span className={styles.startRank}>🏆 {selfRank || 3}</span>
             <span className={styles.startName}>{badgeLabel}</span>
             <span className={styles.startTag}>{profileTag}</span>
           </div>
         </section>
-      ) : (
-        <div className={styles.seoHeader}>
-          <h1 className={styles.seoTitle}>Party Games &amp; Meme Quiz - Join Escapers</h1>
-          <h2 className={styles.seoSubtitle}>
-            Funny party quiz with friends: icebreaker games and online group game rooms.
-          </h2>
-        </div>
-      )}
+      ) : null}
 
       <section className={`${styles.sectionCard} ${styles.questCard}`}>
         <header className={styles.previewHead}>

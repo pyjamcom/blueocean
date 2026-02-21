@@ -48,30 +48,17 @@
   letter-spacing: 1px;
 }
 
-.seoHeader {
-  display: grid;
-  gap: 10px;
-  text-align: center;
-  width: min(100%, 350px);
-  z-index: 2;
-  margin-bottom: 6px;
-}
-
-.seoTitle {
-  margin: 0;
-  font-size: 26px;
-  line-height: 1.2;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.seoSubtitle {
-  margin: 0;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--ui-muted);
-  line-height: 1.45;
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
 }
 
 .sectionCard {
@@ -869,14 +856,6 @@
   .join {
     padding-top: 0;
     gap: 10px;
-  }
-
-  .seoTitle {
-    font-size: 23px;
-  }
-
-  .seoSubtitle {
-    font-size: 13px;
   }
 
   .downBar {
