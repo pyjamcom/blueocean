@@ -83,7 +83,7 @@ function rowTone(rank: number): RowTone {
 }
 
 const fallbackTop: PublicLeaderboardEntry[] = [
-  { displayName: "Nova", funScore: 1200, progressPercent: 120 },
+  { displayName: "Nova", funScore: 1200, progressPercent: 100 },
   { displayName: "Atlas", funScore: 950, progressPercent: 90 },
   { displayName: "Pixel", funScore: 800, progressPercent: 70 },
   { displayName: "Mara", funScore: 650, progressPercent: 55 },
@@ -158,7 +158,7 @@ export default function LeaderboardView() {
   const computeProgressPercent = (current: number, previous: number) => {
     if (previous <= 0) return current > 0 ? 100 : 0;
     const delta = Math.max(0, current - previous);
-    return Math.min(200, Math.round((delta / Math.max(1, previous)) * 100));
+    return Math.min(100, Math.round((delta / Math.max(1, previous)) * 100));
   };
 
   const fallbackWeeklyProgress = computeProgressPercent(
@@ -186,7 +186,7 @@ export default function LeaderboardView() {
   const metricValue = (entry: PublicLeaderboardEntry | null) => {
     if (!entry) return 0;
     return period === "weekly"
-      ? Math.max(0, entry.progressPercent ?? entry.deltaPoints ?? 0)
+      ? Math.min(100, Math.max(0, entry.progressPercent ?? entry.deltaPoints ?? 0))
       : Math.max(0, entry.funScore);
   };
 
@@ -282,16 +282,6 @@ export default function LeaderboardView() {
   return (
     <div className={styles.wrap}>
       <section className={styles.phone} aria-label="Leaderboard screen">
-        <div className={styles.topBar}>
-          <span className={styles.statusTime}>9:41</span>
-          <span className={styles.notch} aria-hidden="true" />
-          <span className={styles.topBarRight} aria-hidden="true">
-            <span className={styles.signalIcon} />
-            <span className={styles.wifiIcon} />
-            <span className={styles.batteryIcon} />
-          </span>
-        </div>
-
         <header className={styles.header}>
           <h1 className={styles.headerTitle}>Leaderboard</h1>
           <div className={styles.segmentPicker}>

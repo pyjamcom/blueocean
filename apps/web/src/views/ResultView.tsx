@@ -203,16 +203,6 @@ export default function ResultView() {
   return (
     <div className={styles.wrap}>
       <section className={styles.phone} aria-label={isFinal ? "End game view" : "Leaderboard view"}>
-        <div className={styles.topBar}>
-          <span className={styles.statusTime}>9:41</span>
-          <span className={styles.notch} aria-hidden="true" />
-          <span className={styles.topBarRight} aria-hidden="true">
-            <span className={styles.signalIcon} />
-            <span className={styles.wifiIcon} />
-            <span className={styles.batteryIcon} />
-          </span>
-        </div>
-
         <header className={styles.header}>
           <h1 className={styles.headerTitle}>{isFinal ? "End Game" : "Leaderboard"}</h1>
         </header>

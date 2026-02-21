@@ -364,9 +364,9 @@ export default function JoinView() {
             score: player.score,
           }))
       : [
-          { rank: 1, name: "Ярик", score: 2445 },
-          { rank: 2, name: "Павел Невский", score: 2445 },
-          { rank: 3, name: "Иван Иванович", score: 2445 },
+          { rank: 1, name: "Nova", score: 2445 },
+          { rank: 2, name: "Atlas", score: 2445 },
+          { rank: 3, name: "Pixel", score: 2445 },
         ];
   const isAuthorized = Boolean(authUser);
   const selfPlayer = players.find((player) => player.id === playerId);
@@ -377,18 +377,9 @@ export default function JoinView() {
 
   return (
     <div
-      className={`${styles.join} ${styles[variant]} ${isAuthorized ? styles.authorized : styles.guest}`}
+      className={`${styles.join} ${styles[variant]} ${isAuthorized ? styles.authorized : ""}`}
     >
       <div className={styles.pulse} />
-      <div className={styles.topBar}>
-        <span className={styles.statusTime}>9:41</span>
-        <span className={styles.notch} aria-hidden="true" />
-        <span className={styles.topBarRight} aria-hidden="true">
-          <span className={styles.signalIcon} />
-          <span className={styles.wifiIcon} />
-          <span className={styles.batteryIcon} />
-        </span>
-      </div>
       <header className={styles.srOnly}>
         <h1>Party Games &amp; Meme Quiz - Join Escapers</h1>
         <h2>Funny party quiz with friends: icebreaker games and online group game rooms.</h2>
@@ -462,7 +453,7 @@ export default function JoinView() {
               setName(value);
             }
           }}
-          placeholder="КлёвоеИмя3286"
+          placeholder="CoolName3286"
           className={styles.nameInput}
           aria-label="player name"
         />

@@ -1,5 +1,6 @@
 .wrap {
-  width: min(94vw, 980px);
+  box-sizing: border-box;
+  width: min(100%, 980px);
   margin: 0 auto;
   display: grid;
   gap: 20px;
@@ -115,12 +116,47 @@
   min-height: 170px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 420px) {
   .podium {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 18px;
+    gap: 6px;
+    min-height: 260px;
   }
+
+  .avatar {
+    width: 58px;
+    height: 58px;
+    border-width: 2px;
+  }
+
+  .name {
+    font-size: clamp(14px, 4vw, 18px);
+  }
+
   .block {
-    max-width: 320px;
+    padding: 12px 8px 16px;
+    border-radius: 10px 10px 0 0;
+    gap: 8px;
+  }
+
+  .medal {
+    width: 44px;
+    height: 44px;
+    font-size: 19px;
+  }
+
+  .points {
+    font-size: clamp(16px, 4vw, 22px);
+  }
+
+  .first .block {
+    min-height: 172px;
+  }
+
+  .second .block {
+    min-height: 150px;
+  }
+
+  .third .block {
+    min-height: 132px;
   }
 }

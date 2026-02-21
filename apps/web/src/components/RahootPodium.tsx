@@ -14,13 +14,20 @@ export interface RahootPodiumEntry {
 export default function RahootPodium({
   title = "Final",
   top,
+  instantReveal = false,
 }: {
   title?: string;
   top: RahootPodiumEntry[];
+  instantReveal?: boolean;
 }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (instantReveal) {
+      setStep(4);
+      stopLoop(SFX.PODIUM_ROLL);
+      return;
+    }
     setStep(0);
     stopLoop(SFX.PODIUM_ROLL);
     const timer = window.setInterval(() => {
@@ -33,9 +40,12 @@ export default function RahootPodium({
       });
     }, 1600);
     return () => window.clearInterval(timer);
-  }, [top]);
+  }, [instantReveal, top]);
 
   useEffect(() => {
+    if (instantReveal) {
+      return;
+    }
     if (step === 1) {
       playOneShot(SFX.PODIUM_THREE, 0.4);
     }
@@ -49,7 +59,7 @@ export default function RahootPodium({
       stopLoop(SFX.PODIUM_ROLL);
       playOneShot(SFX.PODIUM_FIRST, 0.5);
     }
-  }, [step]);
+  }, [instantReveal, step]);
 
   const first = top[0];
   const second = top[1];

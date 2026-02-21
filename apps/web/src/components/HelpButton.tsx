@@ -1,10 +1,34 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import styles from "./HelpButton.module.css";
 
+const HIDDEN_ON_ROUTES = new Set([
+  "/join",
+  "/lobby",
+  "/wait",
+  "/game",
+  "/leaderboard",
+  "/result",
+  "/manager",
+  "/debug/leaderboard",
+  "/debug/podium",
+  "/support",
+  "/support/",
+  "/status",
+  "/status/",
+]);
+
 export default function HelpButton() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { resetRoom } = useRoom();
+
+  if (
+    HIDDEN_ON_ROUTES.has(location.pathname) ||
+    location.pathname.startsWith("/legal")
+  ) {
+    return null;
+  }
 
   const handleExit = () => {
     resetRoom();

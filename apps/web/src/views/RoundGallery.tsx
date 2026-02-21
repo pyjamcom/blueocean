@@ -356,18 +356,6 @@ export default function RoundGallery() {
       <div className={styles.background} aria-hidden="true">
       </div>
 
-      <div className={styles.topBar}>
-        <div className={styles.topBarLeft}>
-          <span className={styles.timeBadge}>9:41</span>
-        </div>
-        <span className={styles.notch} aria-hidden="true" />
-        <div className={styles.topBarRight}>
-          <span className={styles.signalIcon} />
-          <span className={styles.wifiIcon} />
-          <span className={styles.batteryIcon} />
-        </div>
-      </div>
-
       {showWait && (
         <section className={styles.centerWrap}>
           <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />

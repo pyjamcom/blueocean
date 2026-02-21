@@ -38,7 +38,7 @@ export default function DebugLeaderboardView() {
       <section className={styles.section}>
         <h1 className={styles.title}>Debug: Final Result</h1>
         <p className={styles.subtitle}>Top 3 avatars should appear on the podium.</p>
-        <RahootPodium title="Final" top={entries.slice(0, 3)} />
+        <RahootPodium title="Final" top={entries.slice(0, 3)} instantReveal />
       </section>
     </div>
   );

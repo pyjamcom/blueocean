@@ -1,4 +1,7 @@
 .wrap {
+  box-sizing: border-box;
+  width: min(100%, 100vw);
+  max-width: 100vw;
   min-height: 100vh;
   display: grid;
   gap: 48px;
@@ -14,6 +17,7 @@
   display: grid;
   gap: 16px;
   justify-items: center;
+  width: 100%;
 }
 
 .title {

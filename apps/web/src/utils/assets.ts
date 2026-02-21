@@ -1,6 +1,10 @@
 import memesManifest from "../../../../data/memes_manifest.json";
 
-const assetGlob = import.meta.glob("../../../../assets/*.svg", { eager: true, as: "url" });
+const assetGlob = import.meta.glob("../../../../assets/*.svg", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
 
 const assetById = Object.entries(assetGlob).reduce<Record<string, string>>((acc, [path, url]) => {
   const filename = path.split("/").pop();

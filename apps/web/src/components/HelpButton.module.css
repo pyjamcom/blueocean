@@ -19,6 +19,14 @@
   cursor: pointer;
 }
 
+.support {
+  background: rgba(47, 61, 87, 0.82);
+}
+
+.exit {
+  background: rgba(54, 22, 30, 0.84);
+}
+
 .icon {
   width: 22px;
   height: 22px;

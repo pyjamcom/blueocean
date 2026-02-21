@@ -124,15 +124,6 @@ export default function LobbyView() {
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
       <EngagementPanel mode="lobby" />
-      <div className={styles.topBar}>
-        <span className={styles.statusTime}>9:41</span>
-        <span className={styles.notch} aria-hidden="true" />
-        <span className={styles.topBarRight} aria-hidden="true">
-          <span className={styles.signalIcon} />
-          <span className={styles.wifiIcon} />
-          <span className={styles.batteryIcon} />
-        </span>
-      </div>
       <section className={`${styles.sectionCard} ${styles.startCard}`}>
         <div className={styles.startCardTitle}>{startCardTitle}</div>
         <div className={styles.startCardMeta}>
@@ -271,9 +262,9 @@ export default function LobbyView() {
               {(topPreview.length
                 ? topPreview
                 : [
-                    { id: "fallback-1", name: "Ярик", score: 2445 },
-                    { id: "fallback-2", name: "Павел Невский", score: 2445 },
-                    { id: "fallback-3", name: "Иван Иванович", score: 2445 },
+                    { id: "fallback-1", name: "Nova", score: 2445 },
+                    { id: "fallback-2", name: "Atlas", score: 2445 },
+                    { id: "fallback-3", name: "Pixel", score: 2445 },
                   ]
               ).map((player, index) => (
                 <li key={player.id} className={styles.topItem}>

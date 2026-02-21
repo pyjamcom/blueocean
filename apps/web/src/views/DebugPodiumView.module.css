@@ -1,0 +1,120 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 20px;
+  padding: 24px 16px 48px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(99, 230, 190, 0.2), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(255, 77, 109, 0.25), transparent 45%),
+    linear-gradient(160deg, #120f24, #0a0a14 65%);
+  color: #f3f5ff;
+}
+
+.phaseHeader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.phasePill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.phaseHint {
+  font-size: 12px;
+  color: rgba(243, 245, 255, 0.72);
+}
+
+.shareStrip {
+  width: min(100%, 760px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(17, 14, 34, 0.66);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.3);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.sharePrimary {
+  border: none;
+  border-radius: 12px;
+  height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  justify-self: center;
+  background: linear-gradient(90deg, #7300ff 0%, #0699f4 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shareRow {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shareButton {
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shareIcon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.shareFacebook {
+  border-color: rgba(51, 141, 255, 0.6);
+}
+
+.shareInstagram {
+  border-color: rgba(248, 96, 255, 0.6);
+}
+
+.shareTwitch {
+  border-color: rgba(170, 96, 255, 0.6);
+}
+
+.shareReddit {
+  border-color: rgba(255, 156, 51, 0.6);
+}
+
+.shareX {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.shareHint {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}

@@ -69,16 +69,6 @@ export default function JoinWaitView() {
   return (
     <div className={styles.wrap}>
       <section className={styles.phone} aria-label="Waiting room">
-        <div className={styles.topBar}>
-          <span className={styles.statusTime}>9:41</span>
-          <span className={styles.notch} aria-hidden="true" />
-          <span className={styles.topBarRight} aria-hidden="true">
-            <span className={styles.signalIcon} />
-            <span className={styles.wifiIcon} />
-            <span className={styles.batteryIcon} />
-          </span>
-        </div>
-
         <header className={styles.statusCard}>
           <h1 className={styles.statusTitle}>Waiting for the other players...</h1>
           <div className={styles.metaRow}>

@@ -1,5 +1,6 @@
 .wrap {
-  width: min(92vw, 860px);
+  box-sizing: border-box;
+  width: min(100%, 860px);
   margin: 0 auto;
   display: grid;
   gap: 18px;

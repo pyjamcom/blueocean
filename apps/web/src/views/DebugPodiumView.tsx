@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import RahootPodium from "../components/RahootPodium";
 import { trackEvent } from "../utils/analytics";
 import { LEADERBOARD_SHARE_TITLE } from "../utils/seo";
-import styles from "./ResultView.module.css";
+import styles from "./DebugPodiumView.module.css";
 
 const mockTop = [
   { id: "p1", name: "Nova", points: 1240, avatarId: "1001", title: "Score Boss" },
@@ -95,7 +95,7 @@ export default function DebugPodiumView() {
         <span className={styles.phasePill}>Final</span>
         <span className={styles.phaseHint}>Debug podium preview</span>
       </div>
-      <RahootPodium title="Final" top={mockTop} />
+      <RahootPodium title="Final" top={mockTop} instantReveal />
       <section className={styles.shareStrip}>
         <button type="button" className={styles.sharePrimary} onClick={handleNativeShare}>
           <span className={styles.shareIcon}>📲</span>

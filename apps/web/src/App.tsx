@@ -51,6 +51,13 @@ const phaseRoutes: Record<RoomPhase, string> = {
 
 const MIN_PLAYERS = 3;
 
+function ExternalPageRedirect({ to }: { to: string }) {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+  return null;
+}
+
 type SeoConfig = {
   title: string;
   description: string;
@@ -191,13 +198,18 @@ function StageNavigator() {
     const isLeaderboardPath = location.pathname === "/leaderboard";
     const isManagerPath = location.pathname === "/manager";
     const isLegalPath = location.pathname.startsWith("/legal");
+    const isSystemPath =
+      location.pathname === "/support" ||
+      location.pathname === "/status" ||
+      location.pathname === "/support/" ||
+      location.pathname === "/status/";
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
     const searchParams = new URLSearchParams(location.search);
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
 
-    if ((isDebugPath && allowPreview) || isLeaderboardPath || isLegalPath) {
+    if ((isDebugPath && allowPreview) || isLeaderboardPath || isLegalPath || isSystemPath) {
       return;
     }
 
@@ -309,7 +321,8 @@ export default function App() {
             <StageNavigator />
             <Routes>
               <Route path="/join" element={<JoinView />} />
-              <Route path="/:code" element={<JoinView />} />
+              <Route path="/support" element={<ExternalPageRedirect to="/support/" />} />
+              <Route path="/status" element={<ExternalPageRedirect to="/status/" />} />
               <Route path="/lobby" element={<LobbyView />} />
               <Route path="/game" element={<RoundGallery />} />
               <Route path="/result" element={<ResultView />} />
@@ -321,6 +334,7 @@ export default function App() {
               <Route path="/debug/podium" element={<DebugPodiumView />} />
               <Route path="/leaderboard" element={<LeaderboardView />} />
               <Route path="/wait" element={<JoinWaitView />} />
+              <Route path="/:code" element={<JoinView />} />
               <Route path="*" element={<Navigate to="/join" replace />} />
             </Routes>
           </div>
