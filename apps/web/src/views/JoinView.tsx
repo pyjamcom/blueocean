@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
@@ -60,6 +61,7 @@ export default function JoinView() {
     }
   }, [apiBase]);
   const { roomCode, joinRoom, setAvatar, setName, isHost, players } = useRoom();
+  const { state: engagement } = useEngagement();
   const variant = resolveVariant(age);
   const firebaseEnabled = isFirebaseEnabled();
   const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
@@ -352,6 +354,24 @@ export default function JoinView() {
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length] ?? assetIds[0]
     : undefined;
   const avatarAssetSrc = getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId);
+  const previewQuests = engagement.quests.daily.slice(0, 3);
+  const completedQuests = engagement.quests.daily.filter((quest) => Boolean(quest.completedAt)).length;
+  const questTotal = engagement.quests.daily.length;
+  const topPreview =
+    players.length > 0
+      ? [...players]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3)
+          .map((player, index) => ({
+            rank: index + 1,
+            name: player.name ?? "Player",
+            score: player.score,
+          }))
+      : [
+          { rank: 1, name: "Ярик", score: 2445 },
+          { rank: 2, name: "Павел Невский", score: 2445 },
+          { rank: 3, name: "Иван Иванович", score: 2445 },
+        ];
 
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
@@ -362,6 +382,200 @@ export default function JoinView() {
           Funny party quiz with friends: icebreaker games and online group game rooms.
         </h2>
       </div>
+
+      <section className={styles.sectionCard}>
+        <header className={styles.previewHead}>
+          <h3 className={styles.previewTitle}>Quests for the game</h3>
+          <span className={styles.previewBadge}>
+            {completedQuests}/{questTotal || 5}
+          </span>
+        </header>
+        <ul className={styles.questList}>
+          {previewQuests.length
+            ? previewQuests.map((quest) => {
+                const done = quest.progress >= quest.target;
+                return (
+                  <li key={quest.id} className={styles.questItem}>
+                    <span className={styles.questProgress}>
+                      {quest.progress}/{quest.target}
+                    </span>
+                    <span className={styles.questLabel}>{quest.label}</span>
+                    <span className={styles.questAction}>{done ? "Claim" : "In progress"}</span>
+                  </li>
+                );
+              })
+            : (
+              <li className={styles.questItem}>
+                <span className={styles.questProgress}>0/5</span>
+                <span className={styles.questLabel}>Inviting 5 friends</span>
+                <span className={styles.questAction}>Claim</span>
+              </li>
+            )}
+        </ul>
+      </section>
+
+      <section className={`${styles.sectionCard} ${styles.profileCard}`}>
+        <div className={styles.profileAvatarWrap}>
+          <div className={styles.profileAvatar}>
+            {avatarAssetSrc ? <img src={avatarAssetSrc} alt="" aria-hidden="true" /> : null}
+          </div>
+        </div>
+        <button type="button" className={styles.profileAvatarButton} onClick={handleAvatarClick}>
+          Choose avatar
+        </button>
+        <input
+          type="text"
+          value={playerName}
+          onChange={(event) => {
+            const value = event.target.value.slice(0, 18);
+            setPlayerName(value);
+            setStoredPlayerName(value);
+            if (roomCode) {
+              setName(value);
+            }
+          }}
+          placeholder="КлёвоеИмя3286"
+          className={styles.nameInput}
+          aria-label="player name"
+        />
+      </section>
+
+      {showQr ? (
+        <section className={`${styles.sectionCard} ${styles.loginCard}`}>
+          <div className={styles.loginTitle}>Log in with:</div>
+          <div className={styles.loginIcons}>
+            <button
+              type="button"
+              className={`${styles.authRound} ${styles.authGoogle}`}
+              onClick={handleGoogleAuth}
+              disabled={!firebaseEnabled}
+              aria-label="Login with Google"
+              title="Login with Google"
+            >
+              <span className={`${styles.authIcon} ${styles.iconGoogle}`} aria-hidden="true">
+                G
+              </span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.authRound} ${styles.authFacebook}`}
+              onClick={handleFacebookAuth}
+              disabled={!firebaseEnabled}
+              aria-label="Login with Facebook"
+              title="Login with Facebook"
+            >
+              <span className={`${styles.authIcon} ${styles.iconFacebook}`} aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9.197 21.5v-7.707H6.5V10.5h2.697V8.074c0-2.672 1.59-4.174 4.03-4.174 1.154 0 2.36.206 2.36.206v2.604H14.26c-1.203 0-1.577.764-1.577 1.548V10.5h2.684l-.43 3.293h-2.254V21.5H9.197Z" />
+                </svg>
+              </span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.authRound} ${styles.authApple}`}
+              onClick={handleAppleAuth}
+              disabled={!firebaseEnabled}
+              aria-label="Login with Apple"
+              title="Login with Apple"
+            >
+              <span className={`${styles.authIcon} ${styles.iconApple}`} aria-hidden="true">
+                
+              </span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.authRound} ${styles.authTwitter}`}
+              onClick={handleTwitterAuth}
+              disabled={!firebaseEnabled}
+              aria-label="Login with X"
+              title="Login with X"
+            >
+              <span className={`${styles.authIcon} ${styles.iconX}`} aria-hidden="true">
+                X
+              </span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.authRound} ${styles.authTwitch}`}
+              onClick={handleTwitchAuth}
+              aria-label="Login with Twitch"
+              title="Login with Twitch"
+            >
+              <span className={`${styles.authIcon} ${styles.iconTwitch}`} aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      <section className={styles.sectionCard}>
+        <header className={styles.previewHead}>
+          <h3 className={styles.previewTitle}>Top 3 Leaderboard</h3>
+          <button type="button" className={styles.moreButton} onClick={handleLeaderboardClick}>
+            More
+          </button>
+        </header>
+        <ul className={styles.topList}>
+          {topPreview.map((entry) => (
+            <li key={`${entry.rank}-${entry.name}`} className={styles.topItem}>
+              <span className={styles.topRank}>#{entry.rank}</span>
+              <span className={styles.topName}>{entry.name}</span>
+              <span className={styles.topScore}>{entry.score}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {authUser ? (
+        <div className={styles.authStatus}>
+          <div>Signed in as {authUser}</div>
+          {authEmail ? <div className={styles.authEmail}>{authEmail}</div> : null}
+        </div>
+      ) : null}
+      {authError ? <div className={styles.authError}>{authError}</div> : null}
+      <div className={styles.legalFooter}>
+        <a href="/legal/privacy">Privacy</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/terms">Terms</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/data-deletion">Data</a>
+      </div>
+
+      <div className={styles.bottomBar}>
+        <button
+          type="button"
+          className={`${styles.primaryAction} ${styles.primaryCreate}`}
+          aria-label="create game"
+          onClick={handleScanClick}
+          disabled={!showQr}
+        >
+          Create game
+        </button>
+        <button
+          type="button"
+          className={`${styles.primaryAction} ${styles.primaryJoin}`}
+          aria-label="join game"
+          onClick={handlePlayClick}
+        >
+          Join game
+        </button>
+        <button
+          type="button"
+          className={`${styles.iconAction} ${styles.iconAvatar}`}
+          aria-label="avatar"
+          onClick={handleAvatarClick}
+        />
+        <button
+          type="button"
+          className={`${styles.iconAction} ${styles.iconLeaderboard}`}
+          aria-label="leaderboard"
+          onClick={handleLeaderboardClick}
+        />
+      </div>
+
       {qrVisible && qrSrc && showQr ? (
         <div
           className={styles.qrOverlay}
@@ -374,137 +588,7 @@ export default function JoinView() {
             <img src={qrSrc} alt="" className={styles.qrImage} />
           </div>
         </div>
-      ) : (
-        <div className={styles.qrSpot}>
-          <img src="/favicon.ico" alt="" className={styles.qrIcon} />
-        </div>
-      )}
-      {showQr ? (
-        <div className={styles.nameRow}>
-          <input
-            type="text"
-            value={playerName}
-            onChange={(event) => {
-              const value = event.target.value.slice(0, 18);
-              setPlayerName(value);
-              setStoredPlayerName(value);
-              if (roomCode) {
-                setName(value);
-              }
-            }}
-            placeholder="Your name"
-            className={styles.nameInput}
-            aria-label="player name"
-          />
-        </div>
       ) : null}
-      {showQr ? (
-        <div className={styles.authRow}>
-          <button
-            type="button"
-            className={`${styles.authButton} ${styles.authGoogle}`}
-            onClick={handleGoogleAuth}
-            disabled={!firebaseEnabled}
-          >
-            <span className={`${styles.authIcon} ${styles.iconGoogle}`} aria-hidden="true">
-              G
-            </span>
-            Login with Google
-          </button>
-          <button
-            type="button"
-            className={`${styles.authButton} ${styles.authFacebook}`}
-            onClick={handleFacebookAuth}
-            disabled={!firebaseEnabled}
-          >
-            <span className={`${styles.authIcon} ${styles.iconFacebook}`} aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                <path d="M9.197 21.5v-7.707H6.5V10.5h2.697V8.074c0-2.672 1.59-4.174 4.03-4.174 1.154 0 2.36.206 2.36.206v2.604H14.26c-1.203 0-1.577.764-1.577 1.548V10.5h2.684l-.43 3.293h-2.254V21.5H9.197Z" />
-              </svg>
-            </span>
-            Login with Facebook
-          </button>
-          <button
-            type="button"
-            className={`${styles.authButton} ${styles.authApple}`}
-            onClick={handleAppleAuth}
-            disabled={!firebaseEnabled}
-          >
-            <span className={`${styles.authIcon} ${styles.iconApple}`} aria-hidden="true">
-              
-            </span>
-            Login with Apple
-          </button>
-          <button
-            type="button"
-            className={`${styles.authButton} ${styles.authTwitter}`}
-            onClick={handleTwitterAuth}
-            disabled={!firebaseEnabled}
-          >
-            <span className={`${styles.authIcon} ${styles.iconX}`} aria-hidden="true">
-              X
-            </span>
-            Login with X
-          </button>
-          <button
-            type="button"
-            className={`${styles.authButton} ${styles.authTwitch}`}
-            onClick={handleTwitchAuth}
-          >
-            <span className={`${styles.authIcon} ${styles.iconTwitch}`} aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
-              </svg>
-            </span>
-            Login with Twitch
-          </button>
-        </div>
-      ) : null}
-      {authUser ? (
-        <div className={styles.authStatus}>
-          <div>Signed in as {authUser}</div>
-          {authEmail ? <div className={styles.authEmail}>{authEmail}</div> : null}
-        </div>
-      ) : null}
-      {authError ? <div className={styles.authError}>{authError}</div> : null}
-      <div className={styles.iconRow}>
-        <div className={styles.iconItem}>
-          <button
-            type="button"
-            className={`${styles.iconBubble} ${styles.iconScan}`}
-            aria-label="create game"
-            onClick={handleScanClick}
-          />
-          <span className={styles.iconLabel}>Create game</span>
-        </div>
-        <div className={styles.iconItem}>
-          <button
-            type="button"
-            className={`${styles.iconBubble} ${styles.iconAvatar}`}
-            aria-label="avatar"
-            onClick={handleAvatarClick}
-          />
-          <span className={styles.iconLabel}>Choose an avatar</span>
-        </div>
-        <div className={styles.iconItem}>
-          <button
-            type="button"
-            className={`${styles.iconBubble} ${styles.iconPlay}`}
-            aria-label="play"
-            onClick={handlePlayClick}
-          />
-          <span className={styles.iconLabel}>Join the game</span>
-        </div>
-        <div className={styles.iconItem}>
-          <button
-            type="button"
-            className={`${styles.iconBubble} ${styles.iconLeaderboard}`}
-            aria-label="leaderboard"
-            onClick={handleLeaderboardClick}
-          />
-          <span className={styles.iconLabel}>Leaderboard</span>
-        </div>
-      </div>
 
       {avatarOpen && (
         <div className={styles.avatarOverlay} onClick={() => setAvatarOpen(false)}>
@@ -532,14 +616,6 @@ export default function JoinView() {
           </div>
         </div>
       )}
-
-      <div className={styles.legalFooter}>
-        <a href="/legal/privacy">Privacy</a>
-        <span className={styles.legalDot}>•</span>
-        <a href="/legal/terms">Terms</a>
-        <span className={styles.legalDot}>•</span>
-        <a href="/legal/data-deletion">Data deletion</a>
-      </div>
 
     </div>
   );

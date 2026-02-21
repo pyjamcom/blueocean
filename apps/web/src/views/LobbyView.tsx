@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EngagementPanel from "../components/engagement/EngagementPanel";
 import { useEngagement } from "../context/EngagementContext";
-import SoundToggle from "../components/SoundToggle";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
@@ -28,6 +27,7 @@ function resolveVariant(age?: number): PulseVariant {
 
 export default function LobbyView() {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
@@ -96,13 +96,22 @@ export default function LobbyView() {
   };
 
   const selfAvatar = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
+  const scoreSorted = [...players].sort((a, b) => b.score - a.score);
   const selfPlayer = players.find((player) => player.id === playerId);
+  const selfRank = selfPlayer ? scoreSorted.findIndex((player) => player.id === selfPlayer.id) + 1 : 0;
   const selfReady = selfPlayer?.ready ?? false;
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length] ?? lobbyAssets[0]
     : undefined;
   const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
-  const startLabel = selfReady ? "Waiting to start" : "Ready to play";
+  const startLabel = selfReady ? "Join game" : "Ready to play";
+  const startCardTitle = selfReady ? "Waiting for other players" : "Start game";
+  const badgeLabel = (selfPlayer?.name ?? "WEEEP").slice(0, 12);
+  const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
+  const topPreview = scoreSorted.slice(0, 3);
+  const previewQuests = engagement.quests.daily.slice(0, 3);
+  const completedQuests = engagement.quests.daily.filter((quest) => quest.progress >= quest.target).length;
+  const questTotal = engagement.quests.daily.length;
   const frameClass = engagement.cosmetics.equipped.frame
     ? frames[engagement.cosmetics.equipped.frame] ?? ""
     : "";
@@ -134,13 +143,184 @@ export default function LobbyView() {
 
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
-      <div className={styles.topBar}>
-        <button className={styles.qrToggle} onClick={() => setShowQr((prev) => !prev)} aria-label="qr">
-          <span className={styles.qrToggleIcon} />
+      <EngagementPanel mode="lobby" />
+      <section className={`${styles.sectionCard} ${styles.startCard}`}>
+        <div className={styles.startCardTitle}>{startCardTitle}</div>
+        <div className={styles.startCardMeta}>
+          <span className={styles.metaPill}>#{selfRank || 3}</span>
+          <span className={styles.metaPill}>{badgeLabel}</span>
+          <span className={styles.metaPill}>{profileTag}</span>
+        </div>
+      </section>
+
+      {selfReady ? (
+        <>
+          <section className={`${styles.sectionCard} ${styles.profileCard}`}>
+            <div
+              className={styles.profileAvatar}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onClick={() => handleAvatarCycle(1)}
+              aria-label={selfAvatar}
+            >
+              <div className={`${styles.profileAvatarCore} ${frameClass}`}>
+                {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
+              </div>
+              <span className={styles.selfPulse} />
+            </div>
+            <button type="button" className={styles.profileButton} onClick={() => handleAvatarCycle(1)}>
+              Choose avatar
+            </button>
+          </section>
+
+          <section className={`${styles.sectionCard} ${styles.playerListCard}`}>
+            <header className={styles.questHead}>
+              <span className={styles.questTitle}>Player list</span>
+              <span className={styles.questBadge}>{players.length}</span>
+            </header>
+            <div className={styles.playerListGrid}>
+              {players.map((player) => {
+                const playerAssetId = lobbyAssets.length
+                  ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
+                  : undefined;
+                const playerAssetSrc = getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId);
+                return (
+                  <div key={player.id} className={`${styles.player} ${styles.playerPulse}`}>
+                    <div className={styles.playerAvatar} aria-label={player.avatarId}>
+                      {playerAssetSrc ? (
+                        <img src={playerAssetSrc} alt="" className={styles.avatarImage} />
+                      ) : null}
+                    </div>
+                    <span className={styles.playerName}>{player.name ?? "Player"}</span>
+                    {player.ready && <span className={styles.readyRing} />}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          <section className={`${styles.sectionCard} ${styles.questCard}`}>
+            <header className={styles.questHead}>
+              <span className={styles.questTitle}>Quests for the game</span>
+              <span className={styles.questBadge}>
+                {completedQuests}/{questTotal || 5}
+              </span>
+            </header>
+            <ul className={styles.questList}>
+              {previewQuests.length
+                ? previewQuests.map((quest) => {
+                    const done = quest.progress >= quest.target;
+                    return (
+                      <li key={quest.id} className={styles.questItem}>
+                        <span className={styles.questProgress}>
+                          {quest.progress}/{quest.target}
+                        </span>
+                        <span className={styles.questLabel}>{quest.label}</span>
+                        <span className={styles.questAction}>{done ? "Claim" : "In progress"}</span>
+                      </li>
+                    );
+                  })
+                : (
+                  <li className={styles.questItem}>
+                    <span className={styles.questProgress}>0/5</span>
+                    <span className={styles.questLabel}>Inviting 5 friends</span>
+                    <span className={styles.questAction}>Claim</span>
+                  </li>
+                )}
+            </ul>
+          </section>
+
+          <section className={`${styles.sectionCard} ${styles.profileCard}`}>
+            <div
+              className={styles.profileAvatar}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onClick={() => handleAvatarCycle(1)}
+              aria-label={selfAvatar}
+            >
+              <div className={`${styles.profileAvatarCore} ${frameClass}`}>
+                {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
+              </div>
+              <span className={styles.selfPulse} />
+            </div>
+            <button type="button" className={styles.profileButton} onClick={() => handleAvatarCycle(1)}>
+              Choose avatar
+            </button>
+            <input
+              type="text"
+              value={nameDraft}
+              onFocus={() => setEditingName(true)}
+              onBlur={() => {
+                setEditingName(false);
+                commitName();
+              }}
+              onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.blur();
+                }
+                if (event.key === "Escape") {
+                  const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
+                  setEditingName(false);
+                  setNameDraft(fallback);
+                  event.currentTarget.blur();
+                }
+              }}
+              className={styles.selfNameInput}
+              placeholder="Your name"
+              aria-label="player name"
+            />
+          </section>
+
+          <section className={`${styles.sectionCard} ${styles.topCard}`}>
+            <header className={styles.topCardHead}>
+              <span className={styles.topCardTitle}>Top 3 Leaderboard</span>
+            </header>
+            <ul className={styles.topList}>
+              {(topPreview.length
+                ? topPreview
+                : [
+                    { id: "fallback-1", name: "Ярик", score: 2445 },
+                    { id: "fallback-2", name: "Павел Невский", score: 2445 },
+                    { id: "fallback-3", name: "Иван Иванович", score: 2445 },
+                  ]
+              ).map((player, index) => (
+                <li key={player.id} className={styles.topItem}>
+                  <span className={styles.topRank}>#{index + 1}</span>
+                  <span className={styles.topName}>{player.name ?? "Player"}</span>
+                  <span className={styles.topScore}>{player.score}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </>
+      )}
+
+      <div className={styles.legalFooter}>
+        <a href="/legal/privacy">Privacy</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/terms">Terms</a>
+        <span className={styles.legalDot}>•</span>
+        <a href="/legal/data-deletion">Data</a>
+      </div>
+
+      <div className={styles.bottomBar}>
+        <button
+          type="button"
+          className={styles.primaryJoin}
+          onClick={() => {
+            setReady(!selfReady);
+          }}
+          aria-label="join game"
+        >
+          {startLabel}
         </button>
-        <SoundToggle
-          enabled={soundOn}
-          onToggle={() =>
+        <button className={styles.iconActionQr} onClick={() => setShowQr((prev) => !prev)} aria-label="qr" />
+        <button
+          className={`${styles.iconActionSound} ${soundOn ? styles.soundOn : styles.soundOff}`}
+          onClick={() =>
             setSoundOn((prev) => {
               const next = !prev;
               if (typeof window !== "undefined") {
@@ -149,97 +329,13 @@ export default function LobbyView() {
               return next;
             })
           }
+          aria-label="sound"
         />
-      </div>
-
-      <EngagementPanel mode="lobby" />
-      <div className={styles.players}>
-        {players.map((player) => {
-          const playerAssetId = lobbyAssets.length
-            ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
-            : undefined;
-          const playerAssetSrc = getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId);
-          return (
-            <div
-              key={player.id}
-              className={`${styles.player} ${styles.playerPulse}`}
-            >
-              <div className={styles.playerAvatar} aria-label={player.avatarId}>
-                {playerAssetSrc ? (
-                  <img src={playerAssetSrc} alt="" className={styles.avatarImage} />
-                ) : null}
-              </div>
-              <span className={styles.playerName}>{player.name ?? "Player"}</span>
-              {player.ready && <span className={styles.readyRing} />}
-            </div>
-          );
-        })}
-      </div>
-
-      <div
-        className={styles.selfAvatar}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onClick={() => handleAvatarCycle(1)}
-        aria-label={selfAvatar}
-      >
-        <div className={`${styles.selfAvatarCore} ${frameClass}`}>
-          {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
-        </div>
-        <span className={styles.selfPulse} />
-      </div>
-
-      <div className={styles.nameRow}>
-        <input
-          type="text"
-          value={nameDraft}
-          onFocus={() => setEditingName(true)}
-          onBlur={() => {
-            setEditingName(false);
-            commitName();
-          }}
-          onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.currentTarget.blur();
-            }
-            if (event.key === "Escape") {
-              const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
-              setEditingName(false);
-              setNameDraft(fallback);
-              event.currentTarget.blur();
-            }
-          }}
-          className={styles.selfNameInput}
-          placeholder="Your name"
-          aria-label="player name"
+        <button
+          className={styles.iconActionBoard}
+          onClick={() => navigate("/leaderboard")}
+          aria-label="leaderboard"
         />
-      </div>
-
-      <div className={styles.hintRow}>
-        <button
-          type="button"
-          className={styles.hintButton}
-          onClick={() => handleAvatarCycle(1)}
-          aria-label="change avatar"
-        >
-          <span className={styles.hintButtonIcon} />
-          <span className={styles.hintLabel}>Change avatar</span>
-        </button>
-      </div>
-
-      <div className={styles.startRow}>
-        <button
-          className={styles.startButton}
-          onClick={() => {
-            setReady(!selfReady);
-          }}
-          disabled={false}
-          aria-label="start"
-        >
-          <span className={selfReady ? styles.startIconPaused : styles.startIcon} />
-        </button>
-        <span className={styles.startLabel}>{startLabel}</span>
       </div>
 
 
