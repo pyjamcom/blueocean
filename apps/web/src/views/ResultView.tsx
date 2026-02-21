@@ -74,7 +74,7 @@ export default function ResultView() {
     [leaderboard],
   );
 
-  const rows = useMemo(() => leaderboard.slice(0, 13), [leaderboard]);
+  const rows = useMemo(() => leaderboard.slice(0, isFinal ? 6 : 13), [isFinal, leaderboard]);
 
   const nextRoomCode = useMemo(() => {
     if (!roomCode) return randomId(4);
