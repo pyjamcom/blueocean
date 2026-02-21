@@ -395,7 +395,10 @@ export default function JoinView() {
         <section className={`${styles.sectionCard} ${styles.startCard}`}>
           <h2 className={styles.startCardTitle}>Start game</h2>
           <div className={styles.startCardMeta}>
-            <span className={styles.startRank}>🏆 {selfRank || 3}</span>
+            <span className={styles.startRank}>
+              <span className={styles.rankIcon} aria-hidden="true" />
+              {selfRank || 3}
+            </span>
             <span className={styles.startName}>{badgeLabel}</span>
             <span className={styles.startTag}>{profileTag}</span>
           </div>
