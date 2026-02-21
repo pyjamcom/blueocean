@@ -543,7 +543,10 @@ export default function JoinView() {
         </header>
         <ul className={styles.topList}>
           {topPreview.map((entry) => (
-            <li key={`${entry.rank}-${entry.name}`} className={styles.topItem}>
+            <li
+              key={`${entry.rank}-${entry.name}`}
+              className={`${styles.topItem} ${entry.rank === 1 ? styles.topItemRank1 : entry.rank === 2 ? styles.topItemRank2 : styles.topItemRank3}`}
+            >
               <span className={styles.topRank}>{entry.rank}</span>
               <span className={styles.topName}>{entry.name}</span>
               <span className={styles.topScore}>{entry.score}</span>
