@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useEngagement } from "../context/EngagementContext";
 import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
@@ -14,25 +15,20 @@ interface PublicLeaderboardEntry {
   funScore: number;
   deltaPoints?: number | null;
   progressPercent?: number | null;
-  percentileBand?: string | null;
 }
 
 interface PublicLeaderboardResponse {
   period: Period;
   scope: "global" | "group";
   generatedAt: string;
-  percentile?: string | null;
   self?: PublicLeaderboardEntry | null;
   top: PublicLeaderboardEntry[];
 }
 
-const fallbackTop: PublicLeaderboardEntry[] = [
-  { displayName: "Nova", funScore: 0, progressPercent: 120, percentileBand: "Top 10%" },
-  { displayName: "Atlas", funScore: 0, progressPercent: 90, percentileBand: "Top 25%" },
-  { displayName: "Pixel", funScore: 0, progressPercent: 70, percentileBand: "Top 50%" },
-  { displayName: "Mara", funScore: 0, progressPercent: 45, percentileBand: "Rising" },
-  { displayName: "Echo", funScore: 0, progressPercent: 25, percentileBand: "Rising" },
-];
+interface RowTone {
+  rowGradient: string;
+  rowBorder: string;
+}
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
   if (!raw) return null;
@@ -45,7 +41,6 @@ function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
     funScore,
     deltaPoints: raw.deltaPoints ?? raw.delta_points ?? null,
     progressPercent: raw.progressPercent ?? raw.progress_percent ?? null,
-    percentileBand: raw.percentileBand ?? raw.percentile_band ?? null,
   };
 }
 
@@ -53,23 +48,55 @@ function normalizeResponse(raw: any, period: Period): PublicLeaderboardResponse 
   if (!raw || !Array.isArray(raw.top)) return null;
   const top = raw.top.map(normalizeEntry).filter(Boolean) as PublicLeaderboardEntry[];
   if (!top.length) return null;
-  const self = normalizeEntry(raw.self) ?? null;
   return {
     period: raw.period ?? period,
     scope: raw.scope ?? "global",
     generatedAt: raw.generatedAt ?? raw.generated_at ?? new Date().toISOString(),
-    percentile: raw.percentile ?? raw.percentile_band ?? null,
-    self,
+    self: normalizeEntry(raw.self) ?? null,
     top,
   };
 }
 
+function rowTone(rank: number): RowTone {
+  if (rank === 1) {
+    return {
+      rowGradient: "linear-gradient(180deg, #bab407 0%, #4e4c05 100%)",
+      rowBorder: "#fff70d",
+    };
+  }
+  if (rank === 2) {
+    return {
+      rowGradient: "linear-gradient(180deg, #737373 0%, #212121 100%)",
+      rowBorder: "#ffffff",
+    };
+  }
+  if (rank === 3) {
+    return {
+      rowGradient: "linear-gradient(180deg, #ac7207 0%, #462e02 100%)",
+      rowBorder: "#f4a106",
+    };
+  }
+  return {
+    rowGradient: "linear-gradient(180deg, #7807ac 0%, #330246 100%)",
+    rowBorder: "#b515ff",
+  };
+}
+
+const fallbackTop: PublicLeaderboardEntry[] = [
+  { displayName: "Nova", funScore: 1200, progressPercent: 120 },
+  { displayName: "Atlas", funScore: 950, progressPercent: 90 },
+  { displayName: "Pixel", funScore: 800, progressPercent: 70 },
+  { displayName: "Mara", funScore: 650, progressPercent: 55 },
+  { displayName: "Echo", funScore: 500, progressPercent: 40 },
+];
+
 export default function LeaderboardView() {
+  const navigate = useNavigate();
+  const { state: engagement } = useEngagement();
   const [period, setPeriod] = useState<Period>("weekly");
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [shareHint, setShareHint] = useState<string | null>(null);
-  const { state: engagement } = useEngagement();
   const funScoreSentRef = useRef<string>("");
   const shareTimeoutRef = useRef<number | null>(null);
 
@@ -83,13 +110,12 @@ export default function LeaderboardView() {
     const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
     const url = new URL(`${apiBase}/leaderboard`);
     url.searchParams.set("period", period);
-    const scope = engagement.group ? "group" : "global";
-    url.searchParams.set("scope", scope);
+    url.searchParams.set("scope", engagement.group ? "group" : "global");
     if (engagement.group) {
       url.searchParams.set("crewCode", engagement.group.code);
     }
     url.searchParams.set("playerId", getOrCreateClientId());
-    url.searchParams.set("limit", "10");
+    url.searchParams.set("limit", "13");
 
     fetch(url.toString())
       .then((res) => (res.ok ? res.json() : null))
@@ -98,14 +124,14 @@ export default function LeaderboardView() {
         const normalized = normalizeResponse(json, period);
         if (normalized) {
           setData(normalized);
-          return;
+        } else {
+          setData({
+            period,
+            scope: "global",
+            generatedAt: new Date().toISOString(),
+            top: fallbackTop,
+          });
         }
-        setData({
-          period,
-          scope: "global",
-          generatedAt: new Date().toISOString(),
-          top: fallbackTop,
-        });
       })
       .catch(() => {
         if (!active) return;
@@ -117,97 +143,86 @@ export default function LeaderboardView() {
         });
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       });
 
     return () => {
       active = false;
     };
-  }, [period]);
+  }, [engagement.group, period]);
 
   const topList = data?.top?.length ? data.top : fallbackTop;
+
   const computeProgressPercent = (current: number, previous: number) => {
-    if (previous <= 0) {
-      return current > 0 ? 100 : 0;
-    }
+    if (previous <= 0) return current > 0 ? 100 : 0;
     const delta = Math.max(0, current - previous);
-    const raw = Math.round((delta / Math.max(1, previous)) * 100);
-    return Math.min(200, raw);
+    return Math.min(200, Math.round((delta / Math.max(1, previous)) * 100));
   };
+
   const fallbackWeeklyProgress = computeProgressPercent(
     engagement.week.points,
     engagement.week.lastWeekPoints,
   );
-  const fallbackSelf =
+
+  const fallbackSelf: PublicLeaderboardEntry =
     period === "weekly"
       ? {
           displayName: "You",
           funScore: 0,
-          deltaPoints: engagement.week.points - engagement.week.lastWeekPoints,
           progressPercent: fallbackWeeklyProgress,
-          percentileBand: fallbackWeeklyProgress > 0 ? "Top 50%" : "Rising",
+          deltaPoints: engagement.week.points - engagement.week.lastWeekPoints,
         }
       : {
           displayName: "You",
           funScore: engagement.seasonProgress.points,
+          progressPercent: null,
+          deltaPoints: null,
         };
+
   const selfEntry = data?.self ?? fallbackSelf;
-  const funScoreValue = selfEntry?.funScore ?? 0;
-  const percentile =
-    data?.percentile ??
-    selfEntry?.percentileBand ??
-    (selfEntry?.deltaPoints && selfEntry.deltaPoints > 0 ? "Top 50%" : "Rising");
 
   const metricValue = (entry: PublicLeaderboardEntry | null) => {
     if (!entry) return 0;
     return period === "weekly"
-      ? entry.progressPercent ?? entry.deltaPoints ?? 0
-      : entry.funScore ?? 0;
+      ? Math.max(0, entry.progressPercent ?? entry.deltaPoints ?? 0)
+      : Math.max(0, entry.funScore);
   };
+
   const maxMetric = Math.max(
     1,
     metricValue(selfEntry),
     ...topList.map((entry) => metricValue(entry)),
   );
+
   const selfMetric = metricValue(selfEntry);
   const selfRatio = Math.min(1, selfMetric / maxMetric);
-  const selfLabel =
-    period === "weekly"
-      ? selfMetric > 0
-        ? `+${selfMetric}%`
-        : "No boost yet"
-      : `${Math.round(selfRatio * 100)}% glow`;
-
-  const subtitle = useMemo(() => (period === "weekly" ? "This week" : "This season"), [period]);
-  const seasonHint = "Season % = leader score. 100% top, 50% half.";
-  const boardHint = loading
-    ? "Loading..."
-    : period === "season"
-      ? seasonHint
-      : "Progress vs last week";
-  const scopeLabel = engagement.group ? `Crew ${engagement.group.code}` : "Global";
-  const boardTitle = engagement.group ? "Top crew" : "Top vibes";
+  const selfPercent = period === "weekly" ? Math.round(selfMetric) : Math.round(selfRatio * 100);
 
   useEffect(() => {
-    const key = `${period}:${funScoreValue}`;
+    const score = selfEntry?.funScore ?? 0;
+    const key = `${period}:${score}`;
     if (funScoreSentRef.current === key) return;
     funScoreSentRef.current = key;
-    trackEvent("fun_score", { period, score: funScoreValue });
-  }, [funScoreValue, period]);
+    trackEvent("fun_score", { period, score });
+  }, [period, selfEntry?.funScore]);
 
   const shareUrl =
     typeof window !== "undefined" ? window.location.href : "https://escapers.app/leaderboard";
   const shareTitle = LEADERBOARD_SHARE_TITLE;
   const shareText = JOIN_META_DESCRIPTION;
+  const shareTextX = `${shareText} →`;
+  const shareTextReddit = `${shareTitle} — ${shareText}`;
+  const shareTextInstagram = `${shareTitle}. ${shareText}`;
+  const shareTextTwitch = `${shareTitle}. ${shareText}`;
 
   const setHint = (message: string) => {
     setShareHint(message);
     if (shareTimeoutRef.current) {
       window.clearTimeout(shareTimeoutRef.current);
     }
-    shareTimeoutRef.current = window.setTimeout(() => {
-      setShareHint(null);
-    }, 2800);
+    shareTimeoutRef.current = window.setTimeout(() => setShareHint(null), 2800);
   };
 
   useEffect(() => {
@@ -218,20 +233,22 @@ export default function LeaderboardView() {
     };
   }, []);
 
-  const copyShareLink = async (label: string) => {
+  const copyShareLink = async (label: string, content?: string) => {
     try {
+      const payload = content ?? shareUrl;
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(payload);
       } else {
         const temp = document.createElement("textarea");
-        temp.value = shareUrl;
+        temp.value = payload;
         document.body.appendChild(temp);
         temp.select();
         document.execCommand("copy");
         document.body.removeChild(temp);
       }
       setHint(`${label} link copied — paste it anywhere.`);
-    } catch (error) {
+      trackEvent("leaderboard_share", { channel: `${label.toLowerCase()}_copy`, period });
+    } catch {
       setHint("Copy failed — try again.");
     }
   };
@@ -248,166 +265,165 @@ export default function LeaderboardView() {
         trackEvent("leaderboard_share", { channel: "native", period });
         return;
       } catch {
-        // fall back to copy if user cancels or share fails
+        // fall back to copy when share sheet is unavailable or closed
       }
     }
     await copyShareLink("Share");
-    trackEvent("leaderboard_share", { channel: "copy", period });
   };
 
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
   const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
     shareUrl,
-  )}&title=${encodeURIComponent(shareTitle)}`;
+  )}&title=${encodeURIComponent(shareTextReddit)}`;
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    shareText,
+    shareTextX,
   )}&url=${encodeURIComponent(shareUrl)}`;
 
   return (
     <div className={styles.wrap}>
-      <header className={styles.header}>
-        <div className={styles.titleRow}>
-          <span className={styles.titleEmoji}>🎉</span>
-          <h1 className={styles.title}>Party Quiz Leaderboard</h1>
-          <span className={styles.titleEmoji}>🔥</span>
+      <section className={styles.phone} aria-label="Leaderboard screen">
+        <div className={styles.topBar}>
+          <span className={styles.statusTime}>9:41</span>
+          <span className={styles.notch} aria-hidden="true" />
+          <span className={styles.statusSignal} aria-hidden="true">
+            ▂▃▅
+          </span>
         </div>
-        <h2 className={styles.seoSubtitle}>
-          Friends quiz + meme game vibes in fun party games.
-        </h2>
-        <p className={styles.subtitle}>
-          {subtitle} · {scopeLabel}
-        </p>
-      </header>
 
-      <div className={styles.tabs}>
-        <button
-          type="button"
-          className={`${styles.tab} ${period === "weekly" ? styles.tabActive : ""}`}
-          onClick={() => setPeriod("weekly")}
-        >
-          Weekly
-        </button>
-        <button
-          type="button"
-          className={`${styles.tab} ${period === "season" ? styles.tabActive : ""}`}
-          onClick={() => setPeriod("season")}
-        >
-          Season
-        </button>
-      </div>
+        <header className={styles.header}>
+          <h1 className={styles.headerTitle}>Leaderboard</h1>
+          <div className={styles.segmentPicker}>
+            <button
+              type="button"
+              className={`${styles.segmentButton} ${period === "weekly" ? styles.segmentActive : ""}`}
+              onClick={() => setPeriod("weekly")}
+            >
+              Weekly
+            </button>
+            <button
+              type="button"
+              className={`${styles.segmentButton} ${period === "season" ? styles.segmentActive : ""}`}
+              onClick={() => setPeriod("season")}
+            >
+              Season
+            </button>
+          </div>
+        </header>
 
-      <section className={styles.shareStrip}>
-        <button type="button" className={styles.sharePrimary} onClick={handleNativeShare}>
-          <span className={styles.shareIcon}>📲</span>
-          Share
-        </button>
-        <div className={styles.shareRow}>
-          <button
-            type="button"
-            className={`${styles.shareButton} ${styles.shareFacebook}`}
-            onClick={() => openShare(facebookUrl, "facebook")}
+        <main className={styles.mobile}>
+          <section
+            className={styles.vibeCard}
+            title="Season mode: 100% = current leader score, 50% = half of leader score."
           >
-            <span className={styles.shareIcon}>f</span>
-            Facebook
-          </button>
-          <button
-            type="button"
-            className={`${styles.shareButton} ${styles.shareInstagram}`}
-            onClick={() => copyShareLink("Instagram")}
-          >
-            <span className={styles.shareIcon}>IG</span>
-            Instagram
-          </button>
-          <button
-            type="button"
-            className={`${styles.shareButton} ${styles.shareTwitch}`}
-            onClick={() => copyShareLink("Twitch")}
-          >
-            <span className={styles.shareIcon}>TW</span>
-            Twitch
-          </button>
-          <button
-            type="button"
-            className={`${styles.shareButton} ${styles.shareReddit}`}
-            onClick={() => openShare(redditUrl, "reddit")}
-          >
-            <span className={styles.shareIcon}>👽</span>
-            Reddit
-          </button>
-          <button
-            type="button"
-            className={`${styles.shareButton} ${styles.shareX}`}
-            onClick={() => openShare(xUrl, "x")}
-          >
-            <span className={styles.shareIcon}>X</span>
-            X
-          </button>
-        </div>
-        {shareHint ? <div className={styles.shareHint}>{shareHint}</div> : null}
-      </section>
-
-      <section className={styles.hero}>
-        <div className={styles.heroCard}>
-          <div className={styles.heroLabel}>Your vibe</div>
-          <div className={styles.heroScore}>
-            <div className={styles.heroMeter}>
-              <span className={styles.heroMeterFill} style={{ width: `${selfRatio * 100}%` }} />
+            <div className={styles.vibeRow}>
+              <span>Your vibe:</span>
+              <span>{loading ? "..." : `${selfPercent}%`}</span>
             </div>
-            <span className={styles.heroValue}>{selfLabel}</span>
-          </div>
-          <div className={styles.heroMetaRow}>
-            {percentile ? <span className={styles.heroPill}>{percentile}</span> : null}
-            {period === "weekly" && selfMetric <= 0 ? (
-              <span className={styles.heroDeltaMuted}>Play a round to join the party</span>
-            ) : null}
-          </div>
-        </div>
-      </section>
+            <div className={styles.progressTrack}>
+              <span className={styles.progressFill} style={{ width: `${selfRatio * 100}%` }} />
+              <span className={styles.progressKnob} style={{ left: `calc(${selfRatio * 100}% - 11px)` }} />
+            </div>
+          </section>
 
-      <section className={styles.board}>
-        <div className={styles.boardHeader}>
-          <span className={styles.boardTitle}>{boardTitle}</span>
-          <span className={styles.boardHint}>{boardHint}</span>
-        </div>
-        <div className={styles.list}>
-          {topList.map((entry, index) => {
-            const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
-            const entryMetric = metricValue(entry);
-            const entryRatio = Math.min(1, entryMetric / maxMetric);
-            const entryLabel =
-              period === "weekly"
-                ? entryMetric > 0
-                  ? `+${entryMetric}%`
-                  : "—"
-                : `${Math.round(entryRatio * 100)}%`;
-            return (
-              <div key={`${entry.displayName}-${entryMetric}-${index}`} className={styles.row}>
-                <div
-                  className={styles.avatar}
-                  style={{ background: avatarColor(entry.avatarId ?? entry.displayName) }}
-                >
-                  {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{entry.displayName.charAt(0)}</span>}
-                </div>
-                <div className={styles.nameBlock}>
-                  <span className={styles.name}>{entry.displayName}</span>
-                  {entry.percentileBand ? (
-                    <span className={styles.band}>{entry.percentileBand}</span>
-                  ) : entry.deltaPoints && entry.deltaPoints > 0 ? (
-                    <span className={styles.band}>Top 50%</span>
-                  ) : (
-                    <span className={styles.band}>Rising</span>
-                  )}
-                </div>
-                <div className={styles.progressBlock}>
-                  <div className={styles.progressBar}>
-                    <span className={styles.progressFill} style={{ width: `${entryRatio * 100}%` }} />
-                  </div>
-                  <span className={styles.progressValue}>{entryLabel}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+          <section className={styles.shareCard}>
+            <h2 className={styles.cardTitle}>Share on:</h2>
+            <div className={styles.shareRow}>
+              <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
+                <span className={styles.shareGlyph}>👽</span>
+              </button>
+              <button
+                type="button"
+                className={styles.shareButton}
+                onClick={() => copyShareLink("Instagram", `${shareTextInstagram} ${shareUrl}`)}
+                aria-label="Share on Instagram"
+              >
+                <span className={styles.shareGlyph}>◎</span>
+              </button>
+              <button type="button" className={styles.shareButton} onClick={() => openShare(facebookUrl, "facebook")} aria-label="Share on Facebook">
+                <span className={styles.shareGlyph}>f</span>
+              </button>
+              <button
+                type="button"
+                className={styles.shareButton}
+                onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
+                aria-label="Share on Twitch"
+              >
+                <span className={styles.shareGlyph}>T</span>
+              </button>
+              <button type="button" className={styles.shareButton} onClick={() => openShare(xUrl, "x")} aria-label="Share on X">
+                <span className={styles.shareGlyph}>X</span>
+              </button>
+            </div>
+            <button type="button" className={styles.nativeShare} onClick={handleNativeShare}>
+              Share
+            </button>
+            {shareHint ? <p className={styles.shareHint}>{shareHint}</p> : null}
+          </section>
+
+          <section className={styles.listCard}>
+            <div className={styles.listRows}>
+              {topList.map((entry, index) => {
+                const rank = index + 1;
+                const tone = rowTone(rank);
+                const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+                const entryMetric = metricValue(entry);
+                const entryRatio = Math.min(1, entryMetric / maxMetric);
+                const valueLabel =
+                  period === "weekly"
+                    ? `${Math.max(0, Math.round(entryMetric))}%`
+                    : `${Math.round(entryRatio * 100)}%`;
+                return (
+                  <article
+                    key={`${entry.displayName}-${index}`}
+                    className={styles.row}
+                    style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
+                  >
+                    <div className={styles.rowLeft}>
+                      <span className={styles.rankChip}>🏆 {rank}</span>
+                      <div className={styles.rowIdentity}>
+                        <span
+                          className={styles.avatar}
+                          style={{ background: avatarColor(entry.avatarId ?? entry.displayName) }}
+                        >
+                          {avatarSrc ? (
+                            <img src={avatarSrc} alt="" />
+                          ) : (
+                            <span>{entry.displayName.charAt(0).toUpperCase()}</span>
+                          )}
+                        </span>
+                        <span className={styles.rowName}>{entry.displayName}</span>
+                      </div>
+                    </div>
+                    <span className={styles.scoreBadge}>{valueLabel}</span>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.actionButton}
+              onClick={() => navigate("/join")}
+              aria-label="Back to join"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M8 3.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-1.5H4.75v10.5h2.5v-1.5a.75.75 0 0 1 1.5 0V16a.75.75 0 0 1-.75.75h-4A.75.75 0 0 1 3.25 16V4A.75.75 0 0 1 4 3.25h4Zm4.78 2.22a.75.75 0 0 1 1.06 0l3.97 3.97a.75.75 0 0 1 0 1.06l-3.97 3.97a.75.75 0 1 1-1.06-1.06l2.69-2.69H8.75a.75.75 0 0 1 0-1.5h6.72l-2.69-2.69a.75.75 0 0 1 0-1.06Z" />
+              </svg>
+            </button>
+          </div>
+        </main>
+
+        <footer className={styles.tabBar}>
+          <div className={styles.urlRow}>
+            <span className={styles.lock} aria-hidden="true">
+              🔒
+            </span>
+            <span className={styles.url}>escapers.app</span>
+          </div>
+          <span className={styles.homeIndicator} aria-hidden="true" />
+        </footer>
       </section>
     </div>
   );
