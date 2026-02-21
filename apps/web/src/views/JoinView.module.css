@@ -63,10 +63,9 @@
 
 .sectionCard {
   width: min(100%, 350px);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(10, 10, 20, 0.56);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  border-radius: 12px;
+  border: none;
+  background: #200042;
   padding: 16px;
   display: grid;
   gap: 12px;
@@ -341,13 +340,12 @@
   position: absolute;
   inset: 0 0 128px;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(18px);
   pointer-events: auto;
 }
 
 .qrFrameWrap {
   position: absolute;
-  inset: 44px 0 128px;
+  inset: 0 0 128px;
   display: grid;
   place-items: center;
   pointer-events: none;
@@ -356,7 +354,7 @@
 .profileCard {
   min-height: 254px;
   display: grid;
-  gap: 10px;
+  gap: 16px;
   justify-items: center;
 }
 
