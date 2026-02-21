@@ -345,31 +345,9 @@ export default function RoundGallery() {
   const showReveal = phase === "reveal";
   const showRevealAnswers = showReveal && revealStep === "answers";
   const showRevealResult = showReveal && revealStep === "result";
-
-  const renderAnswerRevealGrid = () => (
-    <div className={styles.answerRevealGrid}>
-      {answers.map((answer, index) => {
-        const isCorrectAnswer = index === correctIndex;
-        return (
-          <div
-            key={answer.id}
-            className={`${styles.answerRevealTile} ${!isCorrectAnswer ? styles.answerRevealDim : ""}`}
-          >
-            <img
-              className={styles.answerRevealImage}
-              src={answer.src}
-              alt={`Answer ${index + 1}`}
-            />
-            {isCorrectAnswer ? (
-              <CricleCheck className={styles.answerRevealIcon} />
-            ) : (
-              <CricleXmark className={styles.answerRevealIcon} />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
+  const showRoundLayout = showRound || showRevealAnswers;
+  const timerDisplaySeconds = showRevealAnswers ? 12 : secondsLeft;
+  const progressDisplayPercent = showRevealAnswers ? 22 : progressPercent;
 
   return (
     <section className={`${styles.root} ${showRound ? styles.roundPhase : ""}`}>
@@ -417,7 +395,7 @@ export default function RoundGallery() {
         </section>
       )}
 
-      {showRound && (
+      {showRoundLayout && (
         <div className={styles.roundStack}>
           <section className={styles.roundTitleCard}>
             <h2 className={styles.roundTitle}>{questionTitle}</h2>
@@ -426,15 +404,15 @@ export default function RoundGallery() {
           <section className={styles.roundPromptCard}>
             <div className={styles.roundPromptMedia}>{renderPrompt()}</div>
             <div className={styles.roundTimerWrap}>
-              <p className={styles.roundTimerText}>{secondsLeft} seconds left</p>
+              <p className={styles.roundTimerText}>{timerDisplaySeconds} seconds left</p>
               <div className={styles.progressTrack}>
                 <div
                   className={styles.progressFill}
-                  style={{ width: `${progressPercent}%` }}
+                  style={{ width: `${progressDisplayPercent}%` }}
                 />
                 <span
                   className={styles.progressKnob}
-                  style={{ left: `calc(${progressPercent}% - 11px)` }}
+                  style={{ left: `calc(${progressDisplayPercent}% - 11px)` }}
                 />
               </div>
             </div>
@@ -445,15 +423,27 @@ export default function RoundGallery() {
               {answers.map((answer, index) => {
                 const Icon = ANSWER_ICONS[index] ?? Triangle;
                 const isSelected = selectedIndex === index;
+                const isCorrectAnswer = index === correctIndex;
+                const showWrongState = showRevealAnswers && isSelected && !isCorrect;
+                const showCorrectState = showRevealAnswers && isCorrectAnswer;
+                const showRevealState = showWrongState || showCorrectState;
+                const answerClassName = [
+                  styles.answerButton,
+                  isSelected ? styles.answerSelected : "",
+                  showWrongState ? styles.answerRevealWrong : "",
+                  showCorrectState ? styles.answerRevealCorrect : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
                 return (
                   <button
                     key={answer.id}
-                    className={`${styles.answerButton} ${isSelected ? styles.answerSelected : ""}`}
+                    className={answerClassName}
                     onClick={() => handleSelect(index)}
-                    disabled={selectedIndex !== null}
+                    disabled={!showRound || selectedIndex !== null}
                   >
                     <img
-                      className={styles.answerMedia}
+                      className={`${styles.answerMedia} ${showRevealState ? styles.answerMediaInset : ""}`}
                       src={answer.src}
                       alt={`Answer ${index + 1}`}
                     />
@@ -468,14 +458,6 @@ export default function RoundGallery() {
             </div>
           </section>
         </div>
-      )}
-
-      {!showRound && showRevealAnswers && (
-        <section className={`${styles.centerWrap} ${styles.animShow}`}>
-          <h2 className={styles.questionTitle}>{questionTitle}</h2>
-          {renderPrompt()}
-          {renderAnswerRevealGrid()}
-        </section>
       )}
 
       {!showRound && showRevealResult && (

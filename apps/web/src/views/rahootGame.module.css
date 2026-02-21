@@ -613,8 +613,17 @@
   cursor: default;
 }
 
-.roundPhase .answerButton.answerSelected {
-  box-shadow: inset 0 0 0 2px #e006f4;
+.answerSelected {
+}
+
+.roundPhase .answerButton.answerRevealWrong {
+  background: #530000;
+  box-shadow: inset 0 0 0 1px #c50000;
+}
+
+.roundPhase .answerButton.answerRevealCorrect {
+  background: #003d0f;
+  box-shadow: inset 0 0 0 1px #06f441;
 }
 
 .roundPhase .answerMedia {
@@ -623,6 +632,14 @@
   max-height: none;
   object-fit: cover;
   border-radius: 0;
+}
+
+.roundPhase .answerMedia.answerMediaInset {
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  margin: 8px;
+  border-radius: 0;
+  object-fit: contain;
 }
 
 .answerPickBadge {
