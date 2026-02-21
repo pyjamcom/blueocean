@@ -282,6 +282,10 @@ export default function App() {
     setGateStatus("blocked");
   };
 
+  const handleBackToPrompt = () => {
+    setGateStatus("prompt");
+  };
+
   const handleExit = () => {
     window.location.href = "about:blank";
   };
@@ -296,6 +300,7 @@ export default function App() {
                 status={gateStatus === "blocked" ? "blocked" : "prompt"}
                 onAccept={handleAccept}
                 onReject={handleReject}
+                onBackToPrompt={handleBackToPrompt}
                 onExit={handleExit}
               />
             )}

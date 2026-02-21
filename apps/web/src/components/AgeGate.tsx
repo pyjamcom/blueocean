@@ -6,28 +6,49 @@ export interface AgeGateProps {
   status: AgeGateStatus;
   onAccept: () => void;
   onReject: () => void;
+  onBackToPrompt: () => void;
   onExit: () => void;
 }
 
-export default function AgeGate({ status, onAccept, onReject, onExit }: AgeGateProps) {
+export default function AgeGate({
+  status,
+  onAccept,
+  onReject,
+  onBackToPrompt,
+  onExit,
+}: AgeGateProps) {
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} role="presentation">
       <div className={styles.card}>
         {status === "prompt" ? (
-          <div className={styles.actions}>
-            <button className={styles.accept} onClick={onAccept} aria-label="age-accept">
-              <span className={styles.badge} />
-              <span className={styles.check} />
-            </button>
-            <button className={styles.reject} onClick={onReject} aria-label="age-reject">
-              <span className={styles.stop} />
-            </button>
-          </div>
+          <>
+            <h2 className={styles.title}>Are you 11 yet?</h2>
+            <div className={styles.actions}>
+              <button type="button" className={styles.primary} onClick={onAccept} aria-label="age-accept">
+                Yes, i am 11
+              </button>
+              <button type="button" className={styles.primaryWide} onClick={onReject} aria-label="age-reject">
+                No, i am not 11
+              </button>
+            </div>
+          </>
         ) : (
-          <div className={styles.blocked}>
-            <div className={styles.stopLarge} />
-            <button className={styles.exit} onClick={onExit} aria-label="exit" />
-          </div>
+          <>
+            <h2 className={styles.titleWide}>Are you sure you want to exit?</h2>
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.secondary}
+                onClick={onBackToPrompt}
+                aria-label="cancel-exit"
+              >
+                Cancel
+              </button>
+              <button type="button" className={styles.primary} onClick={onExit} aria-label="exit">
+                Stay
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

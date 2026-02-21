@@ -1,99 +1,101 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, rgba(20, 20, 28, 0.98), rgba(8, 8, 12, 0.98));
   display: grid;
   place-items: center;
-  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 100;
 }
 
 .card {
-  width: min(86vw, 420px);
-  border-radius: 32px;
+  width: 298px;
+  min-height: 159px;
+  border-radius: 24px;
+  border: 1px solid #ae00ff;
+  background: #12001a;
   padding: 32px;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  display: grid;
+  gap: 24px;
+  justify-items: center;
+  backdrop-filter: blur(50.35px);
+}
+
+.title,
+.titleWide {
+  margin: 0;
+  font-family: Geist, sans-serif;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: -0.6px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+.title {
+  width: 132px;
+}
+
+.titleWide {
+  width: 234px;
 }
 
 .actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  width: 234px;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.accept,
-.reject,
-.exit {
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  height: 140px;
-  display: grid;
-  place-items: center;
-  position: relative;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+.primary,
+.primaryWide,
+.secondary {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  height: 45px;
+  padding: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.badge {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.85);
-  clip-path: polygon(20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%, 0 20%);
+.primary {
+  width: 102px;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  border-color: #7300ff;
 }
 
-.check {
-  position: absolute;
-  width: 28px;
-  height: 14px;
-  border-left: 4px solid rgba(20, 20, 28, 0.9);
-  border-bottom: 4px solid rgba(20, 20, 28, 0.9);
-  transform: rotate(-45deg) translate(8px, 6px);
+.primaryWide {
+  width: 124px;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  border-color: #7300ff;
 }
 
-.stop,
-.stopLarge {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.8);
-  position: relative;
+.secondary {
+  width: 113px;
+  border-radius: 16px;
+  background: linear-gradient(224deg, #1a1500 0%, #020202 72%);
+  border-color: #1c1c1c;
+  color: #8d8d8d;
 }
 
-.stop::after,
-.stopLarge::after {
-  content: "";
-  position: absolute;
-  width: 70%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.8);
-  top: 50%;
-  left: 15%;
-  transform: rotate(-45deg);
-}
+@media (max-width: 420px) {
+  .card {
+    width: min(298px, calc(100vw - 24px));
+  }
 
-.blocked {
-  display: grid;
-  gap: 24px;
-  place-items: center;
-}
-
-.stopLarge {
-  width: 88px;
-  height: 88px;
-}
-
-.exit {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-}
-
-.exit::after {
-  content: "";
-  width: 24px;
-  height: 24px;
-  border-right: 4px solid rgba(255, 255, 255, 0.8);
-  border-bottom: 4px solid rgba(255, 255, 255, 0.8);
-  transform: rotate(-45deg);
+  .actions {
+    width: 100%;
+  }
 }

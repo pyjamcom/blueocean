@@ -341,7 +341,12 @@ export default function LobbyView() {
 
       {showQr && (
         <div className={styles.qrOverlay} onClick={() => setShowQr(false)}>
-          <div className={styles.qrSheet}>
+          <div
+            className={styles.qrSheet}
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-label="Room QR code"
+          >
             {qrSrc ? <img src={qrSrc} alt="" className={styles.qrImage} /> : null}
           </div>
         </div>
