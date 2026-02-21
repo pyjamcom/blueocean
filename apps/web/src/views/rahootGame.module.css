@@ -7,24 +7,35 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
+  padding: 0 20px 16px;
+  gap: 8px;
 }
 
 .background {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: #ea580c;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(63, 169, 255, 0.3), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(255, 77, 109, 0.3), transparent 45%),
+    linear-gradient(160deg, #1a1335, #0a0a14 65%);
 }
 
 .topBar {
   display: flex;
   justify-content: space-between;
-  padding: 16px;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   width: 100%;
 }
 
+.topBarHidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
 .questionBadge {
   background: #ffffff;
@@ -79,6 +90,16 @@
   text-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
 }
 
+.preparedSub {
+  margin-top: -34px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 .preparedGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -126,6 +147,7 @@
   border-radius: 999px;
   height: 14px;
   overflow: hidden;
+  position: relative;
 }
 
 .questionTitle {
@@ -387,6 +409,208 @@
   border-radius: 3px;
 }
 
+.roundPhase .centerWrap {
+  max-width: 350px;
+  width: 100%;
+  padding: 0;
+}
+
+.roundStack {
+  width: min(100%, 350px);
+  display: grid;
+  gap: 8px;
+}
+
+.roundTitleCard,
+.roundPromptCard,
+.roundAnswersCard {
+  border-radius: 12px;
+  background: #200042;
+  width: 100%;
+}
+
+.roundTitleCard {
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.roundTitle {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1.5vw + 0.9rem, 1.6rem);
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.roundPromptCard {
+  min-height: 308px;
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.roundPromptMedia {
+  width: 100%;
+  min-height: 223px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(8, 1, 20, 0.55);
+  display: grid;
+  place-items: center;
+}
+
+.roundPhase .roundPromptMedia .questionImage {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  margin: 0;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.roundPhase .roundPromptMedia .promptPair {
+  width: 100%;
+  height: 100%;
+  gap: 12px;
+  padding: 12px;
+}
+
+.roundPhase .roundPromptMedia .pairImage {
+  max-height: 100%;
+  max-width: calc(50% - 12px);
+  object-fit: contain;
+}
+
+.roundPhase .roundPromptMedia .audioPlayer {
+  width: calc(100% - 24px);
+}
+
+.roundTimerWrap {
+  display: grid;
+  gap: 12px;
+}
+
+.roundTimerText {
+  margin: 0;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.roundPhase .progressTrack {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: #ffffff;
+}
+
+.progressKnob {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: #e006f4;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+.roundAnswersCard {
+  min-height: 316px;
+  padding: 16px;
+}
+
+.roundPhase .answersGrid {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 4px;
+}
+
+.roundPhase .answerButton {
+  position: relative;
+  width: 100%;
+  min-height: 134px;
+  padding: 0;
+  border-radius: 8px;
+  background: rgba(7, 0, 20, 0.56);
+  box-shadow: none;
+  display: block;
+  overflow: hidden;
+}
+
+.roundPhase .answerButton:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.roundPhase .answerButton.answerSelected {
+  box-shadow: inset 0 0 0 2px #e006f4;
+}
+
+.roundPhase .answerMedia {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.answerPickBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(92, 92, 92, 0.95);
+  display: grid;
+  place-items: center;
+}
+
+.answerPickIcon {
+  width: 10px;
+  height: 10px;
+}
+
+.roundUtilityRow {
+  width: 100%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.roundUtilityButton {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background-color: #240000;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4'/><path d='M16 17l5-5-5-5'/><path d='M21 12H9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
+
+.roundPhase .bottomBar {
+  display: none;
+}
+
 .animShow {
   animation: show 0.5s ease-out;
 }
@@ -492,5 +716,16 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 540px) {
+  .root {
+    padding: 0 20px 16px;
+  }
+
+  .questionBadge {
+    font-size: 16px;
+    padding: 6px 12px;
   }
 }

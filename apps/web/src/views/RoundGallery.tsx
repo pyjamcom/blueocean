@@ -1,4 +1,5 @@
 import { ElementType, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnswerOption } from "../components/AnswerGrid";
 import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
@@ -27,6 +28,16 @@ const ANSWER_COLORS = [
   styles.answerGreen,
 ];
 const REVEAL_ANSWERS_DURATION_MS = 2200;
+const CATEGORY_TITLE_OVERRIDES: Record<string, string> = {
+  visual_provocation: "Choose the most meme",
+  absurd_sum: "Find the absurd match",
+  icon_battle: "Pick the winner",
+  sound_pantomime: "Listen and choose",
+  face_mimic: "Match the face",
+  drunk_reflex: "Tap fast, think later",
+  silhouette_guess: "Guess the silhouette",
+  trophy_rewards: "Claim your trophy",
+};
 
 function buildAnswers(question: QuestionRecord): [AnswerOption, AnswerOption, AnswerOption, AnswerOption] {
   const answers = question.answers.map((answer) => ({
@@ -46,6 +57,7 @@ function titleCase(value: string) {
 }
 
 export default function RoundGallery() {
+  const navigate = useNavigate();
   const {
     phase,
     questionIndex,
@@ -165,8 +177,11 @@ export default function RoundGallery() {
   const correctIndex = activeQuestion?.correct_index ?? 0;
   const hasAnswer = selectedIndex !== null;
   const isCorrect = hasAnswer && selectedIndex === correctIndex;
-  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct!" : "Wrong!";
+  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct answer" : "Wrong answer";
   const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`;
+  const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
+  const elapsedRatio = Math.min(1, Math.max(0, 1 - secondsLeft / timerTotalSeconds));
+  const progressPercent = Math.max(2, elapsedRatio * 100);
   const leaderboard = useMemo(() => [...players].sort((a, b) => b.score - a.score), [players]);
   const selfEntry = leaderboard.find((entry) => entry.id === playerId) ?? null;
   const selfRank = selfEntry ? leaderboard.findIndex((entry) => entry.id === playerId) + 1 : null;
@@ -206,10 +221,10 @@ export default function RoundGallery() {
     lastAnsweredRef.current = totalAnswered;
   }, [phase, totalAnswered]);
 
-  const questionTitle = activeQuestion?.humor_tag
-    ? titleCase(activeQuestion.humor_tag)
-    : activeQuestion?.category
-      ? titleCase(activeQuestion.category)
+  const questionTitle = activeQuestion?.category
+    ? CATEGORY_TITLE_OVERRIDES[activeQuestion.category] ?? titleCase(activeQuestion.category)
+    : activeQuestion?.humor_tag
+      ? titleCase(activeQuestion.humor_tag)
       : `Question ${Math.min(questionIndex + 1, MAX_QUESTIONS)}`;
 
   const promptSrc = activeQuestion ? resolveAssetRef(activeQuestion.prompt_image, fallbackSrc) : fallbackSrc;
@@ -332,8 +347,6 @@ export default function RoundGallery() {
   const showPrepared = phase === "prepared";
   const showRound = phase === "round";
   const showReveal = phase === "reveal";
-  const showAnsweredWait = showRound && selectedIndex !== null;
-  const showAnswerGrid = showRound && selectedIndex === null;
   const showRevealAnswers = showReveal && revealStep === "answers";
   const showRevealResult = showReveal && revealStep === "result";
 
@@ -363,11 +376,11 @@ export default function RoundGallery() {
   );
 
   return (
-    <section className={styles.root}>
+    <section className={`${styles.root} ${showRound ? styles.roundPhase : ""}`}>
       <div className={styles.background} aria-hidden="true">
       </div>
 
-      <div className={styles.topBar}>
+      <div className={`${styles.topBar} ${showRound ? styles.topBarHidden : ""}`}>
         <div className={styles.questionBadge}>{questionLabel}</div>
         <div />
       </div>
@@ -376,7 +389,7 @@ export default function RoundGallery() {
         <section className={styles.centerWrap}>
           <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />
           <h2 className={styles.waitTitle}>
-            {wsStatus !== "open" ? "Connecting..." : "Waiting for the host"}
+            {wsStatus !== "open" ? "Connecting..." : "Waiting for the other players..."}
           </h2>
         </section>
       )}
@@ -384,8 +397,9 @@ export default function RoundGallery() {
       {showPrepared && (
         <section className={`${styles.centerWrap} ${styles.animShow}`}>
           <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
-            Question #{Math.min(questionIndex + 1, MAX_QUESTIONS)}
+            Let&apos;s play!
           </h2>
+          <p className={styles.preparedSub}>Question #{Math.min(questionIndex + 1, MAX_QUESTIONS)}</p>
           <div className={`${styles.preparedGrid} ${styles.animQuizz}`}>
             {[...Array(4)].map((_, index) => {
               const Icon = ANSWER_ICONS[index] ?? Triangle;
@@ -402,68 +416,69 @@ export default function RoundGallery() {
         </section>
       )}
 
-      {showAnsweredWait && (
-        <section className={styles.centerWrap}>
-          <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />
-          <h2 className={styles.waitingText}>Waiting for the players to answer</h2>
-        </section>
-      )}
+      {showRound && (
+        <div className={styles.roundStack}>
+          <section className={styles.roundTitleCard}>
+            <h2 className={styles.roundTitle}>{questionTitle}</h2>
+          </section>
 
-      {showAnswerGrid && (
-        <div className={styles.answersWrap}>
-          <div className={styles.questionBlock}>
-            <h2 className={styles.questionTitle}>{questionTitle}</h2>
-            {renderPrompt()}
-            <div className={styles.progressTrack}>
-              <div
-                key={`${questionIndex}-${phase}`}
-                className={styles.progressBar}
-                style={{ animation: `progressBar ${durationMs / 1000}s linear forwards` }}
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className={styles.statsRow}>
-              <div className={styles.statPill}>
-                <span className={styles.statLabel}>Time</span>
-                <span className={styles.animTimer}>{secondsLeft}</span>
-              </div>
-              <div className={styles.statPill}>
-                <span className={styles.statLabel}>Answers</span>
-                <span>
-                  {totalAnswered}/{players.length}
-                </span>
+          <section className={styles.roundPromptCard}>
+            <div className={styles.roundPromptMedia}>{renderPrompt()}</div>
+            <div className={styles.roundTimerWrap}>
+              <p className={styles.roundTimerText}>{secondsLeft} seconds left</p>
+              <div className={styles.progressTrack}>
+                <div
+                  className={styles.progressFill}
+                  style={{ width: `${progressPercent}%` }}
+                />
+                <span
+                  className={styles.progressKnob}
+                  style={{ left: `calc(${progressPercent}% - 11px)` }}
+                />
               </div>
             </div>
+          </section>
 
+          <section className={styles.roundAnswersCard}>
             <div className={styles.answersGrid}>
               {answers.map((answer, index) => {
                 const Icon = ANSWER_ICONS[index] ?? Triangle;
+                const isSelected = selectedIndex === index;
                 return (
                   <button
                     key={answer.id}
-                    className={`${styles.answerButton} ${ANSWER_COLORS[index]}`}
+                    className={`${styles.answerButton} ${isSelected ? styles.answerSelected : ""}`}
                     onClick={() => handleSelect(index)}
                     disabled={selectedIndex !== null}
                   >
-                    <Icon className={styles.answerIcon} />
-                    <span className={styles.answerLabel}>
-                      <img
-                        className={styles.answerMedia}
-                        src={answer.src}
-                        alt={`Answer ${index + 1}`}
-                      />
-                    </span>
+                    <img
+                      className={styles.answerMedia}
+                      src={answer.src}
+                      alt={`Answer ${index + 1}`}
+                    />
+                    {isSelected ? (
+                      <span className={styles.answerPickBadge}>
+                        <Icon className={styles.answerPickIcon} />
+                      </span>
+                    ) : null}
                   </button>
                 );
               })}
             </div>
+          </section>
+
+          <div className={styles.roundUtilityRow}>
+            <button
+              type="button"
+              className={styles.roundUtilityButton}
+              aria-label="open leaderboard"
+              onClick={() => navigate("/leaderboard")}
+            />
           </div>
         </div>
       )}
 
-      {showRevealAnswers && (
+      {!showRound && showRevealAnswers && (
         <section className={`${styles.centerWrap} ${styles.animShow}`}>
           <h2 className={styles.questionTitle}>{questionTitle}</h2>
           {renderPrompt()}
@@ -471,7 +486,7 @@ export default function RoundGallery() {
         </section>
       )}
 
-      {showRevealResult && (
+      {!showRound && showRevealResult && (
         <section className={`${styles.centerWrap} ${styles.animShow}`}>
           {isCorrect ? (
             <CricleCheck className={styles.resultIcon} />
@@ -491,10 +506,13 @@ export default function RoundGallery() {
         </section>
       )}
 
-      <div className={styles.bottomBar}>
-        <p className={styles.bottomName}>{selfEntry?.name ?? "Player"}</p>
-        <div className={styles.bottomPoints}>{selfEntry?.score ?? 0}</div>
-      </div>
+      {!showRound && (
+        <div className={styles.bottomBar}>
+          <p className={styles.bottomName}>{selfEntry?.name ?? "Player"}</p>
+          <div className={styles.bottomPoints}>{selfEntry?.score ?? 0}</div>
+        </div>
+      )}
+
     </section>
   );
 }
