@@ -38,6 +38,8 @@ docs/*
 !docs/engagement_api.md
 !docs/figma/
 !docs/figma/escapers_engagement_skeleton.json
+!docs/figma/figma_api_setup.md
+!docs/figma/anima_api_setup.md
 !docs/openapi/
 !docs/openapi/escapers-engagement.yaml
 entity_source_schengen_facts.txt
