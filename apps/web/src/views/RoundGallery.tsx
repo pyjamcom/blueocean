@@ -360,6 +360,7 @@ export default function RoundGallery() {
         <div className={styles.topBarLeft}>
           <span className={styles.timeBadge}>9:41</span>
         </div>
+        <span className={styles.notch} aria-hidden="true" />
         <div className={styles.topBarRight}>
           <span className={styles.signalIcon} />
           <span className={styles.wifiIcon} />

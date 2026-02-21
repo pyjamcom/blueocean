@@ -72,8 +72,10 @@ export default function JoinWaitView() {
         <div className={styles.topBar}>
           <span className={styles.statusTime}>9:41</span>
           <span className={styles.notch} aria-hidden="true" />
-          <span className={styles.statusSignal} aria-hidden="true">
-            ▂▃▅
+          <span className={styles.topBarRight} aria-hidden="true">
+            <span className={styles.signalIcon} />
+            <span className={styles.wifiIcon} />
+            <span className={styles.batteryIcon} />
           </span>
         </div>
 
@@ -174,9 +176,7 @@ export default function JoinWaitView() {
           </div>
           <div className={styles.tabBar}>
             <div className={styles.urlRow}>
-              <span className={styles.lock} aria-hidden="true">
-                🔒
-              </span>
+              <span className={styles.lockIcon} aria-hidden="true" />
               <span className={styles.url}>escapers.app</span>
             </div>
             <span className={styles.homeIndicator} aria-hidden="true" />
