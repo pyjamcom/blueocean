@@ -110,7 +110,7 @@ async function run() {
 
   const name = json?.name || "unknown";
   const nodeCount = Array.isArray(json?.nodes) ? Object.keys(json.nodes).length : 0;
-  console.log(`[figma] OK. file=\"${name}\" nodes=${nodeCount} saved=${outPath}`);
+  console.log(`[figma] OK. file="${name}" nodes=${nodeCount} saved=${outPath}`);
 }
 
 run().catch((err) => {
