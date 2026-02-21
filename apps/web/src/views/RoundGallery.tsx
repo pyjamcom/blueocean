@@ -182,10 +182,6 @@ export default function RoundGallery() {
   const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
   const elapsedRatio = Math.min(1, Math.max(0, 1 - secondsLeft / timerTotalSeconds));
   const progressPercent = Math.max(2, elapsedRatio * 100);
-  const leaderboard = useMemo(() => [...players].sort((a, b) => b.score - a.score), [players]);
-  const selfEntry = leaderboard.find((entry) => entry.id === playerId) ?? null;
-  const selfRank = selfEntry ? leaderboard.findIndex((entry) => entry.id === playerId) + 1 : null;
-  const aheadOfMe = selfRank && selfRank > 1 ? leaderboard[selfRank - 2]?.name ?? null : null;
   const totalAnswered = answerCounts.reduce((sum, count) => sum + count, 0);
   const lastAnsweredRef = useRef(0);
 
@@ -380,9 +376,15 @@ export default function RoundGallery() {
       <div className={styles.background} aria-hidden="true">
       </div>
 
-      <div className={`${styles.topBar} ${showRound ? styles.topBarHidden : ""}`}>
-        <div className={styles.questionBadge}>{questionLabel}</div>
-        <div />
+      <div className={styles.topBar}>
+        <div className={styles.topBarLeft}>
+          <span className={styles.timeBadge}>9:41</span>
+        </div>
+        <div className={styles.topBarRight}>
+          <span className={styles.signalIcon} />
+          <span className={styles.wifiIcon} />
+          <span className={styles.batteryIcon} />
+        </div>
       </div>
 
       {showWait && (
@@ -396,23 +398,23 @@ export default function RoundGallery() {
 
       {showPrepared && (
         <section className={`${styles.centerWrap} ${styles.animShow}`}>
-          <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
-            Let&apos;s play!
-          </h2>
-          <p className={styles.preparedSub}>Question #{Math.min(questionIndex + 1, MAX_QUESTIONS)}</p>
-          <div className={`${styles.preparedGrid} ${styles.animQuizz}`}>
+          <div className={`${styles.preparedHero} ${styles.animQuizz}`}>
             {[...Array(4)].map((_, index) => {
               const Icon = ANSWER_ICONS[index] ?? Triangle;
               return (
                 <div
                   key={index}
-                  className={`${styles.quizButton} ${ANSWER_COLORS[index]}`}
+                  className={`${styles.quizButton} ${styles.preparedTile} ${ANSWER_COLORS[index]}`}
                 >
                   <Icon className={styles.preparedIcon} />
                 </div>
               );
             })}
           </div>
+          <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
+            Let&apos;s play!
+          </h2>
+          <p className={styles.preparedSub}>Question {questionLabel}</p>
         </section>
       )}
 
@@ -466,15 +468,6 @@ export default function RoundGallery() {
               })}
             </div>
           </section>
-
-          <div className={styles.roundUtilityRow}>
-            <button
-              type="button"
-              className={styles.roundUtilityButton}
-              aria-label="open leaderboard"
-              onClick={() => navigate("/leaderboard")}
-            />
-          </div>
         </div>
       )}
 
@@ -493,26 +486,33 @@ export default function RoundGallery() {
           ) : (
             <CricleXmark className={styles.resultIcon} />
           )}
-          <h2 className={styles.resultMessage}>{revealMessage}</h2>
-          {selfRank ? (
-            <p className={styles.resultRank}>
-              You are top {selfRank}
-              {aheadOfMe ? `, behind ${aheadOfMe}` : ""}
-            </p>
-          ) : null}
-          {isCorrect ? (
-            <span className={styles.resultPoints}>+{lastSelfPoints}</span>
-          ) : null}
+          <h2 className={styles.resultMessage}>
+            {isCorrect ? `Correct answer\n+${lastSelfPoints}` : revealMessage}
+          </h2>
         </section>
       )}
 
-      {!showRound && (
+      <div className={styles.chromeButtons}>
+        <button
+          type="button"
+          className={styles.chromeActionButton}
+          aria-label="open leaderboard"
+          onClick={() => navigate("/leaderboard")}
+        />
+      </div>
+      <div className={styles.chromeTabBar}>
+        <div className={styles.chromeUrlWrap}>
+          <span className={styles.chromeLock} />
+          <span className={styles.chromeUrl}>escapers.app</span>
+        </div>
+        <div className={styles.chromeHomeIndicator} />
+      </div>
+      {false && (
         <div className={styles.bottomBar}>
-          <p className={styles.bottomName}>{selfEntry?.name ?? "Player"}</p>
-          <div className={styles.bottomPoints}>{selfEntry?.score ?? 0}</div>
+          <p className={styles.bottomName}>Player</p>
+          <div className={styles.bottomPoints}>0</div>
         </div>
       )}
-
     </section>
   );
 }
