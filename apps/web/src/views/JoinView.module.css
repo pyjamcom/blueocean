@@ -602,13 +602,11 @@
   padding: 16px 20px;
   background: #111;
   border-top: 1px solid #fff;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
 }
 
 .primaryAction {
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: 8px;
   height: 44px;
   color: #fff;
   font-family: Inter, sans-serif;
@@ -660,7 +658,7 @@
 
 .iconAction {
   border: 1px solid #323232;
-  border-radius: 14px;
+  border-radius: 8px;
   background-color: #272727;
   background-repeat: no-repeat;
   background-position: center;
@@ -692,6 +690,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
+  z-index: 4;
 }
 
 .tabBar {
