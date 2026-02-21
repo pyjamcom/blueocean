@@ -16,7 +16,8 @@
     "test": "node tests/validate_questions.spec.js && node tests/ws_payloads.spec.js && node tests/validate_assets.spec.js && node tests/no_text_config.spec.js",
     "load:ws": "node scripts/load_simulator.js",
     "figma:file": "node scripts/fetch_figma_file.js",
-    "anima:figma": "node scripts/anima_codegen_from_figma.js"
+    "anima:figma": "node scripts/anima_codegen_from_figma.js",
+    "anima:retry": "node scripts/anima_retry_queue.js"
   },
   "devDependencies": {
     "@animaapp/anima-sdk": "^0.21.0",
