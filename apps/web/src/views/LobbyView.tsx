@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
 import { useLocation, useNavigate } from "react-router-dom";
 import EngagementPanel from "../components/engagement/EngagementPanel";
 import { useEngagement } from "../context/EngagementContext";
@@ -31,7 +30,7 @@ export default function LobbyView() {
   const params = new URLSearchParams(location.search);
   const age = params.get("age") ? Number(params.get("age")) : undefined;
   const variant = resolveVariant(age);
-  const { roomCode, players, playerId, setReady, setAvatar, setName } = useRoom();
+  const { roomCode, players, playerId, setReady, setAvatar, setName, resetRoom } = useRoom();
   const { state: engagement } = useEngagement();
 
   const lobbyAssets = assetIds.length ? assetIds : [];
@@ -48,27 +47,8 @@ export default function LobbyView() {
     return Math.floor(Math.random() * AVATAR_IDS.length);
   });
   const touchStart = useRef<number | null>(null);
-  const [qrSrc, setQrSrc] = useState<string>("");
-  const [showQr, setShowQr] = useState(false);
   const [nameDraft, setNameDraft] = useState(() => getStoredPlayerName() || "Player");
   const [editingName, setEditingName] = useState(false);
-
-  useEffect(() => {
-    if (!roomCode) return;
-    let active = true;
-    QRCode.toDataURL(`https://d0.do/${roomCode}`, {
-      width: 240,
-      margin: 1,
-      color: { dark: "#111111", light: "#ffffff" },
-    }).then((url) => {
-      if (active) {
-        setQrSrc(url);
-      }
-    });
-    return () => {
-      active = false;
-    };
-  }, [roomCode]);
 
   const handleAvatarCycle = (direction: number) => {
     setAvatarIndex((prev) => {
@@ -144,6 +124,13 @@ export default function LobbyView() {
   return (
     <div className={`${styles.wrap} ${styles[variant]}`}>
       <EngagementPanel mode="lobby" />
+      <div className={styles.topBar}>
+        <span className={styles.statusTime}>9:41</span>
+        <span className={styles.notch} aria-hidden="true" />
+        <span className={styles.statusSignal} aria-hidden="true">
+          ▂▃▅
+        </span>
+      </div>
       <section className={`${styles.sectionCard} ${styles.startCard}`}>
         <div className={styles.startCardTitle}>{startCardTitle}</div>
         <div className={styles.startCardMeta}>
@@ -306,51 +293,57 @@ export default function LobbyView() {
         <a href="/legal/data-deletion">Data</a>
       </div>
 
-      <div className={styles.bottomBar}>
-        <button
-          type="button"
-          className={styles.primaryJoin}
-          onClick={() => {
-            setReady(!selfReady);
-          }}
-          aria-label="join game"
-        >
-          {startLabel}
-        </button>
-        <button className={styles.iconActionQr} onClick={() => setShowQr((prev) => !prev)} aria-label="qr" />
-        <button
-          className={`${styles.iconActionSound} ${soundOn ? styles.soundOn : styles.soundOff}`}
-          onClick={() =>
-            setSoundOn((prev) => {
-              const next = !prev;
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem("sound_enabled", next ? "1" : "0");
-              }
-              return next;
-            })
-          }
-          aria-label="sound"
-        />
-        <button
-          className={styles.iconActionBoard}
-          onClick={() => navigate("/leaderboard")}
-          aria-label="leaderboard"
-        />
-      </div>
-
-
-      {showQr && (
-        <div className={styles.qrOverlay} onClick={() => setShowQr(false)}>
-          <div
-            className={styles.qrSheet}
-            onClick={(event) => event.stopPropagation()}
-            role="dialog"
-            aria-label="Room QR code"
+      <footer className={styles.downBar}>
+        <div className={styles.bottomBar}>
+          <button
+            type="button"
+            className={styles.primaryJoin}
+            onClick={() => {
+              setReady(!selfReady);
+            }}
+            aria-label="join game"
           >
-            {qrSrc ? <img src={qrSrc} alt="" className={styles.qrImage} /> : null}
-          </div>
+            <span className={styles.actionIconJoin} aria-hidden="true" />
+            <span>{startLabel}</span>
+          </button>
+          <button
+            className={`${styles.iconActionSound} ${soundOn ? styles.soundOn : styles.soundOff}`}
+            onClick={() =>
+              setSoundOn((prev) => {
+                const next = !prev;
+                if (typeof window !== "undefined") {
+                  window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+                }
+                return next;
+              })
+            }
+            aria-label="sound"
+          />
+          <button
+            className={styles.iconActionHelp}
+            onClick={() => navigate("/leaderboard")}
+            aria-label="help"
+          />
+          <button
+            className={styles.iconActionLogout}
+            onClick={() => {
+              resetRoom();
+              navigate("/join", { replace: true });
+            }}
+            aria-label="logout"
+          />
         </div>
-      )}
+        <div className={styles.tabBar}>
+          <div className={styles.urlRow}>
+            <span className={styles.lock} aria-hidden="true">
+              🔒
+            </span>
+            <span className={styles.url}>escapers.app</span>
+          </div>
+          <span className={styles.homeIndicator} aria-hidden="true" />
+        </div>
+      </footer>
+
     </div>
   );
 }

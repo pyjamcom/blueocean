@@ -60,7 +60,7 @@ export default function JoinView() {
       return typeof window === "undefined" ? "http://localhost:3001" : window.location.origin;
     }
   }, [apiBase]);
-  const { roomCode, joinRoom, setAvatar, setName, isHost, players } = useRoom();
+  const { roomCode, joinRoom, setAvatar, setName, isHost, players, playerId, resetRoom } = useRoom();
   const { state: engagement } = useEngagement();
   const variant = resolveVariant(age);
   const firebaseEnabled = isFirebaseEnabled();
@@ -82,7 +82,6 @@ export default function JoinView() {
   const showQr = !codeParam;
   const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
   const [authUser, setAuthUser] = useState<string | null>(null);
-  const [authEmail, setAuthEmail] = useState<string | null>(null);
   const [authProvider, setAuthProvider] = useState<"firebase" | "twitch" | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const isManagerRoute = location.pathname === "/manager";
@@ -140,7 +139,6 @@ export default function JoinView() {
       if (!user) {
         if (!authProvider || authProvider === "firebase") {
           setAuthUser(null);
-          setAuthEmail(null);
           setAuthProvider(null);
         }
         return;
@@ -150,7 +148,6 @@ export default function JoinView() {
       if (displayName) {
         setAuthProvider("firebase");
         setAuthUser(displayName);
-        setAuthEmail(user.email ?? null);
         if (!playerName) {
           setPlayerName(displayName);
           setStoredPlayerName(displayName);
@@ -184,7 +181,6 @@ export default function JoinView() {
       const resolvedName = displayName || (email ? email.split("@")[0] : "");
       setAuthProvider("twitch");
       setAuthUser(resolvedName || null);
-      setAuthEmail(email);
       if (resolvedName && !playerName) {
         setPlayerName(resolvedName);
         setStoredPlayerName(resolvedName);
@@ -372,18 +368,42 @@ export default function JoinView() {
           { rank: 2, name: "Павел Невский", score: 2445 },
           { rank: 3, name: "Иван Иванович", score: 2445 },
         ];
+  const isAuthorized = Boolean(authUser);
+  const selfPlayer = players.find((player) => player.id === playerId);
+  const scoreSorted = [...players].sort((a, b) => b.score - a.score);
+  const selfRank = selfPlayer ? scoreSorted.findIndex((player) => player.id === selfPlayer.id) + 1 : 3;
+  const badgeLabel = (authUser || playerName || "WEEEP").slice(0, 12);
+  const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
 
   return (
     <div className={`${styles.join} ${styles[variant]}`}>
       <div className={styles.pulse} />
-      <div className={styles.seoHeader}>
-        <h1 className={styles.seoTitle}>Party Games &amp; Meme Quiz - Join Escapers</h1>
-        <h2 className={styles.seoSubtitle}>
-          Funny party quiz with friends: icebreaker games and online group game rooms.
-        </h2>
+      <div className={styles.topBar}>
+        <span className={styles.statusTime}>9:41</span>
+        <span className={styles.notch} aria-hidden="true" />
+        <span className={styles.statusSignal} aria-hidden="true">
+          ▂▃▅
+        </span>
       </div>
+      {isAuthorized ? (
+        <section className={`${styles.sectionCard} ${styles.startCard}`}>
+          <h1 className={styles.startCardTitle}>Start game</h1>
+          <div className={styles.startCardMeta}>
+            <span className={styles.startRank}>🏆 {selfRank || 3}</span>
+            <span className={styles.startName}>{badgeLabel}</span>
+            <span className={styles.startTag}>{profileTag}</span>
+          </div>
+        </section>
+      ) : (
+        <div className={styles.seoHeader}>
+          <h1 className={styles.seoTitle}>Party Games &amp; Meme Quiz - Join Escapers</h1>
+          <h2 className={styles.seoSubtitle}>
+            Funny party quiz with friends: icebreaker games and online group game rooms.
+          </h2>
+        </div>
+      )}
 
-      <section className={styles.sectionCard}>
+      <section className={`${styles.sectionCard} ${styles.questCard}`}>
         <header className={styles.previewHead}>
           <h3 className={styles.previewTitle}>Quests for the game</h3>
           <span className={styles.previewBadge}>
@@ -396,18 +416,22 @@ export default function JoinView() {
                 const done = quest.progress >= quest.target;
                 return (
                   <li key={quest.id} className={styles.questItem}>
-                    <span className={styles.questProgress}>
-                      {quest.progress}/{quest.target}
-                    </span>
-                    <span className={styles.questLabel}>{quest.label}</span>
+                    <div className={styles.questHead}>
+                      <span className={styles.questProgress}>
+                        {quest.progress}/{quest.target}
+                      </span>
+                      <span className={styles.questLabel}>{quest.label}</span>
+                    </div>
                     <span className={styles.questAction}>{done ? "Claim" : "In progress"}</span>
                   </li>
                 );
               })
             : (
               <li className={styles.questItem}>
-                <span className={styles.questProgress}>0/5</span>
-                <span className={styles.questLabel}>Inviting 5 friends</span>
+                <div className={styles.questHead}>
+                  <span className={styles.questProgress}>0/5</span>
+                  <span className={styles.questLabel}>Inviting 5 friends</span>
+                </div>
                 <span className={styles.questAction}>Claim</span>
               </li>
             )}
@@ -440,7 +464,7 @@ export default function JoinView() {
         />
       </section>
 
-      {showQr ? (
+      {showQr && !isAuthorized ? (
         <section className={`${styles.sectionCard} ${styles.loginCard}`}>
           <div className={styles.loginTitle}>Log in with:</div>
           <div className={styles.loginIcons}>
@@ -511,7 +535,7 @@ export default function JoinView() {
         </section>
       ) : null}
 
-      <section className={styles.sectionCard}>
+      <section className={`${styles.sectionCard} ${styles.leaderboardCard}`}>
         <header className={styles.previewHead}>
           <h3 className={styles.previewTitle}>Top 3 Leaderboard</h3>
           <button type="button" className={styles.moreButton} onClick={handleLeaderboardClick}>
@@ -521,7 +545,7 @@ export default function JoinView() {
         <ul className={styles.topList}>
           {topPreview.map((entry) => (
             <li key={`${entry.rank}-${entry.name}`} className={styles.topItem}>
-              <span className={styles.topRank}>#{entry.rank}</span>
+              <span className={styles.topRank}>{entry.rank}</span>
               <span className={styles.topName}>{entry.name}</span>
               <span className={styles.topScore}>{entry.score}</span>
             </li>
@@ -529,12 +553,6 @@ export default function JoinView() {
         </ul>
       </section>
 
-      {authUser ? (
-        <div className={styles.authStatus}>
-          <div>Signed in as {authUser}</div>
-          {authEmail ? <div className={styles.authEmail}>{authEmail}</div> : null}
-        </div>
-      ) : null}
       {authError ? <div className={styles.authError}>{authError}</div> : null}
       <div className={styles.legalFooter}>
         <a href="/legal/privacy">Privacy</a>
@@ -544,48 +562,69 @@ export default function JoinView() {
         <a href="/legal/data-deletion">Data</a>
       </div>
 
-      <div className={styles.bottomBar}>
-        <button
-          type="button"
-          className={`${styles.primaryAction} ${styles.primaryCreate}`}
-          aria-label="create game"
-          onClick={handleScanClick}
-          disabled={!showQr}
-        >
-          Create game
-        </button>
-        <button
-          type="button"
-          className={`${styles.primaryAction} ${styles.primaryJoin}`}
-          aria-label="join game"
-          onClick={handlePlayClick}
-        >
-          Join game
-        </button>
-        <button
-          type="button"
-          className={`${styles.iconAction} ${styles.iconAvatar}`}
-          aria-label="avatar"
-          onClick={handleAvatarClick}
-        />
-        <button
-          type="button"
-          className={`${styles.iconAction} ${styles.iconLeaderboard}`}
-          aria-label="leaderboard"
-          onClick={handleLeaderboardClick}
-        />
-      </div>
+      <footer className={styles.downBar}>
+        <div className={styles.bottomBar}>
+          <button
+            type="button"
+            className={`${styles.primaryAction} ${styles.primaryCreate}`}
+            aria-label="create game"
+            onClick={handleScanClick}
+            disabled={!showQr}
+          >
+            <span className={styles.actionIconCreate} aria-hidden="true" />
+            <span>Create game</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.primaryAction} ${styles.primaryJoin}`}
+            aria-label="join game"
+            onClick={handlePlayClick}
+          >
+            <span className={styles.actionIconJoin} aria-hidden="true" />
+            <span>Join game</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.iconAction} ${styles.iconHelp}`}
+            aria-label="help"
+            onClick={() => navigate("/leaderboard")}
+          />
+          <button
+            type="button"
+            className={`${styles.iconAction} ${styles.iconLogout}`}
+            aria-label="logout"
+            onClick={() => {
+              clearHostWait();
+              resetRoom();
+              navigate("/join", { replace: true });
+            }}
+          />
+        </div>
+        <div className={styles.tabBar}>
+          <div className={styles.urlRow}>
+            <span className={styles.lock} aria-hidden="true">
+              🔒
+            </span>
+            <span className={styles.url}>escapers.app</span>
+          </div>
+          <span className={styles.homeIndicator} aria-hidden="true" />
+        </div>
+      </footer>
 
       {qrVisible && qrSrc && showQr ? (
-        <div
-          className={styles.qrOverlay}
-          onClick={() => {
-            setQrVisible(false);
-            clearHostWait();
-          }}
-        >
-          <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
-            <img src={qrSrc} alt="" className={styles.qrImage} />
+        <div className={styles.qrOverlay}>
+          <div
+            className={styles.qrBackdrop}
+            onClick={() => {
+              setQrVisible(false);
+              clearHostWait();
+            }}
+            aria-hidden="true"
+          />
+          <div className={styles.qrFrameWrap}>
+            <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
+              <img src={qrSrc} alt="" className={styles.qrImage} />
+            </div>
           </div>
         </div>
       ) : null}
