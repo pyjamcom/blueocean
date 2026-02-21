@@ -96,7 +96,8 @@
   width: 166px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  padding-left: 2px;
   gap: 4px;
 }
 
@@ -112,26 +113,27 @@
   padding: 4px 8px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  line-height: 16px;
   letter-spacing: -0.42px;
   color: #fff;
 }
 
 .startRank {
-  min-width: 45px;
-  padding-left: 6px;
-  padding-right: 6px;
-  background: rgba(255, 255, 255, 0.08);
+  width: 45px;
+  line-height: 14px;
+  font-weight: 400;
+  background: #343434;
 }
 
 .startName {
   width: 63px;
+  line-height: 16px;
   background: linear-gradient(90deg, #7300ff 0%, #0699f4 100%);
   font-weight: 500;
 }
 
 .startTag {
   width: 48px;
+  line-height: 16px;
   background: #343434;
   font-weight: 500;
 }
@@ -832,9 +834,12 @@
   flex-wrap: wrap;
   width: min(100%, 350px);
   min-height: 50px;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-  color: rgba(245, 247, 255, 0.65);
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  line-height: 18.2px;
+  letter-spacing: -0.42px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
   z-index: 2;
 }
 
@@ -853,7 +858,7 @@
   width: 1px;
   height: 18px;
   border-radius: 1px;
-  background: rgba(245, 247, 255, 0.35);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .fast .pulse {
