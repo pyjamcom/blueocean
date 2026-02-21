@@ -45,9 +45,10 @@
 }
 
 .timeBadge {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  line-height: 22px;
 }
 
 .signalIcon,
@@ -101,8 +102,8 @@
 }
 
 .loader {
-  width: 80px;
-  height: 80px;
+  width: 128px;
+  height: 128px;
 }
 
 .loaderSpin {
@@ -117,28 +118,25 @@
 }
 
 .waitTitle {
-  margin-top: 20px;
-  font-weight: 700;
-  font-size: clamp(1.75rem, 2vw + 1rem, 3rem);
-  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
+  margin: 24px 0 0;
+  width: 314px;
+  font-family: Geist, sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 31.2px;
+  letter-spacing: -0.72px;
+  text-align: center;
 }
 
 .preparedTitle {
-  margin-top: 16px;
+  margin: 24px 0 0;
   margin-bottom: 0;
-  font-weight: 700;
-  font-size: clamp(1.6rem, 1.8vw + 1rem, 2.2rem);
-  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
-}
-
-.preparedSub {
-  margin-top: 6px;
-  margin-bottom: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  font-family: Geist, sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 31.2px;
+  letter-spacing: -0.72px;
+  text-align: center;
 }
 
 .preparedHero {
@@ -410,11 +408,22 @@
 }
 
 .resultMessage {
-  margin-top: 8px;
-  font-weight: 700;
-  font-size: clamp(2rem, 2.2vw + 1.2rem, 3.25rem);
-  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
+  margin-top: 24px;
+  font-family: Geist, sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 41.6px;
+  letter-spacing: -0.96px;
   white-space: pre-line;
+}
+
+.resultMessageLeft {
+  width: 209px;
+  text-align: left;
+}
+
+.resultMessageCenter {
+  width: 223px;
   text-align: center;
 }
 

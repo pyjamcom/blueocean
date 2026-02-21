@@ -414,7 +414,6 @@ export default function RoundGallery() {
           <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
             Let&apos;s play!
           </h2>
-          <p className={styles.preparedSub}>Question {questionLabel}</p>
         </section>
       )}
 
@@ -486,7 +485,7 @@ export default function RoundGallery() {
           ) : (
             <CricleXmark className={styles.resultIcon} />
           )}
-          <h2 className={styles.resultMessage}>
+          <h2 className={`${styles.resultMessage} ${isCorrect ? styles.resultMessageCenter : styles.resultMessageLeft}`}>
             {isCorrect ? `Correct answer\n+${lastSelfPoints}` : revealMessage}
           </h2>
         </section>
