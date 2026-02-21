@@ -553,9 +553,9 @@ export default function JoinView() {
       {authError ? <div className={styles.authError}>{authError}</div> : null}
       <div className={styles.legalFooter}>
         <a href="/legal/privacy">Privacy</a>
-        <span className={styles.legalDot}>•</span>
+        <span className={styles.legalSeparator} aria-hidden="true" />
         <a href="/legal/terms">Terms</a>
-        <span className={styles.legalDot}>•</span>
+        <span className={styles.legalSeparator} aria-hidden="true" />
         <a href="/legal/data-deletion">Data</a>
       </div>
 

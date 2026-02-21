@@ -177,7 +177,9 @@ export default function RoundGallery() {
   const correctIndex = activeQuestion?.correct_index ?? 0;
   const hasAnswer = selectedIndex !== null;
   const isCorrect = hasAnswer && selectedIndex === correctIndex;
+  const safeRoundPoints = Math.max(0, Number(lastSelfPoints ?? 0));
   const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct answer" : "Wrong answer";
+  const revealCorrectMessage = safeRoundPoints > 0 ? `Correct answer\n+${safeRoundPoints}` : "Correct answer";
   const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`;
   const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
   const elapsedRatio = Math.min(1, Math.max(0, 1 - secondsLeft / timerTotalSeconds));
@@ -468,7 +470,7 @@ export default function RoundGallery() {
             <CricleXmark className={styles.resultIcon} />
           )}
           <h2 className={`${styles.resultMessage} ${isCorrect ? styles.resultMessageCenter : styles.resultMessageLeft}`}>
-            {isCorrect ? `Correct answer\n+${lastSelfPoints}` : revealMessage}
+            {isCorrect ? revealCorrectMessage : revealMessage}
           </h2>
         </section>
       )}

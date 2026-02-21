@@ -821,8 +821,11 @@
   color: rgba(245, 247, 255, 0.9);
 }
 
-.legalDot {
-  opacity: 0.5;
+.legalSeparator {
+  width: 1px;
+  height: 18px;
+  border-radius: 1px;
+  background: rgba(245, 247, 255, 0.35);
 }
 
 .fast .pulse {
