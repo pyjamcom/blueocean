@@ -39,12 +39,11 @@ const JOIN_QUESTS = [
   { id: "quest-2", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
   { id: "quest-3", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
 ] as const;
-
-function splitQuestProgress(progress: string): { main: string; suffix: string } {
-  const match = progress.match(/^(\d+)(\/\d+)$/);
-  if (!match) return { main: progress, suffix: "" };
-  return { main: match[1] ?? progress, suffix: match[2] ?? "" };
-}
+const JOIN_TOP3_ROWS = [
+  { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
+  { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
+  { id: "top-3", rank: 3, name: "Ярик", score: "2445", tier: "bronze", tall: false },
+] as const;
 
 export default function JoinView() {
   const location = useLocation();
@@ -390,26 +389,18 @@ export default function JoinView() {
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
           <div className={styles.questsRow}>
-            {JOIN_QUESTS.map((quest, index) => {
-              const { main, suffix } = splitQuestProgress(quest.progress);
-              return (
-                <article
-                  key={quest.id}
-                  className={`${styles.questCard} ${index > 0 ? styles.questCardDim : ""}`}
-                >
-                  <p className={styles.questProgress}>
-                    <span className={styles.questProgressMain}>{main}</span>
-                    {suffix ? <span className={styles.questProgressTail}>{suffix}</span> : null}
-                  </p>
-                  <p className={styles.questDescription}>{quest.description}</p>
-                  <div className={styles.questClaim}>
-                    <span className={styles.questClaimText}>{quest.cta}</span>
-                  </div>
-                </article>
-              );
-            })}
+            {JOIN_QUESTS.map((quest) => (
+              <article key={quest.id} className={styles.questCard}>
+                <p className={styles.questProgress}>{quest.progress}</p>
+                <p className={styles.questDescription}>{quest.description}</p>
+                <div className={styles.questClaim}>
+                  <span className={styles.questClaimText}>{quest.cta}</span>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
+        <section className={styles.avatarBlock} aria-hidden="true" />
         <div
           className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
           aria-hidden="true"
@@ -441,79 +432,149 @@ export default function JoinView() {
           autoCorrect="off"
           placeholder="Put your name"
         />
-        <button
-          type="button"
-          className={styles.moreHotspot}
-          onClick={handleLeaderboardClick}
-          aria-label="Open leaderboard"
-        />
-        <a className={styles.privacyHotspot} href="/legal/privacy" aria-label="Privacy" />
-        <a className={styles.termsHotspot} href="/legal/terms" aria-label="Terms" />
-        <a className={styles.dataHotspot} href="/legal/data-deletion" aria-label="Data deletion" />
-        <button
-          type="button"
-          className={styles.createHotspot}
-          onClick={handleScanClick}
-          disabled={!showQr}
-          aria-label="Create game"
-        />
-        <button
-          type="button"
-          className={styles.joinHotspot}
-          onClick={handlePlayClick}
-          aria-label="Join game"
-        />
-        <button
-          type="button"
-          className={styles.helpHotspot}
-          onClick={() => navigate("/leaderboard")}
-          aria-label="Help"
-        />
-        <button
-          type="button"
-          className={styles.logoutHotspot}
-          onClick={() => {
-            clearHostWait();
-            resetRoom();
-            navigate("/join", { replace: true });
-          }}
-          aria-label="Logout"
-        />
-        <div className={styles.loginHitLayer}>
+        <section className={styles.loginBlock} aria-label="Login options">
+          <p className={styles.loginTitle}>Log in with:</p>
+          <div className={styles.loginIconsWrap}>
+            <img
+              src="/figma/join/login-social-318x40.svg"
+              alt=""
+              aria-hidden="true"
+              className={styles.loginIcons}
+            />
+            <div className={styles.loginHitLayer}>
+              <button
+                type="button"
+                className={`${styles.loginHit} ${styles.hitGoogle}`}
+                onClick={handleGoogleAuth}
+                disabled={!firebaseEnabled}
+                aria-label="Login with Google"
+              />
+              <button
+                type="button"
+                className={`${styles.loginHit} ${styles.hitApple}`}
+                onClick={handleAppleAuth}
+                disabled={!firebaseEnabled}
+                aria-label="Login with Apple"
+              />
+              <button
+                type="button"
+                className={`${styles.loginHit} ${styles.hitFacebook}`}
+                onClick={handleFacebookAuth}
+                disabled={!firebaseEnabled}
+                aria-label="Login with Facebook"
+              />
+              <button
+                type="button"
+                className={`${styles.loginHit} ${styles.hitTwitter}`}
+                onClick={handleTwitterAuth}
+                disabled={!firebaseEnabled}
+                aria-label="Login with X"
+              />
+              <button
+                type="button"
+                className={`${styles.loginHit} ${styles.hitTwitch}`}
+                onClick={handleTwitchAuth}
+                aria-label="Login with Twitch"
+              />
+            </div>
+          </div>
+        </section>
+        <section className={styles.top3Block} aria-label="Top 3 leaderboard">
+          <header className={styles.top3Header}>
+            <h3 className={styles.top3Title}>Top 3 Leaderboard</h3>
+            <button
+              type="button"
+              className={styles.moreButton}
+              onClick={handleLeaderboardClick}
+              aria-label="Open leaderboard"
+            >
+              More
+            </button>
+          </header>
+          <div className={styles.top3Rows}>
+            {JOIN_TOP3_ROWS.map((row) => {
+              const tierClass =
+                row.tier === "gold"
+                  ? styles.top3RowGold
+                  : row.tier === "silver"
+                    ? styles.top3RowSilver
+                    : styles.top3RowBronze;
+              return (
+                <article
+                  key={row.id}
+                  className={`${styles.top3Row} ${tierClass} ${row.tall ? styles.top3RowTall : ""}`}
+                >
+                  <div className={styles.top3RowLeft}>
+                    <div className={styles.rankChip}>
+                      <span className={styles.rankIcon} aria-hidden="true" />
+                      <span className={styles.rankNumber}>{row.rank}</span>
+                    </div>
+                    <div className={styles.playerIdentity}>
+                      <span className={styles.playerAvatar} aria-hidden="true">
+                        <img src={selectedAvatarSrc} alt="" />
+                      </span>
+                      <span className={styles.playerName}>{row.name}</span>
+                    </div>
+                  </div>
+                  <span className={styles.scoreBadge}>{row.score}</span>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+        <nav className={styles.documentsRow} aria-label="Legal links">
+          <a href="/legal/privacy" className={styles.documentLink}>
+            Privacy
+          </a>
+          <span className={styles.documentDivider} aria-hidden="true" />
+          <a href="/legal/terms" className={styles.documentLink}>
+            Terms
+          </a>
+          <span className={styles.documentDivider} aria-hidden="true" />
+          <a href="/legal/data-deletion" className={styles.documentLink}>
+            Data
+          </a>
+        </nav>
+        <div className={styles.downBar}>
           <button
             type="button"
-            className={`${styles.loginHit} ${styles.hitGoogle}`}
-            onClick={handleGoogleAuth}
-            disabled={!firebaseEnabled}
-            aria-label="Login with Google"
-          />
+            className={`${styles.downButton} ${styles.downButtonCreate}`}
+            onClick={handleScanClick}
+            disabled={!showQr}
+            aria-label="Create game"
+          >
+            <span className={`${styles.downIcon} ${styles.downIconCreate}`} aria-hidden="true" />
+            <span>Create game</span>
+          </button>
           <button
             type="button"
-            className={`${styles.loginHit} ${styles.hitFacebook}`}
-            onClick={handleFacebookAuth}
-            disabled={!firebaseEnabled}
-            aria-label="Login with Facebook"
-          />
+            className={`${styles.downButton} ${styles.downButtonJoin}`}
+            onClick={handlePlayClick}
+            aria-label="Join game"
+          >
+            <span className={`${styles.downIcon} ${styles.downIconJoin}`} aria-hidden="true" />
+            <span>Join game</span>
+          </button>
           <button
             type="button"
-            className={`${styles.loginHit} ${styles.hitApple}`}
-            onClick={handleAppleAuth}
-            disabled={!firebaseEnabled}
-            aria-label="Login with Apple"
-          />
+            className={`${styles.downButton} ${styles.downButtonHelp}`}
+            onClick={() => navigate("/leaderboard")}
+            aria-label="Help"
+          >
+            <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
+          </button>
           <button
             type="button"
-            className={`${styles.loginHit} ${styles.hitTwitter}`}
-            onClick={handleTwitterAuth}
-            disabled={!firebaseEnabled}
-            aria-label="Login with X"
-          />
-          <button
-            type="button"
-            className={`${styles.loginHit} ${styles.hitTwitch}`}
-            onClick={handleTwitchAuth}
-            aria-label="Login with Twitch"
-          />
+            className={`${styles.downButton} ${styles.downButtonLogout}`}
+            onClick={() => {
+              clearHostWait();
+              resetRoom();
+              navigate("/join", { replace: true });
+            }}
+            aria-label="Logout"
+          >
+            <span className={`${styles.downIcon} ${styles.downIconLogout}`} aria-hidden="true" />
+          </button>
         </div>
         {isAuthorized ? (
           <p className={styles.authState}>
