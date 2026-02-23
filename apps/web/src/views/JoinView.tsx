@@ -35,9 +35,16 @@ const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and 
 const JOIN_QUESTS_TITLE = "Quests for the game";
 const JOIN_QUESTS_TOTAL = "5/5";
 const JOIN_QUESTS = [
-  { progress: "5/5", description: "Inviting a 5 friends", cta: "Claim" },
-  { progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
+  { id: "quest-1", progress: "5/5", description: "Inviting a 5 friends", cta: "Claim" },
+  { id: "quest-2", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
+  { id: "quest-3", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
 ] as const;
+
+function splitQuestProgress(progress: string): { main: string; suffix: string } {
+  const match = progress.match(/^(\d+)(\/\d+)$/);
+  if (!match) return { main: progress, suffix: "" };
+  return { main: match[1] ?? progress, suffix: match[2] ?? "" };
+}
 
 export default function JoinView() {
   const location = useLocation();
@@ -389,13 +396,24 @@ export default function JoinView() {
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
           <div className={styles.questsRow}>
-            {JOIN_QUESTS.map((quest) => (
-              <article key={`${quest.progress}-${quest.description}`} className={styles.questCard}>
-                <p className={styles.questProgress}>{quest.progress}</p>
-                <p className={styles.questDescription}>{quest.description}</p>
-                <div className={styles.questClaim}>{quest.cta}</div>
-              </article>
-            ))}
+            {JOIN_QUESTS.map((quest, index) => {
+              const { main, suffix } = splitQuestProgress(quest.progress);
+              return (
+                <article
+                  key={quest.id}
+                  className={`${styles.questCard} ${index > 0 ? styles.questCardDim : ""}`}
+                >
+                  <p className={styles.questProgress}>
+                    <span className={styles.questProgressMain}>{main}</span>
+                    {suffix ? <span className={styles.questProgressTail}>{suffix}</span> : null}
+                  </p>
+                  <p className={styles.questDescription}>{quest.description}</p>
+                  <div className={styles.questClaim}>
+                    <span className={styles.questClaimText}>{quest.cta}</span>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
         <div
