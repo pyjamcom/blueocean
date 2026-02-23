@@ -30,8 +30,6 @@ const HOST_WAIT_KEY = "escapers_host_wait";
 const MIN_PLAYERS = 3;
 const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
 const LEGACY_DEFAULT_NAME_RE = /^кл[её]воеимя\d*$/i;
-const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
-const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 
 export default function JoinView() {
   const location = useLocation();
@@ -367,10 +365,6 @@ export default function JoinView() {
     <div className={styles.page}>
       <div className={styles.join}>
         <img className={styles.frameImage} src="/figma/join/frame-106-4141-opaque.png" alt="" aria-hidden="true" />
-        <section className={styles.heroBlock} aria-hidden="true">
-          <h1 className={styles.heroTitle}>{JOIN_HERO_TITLE}</h1>
-          <p className={styles.heroSubtitle}>{JOIN_HERO_SUBTITLE}</p>
-        </section>
         <div
           className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
           aria-hidden="true"
