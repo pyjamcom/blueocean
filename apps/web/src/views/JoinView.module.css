@@ -31,17 +31,6 @@
   z-index: 0;
 }
 
-.frameImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
-}
-
 .heroBlock {
   position: absolute;
   left: 5.128205%;
