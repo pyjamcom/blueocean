@@ -2,7 +2,13 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background: #0c0822;
+  background: linear-gradient(
+    136deg,
+    #3e4186 0%,
+    #0c0822 30%,
+    #0c0822 75%,
+    #853e86 100%
+  );
 }
 
 .join {
@@ -13,6 +19,18 @@
   overflow: hidden;
 }
 
+.baseBackgroundImage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 75.13369%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
 .frameImage {
   position: absolute;
   inset: 0;
@@ -21,6 +39,7 @@
   object-fit: cover;
   pointer-events: none;
   user-select: none;
+  z-index: 1;
 }
 
 .heroBlock {

@@ -366,6 +366,7 @@ export default function JoinView() {
   return (
     <div className={styles.page}>
       <div className={styles.join}>
+        <img className={styles.baseBackgroundImage} src="/figma/join/image-931.png" alt="" aria-hidden="true" />
         <img className={styles.frameImage} src="/figma/join/frame-106-4141-hero-clean.png" alt="" aria-hidden="true" />
         <section className={styles.heroBlock} aria-hidden="true">
           <h1 className={styles.heroTitle}>{JOIN_HERO_TITLE}</h1>
