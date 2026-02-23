@@ -379,7 +379,9 @@ export default function JoinView() {
           className={styles.profileButtonHotspot}
           onClick={handleAvatarClick}
           aria-label="Choose avatar button"
-        />
+        >
+          Choose avatar
+        </button>
         <input
           className={styles.nameInputField}
           aria-label="Player name"
