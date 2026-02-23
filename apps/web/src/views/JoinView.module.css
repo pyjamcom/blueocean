@@ -45,7 +45,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 116%;
+  width: 100%;
   height: 116%;
   object-fit: contain;
   object-position: center bottom;
@@ -341,7 +341,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 116%;
+  width: 100%;
   height: 116%;
   object-fit: contain;
   object-position: center bottom;
