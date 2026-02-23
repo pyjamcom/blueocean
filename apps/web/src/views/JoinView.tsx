@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
@@ -24,33 +23,18 @@ import {
   signInWithGoogle,
   signInWithTwitter,
 } from "../utils/firebase";
-import GameActionBarSection from "../components/join/GameActionBarSection";
 import styles from "./JoinView.module.css";
 
-type PulseVariant = "fast" | "mid" | "slow";
 const DEFAULT_PUBLIC_ROOM = "PLAY";
 const HOST_WAIT_KEY = "escapers_host_wait";
 const MIN_PLAYERS = 3;
-
-function resolveVariant(age?: number): PulseVariant {
-  if (!age) {
-    return "mid";
-  }
-  if (age <= 30) {
-    return "fast";
-  }
-  if (age <= 40) {
-    return "mid";
-  }
-  return "slow";
-}
+const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
 
 export default function JoinView() {
   const location = useLocation();
   const navigate = useNavigate();
   const { code: codeFromPath } = useParams<{ code?: string }>();
   const params = new URLSearchParams(location.search);
-  const age = params.get("age") ? Number(params.get("age")) : undefined;
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
   const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
@@ -61,11 +45,11 @@ export default function JoinView() {
       return typeof window === "undefined" ? "http://localhost:3001" : window.location.origin;
     }
   }, [apiBase]);
-  const { roomCode, joinRoom, setAvatar, setName, isHost, players, playerId, resetRoom } = useRoom();
-  const { state: engagement } = useEngagement();
-  const variant = resolveVariant(age);
+  const { roomCode, joinRoom, setAvatar, setName, isHost, players, resetRoom } = useRoom();
   const firebaseEnabled = isFirebaseEnabled();
-  const initialAvatarId = useMemo(() => getStoredAvatarId() ?? randomAvatarId(), []);
+  const storedAvatarId = useMemo(() => getStoredAvatarId(), []);
+  const initialAvatarId = useMemo(() => storedAvatarId ?? randomAvatarId(), [storedAvatarId]);
+  const [hasCustomAvatar, setHasCustomAvatar] = useState(Boolean(storedAvatarId));
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [joinPending, setJoinPending] = useState(false);
@@ -288,6 +272,7 @@ export default function JoinView() {
   const handleAvatarSelect = () => {
     const selected = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
     setAvatarId(selected);
+    setHasCustomAvatar(true);
     setAvatar(selected);
     setStoredAvatarId(selected);
     setAvatarOpen(false);
@@ -350,283 +335,168 @@ export default function JoinView() {
   const avatarAssetId = assetIds.length
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length] ?? assetIds[0]
     : undefined;
-  const avatarAssetSrc = getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId);
-  const previewQuests = engagement.quests.daily.slice(0, 3);
-  const completedQuests = engagement.quests.daily.filter((quest) => Boolean(quest.completedAt)).length;
-  const questTotal = engagement.quests.daily.length;
-  const topPreview =
-    players.length > 0
-      ? [...players]
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 3)
-          .map((player, index) => ({
-            rank: index + 1,
-            name: player.name ?? "Player",
-            score: player.score,
-          }))
-      : [
-          { rank: 1, name: "Nova", score: 2445 },
-          { rank: 2, name: "Atlas", score: 2445 },
-          { rank: 3, name: "Pixel", score: 2445 },
-        ];
+  const avatarAssetSrc = hasCustomAvatar
+    ? getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId) ?? PROFILE_AVATAR_FALLBACK
+    : PROFILE_AVATAR_FALLBACK;
   const isAuthorized = Boolean(authUser);
-  const selfPlayer = players.find((player) => player.id === playerId);
-  const scoreSorted = [...players].sort((a, b) => b.score - a.score);
-  const selfRank = selfPlayer ? scoreSorted.findIndex((player) => player.id === selfPlayer.id) + 1 : 3;
-  const badgeLabel = (authUser || playerName || "WEEEP").slice(0, 12);
-  const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
 
   return (
-    <div
-      className={`${styles.join} ${styles[variant]} ${isAuthorized ? styles.authorized : ""}`}
-    >
-      <div className={styles.pulse} />
-      <header className={styles.srOnly}>
-        <h1>Party Games &amp; Meme Quiz - Join Escapers</h1>
-        <h2>Funny party quiz with friends: icebreaker games and online group game rooms.</h2>
-      </header>
-      {isAuthorized ? (
-        <section className={`${styles.sectionCard} ${styles.startCard}`}>
-          <h2 className={styles.startCardTitle}>Start game</h2>
-          <div className={styles.startCardMeta}>
-            <span className={styles.startRank}>
-              <span className={styles.rankIcon} aria-hidden="true" />
-              {selfRank || 3}
-            </span>
-            <span className={styles.startName}>{badgeLabel}</span>
-            <span className={styles.startTag}>{profileTag}</span>
-          </div>
-        </section>
-      ) : null}
-
-      <section className={`${styles.sectionCard} ${styles.questCard}`}>
-        <header className={styles.previewHead}>
-          <h3 className={styles.previewTitle}>Quests for the game</h3>
-          <span className={styles.previewBadge}>
-            {completedQuests}/{questTotal || 5}
-          </span>
-        </header>
-        <ul className={styles.questList}>
-          {previewQuests.length
-            ? previewQuests.map((quest) => {
-                const done = quest.progress >= quest.target;
-                return (
-                  <li key={quest.id} className={styles.questItem}>
-                    <div className={styles.questHead}>
-                      <span className={styles.questProgress}>
-                        {quest.progress}/{quest.target}
-                      </span>
-                      <span className={styles.questLabel}>{quest.label}</span>
-                    </div>
-                    <span className={styles.questAction}>{done ? "Claim" : "In progress"}</span>
-                  </li>
-                );
-              })
-            : (
-              <li className={styles.questItem}>
-                <div className={styles.questHead}>
-                  <span className={styles.questProgress}>0/5</span>
-                  <span className={styles.questLabel}>Inviting 5 friends</span>
-                </div>
-                <span className={styles.questAction}>Claim</span>
-              </li>
-            )}
-        </ul>
-      </section>
-
-      <section className={`${styles.sectionCard} ${styles.profileCard}`}>
-        <div className={styles.profileAvatarWrap}>
-          <div className={styles.profileAvatar}>
-            {avatarAssetSrc ? <img src={avatarAssetSrc} alt="" aria-hidden="true" /> : null}
-          </div>
-        </div>
-        <button type="button" className={styles.profileAvatarButton} onClick={handleAvatarClick}>
-          Choose avatar
-        </button>
-        <input
-          type="text"
-          value={playerName}
-          onChange={(event) => {
-            const value = event.target.value.slice(0, 18);
-            setPlayerName(value);
-            setStoredPlayerName(value);
+    <div className={styles.page}>
+      <div className={styles.join}>
+        <img className={styles.frameImage} src="/figma/join/frame-106-4141-opaque.png" alt="" aria-hidden="true" />
+        <button
+          type="button"
+          className={styles.profileAvatarHotspot}
+          onClick={handleAvatarClick}
+          aria-label="Choose avatar"
+        />
+        <button
+          type="button"
+          className={styles.profileButtonHotspot}
+          onClick={handleAvatarClick}
+          aria-label="Choose avatar button"
+        />
+        <button
+          type="button"
+          className={styles.nameInputHotspot}
+          aria-label="Set player name"
+          onClick={() => {
+            const value = window.prompt("Player name", playerName || "КлёвоеИмя3286");
+            if (value === null) return;
+            const next = value.slice(0, 18);
+            setPlayerName(next);
+            setStoredPlayerName(next);
             if (roomCode) {
-              setName(value);
+              setName(next);
             }
           }}
-          placeholder="CoolName3286"
-          className={styles.nameInput}
-          aria-label="player name"
         />
-      </section>
-
-      {showQr && !isAuthorized ? (
-        <section className={`${styles.sectionCard} ${styles.loginCard}`}>
-          <div className={styles.loginTitle}>Log in with:</div>
-          <div className={styles.loginIcons}>
-            <button
-              type="button"
-              className={`${styles.authRound} ${styles.authGoogle}`}
-              onClick={handleGoogleAuth}
-              disabled={!firebaseEnabled}
-              aria-label="Login with Google"
-              title="Login with Google"
-            >
-              <span className={`${styles.authIcon} ${styles.iconGoogle}`} aria-hidden="true">
-                G
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.authRound} ${styles.authFacebook}`}
-              onClick={handleFacebookAuth}
-              disabled={!firebaseEnabled}
-              aria-label="Login with Facebook"
-              title="Login with Facebook"
-            >
-              <span className={`${styles.authIcon} ${styles.iconFacebook}`} aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                  <path d="M9.197 21.5v-7.707H6.5V10.5h2.697V8.074c0-2.672 1.59-4.174 4.03-4.174 1.154 0 2.36.206 2.36.206v2.604H14.26c-1.203 0-1.577.764-1.577 1.548V10.5h2.684l-.43 3.293h-2.254V21.5H9.197Z" />
-                </svg>
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.authRound} ${styles.authApple}`}
-              onClick={handleAppleAuth}
-              disabled={!firebaseEnabled}
-              aria-label="Login with Apple"
-              title="Login with Apple"
-            >
-              <span className={`${styles.authIcon} ${styles.iconApple}`} aria-hidden="true">
-                
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.authRound} ${styles.authTwitter}`}
-              onClick={handleTwitterAuth}
-              disabled={!firebaseEnabled}
-              aria-label="Login with X"
-              title="Login with X"
-            >
-              <span className={`${styles.authIcon} ${styles.iconX}`} aria-hidden="true">
-                X
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.authRound} ${styles.authTwitch}`}
-              onClick={handleTwitchAuth}
-              aria-label="Login with Twitch"
-              title="Login with Twitch"
-            >
-              <span className={`${styles.authIcon} ${styles.iconTwitch}`} aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                  <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
-                </svg>
-              </span>
-            </button>
-          </div>
-        </section>
-      ) : null}
-
-      <section className={`${styles.sectionCard} ${styles.leaderboardCard}`}>
-        <header className={styles.previewHead}>
-          <h3 className={styles.previewTitle}>Top 3 Leaderboard</h3>
-          <button type="button" className={styles.moreButton} onClick={handleLeaderboardClick}>
-            More
-          </button>
-        </header>
-        <ul className={styles.topList}>
-          {topPreview.map((entry) => (
-            <li
-              key={`${entry.rank}-${entry.name}`}
-              className={`${styles.topItem} ${entry.rank === 1 ? styles.topItemRank1 : entry.rank === 2 ? styles.topItemRank2 : styles.topItemRank3}`}
-            >
-              <span className={styles.topRank}>{entry.rank}</span>
-              <span className={styles.topName}>{entry.name}</span>
-              <span className={styles.topScore}>{entry.score}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {authError ? <div className={styles.authError}>{authError}</div> : null}
-      <div className={styles.legalFooter}>
-        <a href="/legal/privacy">Privacy</a>
-        <span className={styles.legalSeparator} aria-hidden="true" />
-        <a href="/legal/terms">Terms</a>
-        <span className={styles.legalSeparator} aria-hidden="true" />
-        <a href="/legal/data-deletion">Data</a>
-      </div>
-
-      <footer className={styles.downBar}>
-        <GameActionBarSection
-          onCreateGame={handleScanClick}
-          onJoinGame={handlePlayClick}
-          onHelp={() => navigate("/leaderboard")}
-          onLogout={() => {
+        <button
+          type="button"
+          className={styles.moreHotspot}
+          onClick={handleLeaderboardClick}
+          aria-label="Open leaderboard"
+        />
+        <a className={styles.privacyHotspot} href="/legal/privacy" aria-label="Privacy" />
+        <a className={styles.termsHotspot} href="/legal/terms" aria-label="Terms" />
+        <a className={styles.dataHotspot} href="/legal/data-deletion" aria-label="Data deletion" />
+        <button
+          type="button"
+          className={styles.createHotspot}
+          onClick={handleScanClick}
+          disabled={!showQr}
+          aria-label="Create game"
+        />
+        <button
+          type="button"
+          className={styles.joinHotspot}
+          onClick={handlePlayClick}
+          aria-label="Join game"
+        />
+        <button
+          type="button"
+          className={styles.helpHotspot}
+          onClick={() => navigate("/leaderboard")}
+          aria-label="Help"
+        />
+        <button
+          type="button"
+          className={styles.logoutHotspot}
+          onClick={() => {
             clearHostWait();
             resetRoom();
             navigate("/join", { replace: true });
           }}
-          createDisabled={!showQr}
+          aria-label="Logout"
         />
-        <div className={styles.tabBar}>
-          <div className={styles.urlRow}>
-            <span className={styles.lockIcon} aria-hidden="true" />
-            <span className={styles.url}>escapers.app</span>
-          </div>
-          <span className={styles.homeIndicator} aria-hidden="true" />
-        </div>
-      </footer>
-
-      {qrVisible && qrSrc && showQr ? (
-        <div className={styles.qrOverlay}>
-          <div
-            className={styles.qrBackdrop}
-            onClick={() => {
-              setQrVisible(false);
-              clearHostWait();
-            }}
-            aria-hidden="true"
+        <div className={styles.loginHitLayer}>
+          <button
+            type="button"
+            className={`${styles.loginHit} ${styles.hitGoogle}`}
+            onClick={handleGoogleAuth}
+            disabled={!firebaseEnabled}
+            aria-label="Login with Google"
           />
-          <div className={styles.qrFrameWrap}>
-            <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
-              <img src={qrSrc} alt="" className={styles.qrImage} />
+          <button
+            type="button"
+            className={`${styles.loginHit} ${styles.hitFacebook}`}
+            onClick={handleFacebookAuth}
+            disabled={!firebaseEnabled}
+            aria-label="Login with Facebook"
+          />
+          <button
+            type="button"
+            className={`${styles.loginHit} ${styles.hitApple}`}
+            onClick={handleAppleAuth}
+            disabled={!firebaseEnabled}
+            aria-label="Login with Apple"
+          />
+          <button
+            type="button"
+            className={`${styles.loginHit} ${styles.hitTwitter}`}
+            onClick={handleTwitterAuth}
+            disabled={!firebaseEnabled}
+            aria-label="Login with X"
+          />
+          <button
+            type="button"
+            className={`${styles.loginHit} ${styles.hitTwitch}`}
+            onClick={handleTwitchAuth}
+            aria-label="Login with Twitch"
+          />
+        </div>
+        {isAuthorized ? (
+          <p className={styles.authState}>
+            Signed in as <span>{authUser}</span>
+          </p>
+        ) : null}
+        {authError ? <p className={styles.authError}>{authError}</p> : null}
+
+        {qrVisible && qrSrc && showQr ? (
+          <div className={styles.qrOverlay}>
+            <div
+              className={styles.qrBackdrop}
+              onClick={() => {
+                setQrVisible(false);
+                clearHostWait();
+              }}
+              aria-hidden="true"
+            />
+            <div className={styles.qrFrameWrap}>
+              <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
+                <img src={qrSrc} alt="" className={styles.qrImage} />
+              </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      {avatarOpen && (
-        <div className={styles.avatarOverlay} onClick={() => setAvatarOpen(false)}>
-          <div className={styles.avatarSheet} onClick={(event) => event.stopPropagation()}>
-            <div className={styles.avatarPreview}>
-              <img src={avatarAssetSrc} alt="" aria-hidden="true" />
-            </div>
-            <div className={styles.avatarControls}>
-              <button
-                type="button"
-                className={`${styles.avatarNav} ${styles.avatarPrev}`}
-                onClick={() => handleAvatarStep(-1)}
-                aria-label="previous avatar"
-              />
-              <button type="button" className={styles.avatarSelect} onClick={handleAvatarSelect}>
-                Use
-              </button>
-              <button
-                type="button"
-                className={`${styles.avatarNav} ${styles.avatarNext}`}
-                onClick={() => handleAvatarStep(1)}
-                aria-label="next avatar"
-              />
+        {avatarOpen && (
+          <div className={styles.avatarOverlay} onClick={() => setAvatarOpen(false)}>
+            <div className={styles.avatarSheet} onClick={(event) => event.stopPropagation()}>
+              <div className={styles.avatarPreview}>
+                <img src={avatarAssetSrc} alt="" aria-hidden="true" />
+              </div>
+              <div className={styles.avatarControls}>
+                <button
+                  type="button"
+                  className={`${styles.avatarNav} ${styles.avatarPrev}`}
+                  onClick={() => handleAvatarStep(-1)}
+                  aria-label="previous avatar"
+                />
+                <button type="button" className={styles.avatarSelect} onClick={handleAvatarSelect}>
+                  Use
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.avatarNav} ${styles.avatarNext}`}
+                  onClick={() => handleAvatarStep(1)}
+                  aria-label="next avatar"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
+        )}
+      </div>
     </div>
   );
 }

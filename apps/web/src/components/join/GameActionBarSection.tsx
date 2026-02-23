@@ -8,23 +8,6 @@ type GameActionBarSectionProps = {
   createDisabled?: boolean;
 };
 
-function CreateIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="7" />
-      <path d="M12 9v6M9 12h6" />
-    </svg>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-
 export default function GameActionBarSection({
   onCreateGame,
   onJoinGame,
@@ -42,10 +25,7 @@ export default function GameActionBarSection({
           onClick={onCreateGame}
           disabled={createDisabled}
         >
-          <span className={styles.iconWrap}>
-            <CreateIcon />
-          </span>
-          <span>Create game</span>
+          <img src="/figma/join/106-4243.png" alt="" aria-hidden="true" />
         </button>
 
         <button
@@ -54,10 +34,7 @@ export default function GameActionBarSection({
           aria-label="Join game"
           onClick={onJoinGame}
         >
-          <span className={styles.iconWrap}>
-            <PlayIcon />
-          </span>
-          <span>Join game</span>
+          <img src="/figma/join/106-4248.png" alt="" aria-hidden="true" />
         </button>
 
         <button
@@ -65,14 +42,18 @@ export default function GameActionBarSection({
           className={`${styles.iconButton} ${styles.helpButton}`}
           aria-label="Help"
           onClick={onHelp}
-        />
+        >
+          <img src="/figma/join/106-4254.png" alt="" aria-hidden="true" />
+        </button>
 
         <button
           type="button"
           className={`${styles.iconButton} ${styles.logoutButton}`}
           aria-label="Logout"
           onClick={onLogout}
-        />
+        >
+          <img src="/figma/join/106-4257.png" alt="" aria-hidden="true" />
+        </button>
       </div>
     </nav>
   );
