@@ -389,8 +389,11 @@ export default function JoinView() {
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
           <div className={styles.questsRow}>
-            {JOIN_QUESTS.map((quest) => (
-              <article key={quest.id} className={styles.questCard}>
+            {JOIN_QUESTS.map((quest, index) => (
+              <article
+                key={quest.id}
+                className={`${styles.questCard} ${index > 0 ? styles.questCardDimmed : ""}`}
+              >
                 <p className={styles.questProgress}>{quest.progress}</p>
                 <p className={styles.questDescription}>{quest.description}</p>
                 <div className={styles.questClaim}>
