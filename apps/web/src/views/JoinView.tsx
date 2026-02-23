@@ -365,7 +365,10 @@ export default function JoinView() {
     <div className={styles.page}>
       <div className={styles.join}>
         <img className={styles.frameImage} src="/figma/join/frame-106-4141-opaque.png" alt="" aria-hidden="true" />
-        <div className={styles.profileAvatarVisual} aria-hidden="true">
+        <div
+          className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
+          aria-hidden="true"
+        >
           <img src={selectedAvatarSrc} alt="" />
         </div>
         <button

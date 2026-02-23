@@ -41,10 +41,19 @@
 }
 
 .profileAvatarVisual img {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
   width: 116%;
   height: 116%;
   object-fit: contain;
+  object-position: center bottom;
   display: block;
+}
+
+.profileAvatarVisualLoggedIn img {
+  filter: brightness(0.82);
 }
 
 .profileAvatarHotspot,
@@ -111,7 +120,7 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
-  text-align: left;
+  text-align: center;
   padding: 0 16px;
   caret-color: #ffffff;
   z-index: 3;
@@ -119,6 +128,7 @@
 
 .nameInputField::placeholder {
   color: #ffffff66;
+  text-align: center;
 }
 
 .nameInputField:focus {
@@ -211,11 +221,11 @@
 }
 
 .hitFacebook {
-  left: 26.100629%;
+  left: 43.710692%;
 }
 
 .hitApple {
-  left: 43.710692%;
+  left: 26.100629%;
 }
 
 .hitTwitter {
@@ -318,17 +328,23 @@
 }
 
 .avatarPreview {
+  position: relative;
   width: min(58vw, 200px);
   aspect-ratio: 1 / 1;
   border-radius: 28px;
   box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.15);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .avatarPreview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 116%;
+  height: 116%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .avatarControls {
@@ -358,15 +374,16 @@
 }
 
 .avatarSelect {
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 18px;
-  color: #111;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, #ffd93d, #ffb703);
+  height: 44px;
+  border: 1px solid #7200ff;
+  border-radius: 8px;
+  padding: 0 18px;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
   cursor: pointer;
 }
