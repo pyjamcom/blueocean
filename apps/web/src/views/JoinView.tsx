@@ -49,7 +49,6 @@ export default function JoinView() {
   const firebaseEnabled = isFirebaseEnabled();
   const storedAvatarId = useMemo(() => getStoredAvatarId(), []);
   const initialAvatarId = useMemo(() => storedAvatarId ?? randomAvatarId(), [storedAvatarId]);
-  const [hasCustomAvatar, setHasCustomAvatar] = useState(Boolean(storedAvatarId));
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [joinPending, setJoinPending] = useState(false);
@@ -74,6 +73,11 @@ export default function JoinView() {
     if (!codeParam) return;
     joinRoom(codeParam, initialAvatarId, playerName);
   }, [codeParam, initialAvatarId, joinRoom, playerName]);
+
+  useEffect(() => {
+    if (storedAvatarId) return;
+    setStoredAvatarId(initialAvatarId);
+  }, [initialAvatarId, storedAvatarId]);
 
   useEffect(() => {
     if (!joinPending || !roomCode) return;
@@ -272,7 +276,6 @@ export default function JoinView() {
   const handleAvatarSelect = () => {
     const selected = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
     setAvatarId(selected);
-    setHasCustomAvatar(true);
     setAvatar(selected);
     setStoredAvatarId(selected);
     setAvatarOpen(false);
@@ -332,18 +335,25 @@ export default function JoinView() {
   };
 
   const currentAvatar = AVATAR_IDS[avatarIndex] ?? AVATAR_IDS[0] ?? "avatar_raccoon_dj";
-  const avatarAssetId = assetIds.length
+  const selectedAvatarAssetId = assetIds.length
+    ? assetIds[avatarIconIndex(avatarId) % assetIds.length] ?? assetIds[0]
+    : undefined;
+  const selectedAvatarSrc =
+    getAvatarImageUrl(avatarId) ?? getAssetUrl(selectedAvatarAssetId) ?? PROFILE_AVATAR_FALLBACK;
+  const previewAvatarAssetId = assetIds.length
     ? assetIds[avatarIconIndex(currentAvatar) % assetIds.length] ?? assetIds[0]
     : undefined;
-  const avatarAssetSrc = hasCustomAvatar
-    ? getAvatarImageUrl(currentAvatar) ?? getAssetUrl(avatarAssetId) ?? PROFILE_AVATAR_FALLBACK
-    : PROFILE_AVATAR_FALLBACK;
+  const previewAvatarSrc =
+    getAvatarImageUrl(currentAvatar) ?? getAssetUrl(previewAvatarAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const isAuthorized = Boolean(authUser);
 
   return (
     <div className={styles.page}>
       <div className={styles.join}>
         <img className={styles.frameImage} src="/figma/join/frame-106-4141-opaque.png" alt="" aria-hidden="true" />
+        <div className={styles.profileAvatarVisual} aria-hidden="true">
+          <img src={selectedAvatarSrc} alt="" />
+        </div>
         <button
           type="button"
           className={styles.profileAvatarHotspot}
@@ -474,7 +484,7 @@ export default function JoinView() {
           <div className={styles.avatarOverlay} onClick={() => setAvatarOpen(false)}>
             <div className={styles.avatarSheet} onClick={(event) => event.stopPropagation()}>
               <div className={styles.avatarPreview}>
-                <img src={avatarAssetSrc} alt="" aria-hidden="true" />
+                <img src={previewAvatarSrc} alt="" aria-hidden="true" />
               </div>
               <div className={styles.avatarControls}>
                 <button
