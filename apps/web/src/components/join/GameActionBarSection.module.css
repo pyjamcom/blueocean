@@ -1,0 +1,101 @@
+.container {
+  width: 100%;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: #111;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.primaryButton {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  height: 44px;
+  color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 14.52px;
+  letter-spacing: -0.36px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  backdrop-filter: blur(50px) brightness(100%);
+}
+
+.primaryButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.createButton {
+  border-color: #33b1ff;
+  background: linear-gradient(90deg, #213847 0%, #33b1ff 100%);
+}
+
+.joinButton {
+  border-color: #0edc2d;
+  background: linear-gradient(90deg, #0edc2d 0%, #006303 100%);
+}
+
+.iconWrap {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconWrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.createButton .iconWrap svg {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.joinButton .iconWrap svg {
+  fill: #fff;
+}
+
+.iconButton {
+  border: 1px solid #323232;
+  border-radius: 8px;
+  height: 44px;
+  background-color: #272727;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(50px) brightness(100%);
+}
+
+.helpButton {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 18h.01'/><path d='M9.1 9a3 3 0 1 1 5.8 1c-.34.73-1.02 1.18-1.67 1.63-.79.53-1.53 1.04-1.53 2.37'/></svg>");
+}
+
+.logoutButton {
+  border-color: #510000;
+  background-color: #240000;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M10 3a1 1 0 0 0-1 1v3h2V5h9v14h-9v-2H9v3a1 1 0 0 0 1 1h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z'/><path d='m11 8-1.41 1.41L12.17 12H3v2h9.17l-2.58 2.59L11 18l5-5z'/></svg>");
+}
+
+@media (max-width: 540px) {
+  .row {
+    padding-inline: 12px;
+  }
+}

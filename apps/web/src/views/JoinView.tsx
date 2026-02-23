@@ -24,6 +24,7 @@ import {
   signInWithGoogle,
   signInWithTwitter,
 } from "../utils/firebase";
+import GameActionBarSection from "../components/join/GameActionBarSection";
 import styles from "./JoinView.module.css";
 
 type PulseVariant = "fast" | "mid" | "slow";
@@ -561,43 +562,17 @@ export default function JoinView() {
       </div>
 
       <footer className={styles.downBar}>
-        <div className={styles.bottomBar}>
-          <button
-            type="button"
-            className={`${styles.primaryAction} ${styles.primaryCreate}`}
-            aria-label="create game"
-            onClick={handleScanClick}
-            disabled={!showQr}
-          >
-            <span className={styles.actionIconCreate} aria-hidden="true" />
-            <span>Create game</span>
-          </button>
-          <button
-            type="button"
-            className={`${styles.primaryAction} ${styles.primaryJoin}`}
-            aria-label="join game"
-            onClick={handlePlayClick}
-          >
-            <span className={styles.actionIconJoin} aria-hidden="true" />
-            <span>Join game</span>
-          </button>
-          <button
-            type="button"
-            className={`${styles.iconAction} ${styles.iconHelp}`}
-            aria-label="help"
-            onClick={() => navigate("/leaderboard")}
-          />
-          <button
-            type="button"
-            className={`${styles.iconAction} ${styles.iconLogout}`}
-            aria-label="logout"
-            onClick={() => {
-              clearHostWait();
-              resetRoom();
-              navigate("/join", { replace: true });
-            }}
-          />
-        </div>
+        <GameActionBarSection
+          onCreateGame={handleScanClick}
+          onJoinGame={handlePlayClick}
+          onHelp={() => navigate("/leaderboard")}
+          onLogout={() => {
+            clearHostWait();
+            resetRoom();
+            navigate("/join", { replace: true });
+          }}
+          createDisabled={!showQr}
+        />
         <div className={styles.tabBar}>
           <div className={styles.urlRow}>
             <span className={styles.lockIcon} aria-hidden="true" />
