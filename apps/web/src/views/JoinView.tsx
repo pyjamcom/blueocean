@@ -30,34 +30,6 @@ const HOST_WAIT_KEY = "escapers_host_wait";
 const MIN_PLAYERS = 3;
 const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
 const LEGACY_DEFAULT_NAME_RE = /^кл[её]воеимя\d*$/i;
-const JOIN_COPY = {
-  title: "Party Games & Meme Quiz - Join Escapers",
-  subtitle: "Funny party quiz with friends: icebreaker games and online group game rooms.",
-  questsTitle: "Quests for the game",
-  questsTotal: "1/2",
-  quests: [
-    { progress: "5/5", description: "Inviting a 5 friends", cta: "Claim" },
-    { progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
-  ],
-  loginTitle: "Log in with:",
-  loginIcons: ["G", "", "f", "X", "T"],
-  leaderboardTitle: "Top 3 Leaderboard",
-  leaderboardMore: "More",
-  leaderboardRows: [
-    { rank: "1", name: "Ярик", score: "2445" },
-    { rank: "2", name: "Ярик", score: "2445" },
-    { rank: "3", name: "Ярик", score: "2445" },
-  ],
-  legal: {
-    privacy: "Privacy",
-    terms: "Terms",
-    data: "Data",
-  },
-  actions: {
-    create: "Create game",
-    join: "Join game",
-  },
-} as const;
 
 export default function JoinView() {
   const location = useLocation();
@@ -392,42 +364,7 @@ export default function JoinView() {
   return (
     <div className={styles.page}>
       <div className={styles.join}>
-        <img className={styles.frameImage} src="/figma/join/bg-562x843.png" alt="" aria-hidden="true" />
-        <section className={styles.heroCopy}>
-          <h1>{JOIN_COPY.title}</h1>
-          <p>{JOIN_COPY.subtitle}</p>
-        </section>
-        <section className={styles.questsCopy}>
-          <div className={styles.questsHead}>
-            <h2>{JOIN_COPY.questsTitle}</h2>
-            <span>{JOIN_COPY.questsTotal}</span>
-          </div>
-          <div className={styles.questTiles}>
-            {JOIN_COPY.quests.map((quest, index) => (
-              <article key={index} className={styles.questTile}>
-                <strong>{quest.progress}</strong>
-                <p>{quest.description}</p>
-                <span>{quest.cta}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-        <div className={styles.profileCard} aria-hidden="true" />
-        <div className={styles.loginCard} aria-hidden="true" />
-        <section className={styles.topLeaderboardCopy}>
-          <div className={styles.lbHead}>
-            <h2>{JOIN_COPY.leaderboardTitle}</h2>
-          </div>
-          <div className={styles.lbRows}>
-            {JOIN_COPY.leaderboardRows.map((entry) => (
-              <div key={entry.rank} className={styles.lbRow}>
-                <span className={styles.lbRank}>{entry.rank}</span>
-                <span className={styles.lbName}>{entry.name}</span>
-                <span className={styles.lbScore}>{entry.score}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        <img className={styles.frameImage} src="/figma/join/frame-106-4141-opaque.png" alt="" aria-hidden="true" />
         <div
           className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
           aria-hidden="true"
@@ -464,43 +401,29 @@ export default function JoinView() {
           className={styles.moreHotspot}
           onClick={handleLeaderboardClick}
           aria-label="Open leaderboard"
-        >
-          {JOIN_COPY.leaderboardMore}
-        </button>
-        <a className={styles.privacyHotspot} href="/legal/privacy" aria-label="Privacy">
-          {JOIN_COPY.legal.privacy}
-        </a>
-        <a className={styles.termsHotspot} href="/legal/terms" aria-label="Terms">
-          {JOIN_COPY.legal.terms}
-        </a>
-        <a className={styles.dataHotspot} href="/legal/data-deletion" aria-label="Data deletion">
-          {JOIN_COPY.legal.data}
-        </a>
+        />
+        <a className={styles.privacyHotspot} href="/legal/privacy" aria-label="Privacy" />
+        <a className={styles.termsHotspot} href="/legal/terms" aria-label="Terms" />
+        <a className={styles.dataHotspot} href="/legal/data-deletion" aria-label="Data deletion" />
         <button
           type="button"
           className={styles.createHotspot}
           onClick={handleScanClick}
           disabled={!showQr}
           aria-label="Create game"
-        >
-          {JOIN_COPY.actions.create}
-        </button>
+        />
         <button
           type="button"
           className={styles.joinHotspot}
           onClick={handlePlayClick}
           aria-label="Join game"
-        >
-          {JOIN_COPY.actions.join}
-        </button>
+        />
         <button
           type="button"
           className={styles.helpHotspot}
           onClick={() => navigate("/leaderboard")}
           aria-label="Help"
-        >
-          ?
-        </button>
+        />
         <button
           type="button"
           className={styles.logoutHotspot}
@@ -510,17 +433,7 @@ export default function JoinView() {
             navigate("/join", { replace: true });
           }}
           aria-label="Logout"
-        >
-          ↪
-        </button>
-        <p className={styles.loginLabel}>{JOIN_COPY.loginTitle}</p>
-        <div className={styles.loginVisualRow} aria-hidden="true">
-          {JOIN_COPY.loginIcons.map((icon, index) => (
-            <span key={`${icon}-${index}`} className={styles.loginVisualIcon}>
-              {icon}
-            </span>
-          ))}
-        </div>
+        />
         <div className={styles.loginHitLayer}>
           <button
             type="button"

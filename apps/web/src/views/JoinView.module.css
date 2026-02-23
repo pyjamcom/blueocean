@@ -19,237 +19,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
   pointer-events: none;
   user-select: none;
-}
-
-.profileCard {
-  position: absolute;
-  left: 5.128205%;
-  top: 30.481283%;
-  width: 89.74359%;
-  height: 25.13369%;
-  border-radius: 12px;
-  background: #2f084e;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.loginCard {
-  position: absolute;
-  left: 5.128205%;
-  top: 57.040998%;
-  width: 89.74359%;
-  height: 8.912656%;
-  border-radius: 12px;
-  background: #2f084e;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.heroCopy {
-  position: absolute;
-  left: 5.128205%;
-  top: 2.139037%;
-  width: 89.74359%;
-  height: 12.655972%;
-  border-radius: 12px;
-  background: #2f084e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 14px 18px;
-  text-align: center;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.heroCopy h1 {
-  margin: 0;
-  color: #ffffff;
-  font-family: Inter, sans-serif;
-  font-size: clamp(16px, 4.1vw, 35px);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-}
-
-.heroCopy p {
-  margin: 0;
-  color: #ffffff80;
-  font-family: Inter, sans-serif;
-  font-size: clamp(13px, 1.55vw, 14px);
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.questsCopy {
-  position: absolute;
-  left: 5.128205%;
-  top: 15.418894%;
-  width: 89.74359%;
-  height: 12.655972%;
-  border-radius: 12px;
-  background: #2f084e;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 10px;
-  padding: 12px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.questsHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.questsHead h2 {
-  margin: 0;
-  color: #ffffff;
-  font-family: Inter, sans-serif;
-  font-size: clamp(19px, 4.6vw, 38px);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
-.questsHead span {
-  color: #ffffff;
-  font-family: Inter, sans-serif;
-  font-size: clamp(18px, 2.2vw, 19px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.questTiles {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.questTile {
-  border-radius: 16px;
-  background: radial-gradient(114% 114% at 0 0, #a400ff 0%, #0d0118 85%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: grid;
-  gap: 6px;
-  align-content: start;
-  padding: 10px 10px 8px;
-}
-
-.questTile strong {
-  margin: 0;
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(26px, 3.4vw, 30px);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.questTile p {
-  margin: 0;
-  color: #ffffff;
-  font-family: Inter, sans-serif;
-  font-size: clamp(10px, 1.05vw, 11px);
-  font-weight: 400;
-  line-height: 1.2;
-}
-
-.questTile span {
-  margin-top: auto;
-  align-self: stretch;
-  height: 22px;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #000;
-  font-family: Geist, sans-serif;
-  font-size: clamp(11px, 1.45vw, 14px);
-  font-weight: 600;
-  line-height: 22px;
-  text-align: center;
-}
-
-.topLeaderboardCopy {
-  position: absolute;
-  left: 2.051282%;
-  top: 66.84492%;
-  width: 95.897436%;
-  height: 21.033868%;
-  border-radius: 10px;
-  background: #2f084e;
-  padding: 10px 8px 8px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.lbHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.lbHead h2 {
-  margin: 0;
-  color: #ffffff;
-  font-family: Inter, sans-serif;
-  font-size: clamp(17px, 3.6vw, 34px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.lbRows {
-  display: grid;
-  gap: 6px;
-}
-
-.lbRow {
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  display: grid;
-  grid-template-columns: 54px 1fr 62px;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.lbRow:nth-child(1) {
-  background: linear-gradient(180deg, #d0d000 0%, #898900 100%);
-}
-
-.lbRow:nth-child(2) {
-  background: linear-gradient(180deg, #a4a4a4 0%, #454545 100%);
-}
-
-.lbRow:nth-child(3) {
-  background: linear-gradient(180deg, #d19000 0%, #6f3e00 100%);
-}
-
-.lbRank,
-.lbName,
-.lbScore {
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(13px, 2vw, 24px);
-  font-weight: 500;
-  line-height: 1;
-}
-
-.lbRank {
-  opacity: 0.95;
-  justify-self: start;
-}
-
-.lbScore {
-  justify-self: end;
-  color: #f7f2ff;
 }
 
 .profileAvatarVisual {
@@ -298,9 +69,9 @@
   position: absolute;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: transparent;
   cursor: pointer;
-  z-index: 4;
+  z-index: 2;
 }
 
 .profileAvatarHotspot {
@@ -370,15 +141,6 @@
   width: 15.897436%;
   height: 2.85205%;
   border-radius: 8px;
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(13px, 1.5vw, 15px);
-  font-weight: 600;
-  background: linear-gradient(180deg, #4a48db 0%, #2e2b8e 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .privacyHotspot {
@@ -386,14 +148,6 @@
   top: 89.483066%;
   width: 11.794872%;
   height: 1.604278%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.65);
-  font-family: Geist, sans-serif;
-  font-size: clamp(12px, 1.35vw, 15px);
-  font-weight: 500;
-  text-decoration: none;
 }
 
 .termsHotspot {
@@ -401,14 +155,6 @@
   top: 89.483066%;
   width: 9.74359%;
   height: 1.604278%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.65);
-  font-family: Geist, sans-serif;
-  font-size: clamp(12px, 1.35vw, 15px);
-  font-weight: 500;
-  text-decoration: none;
 }
 
 .dataHotspot {
@@ -416,14 +162,6 @@
   top: 89.483066%;
   width: 7.692308%;
   height: 1.604278%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.65);
-  font-family: Geist, sans-serif;
-  font-size: clamp(12px, 1.35vw, 15px);
-  font-weight: 500;
-  text-decoration: none;
 }
 
 .createHotspot {
@@ -432,15 +170,6 @@
   width: 31.538462%;
   height: 3.921569%;
   border-radius: 8px;
-  color: #d6ebff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(12px, 1.4vw, 14px);
-  font-weight: 600;
-  background: linear-gradient(90deg, #2f9de4 0%, #1a5f8b 100%);
-  border: 1px solid #56b7f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .joinHotspot {
@@ -449,15 +178,6 @@
   width: 31.538462%;
   height: 3.921569%;
   border-radius: 8px;
-  color: #ebffeb;
-  font-family: Geist, sans-serif;
-  font-size: clamp(12px, 1.4vw, 14px);
-  font-weight: 600;
-  background: linear-gradient(90deg, #1ac427 0%, #0f8f1f 100%);
-  border: 1px solid #2de449;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .helpHotspot {
@@ -466,14 +186,6 @@
   width: 10.25641%;
   height: 3.921569%;
   border-radius: 8px;
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(13px, 1.6vw, 16px);
-  font-weight: 700;
-  background: #2b2f35;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .logoutHotspot {
@@ -482,59 +194,6 @@
   width: 10.25641%;
   height: 3.921569%;
   border-radius: 8px;
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: clamp(13px, 1.6vw, 16px);
-  font-weight: 700;
-  background: #4f080d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loginLabel {
-  position: absolute;
-  left: 9.230769%;
-  top: 57.575758%;
-  width: 81.538462%;
-  margin: 0;
-  text-align: center;
-  color: #ffffffb3;
-  font-family: Geist, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.loginVisualRow {
-  position: absolute;
-  left: 9.230769%;
-  top: 60.606061%;
-  width: 81.538462%;
-  height: 3.565062%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.loginVisualIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: #f3f3f3;
-  color: #2a2140;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Geist, sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
 }
 
 .loginHitLayer {
@@ -543,7 +202,7 @@
   top: 60.606061%;
   width: 81.538462%;
   height: 3.565062%;
-  z-index: 6;
+  z-index: 2;
 }
 
 .loginHit {
