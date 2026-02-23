@@ -86,6 +86,101 @@
   text-align: center;
 }
 
+.questsBlock {
+  position: absolute;
+  left: 5.128205%;
+  top: 15.508021%;
+  width: 89.74359%;
+  border-radius: 12px;
+  background: #1f0042;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.questsHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.questsTitle {
+  margin: -1px 0 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.54px;
+  line-height: normal;
+}
+
+.questsTotal {
+  margin: 0;
+  color: rgb(255 255 255 / 70%);
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.48px;
+  line-height: 23px;
+  white-space: nowrap;
+}
+
+.questsRow {
+  display: flex;
+  gap: 8px;
+}
+
+.questCard {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid rgb(153 0 255 / 50%);
+  border-radius: 16px;
+  background: linear-gradient(224deg, #b700ff 0%, #020202 72%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.questProgress {
+  margin: -1px 0 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 1;
+}
+
+.questDescription {
+  margin: 0;
+  color: rgb(255 255 255 / 75%);
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.36px;
+  line-height: normal;
+}
+
+.questClaim {
+  align-self: flex-start;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4f4f4f;
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.36px;
+  line-height: normal;
+  padding: 4px 16px;
+}
+
 .profileAvatarVisual {
   position: absolute;
   left: 36.666667%;

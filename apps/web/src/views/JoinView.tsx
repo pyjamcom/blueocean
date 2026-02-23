@@ -32,6 +32,12 @@ const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
 const LEGACY_DEFAULT_NAME_RE = /^кл[её]воеимя\d*$/i;
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
+const JOIN_QUESTS_TITLE = "Quests for the game";
+const JOIN_QUESTS_TOTAL = "5/5";
+const JOIN_QUESTS = [
+  { progress: "5/5", description: "Inviting a 5 friends", cta: "Claim" },
+  { progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
+] as const;
 
 export default function JoinView() {
   const location = useLocation();
@@ -367,10 +373,30 @@ export default function JoinView() {
     <div className={styles.page}>
       <div className={styles.join}>
         <img className={styles.baseBackgroundImage} src="/figma/join/image-931.png" alt="" aria-hidden="true" />
-        <img className={styles.frameImage} src="/figma/join/frame-106-4141-hero-clean.png" alt="" aria-hidden="true" />
-        <section className={styles.heroBlock} aria-hidden="true">
+        <img
+          className={styles.frameImage}
+          src="/figma/join/frame-106-4141-hero-quests-clean.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <section className={styles.heroBlock}>
           <h1 className={styles.heroTitle}>{JOIN_HERO_TITLE}</h1>
           <p className={styles.heroSubtitle}>{JOIN_HERO_SUBTITLE}</p>
+        </section>
+        <section className={styles.questsBlock}>
+          <header className={styles.questsHeader}>
+            <h2 className={styles.questsTitle}>{JOIN_QUESTS_TITLE}</h2>
+            <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
+          </header>
+          <div className={styles.questsRow}>
+            {JOIN_QUESTS.map((quest) => (
+              <article key={`${quest.progress}-${quest.description}`} className={styles.questCard}>
+                <p className={styles.questProgress}>{quest.progress}</p>
+                <p className={styles.questDescription}>{quest.description}</p>
+                <div className={styles.questClaim}>{quest.cta}</div>
+              </article>
+            ))}
+          </div>
         </section>
         <div
           className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
