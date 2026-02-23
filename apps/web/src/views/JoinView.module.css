@@ -46,7 +46,6 @@
 
 .profileAvatarHotspot,
 .profileButtonHotspot,
-.nameInputHotspot,
 .moreHotspot,
 .privacyHotspot,
 .termsHotspot,
@@ -79,12 +78,32 @@
   border-radius: 8px;
 }
 
-.nameInputHotspot {
+.nameInputField {
+  position: absolute;
   left: 9.230769%;
   top: 49.821747%;
   width: 81.538462%;
   height: 3.743316%;
+  border: 0;
+  outline: none;
   border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: Inter, sans-serif;
+  font-size: clamp(19px, 4.8vw, 23px);
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  padding: 0 16px;
+  z-index: 3;
+}
+
+.nameInputField::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.nameInputField:focus {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .moreHotspot {

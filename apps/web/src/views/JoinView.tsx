@@ -266,6 +266,15 @@ export default function JoinView() {
     navigate("/leaderboard");
   };
 
+  const handleNameInput = (value: string) => {
+    const next = value.slice(0, 18);
+    setPlayerName(next);
+    setStoredPlayerName(next);
+    if (roomCode) {
+      setName(next);
+    }
+  };
+
   const handleAvatarStep = (direction: number) => {
     setAvatarIndex((prev) => {
       const next = (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length;
@@ -366,20 +375,16 @@ export default function JoinView() {
           onClick={handleAvatarClick}
           aria-label="Choose avatar button"
         />
-        <button
-          type="button"
-          className={styles.nameInputHotspot}
-          aria-label="Set player name"
-          onClick={() => {
-            const value = window.prompt("Player name", playerName || "КлёвоеИмя3286");
-            if (value === null) return;
-            const next = value.slice(0, 18);
-            setPlayerName(next);
-            setStoredPlayerName(next);
-            if (roomCode) {
-              setName(next);
-            }
-          }}
+        <input
+          className={styles.nameInputField}
+          aria-label="Player name"
+          value={playerName}
+          onChange={(event) => handleNameInput(event.target.value)}
+          maxLength={18}
+          spellCheck={false}
+          autoCapitalize="none"
+          autoCorrect="off"
+          placeholder="КлёвоеИмя3286"
         />
         <button
           type="button"
