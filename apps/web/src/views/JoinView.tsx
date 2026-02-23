@@ -29,6 +29,7 @@ const DEFAULT_PUBLIC_ROOM = "PLAY";
 const HOST_WAIT_KEY = "escapers_host_wait";
 const MIN_PLAYERS = 3;
 const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
+const LEGACY_DEFAULT_NAME_RE = /^кл[её]воеимя\d*$/i;
 
 export default function JoinView() {
   const location = useLocation();
@@ -64,7 +65,11 @@ export default function JoinView() {
   const [qrSrc, setQrSrc] = useState<string>("");
   const [qrVisible, setQrVisible] = useState(false);
   const showQr = !codeParam;
-  const [playerName, setPlayerName] = useState(() => getStoredPlayerName());
+  const [playerName, setPlayerName] = useState(() => {
+    const storedName = getStoredPlayerName().trim();
+    if (!storedName) return "";
+    return LEGACY_DEFAULT_NAME_RE.test(storedName) ? "" : storedName;
+  });
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [authProvider, setAuthProvider] = useState<"firebase" | "twitch" | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -384,7 +389,7 @@ export default function JoinView() {
           spellCheck={false}
           autoCapitalize="none"
           autoCorrect="off"
-          placeholder="КлёвоеИмя3286"
+          placeholder="Put your name"
         />
         <button
           type="button"
