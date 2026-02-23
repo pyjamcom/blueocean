@@ -30,7 +30,10 @@
   width: 26.666667%;
   height: 9.269162%;
   border-radius: 20px;
-  overflow: hidden;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
   background: #3b2a5c;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
@@ -38,9 +41,9 @@
 }
 
 .profileAvatarVisual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 116%;
+  height: 116%;
+  object-fit: contain;
   display: block;
 }
 
