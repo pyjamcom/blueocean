@@ -44,6 +44,15 @@ const JOIN_TOP3_ROWS = [
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
   { id: "top-3", rank: 3, name: "Ярик", score: "2445", tier: "bronze", tall: false },
 ] as const;
+type AuthProvider = "google" | "facebook" | "apple" | "twitter" | "twitch" | "firebase" | null;
+
+function resolveFirebaseProvider(providerId: string | undefined): Exclude<AuthProvider, "twitch" | null> {
+  if (providerId === "google.com") return "google";
+  if (providerId === "facebook.com") return "facebook";
+  if (providerId === "apple.com") return "apple";
+  if (providerId === "twitter.com") return "twitter";
+  return "firebase";
+}
 
 export default function JoinView() {
   const location = useLocation();
@@ -85,7 +94,8 @@ export default function JoinView() {
     return LEGACY_DEFAULT_NAME_RE.test(storedName) ? "" : storedName;
   });
   const [authUser, setAuthUser] = useState<string | null>(null);
-  const [authProvider, setAuthProvider] = useState<"firebase" | "twitch" | null>(null);
+  const [authEmail, setAuthEmail] = useState<string | null>(null);
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
@@ -145,17 +155,23 @@ export default function JoinView() {
     if (!firebaseEnabled) return;
     return onFirebaseUser((user) => {
       if (!user) {
-        if (!authProvider || authProvider === "firebase") {
+        if (!authProvider || authProvider !== "twitch") {
           setAuthUser(null);
+          setAuthEmail(null);
           setAuthProvider(null);
         }
         return;
       }
       const displayName =
         user.displayName ?? (user.email ? user.email.split("@")[0] : "");
+      const providerId =
+        user.providerData.find((provider) => provider.providerId === "google.com")?.providerId ??
+        user.providerData[0]?.providerId;
+      const nextProvider = resolveFirebaseProvider(providerId);
       if (displayName) {
-        setAuthProvider("firebase");
+        setAuthProvider(nextProvider);
         setAuthUser(displayName);
+        setAuthEmail(user.email ?? null);
         if (!playerName) {
           setPlayerName(displayName);
           setStoredPlayerName(displayName);
@@ -188,6 +204,7 @@ export default function JoinView() {
       const email = typeof payload.email === "string" ? payload.email : null;
       const resolvedName = displayName || (email ? email.split("@")[0] : "");
       setAuthProvider("twitch");
+      setAuthEmail(email);
       setAuthUser(resolvedName || null);
       if (resolvedName && !playerName) {
         setPlayerName(resolvedName);
@@ -374,6 +391,8 @@ export default function JoinView() {
   const previewAvatarSrc =
     getAvatarImageUrl(currentAvatar) ?? getAssetUrl(previewAvatarAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const isAuthorized = Boolean(authUser);
+  const isGoogleAuthorized = authProvider === "google" && Boolean(authUser || authEmail);
+  const googleAuthLabel = authEmail ?? authUser ?? "";
 
   return (
     <div className={styles.page}>
@@ -440,71 +459,83 @@ export default function JoinView() {
           placeholder="Put your name"
         />
         <section className={styles.loginBlock} aria-label="Login options">
-          <p className={styles.loginTitle}>Log in with:</p>
-          <div className={styles.loginIconsWrap}>
-            <div className={styles.loginVisualLayer} aria-hidden="true">
+          <p className={styles.loginTitle}>{isGoogleAuthorized ? "Logged in with:" : "Log in with:"}</p>
+          {isGoogleAuthorized ? (
+            <div className={styles.loginAuthorizedRow}>
               <img
                 src="/figma/join/ant-design-google-circle-filled.svg"
                 alt=""
-                className={`${styles.loginIcon} ${styles.loginIconGoogle}`}
+                className={styles.loginAuthorizedIcon}
+                aria-hidden="true"
               />
-              <img
-                src="/figma/join/frame-3.svg"
-                alt=""
-                className={`${styles.loginIcon} ${styles.loginIconApple}`}
-              />
-              <img
-                src="/figma/join/ic-baseline-facebook.svg"
-                alt=""
-                className={`${styles.loginIcon} ${styles.loginIconFacebook}`}
-              />
-              <span className={`${styles.loginIcon} ${styles.loginIconX}`} aria-hidden="true">
-                <img src="/figma/join/ellipse-2188.svg" alt="" className={styles.loginIconXBg} />
-                <img src="/figma/join/mingcute-apple-fill.svg" alt="" className={styles.loginIconXGlyph} />
-              </span>
-              <img
-                src="/figma/join/frame-4.svg"
-                alt=""
-                className={`${styles.loginIcon} ${styles.loginIconTwitch}`}
-              />
+              <span className={styles.loginAuthorizedText}>{googleAuthLabel}</span>
             </div>
-            <div className={styles.loginHitLayer}>
-              <button
-                type="button"
-                className={`${styles.loginHit} ${styles.hitGoogle}`}
-                onClick={handleGoogleAuth}
-                disabled={!firebaseEnabled}
-                aria-label="Login with Google"
-              />
-              <button
-                type="button"
-                className={`${styles.loginHit} ${styles.hitApple}`}
-                onClick={handleAppleAuth}
-                disabled={!firebaseEnabled}
-                aria-label="Login with Apple"
-              />
-              <button
-                type="button"
-                className={`${styles.loginHit} ${styles.hitFacebook}`}
-                onClick={handleFacebookAuth}
-                disabled={!firebaseEnabled}
-                aria-label="Login with Facebook"
-              />
-              <button
-                type="button"
-                className={`${styles.loginHit} ${styles.hitTwitter}`}
-                onClick={handleTwitterAuth}
-                disabled={!firebaseEnabled}
-                aria-label="Login with X"
-              />
-              <button
-                type="button"
-                className={`${styles.loginHit} ${styles.hitTwitch}`}
-                onClick={handleTwitchAuth}
-                aria-label="Login with Twitch"
-              />
+          ) : (
+            <div className={styles.loginIconsWrap}>
+              <div className={styles.loginVisualLayer} aria-hidden="true">
+                <img
+                  src="/figma/join/ant-design-google-circle-filled.svg"
+                  alt=""
+                  className={`${styles.loginIcon} ${styles.loginIconGoogle}`}
+                />
+                <img
+                  src="/figma/join/frame-3.svg"
+                  alt=""
+                  className={`${styles.loginIcon} ${styles.loginIconApple}`}
+                />
+                <img
+                  src="/figma/join/ic-baseline-facebook.svg"
+                  alt=""
+                  className={`${styles.loginIcon} ${styles.loginIconFacebook}`}
+                />
+                <span className={`${styles.loginIcon} ${styles.loginIconX}`} aria-hidden="true">
+                  <img src="/figma/join/ellipse-2188.svg" alt="" className={styles.loginIconXBg} />
+                  <img src="/figma/join/mingcute-apple-fill.svg" alt="" className={styles.loginIconXGlyph} />
+                </span>
+                <img
+                  src="/figma/join/frame-4.svg"
+                  alt=""
+                  className={`${styles.loginIcon} ${styles.loginIconTwitch}`}
+                />
+              </div>
+              <div className={styles.loginHitLayer}>
+                <button
+                  type="button"
+                  className={`${styles.loginHit} ${styles.hitGoogle}`}
+                  onClick={handleGoogleAuth}
+                  disabled={!firebaseEnabled}
+                  aria-label="Login with Google"
+                />
+                <button
+                  type="button"
+                  className={`${styles.loginHit} ${styles.hitApple}`}
+                  onClick={handleAppleAuth}
+                  disabled={!firebaseEnabled}
+                  aria-label="Login with Apple"
+                />
+                <button
+                  type="button"
+                  className={`${styles.loginHit} ${styles.hitFacebook}`}
+                  onClick={handleFacebookAuth}
+                  disabled={!firebaseEnabled}
+                  aria-label="Login with Facebook"
+                />
+                <button
+                  type="button"
+                  className={`${styles.loginHit} ${styles.hitTwitter}`}
+                  onClick={handleTwitterAuth}
+                  disabled={!firebaseEnabled}
+                  aria-label="Login with X"
+                />
+                <button
+                  type="button"
+                  className={`${styles.loginHit} ${styles.hitTwitch}`}
+                  onClick={handleTwitchAuth}
+                  aria-label="Login with Twitch"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </section>
         <section className={styles.top3Block} aria-label="Top 3 leaderboard">
           <header className={styles.top3Header}>

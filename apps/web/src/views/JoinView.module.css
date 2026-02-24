@@ -432,6 +432,35 @@
   backdrop-filter: blur(50.35px) brightness(100%);
 }
 
+.loginAuthorizedRow {
+  width: 318px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.loginAuthorizedIcon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.loginAuthorizedText {
+  max-width: 274px;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 23.4px;
+  letter-spacing: -0.54px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .loginVisualLayer {
   position: absolute;
   inset: 0;
