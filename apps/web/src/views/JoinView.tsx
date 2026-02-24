@@ -578,7 +578,7 @@ export default function JoinView() {
           <button
             type="button"
             className={`${styles.downButton} ${styles.downButtonHelp}`}
-            onClick={() => navigate("/leaderboard")}
+            onClick={() => navigate("/support")}
             aria-label="Help"
           >
             <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
