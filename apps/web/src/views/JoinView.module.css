@@ -1,7 +1,13 @@
 .page {
+  height: 100vh;
   min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
   background: linear-gradient(
     136.4764deg,
     rgba(62, 65, 134, 1) 0%,
@@ -14,9 +20,9 @@
 .join {
   position: relative;
   width: min(390px, 100vw);
-  aspect-ratio: 390 / 1122;
-  max-height: 1122px;
-  overflow: hidden;
+  height: 1122px;
+  overflow: visible;
+  flex: 0 0 auto;
   background: linear-gradient(
     136.4764deg,
     rgba(62, 65, 134, 1) 0%,
@@ -672,20 +678,21 @@
 }
 
 .downBar {
-  position: absolute;
-  left: 0;
-  top: 1046px;
-  width: 390px;
-  height: 76px;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(390px, 100vw);
+  height: calc(76px + env(safe-area-inset-bottom));
   border-radius: 16px 16px 0 0;
   border: 0;
   background: #111111;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px 20px;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
   box-sizing: border-box;
-  z-index: 3;
+  z-index: 50;
 }
 
 .downBar::before {
@@ -786,7 +793,7 @@
 .qrOverlay {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 110;
   pointer-events: none;
 }
 
@@ -825,7 +832,7 @@
 .avatarOverlay {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 120;
   display: grid;
   place-items: center;
   background: rgba(5, 5, 8, 0.7);
