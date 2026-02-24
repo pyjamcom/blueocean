@@ -382,12 +382,55 @@
   backdrop-filter: blur(50.35px) brightness(100%);
 }
 
-.loginIcons {
-  width: 100%;
-  height: 100%;
-  display: block;
+.loginVisualLayer {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
   user-select: none;
+}
+
+.loginIcon {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.loginIconGoogle {
+  left: 27px;
+}
+
+.loginIconApple {
+  left: 83px;
+}
+
+.loginIconFacebook {
+  left: 139px;
+}
+
+.loginIconX {
+  left: 195px;
+}
+
+.loginIconXBg {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 36px;
+  height: 36px;
+}
+
+.loginIconXGlyph {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 28px;
+  height: 28px;
+}
+
+.loginIconTwitch {
+  left: 251px;
 }
 
 .loginHitLayer {
@@ -522,10 +565,11 @@
 .rankChip {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 0;
   color: #ffffff;
   font-family: Inter, sans-serif;
   font-size: 14px;
+  font-weight: 400;
   line-height: 14px;
   letter-spacing: -0.42px;
 }
@@ -536,12 +580,12 @@
   display: inline-block;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M2 2H14V4C14 6.5 12 8.5 9.5 8.9V10.4H12V12H4V10.4H6.5V8.9C4 8.5 2 6.5 2 4V2Z' fill='%23F4A106'/><path d='M5 14H11V15H5V14Z' fill='%23F4A106'/></svg>");
+  background-size: 13px 13px;
+  background-image: url("/figma/join/material-symbols-rewarded-ads.svg");
 }
 
 .rankNumber {
-  min-width: 8px;
+  min-width: 0;
 }
 
 .playerIdentity {
@@ -708,23 +752,23 @@
 }
 
 .downIconCreate {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' fill='none'><path d='M7.5 3.75V11.25M3.75 7.5H11.25' stroke='white' stroke-width='1.4' stroke-linecap='round'/><path d='M4.875 2.5H10.125A2.375 2.375 0 0 1 12.5 4.875V10.125A2.375 2.375 0 0 1 10.125 12.5H4.875A2.375 2.375 0 0 1 2.5 10.125V4.875A2.375 2.375 0 0 1 4.875 2.5Z' stroke='white' stroke-width='1.1'/></svg>");
+  background-image: url("/figma/join/ion-create.svg");
 }
 
 .downIconJoin {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' fill='none'><path d='M4.5 3.5L11.5 7.5L4.5 11.5V3.5Z' fill='white'/></svg>");
+  background-image: url("/figma/join/mingcute-play-fill.svg");
 }
 
 .downIconHelp {
   width: 20px;
   height: 20px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'><path d='M10 13.2V13.6M7.2 7.8A2.8 2.8 0 1 1 11.52 10.16C10.6 10.72 10 11.2 10 12.4' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/><path d='M10 18A8 8 0 1 0 10 2A8 8 0 0 0 10 18Z' stroke='white' stroke-width='1.3'/></svg>");
+  background-image: url("/figma/join/streamline-plump-customer-support-7-solid.svg");
 }
 
 .downIconLogout {
   width: 20px;
   height: 20px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'><path d='M7.5 3.5H5A2 2 0 0 0 3 5.5V14.5A2 2 0 0 0 5 16.5H7.5' stroke='white' stroke-width='1.7' stroke-linecap='round'/><path d='M12.5 6L16.5 10L12.5 14' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/><path d='M16 10H7.5' stroke='white' stroke-width='1.7' stroke-linecap='round'/></svg>");
+  background-image: url("/figma/join/mynaui-logout.svg");
 }
 
 .authState {

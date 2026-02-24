@@ -438,12 +438,32 @@ export default function JoinView() {
         <section className={styles.loginBlock} aria-label="Login options">
           <p className={styles.loginTitle}>Log in with:</p>
           <div className={styles.loginIconsWrap}>
-            <img
-              src="/figma/join/login-social-318x40.svg"
-              alt=""
-              aria-hidden="true"
-              className={styles.loginIcons}
-            />
+            <div className={styles.loginVisualLayer} aria-hidden="true">
+              <img
+                src="/figma/join/ant-design-google-circle-filled.svg"
+                alt=""
+                className={`${styles.loginIcon} ${styles.loginIconGoogle}`}
+              />
+              <img
+                src="/figma/join/frame-3.svg"
+                alt=""
+                className={`${styles.loginIcon} ${styles.loginIconApple}`}
+              />
+              <img
+                src="/figma/join/ic-baseline-facebook.svg"
+                alt=""
+                className={`${styles.loginIcon} ${styles.loginIconFacebook}`}
+              />
+              <span className={`${styles.loginIcon} ${styles.loginIconX}`} aria-hidden="true">
+                <img src="/figma/join/ellipse-2188.svg" alt="" className={styles.loginIconXBg} />
+                <img src="/figma/join/mingcute-apple-fill.svg" alt="" className={styles.loginIconXGlyph} />
+              </span>
+              <img
+                src="/figma/join/frame-4.svg"
+                alt=""
+                className={`${styles.loginIcon} ${styles.loginIconTwitch}`}
+              />
+            </div>
             <div className={styles.loginHitLayer}>
               <button
                 type="button"
