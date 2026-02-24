@@ -929,14 +929,17 @@
 .qrShareButton {
   width: 100%;
   height: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #e6e6e6 0%, #a1a1a1 100%);
-  color: #000000;
+  border: 1px solid #7200ff;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  -webkit-backdrop-filter: blur(50.35px) brightness(100%);
+  backdrop-filter: blur(50.35px) brightness(100%);
+  color: #ffffff;
   font-family: Geist, sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 18.2px;
+  letter-spacing: 0;
   cursor: pointer;
 }
 
