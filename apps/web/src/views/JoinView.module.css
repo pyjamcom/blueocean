@@ -45,11 +45,25 @@
   z-index: 0;
 }
 
+.baseBackgroundImageDesktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .baseBackgroundImageMobile {
+    display: none;
+  }
+
+  .baseBackgroundImageDesktop {
+    display: block;
+  }
+}
+
 .heroBlock {
   position: absolute;
-  left: 20px;
-  top: 44px;
-  width: 350px;
+  left: 8px;
+  top: 8px;
+  width: 374px;
   height: 142px;
   display: flex;
   flex-direction: column;
@@ -93,9 +107,9 @@
 
 .questsBlock {
   position: absolute;
-  left: 20px;
-  top: 194px;
-  width: 350px;
+  left: 8px;
+  top: 158px;
+  width: 374px;
   height: 161px;
   border-radius: 12px;
   background: #200042;
@@ -236,9 +250,9 @@
 
 .avatarBlock {
   position: absolute;
-  left: 20px;
-  top: 363px;
-  width: 350px;
+  left: 8px;
+  top: 327px;
+  width: 374px;
   height: 254px;
   border-radius: 12px;
   background: #200042;
@@ -247,8 +261,8 @@
 
 .profileAvatarVisual {
   position: absolute;
-  left: 36.666667%;
-  top: 33.778966%;
+  left: 143px;
+  top: 343px;
   width: 26.666667%;
   height: 9.269162%;
   border: 4px solid #ffffff;
@@ -285,17 +299,17 @@
 }
 
 .profileAvatarHotspot {
-  left: 36.666667%;
-  top: 33.778966%;
+  left: 143px;
+  top: 343px;
   width: 26.666667%;
   height: 9.269162%;
   border-radius: 20px;
 }
 
 .profileButtonHotspot {
-  left: 9.230769%;
-  top: 44.474153%;
-  width: 81.538462%;
+  left: 24px;
+  top: 463px;
+  width: 342px;
   height: 3.921569%;
   border: 1px solid #7200ff;
   border-radius: 8px;
@@ -316,9 +330,9 @@
 
 .nameInputField {
   position: absolute;
-  left: 9.230769%;
-  top: 49.821747%;
-  width: 81.538462%;
+  left: 24px;
+  top: 523px;
+  width: 342px;
   height: 3.743316%;
   border: 0;
   outline: none;
@@ -351,9 +365,9 @@
 
 .loginBlock {
   position: absolute;
-  left: 20px;
-  top: 625px;
-  width: 350px;
+  left: 8px;
+  top: 589px;
+  width: 374px;
   height: 111px;
   border-radius: 12px;
   background: #200042;
@@ -380,7 +394,7 @@
 
 .loginIconsWrap {
   position: relative;
-  width: 318px;
+  width: 342px;
   height: 40px;
   flex: 0 0 40px;
   border-radius: 8px;
@@ -404,19 +418,19 @@
 }
 
 .loginIconGoogle {
-  left: 27px;
+  left: 39px;
 }
 
 .loginIconApple {
-  left: 83px;
+  left: 95px;
 }
 
 .loginIconFacebook {
-  left: 139px;
+  left: 151px;
 }
 
 .loginIconX {
-  left: 195px;
+  left: 207px;
 }
 
 .loginIconXBg {
@@ -436,7 +450,7 @@
 }
 
 .loginIconTwitch {
-  left: 251px;
+  left: 263px;
 }
 
 .loginHitLayer {
@@ -457,30 +471,30 @@
 }
 
 .hitGoogle {
-  left: 27px;
+  left: 39px;
 }
 
 .hitApple {
-  left: 83px;
+  left: 95px;
 }
 
 .hitFacebook {
-  left: 139px;
+  left: 151px;
 }
 
 .hitTwitter {
-  left: 195px;
+  left: 207px;
 }
 
 .hitTwitch {
-  left: 251px;
+  left: 263px;
 }
 
 .top3Block {
   position: absolute;
-  left: 20px;
-  top: 744px;
-  width: 350px;
+  left: 8px;
+  top: 708px;
+  width: 374px;
   height: 236px;
   border-radius: 12px;
   background: #200042;
@@ -493,7 +507,7 @@
 }
 
 .top3Header {
-  width: 318px;
+  width: 342px;
   height: 32px;
   display: flex;
   align-items: center;
@@ -526,14 +540,14 @@
 }
 
 .top3Rows {
-  width: 318px;
+  width: 342px;
   height: 156px;
   display: grid;
   gap: 4px;
 }
 
 .top3Row {
-  width: 318px;
+  width: 342px;
   height: 48px;
   border-radius: 9px;
   border: 0;
@@ -650,9 +664,9 @@
 
 .documentsRow {
   position: absolute;
-  left: 20px;
-  top: 988px;
-  width: 350px;
+  left: 8px;
+  top: 952px;
+  width: 374px;
   height: 50px;
   display: flex;
   align-items: center;
