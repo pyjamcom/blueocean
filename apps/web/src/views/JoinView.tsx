@@ -389,11 +389,8 @@ export default function JoinView() {
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
           <div className={styles.questsRow}>
-            {JOIN_QUESTS.map((quest, index) => (
-              <article
-                key={quest.id}
-                className={`${styles.questCard} ${index > 0 ? styles.questCardDimmed : ""}`}
-              >
+            {JOIN_QUESTS.map((quest) => (
+              <article key={quest.id} className={styles.questCard}>
                 <p className={styles.questProgress}>{quest.progress}</p>
                 <p className={styles.questDescription}>{quest.description}</p>
                 <div className={styles.questClaim}>
@@ -599,13 +596,6 @@ export default function JoinView() {
             <span className={`${styles.downIcon} ${styles.downIconLogout}`} aria-hidden="true" />
           </button>
         </div>
-        {isAuthorized ? (
-          <p className={styles.authState}>
-            Signed in as <span>{authUser}</span>
-          </p>
-        ) : null}
-        {authError ? <p className={styles.authError}>{authError}</p> : null}
-
         {qrVisible && qrSrc && showQr ? (
           <div className={styles.qrOverlay}>
             <div
