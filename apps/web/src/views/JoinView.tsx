@@ -46,12 +46,48 @@ const JOIN_TOP3_ROWS = [
   { id: "top-3", rank: 3, name: "Ярик", score: "2445", tier: "bronze", tall: false },
 ] as const;
 type AuthProvider = "google" | "facebook" | "apple" | "twitter" | "twitch" | "firebase" | null;
+type FirebaseAuthProvider = Exclude<AuthProvider, "twitch" | "firebase" | null>;
+
+const PROVIDER_TO_FIREBASE_ID: Record<FirebaseAuthProvider, string> = {
+  google: "google.com",
+  facebook: "facebook.com",
+  apple: "apple.com",
+  twitter: "twitter.com",
+};
 
 function resolveFirebaseProvider(providerId: string | undefined): Exclude<AuthProvider, "twitch" | null> {
   if (providerId === "google.com") return "google";
   if (providerId === "facebook.com") return "facebook";
   if (providerId === "apple.com") return "apple";
   if (providerId === "twitter.com") return "twitter";
+  return "firebase";
+}
+
+function resolveProviderFromFirebaseSession(
+  providerIds: string[],
+  fallbackProvider: AuthProvider,
+): Exclude<AuthProvider, "twitch" | null> {
+  if (
+    fallbackProvider &&
+    fallbackProvider !== "twitch" &&
+    fallbackProvider !== "firebase" &&
+    providerIds.includes(PROVIDER_TO_FIREBASE_ID[fallbackProvider])
+  ) {
+    return fallbackProvider;
+  }
+
+  const firstKnownProviderId = providerIds.find((providerId) =>
+    Object.values(PROVIDER_TO_FIREBASE_ID).includes(providerId),
+  );
+  const mappedProvider = resolveFirebaseProvider(firstKnownProviderId);
+  if (mappedProvider !== "firebase") {
+    return mappedProvider;
+  }
+
+  if (fallbackProvider && fallbackProvider !== "twitch") {
+    return fallbackProvider;
+  }
+
   return "firebase";
 }
 
@@ -186,19 +222,11 @@ export default function JoinView() {
       }
       const displayName =
         user.displayName ?? (user.email ? user.email.split("@")[0] : "");
-      const providerId =
-        user.providerData.find((provider) => provider.providerId === "google.com")?.providerId ??
-        user.providerData[0]?.providerId;
-      const nextProvider = resolveFirebaseProvider(providerId);
+      const providerIds = user.providerData
+        .map((provider) => provider.providerId)
+        .filter((providerId): providerId is string => Boolean(providerId));
       const fallbackProvider = getLastAuthProvider();
-      const resolvedProvider =
-        nextProvider === "firebase" &&
-        (fallbackProvider === "google" ||
-          fallbackProvider === "facebook" ||
-          fallbackProvider === "apple" ||
-          fallbackProvider === "twitter")
-          ? fallbackProvider
-          : nextProvider;
+      const resolvedProvider = resolveProviderFromFirebaseSession(providerIds, fallbackProvider);
       const resolvedName =
         displayName ||
         (user.email ? user.email.split("@")[0] ?? "" : "") ||
@@ -433,8 +461,34 @@ export default function JoinView() {
   const previewAvatarSrc =
     getAvatarImageUrl(currentAvatar) ?? getAssetUrl(previewAvatarAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const isAuthorized = Boolean(authUser);
-  const isGoogleAuthorized = authProvider === "google" && Boolean(authUser || authEmail);
-  const googleAuthLabel = authEmail ?? authUser ?? "";
+  const isSocialAuthorized =
+    (authProvider === "google" ||
+      authProvider === "apple" ||
+      authProvider === "twitter" ||
+      authProvider === "facebook" ||
+      authProvider === "twitch") &&
+    Boolean(authUser || authEmail);
+  const twitterHandle = (authUser ?? "").trim();
+  const socialHandleSource = twitterHandle || (authEmail ? authEmail.split("@")[0] ?? "" : "");
+  const normalizedSocialHandle = socialHandleSource
+    ? socialHandleSource.startsWith("@")
+      ? socialHandleSource
+      : `@${socialHandleSource.replace(/\s+/g, "")}`
+    : "";
+  const authorizedAuthLabel =
+    authProvider === "twitter" || authProvider === "facebook"
+      ? normalizedSocialHandle || (authEmail ?? authUser ?? "")
+      : authEmail ?? authUser ?? "";
+  const authorizedAuthIcon =
+    authProvider === "apple"
+      ? "/figma/join/frame-3.svg"
+      : authProvider === "google"
+        ? "/figma/join/ant-design-google-circle-filled.svg"
+        : authProvider === "facebook"
+          ? "/figma/join/ic-baseline-facebook.svg"
+        : authProvider === "twitch"
+          ? "/figma/join/frame-4.svg"
+        : null;
 
   return (
     <div className={styles.page}>
@@ -501,16 +555,23 @@ export default function JoinView() {
           placeholder="Put your name"
         />
         <section className={styles.loginBlock} aria-label="Login options">
-          <p className={styles.loginTitle}>{isGoogleAuthorized ? "Logged in with:" : "Log in with:"}</p>
-          {isGoogleAuthorized ? (
+          <p className={styles.loginTitle}>{isSocialAuthorized ? "Logged in with:" : "Log in with:"}</p>
+          {isSocialAuthorized ? (
             <div className={styles.loginAuthorizedRow}>
-              <img
-                src="/figma/join/ant-design-google-circle-filled.svg"
-                alt=""
-                className={styles.loginAuthorizedIcon}
-                aria-hidden="true"
-              />
-              <span className={styles.loginAuthorizedText}>{googleAuthLabel}</span>
+              {authProvider === "twitter" ? (
+                <span className={styles.loginAuthorizedX} aria-hidden="true">
+                  <img src="/figma/join/ellipse-2188.svg" alt="" className={styles.loginAuthorizedXBg} />
+                  <img src="/figma/join/mingcute-apple-fill.svg" alt="" className={styles.loginAuthorizedXGlyph} />
+                </span>
+              ) : authorizedAuthIcon ? (
+                <img
+                  src={authorizedAuthIcon}
+                  alt=""
+                  className={styles.loginAuthorizedIcon}
+                  aria-hidden="true"
+                />
+              ) : null}
+              <span className={styles.loginAuthorizedText}>{authorizedAuthLabel}</span>
             </div>
           ) : (
             <div className={styles.loginIconsWrap}>

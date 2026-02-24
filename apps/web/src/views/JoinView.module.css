@@ -448,6 +448,30 @@
   flex: 0 0 auto;
 }
 
+.loginAuthorizedX {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.loginAuthorizedXBg {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 36px;
+  height: 36px;
+}
+
+.loginAuthorizedXGlyph {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 28px;
+  height: 28px;
+}
+
 .loginAuthorizedText {
   max-width: 274px;
   color: #ffffff;
