@@ -57,6 +57,14 @@
 }
 
 @media (min-width: 768px) {
+  .join {
+    width: 75vw;
+  }
+
+  .downBar {
+    width: 75vw;
+  }
+
   .baseBackgroundImageMobile {
     display: none;
   }
