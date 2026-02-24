@@ -30,6 +30,7 @@ const HOST_WAIT_KEY = "escapers_host_wait";
 const MIN_PLAYERS = 3;
 const PROFILE_AVATAR_FALLBACK = "/figma/join/avatar-main-104.png";
 const LEGACY_DEFAULT_NAME_RE = /^кл[её]воеимя\d*$/i;
+const LAST_AUTH_PROVIDER_KEY = "escapers_last_auth_provider";
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
@@ -52,6 +53,27 @@ function resolveFirebaseProvider(providerId: string | undefined): Exclude<AuthPr
   if (providerId === "apple.com") return "apple";
   if (providerId === "twitter.com") return "twitter";
   return "firebase";
+}
+
+function setLastAuthProvider(provider: Exclude<AuthProvider, null>) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LAST_AUTH_PROVIDER_KEY, provider);
+}
+
+function getLastAuthProvider(): AuthProvider {
+  if (typeof window === "undefined") return null;
+  const value = window.localStorage.getItem(LAST_AUTH_PROVIDER_KEY);
+  if (
+    value === "google" ||
+    value === "facebook" ||
+    value === "apple" ||
+    value === "twitter" ||
+    value === "twitch" ||
+    value === "firebase"
+  ) {
+    return value;
+  }
+  return null;
 }
 
 export default function JoinView() {
@@ -168,16 +190,30 @@ export default function JoinView() {
         user.providerData.find((provider) => provider.providerId === "google.com")?.providerId ??
         user.providerData[0]?.providerId;
       const nextProvider = resolveFirebaseProvider(providerId);
-      if (displayName) {
-        setAuthProvider(nextProvider);
-        setAuthUser(displayName);
-        setAuthEmail(user.email ?? null);
-        if (!playerName) {
-          setPlayerName(displayName);
-          setStoredPlayerName(displayName);
-          if (roomCode) {
-            setName(displayName);
-          }
+      const fallbackProvider = getLastAuthProvider();
+      const resolvedProvider =
+        nextProvider === "firebase" &&
+        (fallbackProvider === "google" ||
+          fallbackProvider === "facebook" ||
+          fallbackProvider === "apple" ||
+          fallbackProvider === "twitter")
+          ? fallbackProvider
+          : nextProvider;
+      const resolvedName =
+        displayName ||
+        (user.email ? user.email.split("@")[0] ?? "" : "") ||
+        user.uid.slice(0, 8);
+
+      setAuthProvider(resolvedProvider);
+      setAuthUser(resolvedName);
+      setAuthEmail(user.email ?? null);
+      setLastAuthProvider(resolvedProvider);
+
+      if (!playerName && resolvedName) {
+        setPlayerName(resolvedName);
+        setStoredPlayerName(resolvedName);
+        if (roomCode) {
+          setName(resolvedName);
         }
       }
     });
@@ -206,6 +242,7 @@ export default function JoinView() {
       setAuthProvider("twitch");
       setAuthEmail(email);
       setAuthUser(resolvedName || null);
+      setLastAuthProvider("twitch");
       if (resolvedName && !playerName) {
         setPlayerName(resolvedName);
         setStoredPlayerName(resolvedName);
@@ -329,6 +366,7 @@ export default function JoinView() {
   const handleGoogleAuth = async () => {
     setAuthError(null);
     try {
+      setLastAuthProvider("google");
       await signInWithGoogle();
     } catch (error) {
       setAuthError("Google sign-in failed");
@@ -338,6 +376,7 @@ export default function JoinView() {
   const handleFacebookAuth = async () => {
     setAuthError(null);
     try {
+      setLastAuthProvider("facebook");
       await signInWithFacebook();
     } catch (error) {
       setAuthError("Facebook sign-in failed");
@@ -347,6 +386,7 @@ export default function JoinView() {
   const handleAppleAuth = async () => {
     setAuthError(null);
     try {
+      setLastAuthProvider("apple");
       await signInWithApple();
     } catch (error) {
       setAuthError("Apple sign-in failed");
@@ -356,6 +396,7 @@ export default function JoinView() {
   const handleTwitterAuth = async () => {
     setAuthError(null);
     try {
+      setLastAuthProvider("twitter");
       await signInWithTwitter();
     } catch (error) {
       setAuthError("X sign-in failed");
@@ -364,6 +405,7 @@ export default function JoinView() {
 
   const handleTwitchAuth = () => {
     setAuthError(null);
+    setLastAuthProvider("twitch");
     const loginUrl = new URL(`${apiBase}/auth/twitch/login`);
     if (typeof window !== "undefined") {
       loginUrl.searchParams.set("origin", window.location.origin);
