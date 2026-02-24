@@ -346,6 +346,33 @@ export default function JoinView() {
     setQrVisible(true);
   };
 
+  const handleQrShare = async () => {
+    if (!joinUrl) return;
+    const sharePayload = {
+      title: "Join my Escapers game",
+      text: "Scan the QR or open this link to join my room.",
+      url: joinUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(sharePayload);
+        trackEvent("qr_share", { channel: "native" });
+        return;
+      } catch {
+        // Ignore user cancellations and fall back to copy only when share fails.
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(joinUrl);
+      trackEvent("qr_share", { channel: "copy" });
+    } catch {
+      trackEvent("qr_share", { channel: "copy_failed" });
+      window.prompt("Copy link", joinUrl);
+    }
+  };
+
   const handleAvatarClick = () => {
     const idx = AVATAR_IDS.indexOf(avatarId);
     setAvatarIndex(idx >= 0 ? idx : 0);
@@ -748,8 +775,13 @@ export default function JoinView() {
               aria-hidden="true"
             />
             <div className={styles.qrFrameWrap}>
-              <div className={styles.qrFrame} onClick={(event) => event.stopPropagation()}>
-                <img src={qrSrc} alt="" className={styles.qrImage} />
+              <div className={styles.qrSheet} onClick={(event) => event.stopPropagation()}>
+                <div className={styles.qrFrame}>
+                  <img src={qrSrc} alt="" className={styles.qrImage} />
+                </div>
+                <button type="button" className={styles.qrShareButton} onClick={handleQrShare}>
+                  Share
+                </button>
               </div>
             </div>
           </div>
