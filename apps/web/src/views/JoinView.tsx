@@ -377,16 +377,12 @@ export default function JoinView() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.pageDesktopBackground} aria-hidden="true" />
+      <div className={styles.pageDesktopGradient} aria-hidden="true" />
       <div className={styles.join}>
         <img
           className={`${styles.baseBackgroundImage} ${styles.baseBackgroundImageMobile}`}
           src="/figma/join/image-931.png"
-          alt=""
-          aria-hidden="true"
-        />
-        <img
-          className={`${styles.baseBackgroundImage} ${styles.baseBackgroundImageDesktop}`}
-          src="/figma/join/image-931-desktop.webp"
           alt=""
           aria-hidden="true"
         />

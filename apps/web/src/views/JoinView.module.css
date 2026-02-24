@@ -1,4 +1,5 @@
 .page {
+  position: relative;
   height: 100vh;
   min-height: 100vh;
   display: flex;
@@ -17,12 +18,18 @@
   );
 }
 
+.pageDesktopBackground,
+.pageDesktopGradient {
+  display: none;
+}
+
 .join {
   position: relative;
   width: min(390px, 100vw);
   height: 1122px;
   overflow: visible;
   flex: 0 0 auto;
+  z-index: 2;
   background: linear-gradient(
     136.4764deg,
     rgba(62, 65, 134, 1) 0%,
@@ -45,8 +52,8 @@
   z-index: 0;
 }
 
-.baseBackgroundImageDesktop {
-  display: none;
+.baseBackgroundImageMobile {
+  display: block;
 }
 
 @media (min-width: 768px) {
@@ -54,8 +61,31 @@
     display: none;
   }
 
-  .baseBackgroundImageDesktop {
+  .pageDesktopBackground {
+    position: fixed;
+    inset: 0;
     display: block;
+    background-image: url("/figma/join/image-931-desktop.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pageDesktopGradient {
+    position: fixed;
+    inset: 0;
+    display: block;
+    background: linear-gradient(
+      136.4764deg,
+      rgba(62, 65, 134, 0.9) 0%,
+      rgba(12, 8, 34, 0.9) 30.2884608507%,
+      rgba(12, 8, 34, 0.9) 75%,
+      rgba(133, 62, 134, 0.9) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
   }
 }
 
