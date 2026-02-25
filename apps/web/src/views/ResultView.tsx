@@ -47,7 +47,7 @@ function rowTone(rank: number): RowTone {
 }
 
 export default function ResultView() {
-  const { players, roomCode, createNextRoom, phase } = useRoom();
+  const { players, roomCode, createNextRoom, phase, resetRoom } = useRoom();
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const [shareHint, setShareHint] = useState<string | null>(null);
@@ -167,6 +167,21 @@ export default function ResultView() {
     navigate("/join");
   };
 
+  const handleJoin = () => {
+    resetRoom();
+    navigate("/join");
+  };
+
+  const handleSupport = () => {
+    trackEvent("support_click", { source: "result" });
+    navigate("/support");
+  };
+
+  const handleLogout = () => {
+    resetRoom();
+    navigate("/join", { replace: true });
+  };
+
   const renderAvatar = (entry: ResultEntry | null, className?: string) => {
     if (!entry) {
       return <span className={`${styles.avatar} ${className}`} />;
@@ -199,6 +214,157 @@ export default function ResultView() {
       </div>
     </div>
   );
+
+  const renderFinalLane = (
+    entry: ResultEntry | null,
+    rankLabel: "1" | "2" | "3",
+    laneClass: string | undefined,
+    badgeClass: string | undefined,
+    shellClass: string | undefined,
+  ) => {
+    const avatarSrc = entry?.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+    const fallbackChar = (entry?.name ?? "—").charAt(0).toUpperCase();
+    return (
+      <article className={`${styles.finalPodiumLane} ${laneClass ?? ""}`}>
+        <div className={`${styles.finalAvatarShell} ${shellClass ?? ""}`}>
+          <div
+            className={styles.finalAvatarInner}
+            style={{ background: avatarColor(entry?.avatarId ?? entry?.playerId ?? rankLabel) }}
+          >
+            {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{fallbackChar}</span>}
+          </div>
+          <span className={styles.finalRankChip}>{rankLabel}</span>
+        </div>
+        <div className={`${styles.finalBadge} ${badgeClass ?? ""}`}>
+          <span className={styles.finalBadgeName}>{entry?.name ?? "—"}</span>
+          <span className={styles.finalScorePill}>{entry?.score ?? 0}</span>
+          {rankLabel === "1" ? <span className={styles.finalKingIcon}>♔</span> : null}
+        </div>
+      </article>
+    );
+  };
+
+  if (isFinal) {
+    const finalRows = rows.slice(0, 6);
+    return (
+      <div className={styles.wrap}>
+        <section className={`${styles.phone} ${styles.phoneFinal}`} aria-label="Final podium view">
+          <img
+            className={styles.finalBackgroundImage}
+            src="/figma/podium/325-1751.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <span className={styles.crownMark} aria-hidden="true">
+            👑
+          </span>
+
+          <header className={styles.finalHeader}>
+            <p className={styles.finalHeaderText}>Posted for history. Debates are closed.</p>
+          </header>
+
+          <main className={styles.finalMobile}>
+            <section className={styles.finalPodiumCard}>
+              {renderFinalLane(podium.second, "2", styles.finalLaneSecond, styles.finalBadgeSecond, styles.finalShellSilver)}
+              {renderFinalLane(podium.first, "1", styles.finalLaneFirst, styles.finalBadgeFirst, styles.finalShellGold)}
+              {renderFinalLane(podium.third, "3", styles.finalLaneThird, styles.finalBadgeThird, styles.finalShellSilver)}
+            </section>
+
+            <section className={styles.finalShareCard}>
+              <h2 className={styles.finalShareTitle}>Share on:</h2>
+              <div className={styles.finalShareRow}>
+                <button
+                  type="button"
+                  className={styles.finalShareButton}
+                  onClick={() => openShare(redditUrl, "reddit")}
+                  aria-label="Share on Reddit"
+                >
+                  <span className={styles.finalShareGlyph}>👽</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.finalShareButton}
+                  onClick={() => copyShareLink("Instagram", `${shareTextInstagram} ${shareUrl}`)}
+                  aria-label="Share on Instagram"
+                >
+                  <span className={styles.finalShareGlyph}>◎</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.finalShareButton}
+                  onClick={() => openShare(facebookUrl, "facebook")}
+                  aria-label="Share on Facebook"
+                >
+                  <span className={styles.finalShareGlyph}>f</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.finalShareButton}
+                  onClick={() => openShare(xUrl, "x")}
+                  aria-label="Share on X"
+                >
+                  <span className={styles.finalShareGlyph}>X</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.finalShareButton}
+                  onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
+                  aria-label="Share on Twitch"
+                >
+                  <span className={styles.finalShareGlyph}>T</span>
+                </button>
+              </div>
+            </section>
+
+            <section className={styles.finalListCard}>
+              <div className={styles.finalListRows}>
+                {finalRows.map((entry) => {
+                  const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+                  return (
+                    <article key={entry.playerId} className={styles.finalListRow}>
+                      <div className={styles.finalRowLeft}>
+                        <div className={styles.finalRankBlock}>
+                          <span className={styles.finalRankIcon} aria-hidden="true" />
+                          <span className={styles.finalRankText}>{entry.rank}</span>
+                        </div>
+                        <div className={styles.finalIdentity}>
+                          <span
+                            className={styles.finalRowAvatar}
+                            style={{ background: avatarColor(entry.avatarId ?? entry.playerId) }}
+                          >
+                            {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{entry.name.charAt(0)}</span>}
+                          </span>
+                          <span className={styles.finalRowName}>{entry.name}</span>
+                        </div>
+                      </div>
+                      <span className={styles.finalRowScore}>{entry.score}</span>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          </main>
+
+          <footer className={styles.finalDownBar}>
+            <button type="button" className={`${styles.finalDownButton} ${styles.finalDownCreate}`} onClick={handleExit}>
+              <span className={`${styles.finalDownIcon} ${styles.finalDownCreateIcon}`} aria-hidden="true" />
+              <span>Create game</span>
+            </button>
+            <button type="button" className={`${styles.finalDownButton} ${styles.finalDownJoin}`} onClick={handleJoin}>
+              <span className={`${styles.finalDownIcon} ${styles.finalDownJoinIcon}`} aria-hidden="true" />
+              <span>Join game</span>
+            </button>
+            <button type="button" className={`${styles.finalDownButton} ${styles.finalDownHelp}`} onClick={handleSupport} aria-label="Help">
+              <span className={`${styles.finalDownIcon} ${styles.finalDownHelpIcon}`} aria-hidden="true" />
+            </button>
+            <button type="button" className={`${styles.finalDownButton} ${styles.finalDownLogout}`} onClick={handleLogout} aria-label="Logout">
+              <span className={`${styles.finalDownIcon} ${styles.finalDownLogoutIcon}`} aria-hidden="true" />
+            </button>
+          </footer>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrap}>

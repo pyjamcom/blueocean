@@ -20,6 +20,495 @@
   box-shadow: 0 30px 64px rgba(0, 0, 0, 0.46);
 }
 
+.phoneFinal {
+  height: 844px;
+  min-height: 844px;
+  overflow: hidden;
+}
+
+.finalBackgroundImage {
+  position: absolute;
+  left: -21px;
+  top: 0;
+  width: 432px;
+  height: 647px;
+  object-fit: cover;
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.crownMark {
+  position: absolute;
+  left: 185px;
+  top: 143px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
+  pointer-events: none;
+}
+
+.finalHeader {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 83px;
+  border-radius: 0 0 24px 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 44px 20px 16px;
+  box-sizing: border-box;
+}
+
+.finalHeaderText {
+  margin: 0;
+  color: #ffffff;
+  text-align: center;
+  font-family: Geist, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23.4px;
+  letter-spacing: -0.54px;
+}
+
+.finalMobile {
+  position: absolute;
+  inset: 83px 0 76px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 56px 20px 16px;
+  box-sizing: border-box;
+}
+
+.finalPodiumCard {
+  width: 350px;
+  height: 246px;
+  padding: 0 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.finalPodiumLane {
+  width: 104px;
+  height: 246px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.finalLaneSecond {
+  justify-content: flex-start;
+}
+
+.finalLaneFirst {
+  justify-content: flex-start;
+}
+
+.finalLaneThird {
+  justify-content: flex-start;
+}
+
+.finalAvatarShell {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.finalShellSilver {
+  background: #1f1f1f;
+  border: 1px solid #ffffff;
+}
+
+.finalShellGold {
+  background: #330246;
+  border: 1px solid #b515ff;
+}
+
+.finalAvatarInner {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  font-family: Geist, sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.finalAvatarInner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.finalRankChip {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-family: Inter, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 16px;
+  letter-spacing: -0.6px;
+  color: #ffffff;
+  background: #9aa1a8;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.finalLaneFirst .finalRankChip {
+  background: #f9c74f;
+}
+
+.finalLaneThird .finalRankChip {
+  background: #c08457;
+}
+
+.finalBadge {
+  width: 103px;
+  border-radius: 36px 46px 0 0;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 8px;
+  padding: 56px 8px 0;
+  box-sizing: border-box;
+}
+
+.finalBadgeSecond {
+  margin-top: -18px;
+  height: 176px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(59, 59, 59, 0.2) 100%);
+}
+
+.finalBadgeFirst {
+  margin-top: -18px;
+  height: 216px;
+  background: linear-gradient(180deg, rgba(181, 21, 255, 0.75) 0%, rgba(51, 2, 70, 0.2) 100%);
+}
+
+.finalBadgeThird {
+  margin-top: -18px;
+  height: 148px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(59, 59, 59, 0.2) 100%);
+}
+
+.finalBadgeName {
+  width: 87px;
+  min-height: 42px;
+  color: #ffffff;
+  text-align: center;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+  overflow: hidden;
+}
+
+.finalScorePill {
+  min-width: 51px;
+  height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  background: linear-gradient(270deg, #7300ff 0%, #0699f4 100%);
+  color: #fffdfd;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.42px;
+}
+
+.finalKingIcon {
+  font-size: 44px;
+  line-height: 1;
+  color: #ffd166;
+  margin-top: 2px;
+}
+
+.finalShareCard {
+  width: 350px;
+  min-height: 111px;
+  border-radius: 12px;
+  background: #200042;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.finalShareTitle {
+  margin: 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 23.4px;
+  letter-spacing: -0.54px;
+}
+
+.finalShareRow {
+  width: 318px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.finalShareButton {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #200042;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.finalShareGlyph {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.finalListCard {
+  width: 350px;
+  min-height: 364px;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(32, 0, 66, 0.85);
+  -webkit-backdrop-filter: blur(100.7px);
+  backdrop-filter: blur(100.7px);
+}
+
+.finalListRows {
+  width: 318px;
+  display: grid;
+  gap: 4px;
+}
+
+.finalListRow {
+  width: 318px;
+  min-height: 52px;
+  border-radius: 9px;
+  border: 1px solid #b515ff;
+  background: linear-gradient(180deg, #7807ac 0%, #330246 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.finalRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.finalRankBlock {
+  width: 29px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+.finalRankIcon {
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url("/figma/join/material-symbols-rewarded-ads.svg");
+}
+
+.finalRankText {
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: -0.42px;
+}
+
+.finalIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.finalRowAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.finalRowAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.finalRowName {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+}
+
+.finalRowScore {
+  min-width: 51px;
+  height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  padding: 4px 8px;
+  background: linear-gradient(270deg, #7300ff 0%, #0699f4 100%);
+  color: #fffdfd;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.42px;
+  box-sizing: border-box;
+}
+
+.finalDownBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 390px;
+  height: 76px;
+  border-radius: 16px 16px 0 0;
+  background: #111111;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.finalDownButton {
+  border: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 14.522727px;
+  letter-spacing: -0.36px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.finalDownCreate {
+  width: 123px;
+  height: 44px;
+  border: 1px solid #33b1ff;
+  background: linear-gradient(270deg, #213847 0%, #33b1ff 100%);
+}
+
+.finalDownJoin {
+  width: 123px;
+  height: 44px;
+  border: 1px solid #0edc2d;
+  background: linear-gradient(90deg, #0edc2d 0%, #006303 100%);
+}
+
+.finalDownHelp {
+  width: 40px;
+  height: 44px;
+  border: 1px solid #323232;
+  background: #272727;
+}
+
+.finalDownLogout {
+  width: 40px;
+  height: 44px;
+  border: 1px solid #510000;
+  background: #240000;
+}
+
+.finalDownIcon {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.finalDownCreateIcon {
+  background-image: url("/figma/join/ion-create.svg");
+}
+
+.finalDownJoinIcon {
+  background-image: url("/figma/join/mingcute-play-fill.svg");
+}
+
+.finalDownHelpIcon {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/streamline-plump-customer-support-7-solid.svg");
+}
+
+.finalDownLogoutIcon {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/mynaui-logout.svg");
+}
+
 
 
 .header {
