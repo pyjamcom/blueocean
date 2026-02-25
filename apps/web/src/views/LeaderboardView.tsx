@@ -96,9 +96,7 @@ export default function LeaderboardView() {
   const [period, setPeriod] = useState<Period>("weekly");
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [shareHint, setShareHint] = useState<string | null>(null);
   const funScoreSentRef = useRef<string>("");
-  const shareTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     trackEvent("leaderboard_view", { period });
@@ -153,7 +151,7 @@ export default function LeaderboardView() {
     };
   }, [engagement.group, period]);
 
-  const topList = data?.top?.length ? data.top : fallbackTop;
+  const topList = (data?.top?.length ? data.top : fallbackTop).slice(0, 8);
 
   const computeProgressPercent = (current: number, previous: number) => {
     if (previous <= 0) return current > 0 ? 100 : 0;
@@ -214,24 +212,7 @@ export default function LeaderboardView() {
   const shareText = JOIN_META_DESCRIPTION;
   const shareTextX = `${shareText} →`;
   const shareTextReddit = `${shareTitle} — ${shareText}`;
-  const shareTextInstagram = `${shareTitle}. ${shareText}`;
   const shareTextTwitch = `${shareTitle}. ${shareText}`;
-
-  const setHint = (message: string) => {
-    setShareHint(message);
-    if (shareTimeoutRef.current) {
-      window.clearTimeout(shareTimeoutRef.current);
-    }
-    shareTimeoutRef.current = window.setTimeout(() => setShareHint(null), 2800);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (shareTimeoutRef.current) {
-        window.clearTimeout(shareTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const copyShareLink = async (label: string, content?: string) => {
     try {
@@ -246,10 +227,9 @@ export default function LeaderboardView() {
         document.execCommand("copy");
         document.body.removeChild(temp);
       }
-      setHint(`${label} link copied — paste it anywhere.`);
       trackEvent("leaderboard_share", { channel: `${label.toLowerCase()}_copy`, period });
     } catch {
-      setHint("Copy failed — try again.");
+      trackEvent("leaderboard_share", { channel: `${label.toLowerCase()}_copy_failed`, period });
     }
   };
 
@@ -282,6 +262,7 @@ export default function LeaderboardView() {
   return (
     <div className={styles.wrap}>
       <section className={styles.phone} aria-label="Leaderboard screen">
+        <img className={styles.bgPattern} src="/figma/join/image-931.png" alt="" aria-hidden="true" />
         <header className={styles.header}>
           <h1 className={styles.headerTitle}>Leaderboard</h1>
           <div className={styles.segmentPicker}>
@@ -303,117 +284,105 @@ export default function LeaderboardView() {
         </header>
 
         <main className={styles.mobile}>
-          <section
-            className={styles.vibeCard}
-            title="Season mode: 100% = current leader score, 50% = half of leader score."
-          >
-            <div className={styles.vibeRow}>
-              <span>Your vibe:</span>
-              <span>{loading ? "..." : `${selfPercent}%`}</span>
-            </div>
-            <div className={styles.progressTrack}>
-              <span className={styles.progressFill} style={{ width: `${selfRatio * 100}%` }} />
-              <span className={styles.progressKnob} style={{ left: `calc(${selfRatio * 100}% - 11px)` }} />
-            </div>
-          </section>
+          <div className={styles.topBlock}>
+            <section
+              className={styles.vibeCard}
+              title="Season mode: 100% = current leader score, 50% = half of leader score."
+            >
+              <div className={styles.vibeRow}>
+                <span>Your vibe:</span>
+                <span>{loading ? "..." : `${selfPercent}%`}</span>
+              </div>
+              <div className={styles.progressTrack}>
+                <span className={styles.progressFill} style={{ width: `${selfRatio * 100}%` }} />
+                <span className={styles.progressKnob} style={{ left: `calc(${selfRatio * 100}% - 11px)` }} />
+              </div>
+            </section>
 
-          <section className={styles.shareCard}>
-            <h2 className={styles.cardTitle}>Share on:</h2>
-            <div className={styles.shareRow}>
-              <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
-                <span className={styles.shareGlyph}>👽</span>
-              </button>
-              <button
-                type="button"
-                className={styles.shareButton}
-                onClick={() => copyShareLink("Instagram", `${shareTextInstagram} ${shareUrl}`)}
-                aria-label="Share on Instagram"
-              >
-                <span className={styles.shareGlyph}>◎</span>
-              </button>
-              <button type="button" className={styles.shareButton} onClick={() => openShare(facebookUrl, "facebook")} aria-label="Share on Facebook">
-                <span className={styles.shareGlyph}>f</span>
-              </button>
-              <button
-                type="button"
-                className={styles.shareButton}
-                onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
-                aria-label="Share on Twitch"
-              >
-                <span className={styles.shareGlyph}>T</span>
-              </button>
-              <button type="button" className={styles.shareButton} onClick={() => openShare(xUrl, "x")} aria-label="Share on X">
-                <span className={styles.shareGlyph}>X</span>
-              </button>
-            </div>
-            <button type="button" className={styles.nativeShare} onClick={handleNativeShare}>
-              Share
-            </button>
-            {shareHint ? <p className={styles.shareHint}>{shareHint}</p> : null}
-          </section>
+            <section className={styles.shareCard}>
+              <h2 className={styles.cardTitle}>Share on:</h2>
+              <div className={styles.shareRow}>
+                <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
+                  <span className={styles.shareGlyph}>👽</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.shareButton}
+                  onClick={handleNativeShare}
+                  aria-label="Share"
+                >
+                  <span className={styles.shareGlyph}>◎</span>
+                </button>
+                <button type="button" className={styles.shareButton} onClick={() => openShare(facebookUrl, "facebook")} aria-label="Share on Facebook">
+                  <span className={styles.shareGlyph}>f</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.shareButton}
+                  onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
+                  aria-label="Share on Twitch"
+                >
+                  <span className={styles.shareGlyph}>T</span>
+                </button>
+                <button type="button" className={styles.shareButton} onClick={() => openShare(xUrl, "x")} aria-label="Share on X">
+                  <span className={styles.shareGlyph}>X</span>
+                </button>
+              </div>
+            </section>
 
-          <section className={styles.listCard}>
-            <div className={styles.listRows}>
-              {topList.map((entry, index) => {
-                const rank = index + 1;
-                const tone = rowTone(rank);
-                const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
-                const entryMetric = metricValue(entry);
-                const entryRatio = Math.min(1, entryMetric / maxMetric);
-                const valueLabel =
-                  period === "weekly"
-                    ? `${Math.max(0, Math.round(entryMetric))}%`
-                    : `${Math.round(entryRatio * 100)}%`;
-                return (
-                  <article
-                    key={`${entry.displayName}-${index}`}
-                    className={styles.row}
-                    style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
-                  >
-                    <div className={styles.rowLeft}>
-                      <span className={styles.rankChip}>🏆 {rank}</span>
-                      <div className={styles.rowIdentity}>
-                        <span
-                          className={styles.avatar}
-                          style={{ background: avatarColor(entry.avatarId ?? entry.displayName) }}
-                        >
-                          {avatarSrc ? (
-                            <img src={avatarSrc} alt="" />
-                          ) : (
-                            <span>{entry.displayName.charAt(0).toUpperCase()}</span>
-                          )}
-                        </span>
-                        <span className={styles.rowName}>{entry.displayName}</span>
+            <section className={styles.listCard}>
+              <div className={styles.listRows}>
+                {topList.map((entry, index) => {
+                  const rank = index + 1;
+                  const tone = rowTone(rank);
+                  const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+                  const entryMetric = metricValue(entry);
+                  const entryRatio = Math.min(1, entryMetric / maxMetric);
+                  const valueLabel =
+                    period === "weekly"
+                      ? `${Math.max(0, Math.round(entryMetric))}%`
+                      : `${Math.round(entryRatio * 100)}%`;
+                  return (
+                    <article
+                      key={`${entry.displayName}-${index}`}
+                      className={styles.row}
+                      style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
+                    >
+                      <div className={styles.rowLeft}>
+                        <span className={styles.rankChip}>🏆 {rank}</span>
+                        <div className={styles.rowIdentity}>
+                          <span
+                            className={styles.avatar}
+                            style={{ background: avatarColor(entry.avatarId ?? entry.displayName) }}
+                          >
+                            {avatarSrc ? (
+                              <img src={avatarSrc} alt="" />
+                            ) : (
+                              <span>{entry.displayName.charAt(0).toUpperCase()}</span>
+                            )}
+                          </span>
+                          <span className={styles.rowName}>{entry.displayName}</span>
+                        </div>
                       </div>
-                    </div>
-                    <span className={styles.scoreBadge}>{valueLabel}</span>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
+                      <span className={styles.scoreBadge}>{valueLabel}</span>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
 
           <div className={styles.actions}>
             <button
               type="button"
               className={styles.actionButton}
-              onClick={() => navigate("/join")}
-              aria-label="Back to join"
+              onClick={() => navigate("/join", { replace: true })}
+              aria-label="Logout"
             >
-              <svg viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M8 3.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-1.5H4.75v10.5h2.5v-1.5a.75.75 0 0 1 1.5 0V16a.75.75 0 0 1-.75.75h-4A.75.75 0 0 1 3.25 16V4A.75.75 0 0 1 4 3.25h4Zm4.78 2.22a.75.75 0 0 1 1.06 0l3.97 3.97a.75.75 0 0 1 0 1.06l-3.97 3.97a.75.75 0 1 1-1.06-1.06l2.69-2.69H8.75a.75.75 0 0 1 0-1.5h6.72l-2.69-2.69a.75.75 0 0 1 0-1.06Z" />
-              </svg>
+              <span className={styles.actionIcon} aria-hidden="true" />
             </button>
           </div>
         </main>
-
-        <footer className={styles.tabBar}>
-          <div className={styles.urlRow}>
-            <span className={styles.lockIcon} aria-hidden="true" />
-            <span className={styles.url}>escapers.app</span>
-          </div>
-          <span className={styles.homeIndicator} aria-hidden="true" />
-        </footer>
       </section>
     </div>
   );
