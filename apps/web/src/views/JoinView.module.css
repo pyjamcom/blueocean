@@ -148,15 +148,15 @@
   left: 8px;
   top: 158px;
   width: 374px;
-  height: 161px;
+  height: 281px;
   border-radius: 12px;
   background: #200042;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: flex-start;
-  gap: 16px;
-  padding: 16px;
+  gap: 8px;
+  padding: 12px;
   box-sizing: border-box;
   overflow: visible;
   pointer-events: auto;
@@ -199,97 +199,150 @@
   white-space: nowrap;
 }
 
-.questsRow {
+.questStatsGrid {
   align-self: stretch;
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 8px;
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  touch-action: pan-x;
-  -webkit-overflow-scrolling: touch;
-  pointer-events: auto;
+  width: 318px;
+  min-height: 70px;
 }
 
-.questsRow::-webkit-scrollbar {
-  display: none;
+.questStatPill {
+  min-width: 0;
+  height: 31px;
+  border: 0;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 15%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 12px;
+  color: #ffffffb3;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
-.questCard {
-  flex: 0 0 165px;
-  width: 165px;
-  height: 90px;
-  min-height: 90px;
+.questStatIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.questStatValue {
+  margin: 0;
+  color: rgb(255 255 255 / 70%);
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.48px;
+  line-height: 23px;
+}
+
+.questBonusRow {
+  width: 318px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.questBonusCard {
+  height: 52px;
   border: 0;
   border-radius: 16px;
   background: linear-gradient(224deg, #b700ff 0%, #020202 72%);
   box-shadow: inset 0 0 0 1px rgb(153 0 255 / 50%);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 12px;
   box-sizing: border-box;
-  scroll-snap-align: start;
+  cursor: pointer;
+  text-align: left;
 }
 
-.questProgress {
+.questBonusLabel {
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #ffffff;
   font-family: Geist, sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.6px;
-  line-height: 26px;
-}
-
-.questDescription {
-  margin: 0;
-  align-self: stretch;
-  color: rgb(255 255 255 / 75%);
-  font-family: Geist, sans-serif;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: -0.36px;
-  line-height: 15.6px;
+  letter-spacing: -0.48px;
+  line-height: 20.8px;
 }
 
-.questClaim {
-  margin-top: 8px;
-  align-self: flex-start;
+.questBonusReward {
+  margin: 0;
   border-radius: 8px;
   background: #ffffff;
   height: 24px;
-  padding: 4px 16px;
+  min-width: 68px;
+  padding: 4px 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-}
-
-.questClaimText {
-  color: transparent;
-  font-family: Geist, sans-serif;
+  color: rgb(255 255 255 / 75%);
+  font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.36px;
   line-height: 15.6px;
-  text-align: center;
-  margin-top: -1px;
-  background: linear-gradient(172deg, #000000 0%, #666666 100%);
+  background-image: linear-gradient(172deg, #000000 0%, #666666 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+.questSectionRow {
+  width: 318px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.questSectionPill {
+  height: 28px;
+  border: 0;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 15%);
+  color: #ffffffb3;
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15.6px;
+  letter-spacing: -0.36px;
+  cursor: pointer;
+}
+
+.questQuickRoundButton {
+  width: 318px;
+  height: 36px;
+  border: 1px solid #7200ff;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18.2px;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
 .avatarBlock {
   position: absolute;
   left: 8px;
-  top: 327px;
+  top: 447px;
   width: 374px;
   height: 254px;
   border-radius: 12px;
@@ -300,7 +353,7 @@
 .profileAvatarVisual {
   position: absolute;
   left: 143px;
-  top: 343px;
+  top: 463px;
   width: 26.666667%;
   height: 9.269162%;
   border: 4px solid #ffffff;
@@ -309,9 +362,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   z-index: 3;
   pointer-events: none;
-  box-sizing: border-box;
 }
 
 .profileAvatarVisual img {
@@ -338,7 +391,7 @@
 
 .profileAvatarHotspot {
   left: 143px;
-  top: 343px;
+  top: 463px;
   width: 26.666667%;
   height: 9.269162%;
   border-radius: 20px;
@@ -346,7 +399,7 @@
 
 .profileButtonHotspot {
   left: 24px;
-  top: 463px;
+  top: 583px;
   width: 342px;
   height: 3.921569%;
   border: 1px solid #7200ff;
@@ -369,7 +422,7 @@
 .nameInputField {
   position: absolute;
   left: 24px;
-  top: 523px;
+  top: 643px;
   width: 342px;
   height: 3.743316%;
   border: 0;
@@ -404,7 +457,7 @@
 .loginBlock {
   position: absolute;
   left: 8px;
-  top: 589px;
+  top: 709px;
   width: 374px;
   height: 111px;
   border-radius: 12px;
@@ -584,7 +637,7 @@
 .top3Block {
   position: absolute;
   left: 8px;
-  top: 708px;
+  top: 828px;
   width: 374px;
   height: 236px;
   border-radius: 12px;
@@ -756,7 +809,7 @@
 .documentsRow {
   position: absolute;
   left: 8px;
-  top: 952px;
+  top: 1072px;
   width: 374px;
   height: 50px;
   display: flex;
@@ -964,6 +1017,70 @@
   display: grid;
   place-items: center;
   background: rgba(5, 5, 8, 0.7);
+}
+
+.questInfoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  place-items: center;
+  background: rgb(5 5 8 / 70%);
+}
+
+.questInfoSheet {
+  width: min(298px, calc(100vw - 56px));
+  min-height: 253px;
+  border-radius: 24px;
+  border: 1px solid #ae00ff;
+  background: #12001a;
+  -webkit-backdrop-filter: blur(100.7px);
+  backdrop-filter: blur(100.7px);
+  box-sizing: border-box;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.questInfoTitle {
+  margin: 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.6px;
+  text-align: center;
+}
+
+.questInfoBody {
+  margin: 0;
+  color: rgb(255 255 255 / 75%);
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18.2px;
+  letter-spacing: -0.42px;
+  text-align: left;
+  width: 100%;
+}
+
+.questInfoClose {
+  width: 115px;
+  height: 45px;
+  border: 1px solid #7200ff;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+  cursor: pointer;
 }
 
 .avatarSheet {

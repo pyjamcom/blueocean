@@ -35,11 +35,92 @@ const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
 const JOIN_QUESTS_TOTAL = "5/5";
-const JOIN_QUESTS = [
-  { id: "quest-1", progress: "5/5", description: "Inviting a 5 friends", cta: "Claim" },
-  { id: "quest-2", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
-  { id: "quest-3", progress: "2/5", description: "For inviting a 5 friends", cta: "Claim" },
+const JOIN_QUEST_METRICS = [
+  {
+    id: "season-time",
+    icon: "⏳",
+    value: "3d",
+    title: "Season timer",
+    details: "3 days left in the sprint. Push now before the board rolls over.",
+  },
+  {
+    id: "crew-code",
+    icon: "👥",
+    value: "TTQ7",
+    title: "Crew code",
+    details: "Your active crew code. Share it and pull friends into your lobby.",
+  },
+  {
+    id: "team-up",
+    icon: "🤝",
+    value: "0",
+    title: "Crew joins",
+    details: "No joins yet in this round. One invite turns this into a flex run.",
+  },
+  {
+    id: "shield",
+    icon: "🛡️",
+    value: "0",
+    title: "Streak Shield",
+    details:
+      "One free miss so your streak does not die. Refills weekly; auto-uses on a 1-day gap.",
+  },
+  {
+    id: "alerts",
+    icon: "🔔",
+    value: "On",
+    title: "Alerts",
+    details: "Notifications are on, so your squad can ping you when a room goes live.",
+  },
+  {
+    id: "streak",
+    icon: "🔥",
+    value: "0",
+    title: "Streak",
+    details: "No fire yet. One clean run starts the streak and unlock chase mode.",
+  },
 ] as const;
+const JOIN_QUEST_BONUSES = [
+  {
+    id: "speed-tap",
+    label: "Speed tap",
+    reward: "+Neon",
+    title: "Speed tap",
+    details: "Win a quick round clean and grab the Neon cosmetic.",
+  },
+  {
+    id: "mini-streak",
+    label: "Mini streak",
+    reward: "+Comet",
+    title: "Mini streak",
+    details: "Hold a short streak to unlock the Comet style.",
+  },
+] as const;
+const JOIN_QUEST_SECTIONS = [
+  {
+    id: "crew",
+    label: "Crew",
+    title: "Crew",
+    details: "Crew shows your squad and shared invite code.",
+  },
+  {
+    id: "badges",
+    label: "Badges",
+    title: "Badges",
+    details: "Badges track your meme skills and win conditions.",
+  },
+  {
+    id: "style",
+    label: "Style",
+    title: "Style",
+    details: "Style is your cosmetic loadout for leaderboards and podium shots.",
+  },
+] as const;
+const JOIN_QUICK_ROUND = {
+  label: "One quick round?",
+  title: "One quick round?",
+  details: "Jump into a short match now, warm up your streak, and farm quick flex points.",
+} as const;
 const JOIN_TOP3_ROWS = [
   { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
@@ -155,6 +236,7 @@ export default function JoinView() {
   const [authEmail, setAuthEmail] = useState<string | null>(null);
   const [authProvider, setAuthProvider] = useState<AuthProvider>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [questModal, setQuestModal] = useState<{ title: string; body: string } | null>(null);
   const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
     if (!codeParam) return;
@@ -537,17 +619,53 @@ export default function JoinView() {
             <h2 className={styles.questsTitle}>{JOIN_QUESTS_TITLE}</h2>
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
-          <div className={styles.questsRow}>
-            {JOIN_QUESTS.map((quest) => (
-              <article key={quest.id} className={styles.questCard}>
-                <p className={styles.questProgress}>{quest.progress}</p>
-                <p className={styles.questDescription}>{quest.description}</p>
-                <div className={styles.questClaim}>
-                  <span className={styles.questClaimText}>{quest.cta}</span>
-                </div>
-              </article>
+          <div className={styles.questStatsGrid}>
+            {JOIN_QUEST_METRICS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.questStatPill}
+                onClick={() => setQuestModal({ title: item.title, body: item.details })}
+              >
+                <span className={styles.questStatIcon} aria-hidden="true">
+                  {item.icon}
+                </span>
+                <span className={styles.questStatValue}>{item.value}</span>
+              </button>
             ))}
           </div>
+          <div className={styles.questBonusRow}>
+            {JOIN_QUEST_BONUSES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.questBonusCard}
+                onClick={() => setQuestModal({ title: item.title, body: item.details })}
+              >
+                <span className={styles.questBonusLabel}>{item.label}</span>
+                <span className={styles.questBonusReward}>{item.reward}</span>
+              </button>
+            ))}
+          </div>
+          <div className={styles.questSectionRow}>
+            {JOIN_QUEST_SECTIONS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.questSectionPill}
+                onClick={() => setQuestModal({ title: item.title, body: item.details })}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className={styles.questQuickRoundButton}
+            onClick={() => setQuestModal({ title: JOIN_QUICK_ROUND.title, body: JOIN_QUICK_ROUND.details })}
+          >
+            {JOIN_QUICK_ROUND.label}
+          </button>
         </section>
         <section className={styles.avatarBlock} aria-hidden="true" />
         <div
@@ -810,6 +928,17 @@ export default function JoinView() {
                   aria-label="next avatar"
                 />
               </div>
+            </div>
+          </div>
+        )}
+        {questModal && (
+          <div className={styles.questInfoOverlay} onClick={() => setQuestModal(null)}>
+            <div className={styles.questInfoSheet} onClick={(event) => event.stopPropagation()}>
+              <h3 className={styles.questInfoTitle}>{questModal.title}</h3>
+              <p className={styles.questInfoBody}>{questModal.body}</p>
+              <button type="button" className={styles.questInfoClose} onClick={() => setQuestModal(null)}>
+                Close
+              </button>
             </div>
           </div>
         )}

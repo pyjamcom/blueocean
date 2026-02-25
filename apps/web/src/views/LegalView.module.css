@@ -1,105 +1,234 @@
 .page {
+  position: relative;
   width: 100%;
-  min-width: 0;
   min-height: 100vh;
-  padding: 64px 20px 80px;
   display: flex;
   justify-content: center;
-  background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(99, 230, 190, 0.15), transparent 55%),
-    radial-gradient(circle at 25% 80%, rgba(79, 170, 255, 0.2), transparent 55%),
-    #0a0a14;
-  color: var(--ui-text);
+  align-items: flex-start;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: linear-gradient(
+    136.4764deg,
+    rgb(62 65 134) 0%,
+    rgb(12 8 34) 30.2884608507%,
+    rgb(12 8 34) 75%,
+    rgb(133 62 134) 100%
+  );
+}
+
+.content {
+  position: relative;
+  width: min(390px, 100vw);
+  min-height: 100vh;
+  padding: 44px 20px calc(92px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.pattern {
+  position: absolute;
+  left: -154px;
+  top: 1px;
+  width: 696px;
+  height: 1045px;
+  opacity: 0.1;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.stack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .card {
-  width: min(920px, 100%);
-  min-width: 0;
-  background: rgba(10, 10, 20, 0.78);
-  border: 1px solid var(--ui-border);
-  border-radius: 28px;
-  padding: clamp(28px, 5vw, 44px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(18px);
+  width: 100%;
+  border-radius: 12px;
+  background: #200042;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .header {
-  margin-bottom: 28px;
-}
-
-.kicker {
-  text-transform: uppercase;
-  letter-spacing: 0.3em;
-  font-size: 12px;
-  color: var(--ui-muted);
-  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .title {
-  font-family: "Bungee", "Sora", sans-serif;
-  font-size: clamp(28px, 4vw, 40px);
-  margin: 0 0 8px;
+  margin: 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.6px;
 }
 
 .meta {
-  color: var(--ui-muted);
   margin: 0;
-}
-
-.body {
-  display: grid;
-  gap: 18px;
-  line-height: 1.7;
+  color: rgb(255 255 255 / 70%);
+  font-family: Geist, sans-serif;
   font-size: 16px;
+  font-weight: 500;
+  line-height: 20.8px;
 }
 
-.section {
-  padding-top: 6px;
-}
-
-.section h2 {
-  margin: 12px 0 8px;
+.sectionTitle {
+  margin: 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
   font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.6px;
 }
 
-.section p {
-  margin: 0 0 10px;
-  color: rgba(245, 247, 255, 0.92);
+.paragraph {
+  margin: 0;
+  white-space: pre-line;
+  color: rgb(255 255 255 / 70%);
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20.8px;
+  letter-spacing: 0;
   overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
-.nav {
+.linksCard {
+  margin-bottom: 12px;
+}
+
+.linksRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 30px;
-  padding-top: 18px;
-  border-top: 1px solid var(--ui-border);
+  gap: 10px;
 }
 
-.nav a {
-  color: var(--ui-text);
+.linkItem {
+  border-radius: 8px;
+  border: 1px solid #7200ff;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+  color: #ffffff;
   text-decoration: none;
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18.2px;
+  padding: 8px 12px;
+}
+
+.downBar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(390px, 100vw);
+  height: calc(76px + env(safe-area-inset-bottom));
+  border-radius: 16px 16px 0 0;
+  background: #111111;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.downBar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.downButton {
+  border: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
   font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--ui-border);
-  background: rgba(255, 255, 255, 0.06);
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  line-height: 14.522727px;
+  letter-spacing: -0.36px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  -webkit-backdrop-filter: blur(50.35px) brightness(100%);
+  backdrop-filter: blur(50.35px) brightness(100%);
 }
 
-.nav a:hover {
-  border-color: rgba(255, 255, 255, 0.4);
+.downButtonCreate {
+  width: 123px;
+  height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #33b1ff;
+  background: linear-gradient(270deg, #213847 0%, #33b1ff 100%);
 }
 
-@media (max-width: 600px) {
-  .page {
-    padding-top: 36px;
-  }
-
-  .title {
-    font-size: 28px;
-  }
+.downButtonJoin {
+  width: 123px;
+  height: 44px;
+  padding: 8px;
+  border: 1px solid #0edc2d;
+  background: linear-gradient(90deg, #0edc2d 0%, #006303 100%);
 }
+
+.downButtonHelp {
+  width: 40px;
+  height: 44px;
+  padding: 12px;
+  border: 1px solid #323232;
+  background: #272727;
+}
+
+.downButtonLogout {
+  width: 40px;
+  height: 44px;
+  padding: 12px;
+  border: 1px solid #510000;
+  background: #240000;
+}
+
+.downIcon {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.downIconCreate {
+  background-image: url("/figma/join/ion-create.svg");
+}
+
+.downIconJoin {
+  background-image: url("/figma/join/mingcute-play-fill.svg");
+}
+
+.downIconHelp {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/streamline-plump-customer-support-7-solid.svg");
+}
+
+.downIconLogout {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/mynaui-logout.svg");
+}
+

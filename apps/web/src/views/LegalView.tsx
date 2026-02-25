@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { useRoom } from "../context/RoomContext";
 import styles from "./LegalView.module.css";
 
 type DocKey = "privacy" | "terms" | "data-deletion";
@@ -213,36 +215,85 @@ const linkItems: { href: string; label: string }[] = [
 ];
 
 export default function LegalView({ doc }: { doc: DocKey }) {
+  const navigate = useNavigate();
+  const { resetRoom } = useRoom();
   const content = docs[doc];
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <header className={styles.header}>
-          <p className={styles.kicker}>Escapers</p>
-          <h1 className={styles.title}>{content.title}</h1>
-          <p className={styles.meta}>Last updated: {content.updated}</p>
-        </header>
-        <div className={styles.body}>
-          {content.intro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+      <div className={styles.content}>
+        <img src="/figma/join/image-931.png" alt="" className={styles.pattern} aria-hidden="true" />
+        <div className={styles.stack}>
+          <section className={styles.card}>
+            <header className={styles.header}>
+              <h1 className={styles.title}>{content.title}</h1>
+              <p className={styles.meta}>Last updated: {content.updated}</p>
+            </header>
+            {content.intro.map((paragraph) => (
+              <p key={paragraph} className={styles.paragraph}>
+                {paragraph}
+              </p>
+            ))}
+          </section>
           {content.sections.map((section) => (
-            <section key={section.heading} className={styles.section}>
-              <h2>{section.heading}</h2>
+            <section key={section.heading} className={styles.card}>
+              <h2 className={styles.sectionTitle}>{section.heading}</h2>
               {section.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+                <p key={paragraph} className={styles.paragraph}>
+                  {paragraph}
+                </p>
               ))}
             </section>
           ))}
+          <nav className={`${styles.card} ${styles.linksCard}`}>
+            <div className={styles.linksRow}>
+              {linkItems.map((link) => (
+                <a key={link.href} href={link.href} className={styles.linkItem}>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </nav>
         </div>
-        <nav className={styles.nav}>
-          {linkItems.map((link) => (
-            <a key={link.href} href={link.href}>
-              {link.label}
-            </a>
-          ))}
-        </nav>
+      </div>
+      <div className={styles.downBar}>
+        <button
+          type="button"
+          className={`${styles.downButton} ${styles.downButtonCreate}`}
+          onClick={() => navigate("/join")}
+          aria-label="Create game"
+        >
+          <span className={`${styles.downIcon} ${styles.downIconCreate}`} aria-hidden="true" />
+          <span>Create game</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.downButton} ${styles.downButtonJoin}`}
+          onClick={() => navigate("/join")}
+          aria-label="Join game"
+        >
+          <span className={`${styles.downIcon} ${styles.downIconJoin}`} aria-hidden="true" />
+          <span>Join game</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.downButton} ${styles.downButtonHelp}`}
+          onClick={() => navigate("/support")}
+          aria-label="Support"
+        >
+          <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.downButton} ${styles.downButtonLogout}`}
+          onClick={() => {
+            resetRoom();
+            navigate("/join", { replace: true });
+          }}
+          aria-label="Logout"
+        >
+          <span className={`${styles.downIcon} ${styles.downIconLogout}`} aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
