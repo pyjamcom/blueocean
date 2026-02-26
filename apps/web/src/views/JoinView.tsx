@@ -39,9 +39,9 @@ const JOIN_QUEST_METRICS = [
   {
     id: "season-time",
     icon: "⏳",
-    value: "3d",
+    value: "2d",
     title: "Season timer",
-    details: "3 days left in the sprint. Push now before the board rolls over.",
+    details: "2 days left in the sprint. Push now before the board rolls over.",
   },
   {
     id: "crew-code",
@@ -82,18 +82,18 @@ const JOIN_QUEST_METRICS = [
 ] as const;
 const JOIN_QUEST_BONUSES = [
   {
-    id: "speed-tap",
-    label: "Speed tap",
-    reward: "+Neon",
-    title: "Speed tap",
-    details: "Win a quick round clean and grab the Neon cosmetic.",
+    id: "round-boom",
+    label: "1 round boom",
+    reward: "+Bubble",
+    title: "1 round boom",
+    details: "Complete one boom round to unlock Bubble style.",
   },
   {
-    id: "mini-streak",
-    label: "Mini streak",
-    reward: "+Comet",
-    title: "Mini streak",
-    details: "Hold a short streak to unlock the Comet style.",
+    id: "hits-two",
+    label: "2 hits",
+    reward: "+Gummy",
+    title: "2 hits",
+    details: "Land two clean hits in a row to unlock Gummy style.",
   },
 ] as const;
 const JOIN_QUEST_SECTIONS = [
@@ -116,11 +116,6 @@ const JOIN_QUEST_SECTIONS = [
     details: "Style is your cosmetic loadout for leaderboards and podium shots.",
   },
 ] as const;
-const JOIN_QUICK_ROUND = {
-  label: "One quick round?",
-  title: "One quick round?",
-  details: "Jump into a short match now, warm up your streak, and farm quick flex points.",
-} as const;
 const JOIN_TOP3_ROWS = [
   { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
@@ -681,13 +676,6 @@ export default function JoinView() {
               </button>
             ))}
           </div>
-          <button
-            type="button"
-            className={styles.questQuickRoundButton}
-            onClick={() => setQuestModal({ title: JOIN_QUICK_ROUND.title, body: JOIN_QUICK_ROUND.details })}
-          >
-            {JOIN_QUICK_ROUND.label}
-          </button>
         </section>
         <section className={styles.avatarBlock} aria-hidden="true" />
         <div

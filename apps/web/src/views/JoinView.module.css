@@ -246,17 +246,17 @@
 
 .questBonusRow {
   width: 318px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
 .questBonusCard {
-  height: 52px;
-  border: 0;
+  width: 318px;
+  height: 58px;
+  border: 1px solid rgb(153 0 255 / 50%);
   border-radius: 16px;
   background: linear-gradient(224deg, #b700ff 0%, #020202 72%);
-  box-shadow: inset 0 0 0 1px rgb(153 0 255 / 50%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -273,10 +273,10 @@
   text-overflow: ellipsis;
   color: #ffffff;
   font-family: Geist, sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: -0.48px;
-  line-height: 20.8px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 26px;
 }
 
 .questBonusReward {
@@ -319,23 +319,6 @@
   font-weight: 600;
   line-height: 15.6px;
   letter-spacing: -0.36px;
-  cursor: pointer;
-}
-
-.questQuickRoundButton {
-  width: 318px;
-  height: 36px;
-  border: 1px solid #7200ff;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
-  display: grid;
-  place-items: center;
-  color: #ffffff;
-  font-family: Geist, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 18.2px;
-  letter-spacing: 0;
   cursor: pointer;
 }
 
