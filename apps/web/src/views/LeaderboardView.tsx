@@ -299,7 +299,13 @@ export default function LeaderboardView() {
               </div>
               <div className={styles.progressTrack}>
                 <span className={styles.progressFill} style={{ width: `${selfRatio * 100}%` }} />
-                <span className={styles.progressKnob} style={{ left: `calc(${selfRatio * 100}% - 11px)` }} />
+                <img
+                  src="/figma/join/ellipse-5.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className={styles.progressKnob}
+                  style={{ left: `calc(${selfRatio * 100}% - 11px)` }}
+                />
               </div>
             </section>
 
@@ -307,7 +313,10 @@ export default function LeaderboardView() {
               <h2 className={styles.cardTitle}>Share on:</h2>
               <div className={styles.shareRow}>
                 <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
-                  <img src="/figma/join/ant-design-google-circle-filled.svg" alt="" className={styles.shareIconImage} />
+                  <span className={styles.shareRedditIcon} aria-hidden="true">
+                    <img src="/figma/join/ant-design-google-circle-filled.svg" alt="" className={styles.shareRedditBg} />
+                    <img src="/figma/join/ic-baseline-reddit.svg" alt="" className={styles.shareRedditGlyph} />
+                  </span>
                 </button>
                 <button
                   type="button"
