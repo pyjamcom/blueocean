@@ -35,85 +35,30 @@ const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
 const JOIN_QUESTS_TOTAL = "5/5";
-const JOIN_QUEST_METRICS = [
+const JOIN_QUEST_PROGRESS = [
   {
-    id: "season-time",
-    icon: "⏳",
-    value: "2d",
-    title: "Season timer",
-    details: "2 days left in the sprint. Push now before the board rolls over.",
+    id: "quest-invite-5",
+    progress: "5/5",
+    description: "Inviting a 5 friends",
+    cta: "Claim",
+    title: "Inviting a 5 friends",
+    details: "Invite 5 friends to complete this quest and claim the reward.",
   },
   {
-    id: "crew-code",
-    icon: "👥",
-    value: "TTQ7",
-    title: "Crew code",
-    details: "Your active crew code. Share it and pull friends into your lobby.",
+    id: "quest-invite-2",
+    progress: "2/5",
+    description: "For inviting a 5 friends",
+    cta: "Claim",
+    title: "For inviting a 5 friends",
+    details: "Keep inviting friends to finish this progress quest.",
   },
   {
-    id: "team-up",
-    icon: "🤝",
-    value: "0",
-    title: "Crew joins",
-    details: "No joins yet in this round. One invite turns this into a flex run.",
-  },
-  {
-    id: "shield",
-    icon: "🛡️",
-    value: "0",
-    title: "Streak Shield",
-    details:
-      "One free miss so your streak does not die. Refills weekly; auto-uses on a 1-day gap.",
-  },
-  {
-    id: "alerts",
-    icon: "🔔",
-    value: "On",
-    title: "Alerts",
-    details: "Notifications are on, so your squad can ping you when a room goes live.",
-  },
-  {
-    id: "streak",
-    icon: "🔥",
-    value: "0",
-    title: "Streak",
-    details: "No fire yet. One clean run starts the streak and unlock chase mode.",
-  },
-] as const;
-const JOIN_QUEST_BONUSES = [
-  {
-    id: "round-boom",
-    label: "1 round boom",
-    reward: "+Bubble",
-    title: "1 round boom",
-    details: "Complete one boom round to unlock Bubble style.",
-  },
-  {
-    id: "hits-two",
-    label: "2 hits",
-    reward: "+Gummy",
-    title: "2 hits",
-    details: "Land two clean hits in a row to unlock Gummy style.",
-  },
-] as const;
-const JOIN_QUEST_SECTIONS = [
-  {
-    id: "crew",
-    label: "Crew",
-    title: "Crew",
-    details: "Crew shows your squad and shared invite code.",
-  },
-  {
-    id: "badges",
-    label: "Badges",
-    title: "Badges",
-    details: "Badges track your meme skills and win conditions.",
-  },
-  {
-    id: "style",
-    label: "Style",
-    title: "Style",
-    details: "Style is your cosmetic loadout for leaderboards and podium shots.",
+    id: "quest-invite-2-b",
+    progress: "2/5",
+    description: "For inviting a 5 friends",
+    cta: "Claim",
+    title: "For inviting a 5 friends",
+    details: "Keep inviting friends to finish this progress quest.",
   },
 ] as const;
 const JOIN_TOP3_ROWS = [
@@ -636,43 +581,19 @@ export default function JoinView() {
             <h2 className={styles.questsTitle}>{JOIN_QUESTS_TITLE}</h2>
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
-          <div className={styles.questStatsGrid}>
-            {JOIN_QUEST_METRICS.map((item) => (
+          <div className={styles.questProgressRow}>
+            {JOIN_QUEST_PROGRESS.map((item) => (
               <button
                 key={item.id}
                 type="button"
-                className={styles.questStatPill}
+                className={styles.questProgressCard}
                 onClick={() => setQuestModal({ title: item.title, body: item.details })}
               >
-                <span className={styles.questStatIcon} aria-hidden="true">
-                  {item.icon}
+                <span className={styles.questProgressTop}>
+                  <span className={styles.questProgressValue}>{item.progress}</span>
+                  <span className={styles.questProgressText}>{item.description}</span>
                 </span>
-                <span className={styles.questStatValue}>{item.value}</span>
-              </button>
-            ))}
-          </div>
-          <div className={styles.questBonusRow}>
-            {JOIN_QUEST_BONUSES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={styles.questBonusCard}
-                onClick={() => setQuestModal({ title: item.title, body: item.details })}
-              >
-                <span className={styles.questBonusLabel}>{item.label}</span>
-                <span className={styles.questBonusReward}>{item.reward}</span>
-              </button>
-            ))}
-          </div>
-          <div className={styles.questSectionRow}>
-            {JOIN_QUEST_SECTIONS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={styles.questSectionPill}
-                onClick={() => setQuestModal({ title: item.title, body: item.details })}
-              >
-                {item.label}
+                <span className={styles.questProgressBadge}>{item.cta}</span>
               </button>
             ))}
           </div>

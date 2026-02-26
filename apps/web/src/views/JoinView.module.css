@@ -145,18 +145,18 @@
 
 .questsBlock {
   position: absolute;
-  left: 8px;
-  top: 158px;
-  width: 374px;
-  height: 281px;
+  left: 20px;
+  top: 194px;
+  width: 350px;
+  height: 161px;
   border-radius: 12px;
   background: #200042;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  gap: 8px;
-  padding: 12px;
+  gap: 16px;
+  padding: 16px;
   box-sizing: border-box;
   overflow: visible;
   pointer-events: auto;
@@ -169,7 +169,7 @@
   align-items: flex-end;
   justify-content: space-between;
   margin: 0;
-  width: 100%;
+  width: 318px;
   height: 23px;
 }
 
@@ -199,78 +199,51 @@
   white-space: nowrap;
 }
 
-.questStatsGrid {
+.questProgressRow {
   align-self: stretch;
+  width: 318px;
+  height: 90px;
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
-  width: 318px;
-  min-height: 70px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.questStatPill {
-  min-width: 0;
-  height: 31px;
-  border: 0;
-  border-radius: 99px;
-  background: rgb(255 255 255 / 15%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 4px 12px;
-  color: #ffffffb3;
-  cursor: pointer;
-  box-sizing: border-box;
+.questProgressRow::-webkit-scrollbar {
+  display: none;
 }
 
-.questStatIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  font-size: 14px;
-  line-height: 1;
-}
-
-.questStatValue {
-  margin: 0;
-  color: rgb(255 255 255 / 70%);
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: -0.48px;
-  line-height: 23px;
-}
-
-.questBonusRow {
-  width: 318px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.questBonusCard {
-  width: 318px;
-  height: 58px;
+.questProgressCard {
+  flex: 0 0 165px;
+  width: 165px;
+  height: 90px;
   border: 1px solid rgb(153 0 255 / 50%);
   border-radius: 16px;
   background: linear-gradient(224deg, #b700ff 0%, #020202 72%);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   padding: 8px 12px;
+  gap: 8px;
   box-sizing: border-box;
   cursor: pointer;
   text-align: left;
 }
 
-.questBonusLabel {
+.questProgressTop {
+  width: 141px;
+  height: 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.questProgressValue {
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   color: #ffffff;
   font-family: Geist, sans-serif;
   font-size: 20px;
@@ -279,18 +252,30 @@
   line-height: 26px;
 }
 
-.questBonusReward {
+.questProgressText {
   margin: 0;
-  border-radius: 8px;
-  background: #ffffff;
+  color: rgb(255 255 255 / 75%);
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.36px;
+  line-height: 15.6px;
+  white-space: nowrap;
+}
+
+.questProgressBadge {
+  margin: 0;
+  width: 64px;
   height: 24px;
-  min-width: 68px;
-  padding: 4px 10px;
+  border: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgb(255 255 255 / 75%);
-  font-family: Inter, sans-serif;
+  color: #000000;
+  font-family: Geist, sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.36px;
@@ -299,27 +284,6 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.questSectionRow {
-  width: 318px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.questSectionPill {
-  height: 28px;
-  border: 0;
-  border-radius: 99px;
-  background: rgb(255 255 255 / 15%);
-  color: #ffffffb3;
-  font-family: Geist, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 15.6px;
-  letter-spacing: -0.36px;
-  cursor: pointer;
 }
 
 .avatarBlock {
