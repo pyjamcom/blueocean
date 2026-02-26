@@ -412,7 +412,7 @@
   background: linear-gradient(90deg, #0edc2d 0%, #006303 100%);
 }
 
-.downButtonHelp {
+.downButtonSound {
   width: 40px;
   height: 44px;
   padding: 12px;
@@ -429,6 +429,7 @@
 }
 
 .downIcon {
+  position: relative;
   width: 15px;
   height: 15px;
   background-repeat: no-repeat;
@@ -444,10 +445,26 @@
   background-image: url("/figma/join/mingcute-play-fill.svg");
 }
 
-.downIconHelp {
+.downIconSound {
   width: 20px;
   height: 20px;
-  background-image: url("/figma/join/streamline-plump-customer-support-7-solid.svg");
+  background-image: url("/figma/join/lets-icons-sound-max-fill.svg");
+}
+
+.downIconSoundMuted {
+  opacity: 0.45;
+}
+
+.downIconSoundMuted::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: 9px;
+  height: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+  transform: rotate(-35deg);
 }
 
 .downIconLogout {

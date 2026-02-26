@@ -96,6 +96,10 @@ export default function LeaderboardView() {
   const [period, setPeriod] = useState<Period>("weekly");
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [soundOn, setSoundOn] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("sound_enabled") !== "0";
+  });
   const funScoreSentRef = useRef<string>("");
 
   useEffect(() => {
@@ -113,7 +117,7 @@ export default function LeaderboardView() {
       url.searchParams.set("crewCode", engagement.group.code);
     }
     url.searchParams.set("playerId", getOrCreateClientId());
-    url.searchParams.set("limit", "13");
+    url.searchParams.set("limit", "200");
 
     fetch(url.toString())
       .then((res) => (res.ok ? res.json() : null))
@@ -151,7 +155,7 @@ export default function LeaderboardView() {
     };
   }, [engagement.group, period]);
 
-  const topList = (data?.top?.length ? data.top : fallbackTop).slice(0, 8);
+  const topList = (data?.top?.length ? data.top : fallbackTop).slice(0, 200);
 
   const computeProgressPercent = (current: number, previous: number) => {
     if (previous <= 0) return current > 0 ? 100 : 0;
@@ -391,7 +395,7 @@ export default function LeaderboardView() {
             <button
               type="button"
               className={`${styles.downButton} ${styles.downButtonCreate}`}
-              onClick={() => navigate("/join")}
+              onClick={() => navigate("/join?downbar=create")}
               aria-label="Create game"
             >
               <span className={`${styles.downIcon} ${styles.downIconCreate}`} aria-hidden="true" />
@@ -400,7 +404,7 @@ export default function LeaderboardView() {
             <button
               type="button"
               className={`${styles.downButton} ${styles.downButtonJoin}`}
-              onClick={() => navigate("/join")}
+              onClick={() => navigate("/join?downbar=join")}
               aria-label="Join game"
             >
               <span className={`${styles.downIcon} ${styles.downIconJoin}`} aria-hidden="true" />
@@ -408,11 +412,22 @@ export default function LeaderboardView() {
             </button>
             <button
               type="button"
-              className={`${styles.downButton} ${styles.downButtonHelp}`}
-              onClick={() => navigate("/support")}
-              aria-label="Help"
+              className={`${styles.downButton} ${styles.downButtonSound}`}
+              onClick={() =>
+                setSoundOn((prev) => {
+                  const next = !prev;
+                  if (typeof window !== "undefined") {
+                    window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+                  }
+                  return next;
+                })
+              }
+              aria-label={soundOn ? "Mute sound" : "Enable sound"}
             >
-              <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
+              <span
+                className={`${styles.downIcon} ${styles.downIconSound} ${!soundOn ? styles.downIconSoundMuted : ""}`}
+                aria-hidden="true"
+              />
             </button>
             <button
               type="button"

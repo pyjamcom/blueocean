@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import styles from "./LegalView.module.css";
@@ -217,6 +218,10 @@ const linkItems: { href: string; label: string }[] = [
 export default function LegalView({ doc }: { doc: DocKey }) {
   const navigate = useNavigate();
   const { resetRoom } = useRoom();
+  const [soundOn, setSoundOn] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("sound_enabled") !== "0";
+  });
   const content = docs[doc];
 
   return (
@@ -260,7 +265,7 @@ export default function LegalView({ doc }: { doc: DocKey }) {
         <button
           type="button"
           className={`${styles.downButton} ${styles.downButtonCreate}`}
-          onClick={() => navigate("/join")}
+          onClick={() => navigate("/join?downbar=create")}
           aria-label="Create game"
         >
           <span className={`${styles.downIcon} ${styles.downIconCreate}`} aria-hidden="true" />
@@ -269,7 +274,7 @@ export default function LegalView({ doc }: { doc: DocKey }) {
         <button
           type="button"
           className={`${styles.downButton} ${styles.downButtonJoin}`}
-          onClick={() => navigate("/join")}
+          onClick={() => navigate("/join?downbar=join")}
           aria-label="Join game"
         >
           <span className={`${styles.downIcon} ${styles.downIconJoin}`} aria-hidden="true" />
@@ -277,11 +282,22 @@ export default function LegalView({ doc }: { doc: DocKey }) {
         </button>
         <button
           type="button"
-          className={`${styles.downButton} ${styles.downButtonHelp}`}
-          onClick={() => navigate("/support")}
-          aria-label="Support"
+          className={`${styles.downButton} ${styles.downButtonSound}`}
+          onClick={() =>
+            setSoundOn((prev) => {
+              const next = !prev;
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+              }
+              return next;
+            })
+          }
+          aria-label={soundOn ? "Mute sound" : "Enable sound"}
         >
-          <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
+          <span
+            className={`${styles.downIcon} ${styles.downIconSound} ${!soundOn ? styles.downIconSoundMuted : ""}`}
+            aria-hidden="true"
+          />
         </button>
         <button
           type="button"

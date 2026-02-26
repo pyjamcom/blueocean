@@ -751,7 +751,7 @@ app.get("/crew/:code", async (req, res) => {
 app.get("/leaderboard", async (req, res) => {
   const period = req.query.period === "season" ? "season" : "weekly";
   const scope = req.query.scope === "group" ? "group" : "global";
-  const limit = Math.min(50, Math.max(1, Number(req.query.limit ?? 10) || 10));
+  const limit = Math.min(200, Math.max(1, Number(req.query.limit ?? 200) || 200));
   const playerId = typeof req.query.playerId === "string" ? req.query.playerId : undefined;
 
   const computeProgressPercent = (current: number, previous: number) => {

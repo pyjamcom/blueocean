@@ -198,6 +198,7 @@ export default function JoinView() {
   const navigate = useNavigate();
   const { code: codeFromPath } = useParams<{ code?: string }>();
   const params = new URLSearchParams(location.search);
+  const downbarAction = params.get("downbar");
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
   const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
@@ -215,6 +216,7 @@ export default function JoinView() {
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [joinPending, setJoinPending] = useState(false);
+  const downbarActionHandledRef = useRef(false);
   const joinRetryRef = useRef(0);
   const [avatarIndex, setAvatarIndex] = useState(() => {
     const idx = AVATAR_IDS.indexOf(initialAvatarId);
@@ -470,6 +472,26 @@ export default function JoinView() {
     }
     setJoinPending(true);
   };
+
+  useEffect(() => {
+    if (downbarActionHandledRef.current) return;
+    if (downbarAction !== "create" && downbarAction !== "join") return;
+    downbarActionHandledRef.current = true;
+    if (downbarAction === "create") {
+      handleScanClick();
+    } else {
+      handlePlayClick();
+    }
+    const next = new URLSearchParams(location.search);
+    next.delete("downbar");
+    navigate(
+      {
+        pathname: location.pathname,
+        search: next.toString() ? `?${next.toString()}` : "",
+      },
+      { replace: true },
+    );
+  }, [downbarAction, handlePlayClick, handleScanClick, location.pathname, location.search, navigate]);
 
   const handleLeaderboardClick = () => {
     clearHostWait();

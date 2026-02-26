@@ -2,9 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
-import { avatarColor, getAvatarImageUrl, getStoredAvatarId, randomAvatarId } from "../utils/avatar";
-import { randomId } from "../utils/ids";
-import { getStoredPlayerName } from "../utils/playerName";
+import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
 import { LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import styles from "./ResultView.module.css";
 
@@ -47,10 +45,14 @@ function rowTone(rank: number): RowTone {
 }
 
 export default function ResultView() {
-  const { players, roomCode, createNextRoom, phase, resetRoom } = useRoom();
+  const { players, phase, resetRoom } = useRoom();
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const [shareHint, setShareHint] = useState<string | null>(null);
+  const [soundOn, setSoundOn] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("sound_enabled") !== "0";
+  });
   const shareTimeoutRef = useRef<number | null>(null);
 
   const leaderboard = useMemo<ResultEntry[]>(() => {
@@ -75,15 +77,6 @@ export default function ResultView() {
   );
 
   const rows = useMemo(() => leaderboard.slice(0, isFinal ? 6 : 13), [isFinal, leaderboard]);
-
-  const nextRoomCode = useMemo(() => {
-    if (!roomCode) return randomId(4);
-    let code = randomId(4);
-    while (code === roomCode) {
-      code = randomId(4);
-    }
-    return code;
-  }, [roomCode]);
 
   useEffect(() => {
     trackEvent("leaderboard_view", { source: "result" });
@@ -160,21 +153,13 @@ export default function ResultView() {
   )}&url=${encodeURIComponent(shareUrl)}`;
 
   const handleExit = () => {
-    const avatarId = getStoredAvatarId() ?? randomAvatarId();
-    const playerName = getStoredPlayerName();
-    createNextRoom(nextRoomCode, avatarId, playerName);
     trackEvent("replay_click");
-    navigate("/join");
+    navigate("/join?downbar=create");
   };
 
   const handleJoin = () => {
     resetRoom();
-    navigate("/join");
-  };
-
-  const handleSupport = () => {
-    trackEvent("support_click", { source: "result" });
-    navigate("/support");
+    navigate("/join?downbar=join");
   };
 
   const handleLogout = () => {
@@ -354,8 +339,26 @@ export default function ResultView() {
               <span className={`${styles.finalDownIcon} ${styles.finalDownJoinIcon}`} aria-hidden="true" />
               <span>Join game</span>
             </button>
-            <button type="button" className={`${styles.finalDownButton} ${styles.finalDownHelp}`} onClick={handleSupport} aria-label="Help">
-              <span className={`${styles.finalDownIcon} ${styles.finalDownHelpIcon}`} aria-hidden="true" />
+            <button
+              type="button"
+              className={`${styles.finalDownButton} ${styles.finalDownSound}`}
+              onClick={() =>
+                setSoundOn((prev) => {
+                  const next = !prev;
+                  if (typeof window !== "undefined") {
+                    window.localStorage.setItem("sound_enabled", next ? "1" : "0");
+                  }
+                  return next;
+                })
+              }
+              aria-label={soundOn ? "Mute sound" : "Enable sound"}
+            >
+              <span
+                className={`${styles.finalDownIcon} ${styles.finalDownSoundIcon} ${
+                  !soundOn ? styles.finalDownSoundMuted : ""
+                }`}
+                aria-hidden="true"
+              />
             </button>
             <button type="button" className={`${styles.finalDownButton} ${styles.finalDownLogout}`} onClick={handleLogout} aria-label="Logout">
               <span className={`${styles.finalDownIcon} ${styles.finalDownLogoutIcon}`} aria-hidden="true" />
