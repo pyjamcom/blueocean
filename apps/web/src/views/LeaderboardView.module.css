@@ -197,19 +197,43 @@
   width: 40px;
   height: 40px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0;
   display: grid;
   place-items: center;
-  background: #ffffff;
-  color: #200042;
+  background: transparent;
   cursor: pointer;
+  padding: 0;
 }
 
-.shareGlyph {
-  font-family: Geist, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1;
+.shareIconImage {
+  width: 40px;
+  height: 40px;
+  display: block;
+  pointer-events: none;
+}
+
+.shareXIcon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: block;
+  pointer-events: none;
+}
+
+.shareXBg {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 36px;
+  height: 36px;
+}
+
+.shareXGlyph {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 28px;
+  height: 28px;
 }
 
 .listCard {
@@ -258,6 +282,17 @@
   font-weight: 400;
   line-height: 14px;
   letter-spacing: -0.42px;
+}
+
+.rankIcon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.rankNumber {
+  line-height: 14px;
 }
 
 .rowIdentity {

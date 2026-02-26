@@ -303,7 +303,7 @@ export default function LeaderboardView() {
               <h2 className={styles.cardTitle}>Share on:</h2>
               <div className={styles.shareRow}>
                 <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
-                  <span className={styles.shareGlyph}>👽</span>
+                  <img src="/figma/join/ant-design-google-circle-filled.svg" alt="" className={styles.shareIconImage} />
                 </button>
                 <button
                   type="button"
@@ -311,10 +311,21 @@ export default function LeaderboardView() {
                   onClick={handleNativeShare}
                   aria-label="Share"
                 >
-                  <span className={styles.shareGlyph}>◎</span>
+                  <img src="/figma/join/frame-3.svg" alt="" className={styles.shareIconImage} />
                 </button>
                 <button type="button" className={styles.shareButton} onClick={() => openShare(facebookUrl, "facebook")} aria-label="Share on Facebook">
-                  <span className={styles.shareGlyph}>f</span>
+                  <img src="/figma/join/ic-baseline-facebook.svg" alt="" className={styles.shareIconImage} />
+                </button>
+                <button
+                  type="button"
+                  className={styles.shareButton}
+                  onClick={() => openShare(xUrl, "x")}
+                  aria-label="Share on X"
+                >
+                  <span className={styles.shareXIcon} aria-hidden="true">
+                    <img src="/figma/join/ellipse-2188.svg" alt="" className={styles.shareXBg} />
+                    <img src="/figma/join/mingcute-apple-fill.svg" alt="" className={styles.shareXGlyph} />
+                  </span>
                 </button>
                 <button
                   type="button"
@@ -322,10 +333,7 @@ export default function LeaderboardView() {
                   onClick={() => copyShareLink("Twitch", `${shareTextTwitch} ${shareUrl}`)}
                   aria-label="Share on Twitch"
                 >
-                  <span className={styles.shareGlyph}>T</span>
-                </button>
-                <button type="button" className={styles.shareButton} onClick={() => openShare(xUrl, "x")} aria-label="Share on X">
-                  <span className={styles.shareGlyph}>X</span>
+                  <img src="/figma/join/frame-4.svg" alt="" className={styles.shareIconImage} />
                 </button>
               </div>
             </section>
@@ -349,7 +357,14 @@ export default function LeaderboardView() {
                       style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
                     >
                       <div className={styles.rowLeft}>
-                        <span className={styles.rankChip}>🏆 {rank}</span>
+                        <span className={styles.rankChip}>
+                          <img
+                            src="/figma/join/material-symbols-rewarded-ads.svg"
+                            alt=""
+                            className={styles.rankIcon}
+                          />
+                          <span className={styles.rankNumber}>{rank}</span>
+                        </span>
                         <div className={styles.rowIdentity}>
                           <span
                             className={styles.avatar}
