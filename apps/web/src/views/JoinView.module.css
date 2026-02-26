@@ -180,9 +180,11 @@
   font-size: 18px;
   font-weight: 500;
   letter-spacing: -0.54px;
-  line-height: 23px;
+  line-height: 23.4px;
   text-align: center;
-  width: fit-content;
+  width: 163px;
+  height: 23px;
+  white-space: nowrap;
 }
 
 .questsTotal {
@@ -219,7 +221,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 8px 12px;
+  padding: 7px 11px;
   gap: 8px;
   box-sizing: border-box;
   cursor: pointer;
@@ -253,6 +255,8 @@
   font-weight: 500;
   letter-spacing: -0.36px;
   line-height: 15.6px;
+  width: 141px;
+  height: 16px;
   white-space: nowrap;
 }
 
