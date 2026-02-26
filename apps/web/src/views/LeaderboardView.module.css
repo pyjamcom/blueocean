@@ -92,16 +92,18 @@
   z-index: 1;
   width: 390px;
   height: 720px;
-  padding: 24px 20px 0;
+  padding: 24px 20px calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .topBlock {
   width: 350px;
-  height: 694px;
+  min-height: 694px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -349,35 +351,109 @@
   letter-spacing: -0.42px;
 }
 
-.actions {
+.downBar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(390px, 100vw);
+  height: calc(76px + env(safe-area-inset-bottom));
+  border-radius: 16px 16px 0 0;
+  background: #111111;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  z-index: 120;
+}
+
+.downBar::before {
+  content: "";
   position: absolute;
-  right: 20px;
-  bottom: 16px;
-  width: 40px;
-  height: 40px;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
-.actionButton {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #510000;
+.downButton {
+  border: 0;
   border-radius: 8px;
-  background: #240000;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 14.52px;
+  letter-spacing: -0.36px;
   cursor: pointer;
-  -webkit-backdrop-filter: blur(100.7px);
-  backdrop-filter: blur(100.7px);
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
-.actionIcon {
-  width: 20px;
-  height: 20px;
-  display: block;
-  background-image: url("/figma/join/mynaui-logout.svg");
+.downButtonCreate {
+  width: 123px;
+  height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #33b1ff;
+  background: linear-gradient(270deg, #213847 0%, #33b1ff 100%);
+}
+
+.downButtonJoin {
+  width: 123px;
+  height: 44px;
+  padding: 8px;
+  border: 1px solid #0edc2d;
+  background: linear-gradient(90deg, #0edc2d 0%, #006303 100%);
+}
+
+.downButtonHelp {
+  width: 40px;
+  height: 44px;
+  padding: 12px;
+  border: 1px solid #323232;
+  background: #272727;
+}
+
+.downButtonLogout {
+  width: 40px;
+  height: 44px;
+  padding: 12px;
+  border: 1px solid #510000;
+  background: #240000;
+}
+
+.downIcon {
+  width: 15px;
+  height: 15px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+}
+
+.downIconCreate {
+  background-image: url("/figma/join/ion-create.svg");
+}
+
+.downIconJoin {
+  background-image: url("/figma/join/mingcute-play-fill.svg");
+}
+
+.downIconHelp {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/streamline-plump-customer-support-7-solid.svg");
+}
+
+.downIconLogout {
+  width: 20px;
+  height: 20px;
+  background-image: url("/figma/join/mynaui-logout.svg");
 }
 
 @media (max-width: 420px) {

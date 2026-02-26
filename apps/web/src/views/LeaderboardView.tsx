@@ -387,14 +387,40 @@ export default function LeaderboardView() {
             </section>
           </div>
 
-          <div className={styles.actions}>
+          <div className={styles.downBar}>
             <button
               type="button"
-              className={styles.actionButton}
+              className={`${styles.downButton} ${styles.downButtonCreate}`}
+              onClick={() => navigate("/join")}
+              aria-label="Create game"
+            >
+              <span className={`${styles.downIcon} ${styles.downIconCreate}`} aria-hidden="true" />
+              <span>Create game</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.downButton} ${styles.downButtonJoin}`}
+              onClick={() => navigate("/join")}
+              aria-label="Join game"
+            >
+              <span className={`${styles.downIcon} ${styles.downIconJoin}`} aria-hidden="true" />
+              <span>Join game</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.downButton} ${styles.downButtonHelp}`}
+              onClick={() => navigate("/support")}
+              aria-label="Help"
+            >
+              <span className={`${styles.downIcon} ${styles.downIconHelp}`} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={`${styles.downButton} ${styles.downButtonLogout}`}
               onClick={() => navigate("/join", { replace: true })}
               aria-label="Logout"
             >
-              <span className={styles.actionIcon} aria-hidden="true" />
+              <span className={`${styles.downIcon} ${styles.downIconLogout}`} aria-hidden="true" />
             </button>
           </div>
         </main>
