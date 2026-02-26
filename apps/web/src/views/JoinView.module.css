@@ -245,6 +245,14 @@
   font-weight: 600;
   letter-spacing: -0.6px;
   line-height: 26px;
+  display: inline-block;
+  width: 30px;
+  height: 26px;
+  white-space: nowrap;
+}
+
+.questProgressCard:first-child .questProgressValue {
+  width: 31px;
 }
 
 .questProgressText {
