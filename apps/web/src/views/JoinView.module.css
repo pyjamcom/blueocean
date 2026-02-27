@@ -1241,7 +1241,7 @@
 
   .join {
     width: min(1200px, calc(100vw - 80px));
-    height: 2020px;
+    height: 1935px;
     background: transparent;
   }
 
@@ -1311,7 +1311,7 @@
     left: 0;
     top: 794px;
     width: 100%;
-    height: 515px;
+    height: 430px;
     padding: 40px;
     gap: 24px;
   }
@@ -1453,7 +1453,7 @@
 
   .loginBlock {
     left: 0;
-    top: 1333px;
+    top: 1248px;
     width: 100%;
     height: 212px;
     padding: 40px;
@@ -1568,7 +1568,7 @@
 
   .top3Block {
     left: 0;
-    top: 1569px;
+    top: 1484px;
     width: 100%;
     height: 364px;
     padding: 40px;
@@ -1629,7 +1629,7 @@
 
   .documentsRow {
     left: 0;
-    top: 1957px;
+    top: 1872px;
     width: 100%;
     height: 63px;
     gap: 24px;
