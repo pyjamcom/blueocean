@@ -145,9 +145,9 @@
 
 .questsBlock {
   position: absolute;
-  left: 20px;
+  left: 8px;
   top: 456px;
-  width: 350px;
+  width: 374px;
   height: 376px;
   border-radius: 12px;
   background: #200042;
@@ -169,7 +169,7 @@
   align-items: flex-end;
   justify-content: space-between;
   margin: 0;
-  width: 318px;
+  width: 342px;
   height: 23px;
 }
 
@@ -203,7 +203,7 @@
 
 .questProgressRow {
   align-self: stretch;
-  width: 318px;
+  width: 342px;
   height: 172px;
   display: flex;
   flex-direction: column;
@@ -212,7 +212,7 @@
 }
 
 .questProgressCard {
-  width: 318px;
+  width: 342px;
   height: 52px;
   border: 0;
   border-radius: 16px;
@@ -238,7 +238,7 @@
 }
 
 .questProgressContent {
-  width: 294px;
+  width: 318px;
   height: 26px;
   display: flex;
   flex-direction: row;
@@ -322,7 +322,7 @@
 }
 
 .questProgressBar {
-  width: 294px;
+  width: 318px;
   height: 2px;
   display: inline-flex;
   align-items: center;
@@ -334,7 +334,7 @@
 .questProgressBarOff {
   display: inline-block;
   height: 2px;
-  flex: 0 0 57.2px;
+  flex: 0 0 62px;
 }
 
 .questProgressBarOn {
@@ -346,7 +346,7 @@
 }
 
 .questStatusGrid {
-  width: 318px;
+  width: 342px;
   height: 70px;
   display: flex;
   flex-wrap: wrap;
@@ -389,7 +389,7 @@
 }
 
 .questActionRow {
-  width: 318px;
+  width: 342px;
   height: 31px;
   display: flex;
   flex-wrap: wrap;

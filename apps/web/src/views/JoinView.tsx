@@ -23,6 +23,7 @@ import {
   signInWithGoogle,
   signInWithTwitter,
 } from "../utils/firebase";
+import { COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
 import styles from "./JoinView.module.css";
 
 const DEFAULT_PUBLIC_ROOM = "PLAY";
@@ -86,32 +87,20 @@ const JOIN_STATUS_CHIPS = [
   },
 ] as const;
 
-const JOIN_QUEST_ROWS = [
-  {
-    id: "quest-row-1",
-    title: "2 hits",
-    reward: "+Buddy",
+const JOIN_QUEST_IDS = ["answer_fast", "streak_two"] as const;
+const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
+const JOIN_QUEST_ROWS = JOIN_QUEST_IDS.map((questId) => {
+  const quest = QUEST_DEFINITIONS.find((item) => item.id === questId);
+  const rewardLabel = quest?.rewardId ? COSMETIC_LABEL_BY_ID.get(quest.rewardId) : null;
+  return {
+    id: quest?.id ?? questId,
+    title: quest?.label ?? questId,
+    reward: `+${rewardLabel ?? "Reward"}`,
     cta: "Claim",
-    activeSegments: 3,
-    details: "Get 2 correct answers to claim +Buddy.",
-  },
-  {
-    id: "quest-row-2",
-    title: "2 hits",
-    reward: "+Buddy",
-    cta: "Claim",
-    activeSegments: 3,
-    details: "Get 2 correct answers to claim +Buddy.",
-  },
-  {
-    id: "quest-row-3",
-    title: "2 hits",
-    reward: "+Buddy",
-    cta: "Claim",
-    activeSegments: 3,
-    details: "Get 2 correct answers to claim +Buddy.",
-  },
-] as const;
+    activeSegments: Math.max(1, Math.min(5, quest?.target ?? 1)),
+    details: `${quest?.label ?? questId} quest.`,
+  };
+});
 const QUEST_ACTIONS = [
   {
     id: "badges",
