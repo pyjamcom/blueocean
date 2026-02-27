@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
+  avatarColor,
   avatarIconIndex,
   getStoredAvatarId,
   getAvatarImageUrl,
@@ -12,7 +13,7 @@ import {
 } from "../utils/avatar";
 import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
-import { randomId } from "../utils/ids";
+import { getOrCreateClientId, randomId } from "../utils/ids";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import {
   isFirebaseEnabled,
@@ -24,8 +25,10 @@ import {
   signInWithTwitter,
 } from "../utils/firebase";
 import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
+import frames from "../engagement/frames.module.css";
 import { useEngagement } from "../context/EngagementContext";
 import { diffDays, formatDayKey } from "../engagement/time";
+import engageStyles from "../components/engagement/EngagementPanel.module.css";
 import styles from "./JoinView.module.css";
 
 const DEFAULT_PUBLIC_ROOM = "PLAY";
@@ -71,14 +74,162 @@ const JOIN_STATUS_CHIP_LAYOUT = [
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
-const BADGE_LABEL_BY_ID = new Map(BADGE_DEFINITIONS.map((item) => [item.id, item.label]));
 const JOIN_TOP3_ROWS = [
   { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
   { id: "top-3", rank: 3, name: "Ярик", score: "2445", tier: "bronze", tall: false },
 ] as const;
+type JoinTopRow = {
+  id: string;
+  rank: number;
+  name: string;
+  score: string;
+  tier: "gold" | "silver" | "bronze";
+  tall: boolean;
+  avatarId?: string | null;
+};
+type JoinWeeklyTopEntry = {
+  name: string;
+  score: string;
+  avatarId?: string | null;
+};
+type InfoPayload = Readonly<{
+  title: string;
+  lines: ReadonlyArray<string>;
+  ctaLabel?: string;
+  onCta?: () => void;
+}>;
+type CrewMember = {
+  id: string;
+  name: string;
+  avatarId?: string | null;
+  title?: string | null;
+  role?: string | null;
+};
 type AuthProvider = "google" | "facebook" | "apple" | "twitter" | "twitch" | "firebase" | null;
 type FirebaseAuthProvider = Exclude<AuthProvider, "twitch" | "firebase" | null>;
+
+const CHIP_INFO = {
+  season: {
+    title: "Season Sprint",
+    lines: [
+      "14-day chaos sprint for everyone.",
+      "Auto-starts; timer shows days left. Cosmetics stay.",
+      "Fresh start = instant comeback flex.",
+      "New season, new excuses, same chaos.",
+    ],
+  },
+  shield: {
+    title: "Streak Shield",
+    lines: [
+      "One free miss so your streak does not die.",
+      "Refills weekly; auto-uses on a 1-day gap.",
+      "You keep flexing while others reset.",
+      "We forgive you before you lie.",
+    ],
+  },
+  reminder: {
+    title: "Party Ping",
+    lines: [
+      "Tiny nudge: 'one round?'",
+      "You toggle it. We do not spam.",
+      "Keeps the fire alive with zero effort.",
+      "Your phone heckles you lovingly.",
+    ],
+  },
+  streak: {
+    title: "Hot Streak",
+    lines: [
+      "Days in a row you played.",
+      "Play 1 round today = +1 day.",
+      "Big number = louder flex.",
+      "Drop it and the tacos cry.",
+    ],
+  },
+  crew: {
+    title: "Your Crew",
+    lines: [
+      "Private squad + shared streak.",
+      "Create a code; friends jump in.",
+      "Titles pop: Captain / Score Boss / Sharp Eye.",
+      "Instant gang, zero paperwork.",
+    ],
+  },
+  crewStreak: {
+    title: "Crew Streak",
+    lines: [
+      "Team streak day for the whole crew.",
+      "60% play today -> +1 for everyone.",
+      "You can carry the squad.",
+      "Even the lazy guy gets credit.",
+    ],
+  },
+  badges: {
+    title: "Badges",
+    lines: [
+      "Skill trophies, not login stickers.",
+      "Earn via accuracy, speed, streaks.",
+      "Shows you are not just lucky.",
+      "Serious awards for unserious memes.",
+    ],
+  },
+  style: {
+    title: "Your Style",
+    lines: [
+      "Free cosmetics, zero paywalls.",
+      "Unlock via quests + badges.",
+      "Louder panel, bigger flex.",
+      "Drip earned by chaos.",
+    ],
+  },
+} as const;
+
+const BADGE_INFO: Record<string, { title: string; lines: string[] }> = {
+  badge_sharp: {
+    title: "Clean Run",
+    lines: ["3 correct in a row. No mistakes.", "Looks clean, feels smug.", "Crew sees you are not guessing.", "Brain took a shower."],
+  },
+  badge_speedy: {
+    title: "Quick Hands",
+    lines: ["3 fast corrects.", "Tap speed: goblin tier.", "People think you are cheating.", "Finger ninja energy."],
+  },
+  badge_marksman: {
+    title: "Sure Shot",
+    lines: [">=80% over 10 answers.", "You actually read the question.", "Crew trusts your guesses.", "Too accurate for a meme game."],
+  },
+  badge_hot_streak: {
+    title: "Hot Streak",
+    lines: ["5 correct in a row.", "Your brain is on a grill.", "Top streak flex.", "Warning: may smoke."],
+  },
+  badge_lightning: {
+    title: "Turbo Tap",
+    lines: ["5 fast corrects.", "Speedrun reputation.", "You answer before blinking.", "Fingers on caffeine."],
+  },
+  badge_combo: {
+    title: "Combo Wizard",
+    lines: ["3 fast + 3 streak in one flow.", "Rare combo flex.", "Feels illegal, is legal.", "You found the cheat code."],
+  },
+  badge_blaze: {
+    title: "Blaze Mode",
+    lines: ["8 correct in a row.", "Elite streak beast.", "People stop scrolling.", "Volcano in a hoodie."],
+  },
+  badge_sniper: {
+    title: "Laser Eyes",
+    lines: [">=90% over 20 answers.", "Sniper-level accuracy.", "You bend reality for points.", "No-scope in a quiz."],
+  },
+};
+
+const FRAME_INFO: Record<string, { title: string; lines: string[] }> = {
+  frame_bubble: { title: "Bubble", lines: ["Starter bubble frame.", "Finish '1 round boom'.", "Proof you touched the game.", "Baby-step flex."] },
+  frame_gummy: { title: "Gummy", lines: ["Sweet gummy frame.", "Quest '2 hits' or Clean Run badge.", "Sticky-accurate vibe.", "Sugar-rush brain."] },
+  frame_spark: { title: "Spark", lines: ["Sparkly frame.", "Quest '3 right-ish' or Sure Shot badge.", "You light up the list.", "Fireworks, no safety."] },
+  frame_mint: { title: "Mint", lines: ["Minty fresh frame.", "Quest 'Turbo tap x2' or Combo Wizard.", "Clean speed flex.", "Minty brain breath."] },
+  frame_comet: { title: "Comet", lines: ["Comet-trail frame.", "Quest 'Mini streak' or Hot Streak badge.", "You keep flying.", "Answers have a tail."] },
+  frame_neon: { title: "Neon", lines: ["Neon speed frame.", "Quest 'Speed tap' or Quick Hands.", "Glow like a maniac.", "Nightclub fingers."] },
+  frame_blaze: { title: "Blaze", lines: ["Fire frame.", "Blaze Mode badge.", "Top-tier flex.", "Too hot for quizzes."] },
+  frame_frost: { title: "Frost", lines: ["Ice frame.", "Turbo Tap badge.", "Cold speed legend.", "Frozen fingers, still fast."] },
+  frame_vortex: { title: "Vortex", lines: ["Portal frame.", "Laser Eyes badge.", "Accuracy warlock.", "You bent reality for points."] },
+};
 
 const PROVIDER_TO_FIREBASE_ID: Record<FirebaseAuthProvider, string> = {
   google: "google.com",
@@ -145,7 +296,7 @@ function getLastAuthProvider(): AuthProvider {
 }
 
 export default function JoinView() {
-  const { state: engagement } = useEngagement();
+  const { state: engagement, actions, flags } = useEngagement();
   const location = useLocation();
   const navigate = useNavigate();
   const { code: codeFromPath } = useParams<{ code?: string }>();
@@ -190,12 +341,27 @@ export default function JoinView() {
   const [authEmail, setAuthEmail] = useState<string | null>(null);
   const [authProvider, setAuthProvider] = useState<AuthProvider>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [questModal, setQuestModal] = useState<{ title: string; body: string } | null>(null);
+  const [showCosmetics, setShowCosmetics] = useState(false);
+  const [showBadges, setShowBadges] = useState(false);
+  const [showGroup, setShowGroup] = useState(false);
+  const [groupInput, setGroupInput] = useState("");
+  const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
+  const [crewLoading, setCrewLoading] = useState(false);
+  const [info, setInfo] = useState<InfoPayload | null>(null);
+  const [joinTopRows, setJoinTopRows] = useState<JoinTopRow[]>(() =>
+    JOIN_TOP3_ROWS.map((row) => ({ ...row })),
+  );
+  const selfId = getOrCreateClientId();
+  const isOwner = engagement.group?.role === "owner";
   const isManagerRoute = location.pathname === "/manager";
   useEffect(() => {
     if (!codeParam) return;
     joinRoom(codeParam, initialAvatarId, playerName);
   }, [codeParam, initialAvatarId, joinRoom, playerName]);
+
+  useEffect(() => {
+    actions.refresh();
+  }, [actions.refresh]);
 
   useEffect(() => {
     if (storedAvatarId) return;
@@ -289,6 +455,78 @@ export default function JoinView() {
       setAuthError("Apple sign-in failed");
     });
   }, [firebaseEnabled]);
+
+  useEffect(() => {
+    let active = true;
+    const url = new URL(`${apiBase}/leaderboard`);
+    url.searchParams.set("period", "weekly");
+    url.searchParams.set("scope", engagement.group ? "group" : "global");
+    if (engagement.group) {
+      url.searchParams.set("crewCode", engagement.group.code);
+    }
+    url.searchParams.set("playerId", getOrCreateClientId());
+    url.searchParams.set("limit", "3");
+
+    fetch(url.toString())
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!active) return;
+        const normalized: JoinWeeklyTopEntry[] = Array.isArray(json?.top)
+          ? json.top
+              .map((raw: any) => {
+                const name = raw?.displayName ?? raw?.display_name ?? raw?.name;
+                const score = raw?.funScore ?? raw?.fun_score ?? raw?.score;
+                if (!name || typeof score !== "number") return null;
+                return {
+                  name: String(name),
+                  score: String(Math.round(score)),
+                  avatarId: raw?.avatarId ?? raw?.avatar_id ?? null,
+                };
+              })
+              .filter((entry: JoinWeeklyTopEntry | null): entry is JoinWeeklyTopEntry => Boolean(entry))
+          : [];
+        if (!normalized.length) return;
+
+        const mapped: JoinTopRow[] = normalized.slice(0, 3).map((entry, index) => ({
+          id: `live-top-${index + 1}`,
+          rank: index + 1,
+          name: entry.name,
+          score: entry.score,
+          avatarId: entry.avatarId,
+          tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
+          tall: index === 0,
+        }));
+        setJoinTopRows(mapped);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+    };
+  }, [apiBase, engagement.group]);
+
+  useEffect(() => {
+    if (!showGroup || !engagement.group) return;
+    let active = true;
+    setCrewLoading(true);
+    fetch(`${apiBase}/crew/${engagement.group.code}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active) return;
+        const members = Array.isArray(data?.crew?.members) ? (data.crew.members as CrewMember[]) : [];
+        setCrewMembers(members);
+      })
+      .catch(() => {
+        if (!active) return;
+        setCrewMembers([]);
+      })
+      .finally(() => {
+        if (active) setCrewLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [apiBase, showGroup, engagement.group?.code]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -474,6 +712,45 @@ export default function JoinView() {
     setAvatarOpen(false);
   };
 
+  const closeSheets = () => {
+    setShowCosmetics(false);
+    setShowBadges(false);
+    setShowGroup(false);
+  };
+
+  const openInfo = (payload: InfoPayload, shouldCloseSheets = true) => {
+    if (shouldCloseSheets) {
+      closeSheets();
+    }
+    setInfo(payload);
+  };
+
+  const closeInfo = () => setInfo(null);
+
+  const runCrewAction = async (action: "kick" | "ban", targetId: string) => {
+    if (!engagement.group) return;
+    try {
+      const res = await fetch(`${apiBase}/crew/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: engagement.group.code,
+          requesterId: selfId,
+          targetId,
+        }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data?.crew?.members)) {
+        setCrewMembers(data.crew.members as CrewMember[]);
+      } else {
+        setCrewMembers((prev) => prev.filter((member) => member.id !== targetId));
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   const handleGoogleAuth = async () => {
     setAuthError(null);
     try {
@@ -574,6 +851,10 @@ export default function JoinView() {
           ? "/figma/join/frame-4.svg"
         : null;
   const todayKey = formatDayKey(new Date());
+  const notificationsEnabled = engagement.notifications.enabled;
+  const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
+  const equippedLabel = equippedFrame ? COSMETIC_LABEL_BY_ID.get(equippedFrame) : "None";
+  const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
   const sourceJoinQuests = engagement.quests.daily.length
     ? engagement.quests.daily.slice(0, 2)
     : QUEST_DEFINITIONS.slice(0, 2).map((quest) => ({ ...quest, progress: 0 }));
@@ -581,66 +862,26 @@ export default function JoinView() {
   const joinQuestsTotal = `${completedQuests}/${sourceJoinQuests.length}`;
   const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
   const joinStatusChips = JOIN_STATUS_CHIP_LAYOUT.map((chip) => {
-    const value =
-      chip.id === "season"
-        ? `${seasonDaysLeft}d`
-        : chip.id === "crew-code"
-          ? engagement.group?.code ?? roomCode ?? codeParam ?? "----"
-          : chip.id === "crew-streak"
-            ? String(engagement.teamStreak.current)
-            : chip.id === "shield"
-              ? String(engagement.streak.graceLeft)
-              : chip.id === "notifications"
-                ? engagement.notifications.enabled
-                  ? "On"
-                  : "Off"
-                : String(engagement.streak.current);
     if (chip.id === "season") {
-      return {
-        ...chip,
-        value,
-        title: "Season Sprint",
-        body: `Time left in current season: ${value}\nSeason resets automatically at end.`,
-      };
+      return { ...chip, value: `${seasonDaysLeft}d`, info: CHIP_INFO.season };
     }
     if (chip.id === "crew-code") {
       return {
         ...chip,
-        value,
-        title: "Crew",
-        body: `Current crew code: ${value}\nShare this code so friends can join your crew.`,
+        value: engagement.group?.code ?? roomCode ?? codeParam ?? "----",
+        info: CHIP_INFO.crew,
       };
     }
     if (chip.id === "crew-streak") {
-      return {
-        ...chip,
-        value,
-        title: "Crew Streak",
-        body: `Current crew streak: ${value}\nThis grows when enough crew members stay active.`,
-      };
+      return { ...chip, value: String(engagement.teamStreak.current), info: CHIP_INFO.crewStreak };
     }
     if (chip.id === "shield") {
-      return {
-        ...chip,
-        value,
-        title: "Shield/Grace",
-        body: `Grace shields left: ${value}\nA shield protects your streak for one missed day.`,
-      };
+      return { ...chip, value: String(engagement.streak.graceLeft), info: CHIP_INFO.shield };
     }
     if (chip.id === "notifications") {
-      return {
-        ...chip,
-        value,
-        title: "Reminder settings",
-        body: `Reminders are ${value}\nTurn on reminders to keep streak and quests on track.`,
-      };
+      return { ...chip, value: notificationsEnabled ? "On" : "Off", info: CHIP_INFO.reminder };
     }
-    return {
-      ...chip,
-      value,
-      title: "Hot Streak",
-      body: `Current personal streak: ${value}\nPlay daily to increase it.`,
-    };
+    return { ...chip, value: String(engagement.streak.current), info: CHIP_INFO.streak };
   });
   const joinQuestRows = sourceJoinQuests.map((quest) => {
     const target = Math.max(1, quest.target ?? 1);
@@ -652,34 +893,13 @@ export default function JoinView() {
       reward: `+${rewardLabel ?? "Reward"}`,
       cta: "Claim",
       activeSegments: Math.max(0, Math.min(5, Math.round((progress / target) * 5))),
-      details: `${quest.label}: ${progress}/${target}`,
+      details: [`Progress: ${progress}/${target}`, rewardLabel ? `Reward: ${rewardLabel}` : "Reward: Unlock"],
     };
   });
   const questActions = [
-    {
-      id: "badges",
-      label: "Badges",
-      info: {
-        title: "Badges",
-        body: `Unlocked: ${engagement.badges.unlocked.length}/${BADGE_DEFINITIONS.length}\nLast earned: ${engagement.badges.lastEarned ? BADGE_LABEL_BY_ID.get(engagement.badges.lastEarned) ?? engagement.badges.lastEarned : "none"}`,
-      },
-    },
-    {
-      id: "crew",
-      label: "Crew",
-      info: {
-        title: "Crew",
-        body: `Code: ${engagement.group?.code ?? roomCode ?? codeParam ?? "none"}\nRole: ${engagement.group?.role ?? "solo"}\nStreak: ${engagement.teamStreak.current}\nCompletion: ${Math.round((engagement.teamStreak.completionRate ?? 0) * 100)}%`,
-      },
-    },
-    {
-      id: "style",
-      label: "Style",
-      info: {
-        title: "Style",
-        body: `Unlocked styles: ${engagement.cosmetics.unlocked.length}\nEquipped frame: ${engagement.cosmetics.equipped.frame ? COSMETIC_LABEL_BY_ID.get(engagement.cosmetics.equipped.frame) ?? engagement.cosmetics.equipped.frame : "none"}`,
-      },
-    },
+    { id: "badges", label: "Badges", info: CHIP_INFO.badges },
+    { id: "crew", label: "Crew", info: CHIP_INFO.crew },
+    { id: "style", label: "Style", info: CHIP_INFO.style },
   ] as const;
 
   return (
@@ -709,7 +929,12 @@ export default function JoinView() {
                 type="button"
                 className={styles.questStatusChip}
                 style={{ width: `${chip.width}px` }}
-                onClick={() => setQuestModal({ title: chip.title, body: chip.body })}
+                onClick={() => {
+                  if (chip.id === "notifications" && flags.notifications) {
+                    actions.setNotificationsEnabled(!notificationsEnabled);
+                  }
+                  openInfo(chip.info);
+                }}
               >
                 <span className={styles.questStatusIcon}>{chip.icon}</span>
                 <span className={styles.questStatusValue}>{chip.value}</span>
@@ -722,7 +947,7 @@ export default function JoinView() {
                 key={item.id}
                 type="button"
                 className={`${styles.questProgressCard} ${index === 0 ? styles.questProgressCardFirst : styles.questProgressCardMuted}`}
-                onClick={() => setQuestModal({ title: item.title, body: item.details })}
+                onClick={() => openInfo({ title: item.title, lines: item.details })}
               >
                 <span className={styles.questProgressContent}>
                   <span className={styles.questProgressTitleWrap}>
@@ -754,7 +979,22 @@ export default function JoinView() {
                 key={action.id}
                 type="button"
                 className={styles.questActionButton}
-                onClick={() => setQuestModal(action.info)}
+                onClick={() => {
+                  if (action.id === "badges") {
+                    closeSheets();
+                    setShowBadges(true);
+                    return;
+                  }
+                  if (action.id === "crew") {
+                    closeSheets();
+                    setShowGroup(true);
+                    return;
+                  }
+                  if (action.id === "style") {
+                    closeSheets();
+                    setShowCosmetics(true);
+                  }
+                }}
               >
                 {action.label}
               </button>
@@ -892,7 +1132,7 @@ export default function JoinView() {
             </button>
           </header>
           <div className={styles.top3Rows}>
-            {JOIN_TOP3_ROWS.map((row) => {
+            {joinTopRows.map((row) => {
               const tierClass =
                 row.tier === "gold"
                   ? styles.top3RowGold
@@ -911,7 +1151,7 @@ export default function JoinView() {
                     </div>
                     <div className={styles.playerIdentity}>
                       <span className={styles.playerAvatar} aria-hidden="true">
-                        <img src={selectedAvatarSrc} alt="" />
+                        <img src={row.avatarId ? getAvatarImageUrl(row.avatarId) ?? selectedAvatarSrc : selectedAvatarSrc} alt="" />
                       </span>
                       <span className={styles.playerName}>{row.name}</span>
                     </div>
@@ -1025,17 +1265,234 @@ export default function JoinView() {
             </div>
           </div>
         )}
-        {questModal && (
-          <div className={styles.questInfoOverlay} onClick={() => setQuestModal(null)}>
-            <div className={styles.questInfoSheet} onClick={(event) => event.stopPropagation()}>
-              <h3 className={styles.questInfoTitle}>{questModal.title}</h3>
-              <p className={styles.questInfoBody}>{questModal.body}</p>
-              <button type="button" className={styles.questInfoClose} onClick={() => setQuestModal(null)}>
-                Close
-              </button>
+
+        {showCosmetics ? (
+          <div
+            className={engageStyles.overlay}
+            onClick={() => {
+              setShowCosmetics(false);
+              actions.markCosmeticSeen();
+            }}
+          >
+            <div className={engageStyles.sheet} onClick={(event) => event.stopPropagation()}>
+              <div
+                className={engageStyles.sheetTitle}
+                onClick={() => openInfo(CHIP_INFO.style)}
+                role="button"
+                tabIndex={0}
+              >
+                Your Style
+              </div>
+              <div className={engageStyles.sheetSub}>Equipped: {equippedLabel ?? "None"}</div>
+              <div className={engageStyles.grid}>
+                {COSMETIC_DEFINITIONS.filter((item) => item.type === "frame").map((item) => {
+                  const unlocked = engagement.cosmetics.unlocked.includes(item.id);
+                  const active = equippedFrame === item.id;
+                  const rareClass = item.rarity === "rare" ? engageStyles.gridRare : "";
+                  const isNew = unlocked && cosmeticNewId === item.id;
+                  const tagLabel = active ? "Equipped" : isNew ? "New" : unlocked ? "Use" : "Locked";
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={`${engageStyles.gridItem} ${frames[item.id] ?? ""} ${rareClass} ${
+                        active ? engageStyles.gridActive : ""
+                      } ${!unlocked ? engageStyles.gridLocked : ""}`}
+                      onClick={() => {
+                        const base = FRAME_INFO[item.id] ?? { title: item.label, lines: [] };
+                        const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                        const onCta = unlocked
+                          ? () => {
+                              actions.equipCosmetic(active ? null : item.id);
+                              closeInfo();
+                            }
+                          : undefined;
+                        openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
+                      }}
+                    >
+                      <span>{item.label}</span>
+                      <span
+                        className={`${engageStyles.gridTag} ${active ? engageStyles.gridTagActive : ""} ${
+                          isNew ? engageStyles.gridTagNew : ""
+                        } ${!unlocked ? engageStyles.gridTagLocked : ""}`}
+                      >
+                        {tagLabel}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        )}
+        ) : null}
+
+        {showBadges ? (
+          <div className={engageStyles.overlay} onClick={() => setShowBadges(false)}>
+            <div className={engageStyles.sheet} onClick={(event) => event.stopPropagation()}>
+              <div
+                className={engageStyles.sheetTitle}
+                onClick={() => openInfo(CHIP_INFO.badges)}
+                role="button"
+                tabIndex={0}
+              >
+                Your Badges
+              </div>
+              <div className={engageStyles.grid}>
+                {BADGE_DEFINITIONS.map((badge) => {
+                  const unlocked = engagement.badges.unlocked.includes(badge.id);
+                  const rareClass = badge.rarity === "rare" ? engageStyles.gridRare : "";
+                  return (
+                    <button
+                      key={badge.id}
+                      type="button"
+                      className={`${engageStyles.gridItem} ${rareClass} ${
+                        unlocked ? "" : engageStyles.gridLocked
+                      }`}
+                      onClick={() => {
+                        const badgeInfo = BADGE_INFO[badge.id];
+                        if (badgeInfo) {
+                          openInfo(badgeInfo);
+                        } else {
+                          openInfo({ title: badge.label, lines: [] });
+                        }
+                      }}
+                    >
+                      <span className={engageStyles.badgeEmoji}>{badge.emoji}</span>
+                      <span className={engageStyles.badgeLabel}>{badge.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {showGroup ? (
+          <div className={engageStyles.overlay} onClick={() => setShowGroup(false)}>
+            <div className={engageStyles.sheet} onClick={(event) => event.stopPropagation()}>
+              <div
+                className={engageStyles.sheetTitle}
+                onClick={() => openInfo(CHIP_INFO.crew)}
+                role="button"
+                tabIndex={0}
+              >
+                Your Crew
+              </div>
+              {engagement.group ? (
+                <div className={engageStyles.groupBlock}>
+                  <div className={engageStyles.groupCode}>{engagement.group.code}</div>
+                  <div className={engageStyles.groupList}>
+                    {crewLoading ? (
+                      <div className={engageStyles.groupHint}>Loading crew...</div>
+                    ) : crewMembers.length ? (
+                      crewMembers.map((member) => {
+                        const avatarSrc = member.avatarId ? getAvatarImageUrl(member.avatarId) : null;
+                        const canModerate = Boolean(isOwner) && member.id !== selfId && member.role !== "owner";
+                        return (
+                          <div key={member.id} className={engageStyles.groupRow}>
+                            <span
+                              className={engageStyles.groupAvatar}
+                              style={{ background: avatarColor(member.avatarId ?? member.name) }}
+                            >
+                              {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{member.name.charAt(0)}</span>}
+                            </span>
+                            <span className={engageStyles.groupName}>{member.name}</span>
+                            <span className={engageStyles.groupMeta}>
+                              {member.title ? <span className={engageStyles.groupTitle}>{member.title}</span> : null}
+                              {canModerate ? (
+                                <span className={engageStyles.groupActions}>
+                                  <button
+                                    type="button"
+                                    className={engageStyles.groupKick}
+                                    onClick={() => runCrewAction("kick", member.id)}
+                                  >
+                                    Boot
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={engageStyles.groupBan}
+                                    onClick={() => runCrewAction("ban", member.id)}
+                                  >
+                                    Ban
+                                  </button>
+                                </span>
+                              ) : null}
+                            </span>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className={engageStyles.groupHint}>No crew yet</div>
+                    )}
+                  </div>
+                  <div className={engageStyles.groupHint}>Boot/Ban - owner only</div>
+                  <button
+                    type="button"
+                    className={engageStyles.actionButton}
+                    onClick={async () => {
+                      await actions.leaveGroup();
+                      setShowGroup(false);
+                    }}
+                  >
+                    Leave
+                  </button>
+                </div>
+              ) : (
+                <div className={engageStyles.groupBlock}>
+                  <button
+                    type="button"
+                    className={engageStyles.actionButton}
+                    onClick={async () => {
+                      await actions.createGroup();
+                      setShowGroup(false);
+                    }}
+                  >
+                    Create
+                  </button>
+                  <input
+                    className={engageStyles.groupInput}
+                    value={groupInput}
+                    onChange={(event) => setGroupInput(event.target.value.toUpperCase().slice(0, 6))}
+                    placeholder="CODE"
+                  />
+                  <button
+                    type="button"
+                    className={engageStyles.actionButton}
+                    onClick={async () => {
+                      const trimmed = groupInput.trim();
+                      if (!trimmed) return;
+                      await actions.joinGroup(trimmed);
+                      setShowGroup(false);
+                    }}
+                  >
+                    Join
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {info ? (
+          <div className={engageStyles.overlay} onClick={closeInfo}>
+            <div className={engageStyles.infoCard} onClick={(event) => event.stopPropagation()}>
+              <div className={engageStyles.infoTitle}>{info.title}</div>
+              <div className={engageStyles.infoList}>
+                {info.lines.map((line) => (
+                  <div key={line} className={engageStyles.infoItem}>
+                    {line}
+                  </div>
+                ))}
+              </div>
+              {info.ctaLabel && info.onCta ? (
+                <button type="button" className={engageStyles.infoCta} onClick={info.onCta}>
+                  {info.ctaLabel}
+                </button>
+              ) : null}
+              <div className={engageStyles.infoHint}>Tap anywhere to close</div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
