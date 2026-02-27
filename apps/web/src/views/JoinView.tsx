@@ -88,10 +88,12 @@ type JoinTopRow = {
   tall: boolean;
   avatarId?: string | null;
 };
-type JoinWeeklyTopEntry = {
-  name: string;
-  score: string;
+type JoinLeaderboardEntry = {
+  displayName: string;
   avatarId?: string | null;
+  funScore: number;
+  deltaPoints?: number | null;
+  progressPercent?: number | null;
 };
 type InfoPayload = Readonly<{
   title: string;
@@ -108,6 +110,26 @@ type CrewMember = {
 };
 type AuthProvider = "google" | "facebook" | "apple" | "twitter" | "twitch" | "firebase" | null;
 type FirebaseAuthProvider = Exclude<AuthProvider, "twitch" | "firebase" | null>;
+
+function normalizeJoinLeaderboardEntry(raw: any): JoinLeaderboardEntry | null {
+  if (!raw) return null;
+  const displayName = raw.displayName ?? raw.display_name ?? raw.name;
+  const funScore = raw.funScore ?? raw.fun_score ?? raw.score;
+  if (!displayName || typeof funScore !== "number") return null;
+  return {
+    displayName: String(displayName),
+    avatarId: raw.avatarId ?? raw.avatar_id ?? null,
+    funScore,
+    deltaPoints: raw.deltaPoints ?? raw.delta_points ?? null,
+    progressPercent: raw.progressPercent ?? raw.progress_percent ?? null,
+  };
+}
+
+function toWeeklyValueLabel(entry: JoinLeaderboardEntry) {
+  const raw = entry.progressPercent ?? entry.deltaPoints ?? entry.funScore;
+  const value = Math.min(100, Math.max(0, Number(raw) || 0));
+  return `${Math.round(value)}%`;
+}
 
 const CHIP_INFO = {
   season: {
@@ -465,33 +487,24 @@ export default function JoinView() {
       url.searchParams.set("crewCode", engagement.group.code);
     }
     url.searchParams.set("playerId", getOrCreateClientId());
-    url.searchParams.set("limit", "3");
+    url.searchParams.set("limit", "200");
 
     fetch(url.toString())
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
         if (!active) return;
-        const normalized: JoinWeeklyTopEntry[] = Array.isArray(json?.top)
+        const normalized: JoinLeaderboardEntry[] = Array.isArray(json?.top)
           ? json.top
-              .map((raw: any) => {
-                const name = raw?.displayName ?? raw?.display_name ?? raw?.name;
-                const score = raw?.funScore ?? raw?.fun_score ?? raw?.score;
-                if (!name || typeof score !== "number") return null;
-                return {
-                  name: String(name),
-                  score: String(Math.round(score)),
-                  avatarId: raw?.avatarId ?? raw?.avatar_id ?? null,
-                };
-              })
-              .filter((entry: JoinWeeklyTopEntry | null): entry is JoinWeeklyTopEntry => Boolean(entry))
+              .map((raw: any) => normalizeJoinLeaderboardEntry(raw))
+              .filter((entry: JoinLeaderboardEntry | null): entry is JoinLeaderboardEntry => Boolean(entry))
           : [];
         if (!normalized.length) return;
 
         const mapped: JoinTopRow[] = normalized.slice(0, 3).map((entry, index) => ({
           id: `live-top-${index + 1}`,
           rank: index + 1,
-          name: entry.name,
-          score: entry.score,
+          name: entry.displayName,
+          score: toWeeklyValueLabel(entry),
           avatarId: entry.avatarId,
           tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
           tall: index === 0,
