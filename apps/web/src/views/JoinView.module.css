@@ -1097,18 +1097,20 @@
   background: rgba(5, 5, 8, 0.7);
 }
 
-.questInfoOverlay {
+.questModalOverlay {
   position: fixed;
   inset: 0;
   z-index: 130;
   display: grid;
   place-items: center;
-  background: rgb(5 5 8 / 70%);
+  background: rgb(5 5 8 / 65%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.questInfoSheet {
+.questInfoModal,
+.questRewardModal {
   width: min(298px, calc(100vw - 56px));
-  min-height: 253px;
   border-radius: 24px;
   border: 1px solid #ae00ff;
   background: #12001a;
@@ -1123,7 +1125,17 @@
   gap: 24px;
 }
 
-.questInfoTitle {
+.questInfoModalContent,
+.questRewardContent {
+  width: 234px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.questInfoModalTitle,
+.questRewardTitle {
   margin: 0;
   color: #ffffff;
   font-family: Geist, sans-serif;
@@ -1134,7 +1146,7 @@
   text-align: center;
 }
 
-.questInfoBody {
+.questInfoModalBody {
   margin: 0;
   color: rgb(255 255 255 / 75%);
   font-family: Geist, sans-serif;
@@ -1144,10 +1156,32 @@
   letter-spacing: -0.42px;
   text-align: left;
   white-space: pre-line;
-  width: 100%;
+  width: 234px;
 }
 
-.questInfoClose {
+.questRewardTitle {
+  width: 234px;
+}
+
+.questRewardBadge {
+  width: fit-content;
+  min-width: 103px;
+  height: 37px;
+  border-radius: 8px;
+  background: #049119;
+  box-sizing: border-box;
+  padding: 8px 24px;
+  margin: 16px auto 0;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+  text-align: center;
+}
+
+.questModalClose {
   width: 115px;
   height: 45px;
   border: 1px solid #7200ff;
@@ -1160,6 +1194,117 @@
   line-height: 20.8px;
   letter-spacing: -0.48px;
   cursor: pointer;
+}
+
+.styleModal {
+  width: min(370px, calc(100vw - 20px));
+  min-height: 385px;
+  border-radius: 24px;
+  border: 1px solid #ae00ff;
+  background: #12001a;
+  -webkit-backdrop-filter: blur(100.7px);
+  backdrop-filter: blur(100.7px);
+  box-sizing: border-box;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.styleModalRow {
+  width: 100%;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.styleModalItem,
+.styleModalItemSpacer {
+  width: calc((100% - 12px) / 2);
+  height: 45px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  flex: 0 0 calc((100% - 12px) / 2);
+}
+
+.styleModalItemSpacer {
+  display: inline-block;
+}
+
+.styleModalItem {
+  position: relative;
+  border: 1px solid #410090;
+  background: #37075b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.styleModalItemActive {
+  border-color: #7300ff;
+  background: linear-gradient(90deg, #830edc 0%, #380063 100%);
+}
+
+.styleModalItemLocked {
+  color: rgb(255 255 255 / 50%);
+}
+
+.styleModalLockIcon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  opacity: 0.5;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10.66px 13.99px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='14' viewBox='0 0 11 14' fill='none'%3E%3Cpath d='M9.17637 5.10217H8.39554V3.54063C8.39554 1.81651 7.00121 0.42218 5.2771 0.42218C3.55298 0.42218 2.15865 1.81651 2.15865 3.54063V5.10217H1.37787C0.518366 5.10217 -0.183594 5.80413 -0.183594 6.66364V11.3431C-0.183594 12.2026 0.518366 12.9046 1.37787 12.9046H9.17637C10.0359 12.9046 10.7378 12.2026 10.7378 11.3431V6.66364C10.7378 5.80413 10.0359 5.10217 9.17637 5.10217ZM3.64243 3.54063C3.64243 2.63745 4.37392 1.90596 5.2771 1.90596C6.18027 1.90596 6.91176 2.63745 6.91176 3.54063V5.10217H3.64243V3.54063Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.styleModalItemLabel {
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
+}
+
+.styleModalItemLocked .styleModalItemLabel {
+  color: rgb(255 255 255 / 50%);
+}
+
+.styleModalItemTag {
+  position: absolute;
+  right: 12px;
+  top: 12.5px;
+  height: 20px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: -0.36px;
+}
+
+.styleModalItemTagActive {
+  min-width: 51px;
+  background: linear-gradient(312deg, #0a9e2f 0%, #005d0e 100%);
+}
+
+.styleModalItemTagNew {
+  min-width: 42px;
+  background: linear-gradient(119deg, #f4a106 0%, #6c4702 100%);
 }
 
 .avatarSheet {

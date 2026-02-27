@@ -26,7 +26,6 @@ import {
   signInWithTwitter,
 } from "../utils/firebase";
 import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
-import frames from "../engagement/frames.module.css";
 import { useEngagement } from "../context/EngagementContext";
 import { diffDays, formatDayKey } from "../engagement/time";
 import engageStyles from "../components/engagement/EngagementPanel.module.css";
@@ -90,6 +89,9 @@ type InfoPayload = Readonly<{
   lines: ReadonlyArray<string>;
   ctaLabel?: string;
   onCta?: () => void;
+}>;
+type RewardModalPayload = Readonly<{
+  rewardLabel: string;
 }>;
 type CrewMember = {
   id: string;
@@ -366,6 +368,7 @@ export default function JoinView() {
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [crewLoading, setCrewLoading] = useState(false);
   const [info, setInfo] = useState<InfoPayload | null>(null);
+  const [rewardModal, setRewardModal] = useState<RewardModalPayload | null>(null);
   const [joinTopRows, setJoinTopRows] = useState<JoinTopRow[]>(() => buildFallbackTopRows());
   const selfId = getOrCreateClientId();
   const isOwner = engagement.group?.role === "owner";
@@ -735,10 +738,12 @@ export default function JoinView() {
     if (shouldCloseSheets) {
       closeSheets();
     }
+    setRewardModal(null);
     setInfo(payload);
   };
 
   const closeInfo = () => setInfo(null);
+  const closeRewardModal = () => setRewardModal(null);
 
   const runCrewAction = async (action: "kick" | "ban", targetId: string) => {
     if (!engagement.group) return;
@@ -866,7 +871,6 @@ export default function JoinView() {
   const todayKey = formatDayKey(new Date());
   const notificationsEnabled = engagement.notifications.enabled;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
-  const equippedLabel = equippedFrame ? COSMETIC_LABEL_BY_ID.get(equippedFrame) : "None";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
   const sourceJoinQuests = engagement.quests.daily.length
     ? engagement.quests.daily.slice(0, 2)
@@ -914,6 +918,11 @@ export default function JoinView() {
     { id: "crew", label: "Crew", info: CHIP_INFO.crew },
     { id: "style", label: "Style", info: CHIP_INFO.style },
   ] as const;
+  const styleFrameItems = COSMETIC_DEFINITIONS.filter((item) => item.type === "frame");
+  const styleRows: Array<typeof styleFrameItems> = [];
+  for (let i = 0; i < styleFrameItems.length; i += 2) {
+    styleRows.push(styleFrameItems.slice(i, i + 2));
+  }
 
   return (
     <div className={styles.page}>
@@ -961,7 +970,11 @@ export default function JoinView() {
                 key={item.id}
                 type="button"
                 className={`${styles.questProgressCard} ${index === 0 ? styles.questProgressCardFirst : styles.questProgressCardMuted}`}
-                onClick={() => openInfo({ title: item.title, lines: item.details })}
+                onClick={() => {
+                  closeSheets();
+                  setInfo(null);
+                  setRewardModal({ rewardLabel: item.reward });
+                }}
               >
                 <span className={styles.questProgressContent}>
                   <span className={styles.questProgressTitleWrap}>
@@ -1284,60 +1297,56 @@ export default function JoinView() {
 
         {showCosmetics ? (
           <div
-            className={engageStyles.overlay}
+            className={styles.questModalOverlay}
             onClick={() => {
               setShowCosmetics(false);
               actions.markCosmeticSeen();
             }}
           >
-            <div className={engageStyles.sheet} onClick={(event) => event.stopPropagation()}>
-              <div
-                className={engageStyles.sheetTitle}
-                onClick={() => openInfo(CHIP_INFO.style)}
-                role="button"
-                tabIndex={0}
-              >
-                Your Style
-              </div>
-              <div className={engageStyles.sheetSub}>Equipped: {equippedLabel ?? "None"}</div>
-              <div className={engageStyles.grid}>
-                {COSMETIC_DEFINITIONS.filter((item) => item.type === "frame").map((item) => {
-                  const unlocked = engagement.cosmetics.unlocked.includes(item.id);
-                  const active = equippedFrame === item.id;
-                  const rareClass = item.rarity === "rare" ? engageStyles.gridRare : "";
-                  const isNew = unlocked && cosmeticNewId === item.id;
-                  const tagLabel = active ? "Equipped" : isNew ? "New" : unlocked ? "Use" : "Locked";
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`${engageStyles.gridItem} ${frames[item.id] ?? ""} ${rareClass} ${
-                        active ? engageStyles.gridActive : ""
-                      } ${!unlocked ? engageStyles.gridLocked : ""}`}
-                      onClick={() => {
-                        const base = FRAME_INFO[item.id] ?? { title: item.label, lines: [] };
-                        const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
-                        const onCta = unlocked
-                          ? () => {
-                              actions.equipCosmetic(active ? null : item.id);
-                              closeInfo();
-                            }
-                          : undefined;
-                        openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
-                      }}
-                    >
-                      <span>{item.label}</span>
-                      <span
-                        className={`${engageStyles.gridTag} ${active ? engageStyles.gridTagActive : ""} ${
-                          isNew ? engageStyles.gridTagNew : ""
-                        } ${!unlocked ? engageStyles.gridTagLocked : ""}`}
+            <div className={styles.styleModal} onClick={(event) => event.stopPropagation()}>
+              {styleRows.map((row, rowIndex) => (
+                <div key={`style-row-${rowIndex}`} className={styles.styleModalRow}>
+                  {row.map((item) => {
+                    const unlocked = engagement.cosmetics.unlocked.includes(item.id);
+                    const active = equippedFrame === item.id;
+                    const isNew = unlocked && cosmeticNewId === item.id;
+                    const tagLabel = active ? "Active" : isNew ? "New" : null;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={`${styles.styleModalItem} ${active ? styles.styleModalItemActive : ""} ${
+                          !unlocked ? styles.styleModalItemLocked : ""
+                        }`}
+                        onClick={() => {
+                          const base = FRAME_INFO[item.id] ?? { title: item.label, lines: [] };
+                          const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                          const onCta = unlocked
+                            ? () => {
+                                actions.equipCosmetic(active ? null : item.id);
+                                closeInfo();
+                              }
+                            : undefined;
+                          openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
+                        }}
                       >
-                        {tagLabel}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                        {!unlocked ? <span className={styles.styleModalLockIcon} aria-hidden="true" /> : null}
+                        <span className={styles.styleModalItemLabel}>{item.label}</span>
+                        {tagLabel ? (
+                          <span
+                            className={`${styles.styleModalItemTag} ${
+                              active ? styles.styleModalItemTagActive : styles.styleModalItemTagNew
+                            }`}
+                          >
+                            {tagLabel}
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                  {row.length === 1 ? <span className={styles.styleModalItemSpacer} aria-hidden="true" /> : null}
+                </div>
+              ))}
             </div>
           </div>
         ) : null}
@@ -1490,22 +1499,39 @@ export default function JoinView() {
         ) : null}
 
         {info ? (
-          <div className={engageStyles.overlay} onClick={closeInfo}>
-            <div className={engageStyles.infoCard} onClick={(event) => event.stopPropagation()}>
-              <div className={engageStyles.infoTitle}>{info.title}</div>
-              <div className={engageStyles.infoList}>
-                {info.lines.map((line) => (
-                  <div key={line} className={engageStyles.infoItem}>
-                    {line}
-                  </div>
-                ))}
+          <div className={styles.questModalOverlay} onClick={closeInfo}>
+            <div className={styles.questInfoModal} onClick={(event) => event.stopPropagation()}>
+              <div className={styles.questInfoModalContent}>
+                <h3 className={styles.questInfoModalTitle}>{info.title}</h3>
+                <p className={styles.questInfoModalBody}>{info.lines.join(" ")}</p>
               </div>
-              {info.ctaLabel && info.onCta ? (
-                <button type="button" className={engageStyles.infoCta} onClick={info.onCta}>
-                  {info.ctaLabel}
-                </button>
-              ) : null}
-              <div className={engageStyles.infoHint}>Tap anywhere to close</div>
+              <button
+                type="button"
+                className={styles.questModalClose}
+                onClick={() => {
+                  if (info.onCta) {
+                    info.onCta();
+                    return;
+                  }
+                  closeInfo();
+                }}
+              >
+                {info.ctaLabel ?? "Close"}
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {rewardModal ? (
+          <div className={styles.questModalOverlay} onClick={closeRewardModal}>
+            <div className={styles.questRewardModal} onClick={(event) => event.stopPropagation()}>
+              <div className={styles.questRewardContent}>
+                <h3 className={styles.questRewardTitle}>Congratulations! You got a reward!</h3>
+                <span className={styles.questRewardBadge}>{rewardModal.rewardLabel}</span>
+              </div>
+              <button type="button" className={styles.questModalClose} onClick={closeRewardModal}>
+                Close
+              </button>
             </div>
           </div>
         ) : null}
