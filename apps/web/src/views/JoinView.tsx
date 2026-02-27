@@ -35,30 +35,107 @@ const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
 const JOIN_QUESTS_TOTAL = "5/5";
-const JOIN_QUEST_PROGRESS = [
+const JOIN_STATUS_CHIPS = [
   {
-    id: "quest-invite-5",
-    progress: "5/5",
-    description: "Inviting a 5 friends",
-    cta: "Claim",
-    title: "Inviting a 5 friends",
-    details: "Invite 5 friends to complete this quest and claim the reward.",
+    id: "season",
+    icon: "⏳",
+    value: "4d",
+    width: 69,
+    title: "Season",
+    body: "Time left in the current season sprint.",
   },
   {
-    id: "quest-invite-2",
-    progress: "2/5",
-    description: "For inviting a 5 friends",
-    cta: "Claim",
-    title: "For inviting a 5 friends",
-    details: "Keep inviting friends to finish this progress quest.",
+    id: "crew-code",
+    icon: "👥",
+    value: "G7YP",
+    width: 89,
+    title: "Crew code",
+    body: "Your current crew invite code.",
   },
   {
-    id: "quest-invite-2-b",
-    progress: "2/5",
-    description: "For inviting a 5 friends",
+    id: "crew-streak",
+    icon: "🤝",
+    value: "5",
+    width: 58,
+    title: "Crew streak",
+    body: "Current shared crew streak.",
+  },
+  {
+    id: "shield",
+    icon: "🛡️",
+    value: "3",
+    width: 59,
+    title: "Shield",
+    body: "Grace shield count for your streak.",
+  },
+  {
+    id: "notifications",
+    icon: "🔔",
+    value: "off",
+    width: 69,
+    title: "Notifications",
+    body: "Reminder notifications toggle state.",
+  },
+  {
+    id: "streak",
+    icon: "🔥",
+    value: "5",
+    width: 58,
+    title: "Streak",
+    body: "Current personal streak.",
+  },
+] as const;
+
+const JOIN_QUEST_ROWS = [
+  {
+    id: "quest-row-1",
+    title: "2 hits",
+    reward: "+Buddy",
     cta: "Claim",
-    title: "For inviting a 5 friends",
-    details: "Keep inviting friends to finish this progress quest.",
+    activeSegments: 3,
+    details: "Get 2 correct answers to claim +Buddy.",
+  },
+  {
+    id: "quest-row-2",
+    title: "2 hits",
+    reward: "+Buddy",
+    cta: "Claim",
+    activeSegments: 3,
+    details: "Get 2 correct answers to claim +Buddy.",
+  },
+  {
+    id: "quest-row-3",
+    title: "2 hits",
+    reward: "+Buddy",
+    cta: "Claim",
+    activeSegments: 3,
+    details: "Get 2 correct answers to claim +Buddy.",
+  },
+] as const;
+const QUEST_ACTIONS = [
+  {
+    id: "badges",
+    label: "Badges",
+    info: {
+      title: "Badges",
+      body: "Earn mastery badges in rounds. They unlock cosmetics and flex status in your crew.",
+    },
+  },
+  {
+    id: "crew",
+    label: "Crew",
+    info: {
+      title: "Crew",
+      body: "Join your crew by invite code and keep a shared streak together.",
+    },
+  },
+  {
+    id: "style",
+    label: "Style",
+    info: {
+      title: "Style",
+      body: "Unlock and equip cosmetic frames to stand out on the leaderboard.",
+    },
   },
 ] as const;
 const JOIN_TOP3_ROWS = [
@@ -532,6 +609,7 @@ export default function JoinView() {
   const previewAvatarSrc =
     getAvatarImageUrl(currentAvatar) ?? getAssetUrl(previewAvatarAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const isAuthorized = Boolean(authUser);
+
   const isSocialAuthorized =
     (authProvider === "google" ||
       authProvider === "apple" ||
@@ -581,19 +659,61 @@ export default function JoinView() {
             <h2 className={styles.questsTitle}>{JOIN_QUESTS_TITLE}</h2>
             <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
           </header>
+          <div className={styles.questStatusGrid}>
+            {JOIN_STATUS_CHIPS.map((chip) => (
+              <button
+                key={chip.id}
+                type="button"
+                className={styles.questStatusChip}
+                style={{ width: `${chip.width}px` }}
+                onClick={() => setQuestModal({ title: chip.title, body: chip.body })}
+              >
+                <span className={styles.questStatusIcon}>{chip.icon}</span>
+                <span className={styles.questStatusValue}>{chip.value}</span>
+              </button>
+            ))}
+          </div>
           <div className={styles.questProgressRow}>
-            {JOIN_QUEST_PROGRESS.map((item) => (
+            {JOIN_QUEST_ROWS.map((item, index) => (
               <button
                 key={item.id}
                 type="button"
-                className={styles.questProgressCard}
+                className={`${styles.questProgressCard} ${index === 0 ? styles.questProgressCardFirst : styles.questProgressCardMuted}`}
                 onClick={() => setQuestModal({ title: item.title, body: item.details })}
               >
-                <span className={styles.questProgressTop}>
-                  <span className={styles.questProgressValue}>{item.progress}</span>
-                  <span className={styles.questProgressText}>{item.description}</span>
+                <span className={styles.questProgressContent}>
+                  <span className={styles.questProgressTitleWrap}>
+                    <span className={styles.questProgressTitle}>{item.title}</span>
+                  </span>
+                  <span className={styles.questProgressActions}>
+                    <span className={styles.questProgressRewardBadge}>{item.reward}</span>
+                    <span className={styles.questProgressBadge}>
+                      <span className={styles.questProgressBadgeText}>{item.cta}</span>
+                    </span>
+                  </span>
                 </span>
-                <span className={styles.questProgressBadge}>{item.cta}</span>
+                <span className={styles.questProgressBar}>
+                  {Array.from({ length: 5 }).map((_, segmentIndex) => (
+                    <span
+                      key={`${item.id}-seg-${segmentIndex}`}
+                      className={
+                        segmentIndex < item.activeSegments ? styles.questProgressBarOn : styles.questProgressBarOff
+                      }
+                    />
+                  ))}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className={styles.questActionRow}>
+            {QUEST_ACTIONS.map((action) => (
+              <button
+                key={action.id}
+                type="button"
+                className={styles.questActionButton}
+                onClick={() => setQuestModal(action.info)}
+              >
+                {action.label}
               </button>
             ))}
           </div>

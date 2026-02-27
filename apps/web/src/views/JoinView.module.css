@@ -26,7 +26,7 @@
 .join {
   position: relative;
   width: min(390px, 100vw);
-  height: 1122px;
+  height: 1337px;
   overflow: visible;
   flex: 0 0 auto;
   z-index: 2;
@@ -41,10 +41,10 @@
 
 .baseBackgroundImage {
   position: absolute;
-  left: -22.307692%;
-  top: 0.089126%;
-  width: 144.102564%;
-  height: 75.13369%;
+  left: -39.487179%;
+  top: 0.080515%;
+  width: 178.461538%;
+  height: 84.138486%;
   opacity: 0.1;
   object-fit: cover;
   pointer-events: none;
@@ -146,9 +146,9 @@
 .questsBlock {
   position: absolute;
   left: 20px;
-  top: 194px;
+  top: 456px;
   width: 350px;
-  height: 161px;
+  height: 376px;
   border-radius: 12px;
   background: #200042;
   display: flex;
@@ -158,7 +158,7 @@
   gap: 16px;
   padding: 16px;
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden;
   pointer-events: auto;
   z-index: 3;
 }
@@ -204,19 +204,19 @@
 .questProgressRow {
   align-self: stretch;
   width: 318px;
-  height: 90px;
+  height: 172px;
   display: flex;
+  flex-direction: column;
   gap: 8px;
   overflow: visible;
 }
 
 .questProgressCard {
-  flex: 0 0 165px;
-  width: 165px;
-  height: 90px;
+  width: 318px;
+  height: 52px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(224deg, #b700ff 0%, #020202 72%);
+  background: linear-gradient(224deg, #b700ff 0%, #020202 71.7727%);
   box-shadow: inset 0 0 0 1px rgb(153 0 255 / 50%);
   display: flex;
   flex-direction: column;
@@ -229,20 +229,32 @@
   text-align: left;
 }
 
-.questProgressCard:not(:first-child) {
+.questProgressCardFirst {
+  opacity: 0.5;
+}
+
+.questProgressCardMuted {
   opacity: 0.8;
 }
 
-.questProgressTop {
-  width: 141px;
-  height: 42px;
+.questProgressContent {
+  width: 294px;
+  height: 26px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.questProgressValue {
+.questProgressTitleWrap {
+  width: 165px;
+  height: 26px;
+  display: flex;
+  flex-direction: column;
+}
+
+.questProgressTitle {
   margin: 0;
   color: #ffffff;
   font-family: Geist, sans-serif;
@@ -250,27 +262,34 @@
   font-weight: 600;
   letter-spacing: -0.6px;
   line-height: 26px;
-  display: inline-block;
-  width: 30px;
-  height: 26px;
   white-space: nowrap;
 }
 
-.questProgressCard:first-child .questProgressValue {
-  width: 31px;
+.questProgressActions {
+  width: 129px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
-.questProgressText {
-  margin: 0;
-  color: rgb(255 255 255 / 75%);
+.questProgressRewardBadge {
+  width: 57px;
+  height: 24px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  background: #049119;
+  color: #ffffff;
   font-family: Geist, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: -0.36px;
   line-height: 15.6px;
-  width: 141px;
-  height: 16px;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .questProgressBadge {
@@ -281,10 +300,12 @@
   background: #ffffff;
   border-radius: 8px;
   padding: 4px 16px;
+  box-sizing: border-box;
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  color: #111111;
+  align-self: center;
   font-family: Geist, sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -292,10 +313,108 @@
   line-height: 15.6px;
 }
 
+.questProgressBadgeText {
+  background: linear-gradient(172deg, #000000 0%, #666666 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #111111;
+}
+
+.questProgressBar {
+  width: 294px;
+  height: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.questProgressBarOn,
+.questProgressBarOff {
+  display: inline-block;
+  height: 2px;
+  flex: 0 0 57.2px;
+}
+
+.questProgressBarOn {
+  background: #b515ff;
+}
+
+.questProgressBarOff {
+  background: rgb(255 255 255 / 60%);
+}
+
+.questStatusGrid {
+  width: 318px;
+  height: 70px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+}
+
+.questStatusChip {
+  height: 31px;
+  border: 0;
+  border-radius: 99px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  background: rgb(255 255 255 / 15%);
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.48px;
+  cursor: pointer;
+}
+
+.questStatusIcon {
+  width: 16px;
+  height: 16px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+}
+
+.questStatusValue {
+  display: inline-block;
+  color: rgb(255 255 255 / 70%);
+}
+
+.questActionRow {
+  width: 318px;
+  height: 31px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.questActionButton {
+  border: 0;
+  border-radius: 99px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  background: rgb(255 255 255 / 15%);
+  color: rgb(255 255 255 / 70%);
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.48px;
+  cursor: pointer;
+}
+
 .avatarBlock {
   position: absolute;
   left: 8px;
-  top: 447px;
+  top: 194px;
   width: 374px;
   height: 254px;
   border-radius: 12px;
@@ -306,7 +425,7 @@
 .profileAvatarVisual {
   position: absolute;
   left: 143px;
-  top: 463px;
+  top: 210px;
   width: 26.666667%;
   height: 9.269162%;
   border: 4px solid #ffffff;
@@ -344,7 +463,7 @@
 
 .profileAvatarHotspot {
   left: 143px;
-  top: 463px;
+  top: 210px;
   width: 26.666667%;
   height: 9.269162%;
   border-radius: 20px;
@@ -352,7 +471,7 @@
 
 .profileButtonHotspot {
   left: 24px;
-  top: 583px;
+  top: 330px;
   width: 342px;
   height: 3.921569%;
   border: 1px solid #7200ff;
@@ -375,7 +494,7 @@
 .nameInputField {
   position: absolute;
   left: 24px;
-  top: 643px;
+  top: 390px;
   width: 342px;
   height: 3.743316%;
   border: 0;
@@ -410,7 +529,7 @@
 .loginBlock {
   position: absolute;
   left: 8px;
-  top: 709px;
+  top: 840px;
   width: 374px;
   height: 111px;
   border-radius: 12px;
@@ -590,7 +709,7 @@
 .top3Block {
   position: absolute;
   left: 8px;
-  top: 828px;
+  top: 959px;
   width: 374px;
   height: 236px;
   border-radius: 12px;
@@ -762,7 +881,7 @@
 .documentsRow {
   position: absolute;
   left: 8px;
-  top: 1072px;
+  top: 1203px;
   width: 374px;
   height: 50px;
   display: flex;
