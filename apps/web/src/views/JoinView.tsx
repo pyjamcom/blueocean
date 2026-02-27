@@ -23,7 +23,9 @@ import {
   signInWithGoogle,
   signInWithTwitter,
 } from "../utils/firebase";
-import { COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
+import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
+import { useEngagement } from "../context/EngagementContext";
+import { diffDays, formatDayKey } from "../engagement/time";
 import styles from "./JoinView.module.css";
 
 const DEFAULT_PUBLIC_ROOM = "PLAY";
@@ -35,98 +37,52 @@ const LAST_AUTH_PROVIDER_KEY = "escapers_last_auth_provider";
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
-const JOIN_QUESTS_TOTAL = "5/5";
-const JOIN_STATUS_CHIPS = [
+const JOIN_STATUS_CHIP_LAYOUT = [
   {
     id: "season",
     icon: "⏳",
-    value: "4d",
     width: 69,
     title: "Season",
-    body: "Time left in the current season sprint.",
+    body: "Time left in the current season sprint",
   },
   {
     id: "crew-code",
     icon: "👥",
-    value: "G7YP",
     width: 89,
     title: "Crew code",
-    body: "Your current crew invite code.",
+    body: "Your current crew invite code",
   },
   {
     id: "crew-streak",
     icon: "🤝",
-    value: "5",
     width: 58,
     title: "Crew streak",
-    body: "Current shared crew streak.",
+    body: "Current shared crew streak",
   },
   {
     id: "shield",
     icon: "🛡️",
-    value: "3",
     width: 59,
     title: "Shield",
-    body: "Grace shield count for your streak.",
+    body: "Grace shield count for your streak",
   },
   {
     id: "notifications",
     icon: "🔔",
-    value: "off",
     width: 69,
     title: "Notifications",
-    body: "Reminder notifications toggle state.",
+    body: "Reminder notifications toggle state",
   },
   {
     id: "streak",
     icon: "🔥",
-    value: "5",
     width: 58,
     title: "Streak",
-    body: "Current personal streak.",
+    body: "Current personal streak",
   },
 ] as const;
 
-const JOIN_QUEST_IDS = ["answer_fast", "streak_two"] as const;
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
-const JOIN_QUEST_ROWS = JOIN_QUEST_IDS.map((questId) => {
-  const quest = QUEST_DEFINITIONS.find((item) => item.id === questId);
-  const rewardLabel = quest?.rewardId ? COSMETIC_LABEL_BY_ID.get(quest.rewardId) : null;
-  return {
-    id: quest?.id ?? questId,
-    title: quest?.label ?? questId,
-    reward: `+${rewardLabel ?? "Reward"}`,
-    cta: "Claim",
-    activeSegments: Math.max(1, Math.min(5, quest?.target ?? 1)),
-    details: `${quest?.label ?? questId} quest.`,
-  };
-});
-const QUEST_ACTIONS = [
-  {
-    id: "badges",
-    label: "Badges",
-    info: {
-      title: "Badges",
-      body: "Earn mastery badges in rounds. They unlock cosmetics and flex status in your crew.",
-    },
-  },
-  {
-    id: "crew",
-    label: "Crew",
-    info: {
-      title: "Crew",
-      body: "Join your crew by invite code and keep a shared streak together.",
-    },
-  },
-  {
-    id: "style",
-    label: "Style",
-    info: {
-      title: "Style",
-      body: "Unlock and equip cosmetic frames to stand out on the leaderboard.",
-    },
-  },
-] as const;
 const JOIN_TOP3_ROWS = [
   { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
@@ -200,6 +156,7 @@ function getLastAuthProvider(): AuthProvider {
 }
 
 export default function JoinView() {
+  const { state: engagement } = useEngagement();
   const location = useLocation();
   const navigate = useNavigate();
   const { code: codeFromPath } = useParams<{ code?: string }>();
@@ -627,6 +584,73 @@ export default function JoinView() {
         : authProvider === "twitch"
           ? "/figma/join/frame-4.svg"
         : null;
+  const todayKey = formatDayKey(new Date());
+  const sourceJoinQuests = engagement.quests.daily.length
+    ? engagement.quests.daily.slice(0, 2)
+    : QUEST_DEFINITIONS.slice(0, 2).map((quest) => ({ ...quest, progress: 0 }));
+  const completedQuests = sourceJoinQuests.filter((quest) => (quest.progress ?? 0) >= quest.target).length;
+  const joinQuestsTotal = `${completedQuests}/${sourceJoinQuests.length}`;
+  const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
+  const joinStatusChips = JOIN_STATUS_CHIP_LAYOUT.map((chip) => {
+    const value =
+      chip.id === "season"
+        ? `${seasonDaysLeft}d`
+        : chip.id === "crew-code"
+          ? engagement.group?.code ?? roomCode ?? codeParam ?? "----"
+          : chip.id === "crew-streak"
+            ? String(engagement.teamStreak.current)
+            : chip.id === "shield"
+              ? String(engagement.streak.graceLeft)
+              : chip.id === "notifications"
+                ? engagement.notifications.enabled
+                  ? "On"
+                  : "Off"
+                : String(engagement.streak.current);
+    return {
+      ...chip,
+      value,
+      body: `${chip.body}: ${value}`,
+    };
+  });
+  const joinQuestRows = sourceJoinQuests.map((quest) => {
+    const target = Math.max(1, quest.target ?? 1);
+    const progress = Math.max(0, Math.min(target, quest.progress ?? 0));
+    const rewardLabel = quest.rewardId ? COSMETIC_LABEL_BY_ID.get(quest.rewardId) : null;
+    return {
+      id: quest.id,
+      title: quest.label,
+      reward: `+${rewardLabel ?? "Reward"}`,
+      cta: "Claim",
+      activeSegments: Math.max(0, Math.min(5, Math.round((progress / target) * 5))),
+      details: `${quest.label}: ${progress}/${target}`,
+    };
+  });
+  const questActions = [
+    {
+      id: "badges",
+      label: "Badges",
+      info: {
+        title: "Badges",
+        body: `Unlocked badges: ${engagement.badges.unlocked.length}/${BADGE_DEFINITIONS.length}`,
+      },
+    },
+    {
+      id: "crew",
+      label: "Crew",
+      info: {
+        title: "Crew",
+        body: `Code: ${engagement.group?.code ?? "none"}, streak: ${engagement.teamStreak.current}`,
+      },
+    },
+    {
+      id: "style",
+      label: "Style",
+      info: {
+        title: "Style",
+        body: `Unlocked styles: ${engagement.cosmetics.unlocked.length}, equipped: ${engagement.cosmetics.equipped.frame ?? "none"}`,
+      },
+    },
+  ] as const;
 
   return (
     <div className={styles.page}>
@@ -646,10 +670,10 @@ export default function JoinView() {
         <section className={styles.questsBlock}>
           <header className={styles.questsHeader}>
             <h2 className={styles.questsTitle}>{JOIN_QUESTS_TITLE}</h2>
-            <p className={styles.questsTotal}>{JOIN_QUESTS_TOTAL}</p>
+            <p className={styles.questsTotal}>{joinQuestsTotal}</p>
           </header>
           <div className={styles.questStatusGrid}>
-            {JOIN_STATUS_CHIPS.map((chip) => (
+            {joinStatusChips.map((chip) => (
               <button
                 key={chip.id}
                 type="button"
@@ -663,7 +687,7 @@ export default function JoinView() {
             ))}
           </div>
           <div className={styles.questProgressRow}>
-            {JOIN_QUEST_ROWS.map((item, index) => (
+            {joinQuestRows.map((item, index) => (
               <button
                 key={item.id}
                 type="button"
@@ -695,7 +719,7 @@ export default function JoinView() {
             ))}
           </div>
           <div className={styles.questActionRow}>
-            {QUEST_ACTIONS.map((action) => (
+            {questActions.map((action) => (
               <button
                 key={action.id}
                 type="button"
