@@ -14,6 +14,7 @@ import {
 import { trackEvent } from "../utils/analytics";
 import { assetIds, getAssetUrl } from "../utils/assets";
 import { getOrCreateClientId, randomId } from "../utils/ids";
+import { FALLBACK_WEEKLY_LEADERBOARD, type LeaderboardEntry, toWeeklyPercentLabel } from "../utils/leaderboard";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
 import {
   isFirebaseEnabled,
@@ -74,11 +75,6 @@ const JOIN_STATUS_CHIP_LAYOUT = [
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
-const JOIN_TOP3_ROWS = [
-  { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
-  { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
-  { id: "top-3", rank: 3, name: "Ярик", score: "2445", tier: "bronze", tall: false },
-] as const;
 type JoinTopRow = {
   id: string;
   rank: number;
@@ -88,13 +84,7 @@ type JoinTopRow = {
   tall: boolean;
   avatarId?: string | null;
 };
-type JoinLeaderboardEntry = {
-  displayName: string;
-  avatarId?: string | null;
-  funScore: number;
-  deltaPoints?: number | null;
-  progressPercent?: number | null;
-};
+type JoinLeaderboardEntry = LeaderboardEntry;
 type InfoPayload = Readonly<{
   title: string;
   lines: ReadonlyArray<string>;
@@ -125,10 +115,16 @@ function normalizeJoinLeaderboardEntry(raw: any): JoinLeaderboardEntry | null {
   };
 }
 
-function toWeeklyValueLabel(entry: JoinLeaderboardEntry) {
-  const raw = entry.progressPercent ?? entry.deltaPoints ?? entry.funScore;
-  const value = Math.min(100, Math.max(0, Number(raw) || 0));
-  return `${Math.round(value)}%`;
+function buildFallbackTopRows(): JoinTopRow[] {
+  return FALLBACK_WEEKLY_LEADERBOARD.slice(0, 3).map((entry, index) => ({
+    id: `fallback-top-${index + 1}`,
+    rank: index + 1,
+    name: entry.displayName,
+    score: toWeeklyPercentLabel(entry),
+    avatarId: entry.avatarId ?? null,
+    tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
+    tall: index === 0,
+  }));
 }
 
 const CHIP_INFO = {
@@ -370,9 +366,7 @@ export default function JoinView() {
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [crewLoading, setCrewLoading] = useState(false);
   const [info, setInfo] = useState<InfoPayload | null>(null);
-  const [joinTopRows, setJoinTopRows] = useState<JoinTopRow[]>(() =>
-    JOIN_TOP3_ROWS.map((row) => ({ ...row })),
-  );
+  const [joinTopRows, setJoinTopRows] = useState<JoinTopRow[]>(() => buildFallbackTopRows());
   const selfId = getOrCreateClientId();
   const isOwner = engagement.group?.role === "owner";
   const isManagerRoute = location.pathname === "/manager";
@@ -498,20 +492,26 @@ export default function JoinView() {
               .map((raw: any) => normalizeJoinLeaderboardEntry(raw))
               .filter((entry: JoinLeaderboardEntry | null): entry is JoinLeaderboardEntry => Boolean(entry))
           : [];
-        if (!normalized.length) return;
+        if (!normalized.length) {
+          setJoinTopRows(buildFallbackTopRows());
+          return;
+        }
 
         const mapped: JoinTopRow[] = normalized.slice(0, 3).map((entry, index) => ({
           id: `live-top-${index + 1}`,
           rank: index + 1,
           name: entry.displayName,
-          score: toWeeklyValueLabel(entry),
+          score: toWeeklyPercentLabel(entry),
           avatarId: entry.avatarId,
           tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
           tall: index === 0,
         }));
         setJoinTopRows(mapped);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (!active) return;
+        setJoinTopRows(buildFallbackTopRows());
+      });
 
     return () => {
       active = false;

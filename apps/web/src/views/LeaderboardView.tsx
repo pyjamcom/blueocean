@@ -5,17 +5,12 @@ import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
 import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
+import { FALLBACK_WEEKLY_LEADERBOARD, type LeaderboardEntry } from "../utils/leaderboard";
 import styles from "./LeaderboardView.module.css";
 
 type Period = "weekly" | "season";
 
-interface PublicLeaderboardEntry {
-  displayName: string;
-  avatarId?: string | null;
-  funScore: number;
-  deltaPoints?: number | null;
-  progressPercent?: number | null;
-}
+type PublicLeaderboardEntry = LeaderboardEntry;
 
 interface PublicLeaderboardResponse {
   period: Period;
@@ -82,13 +77,7 @@ function rowTone(rank: number): RowTone {
   };
 }
 
-const fallbackTop: PublicLeaderboardEntry[] = [
-  { displayName: "Nova", funScore: 1200, progressPercent: 100 },
-  { displayName: "Atlas", funScore: 950, progressPercent: 90 },
-  { displayName: "Pixel", funScore: 800, progressPercent: 70 },
-  { displayName: "Mara", funScore: 650, progressPercent: 55 },
-  { displayName: "Echo", funScore: 500, progressPercent: 40 },
-];
+const fallbackTop: PublicLeaderboardEntry[] = [...FALLBACK_WEEKLY_LEADERBOARD];
 
 export default function LeaderboardView() {
   const navigate = useNavigate();
