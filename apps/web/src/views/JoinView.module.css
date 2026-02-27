@@ -146,9 +146,9 @@
 .questsBlock {
   position: absolute;
   left: 8px;
-  top: 456px;
+  top: 420px;
   width: 374px;
-  height: 376px;
+  height: 316px;
   border-radius: 12px;
   background: #200042;
   display: flex;
@@ -204,7 +204,7 @@
 .questProgressRow {
   align-self: stretch;
   width: 342px;
-  height: 172px;
+  height: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -394,6 +394,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: -12px;
 }
 
 .questActionButton {
@@ -414,7 +415,7 @@
 .avatarBlock {
   position: absolute;
   left: 8px;
-  top: 194px;
+  top: 158px;
   width: 374px;
   height: 254px;
   border-radius: 12px;
@@ -425,7 +426,7 @@
 .profileAvatarVisual {
   position: absolute;
   left: 143px;
-  top: 210px;
+  top: 174px;
   width: 26.666667%;
   height: 9.269162%;
   border: 4px solid #ffffff;
@@ -463,7 +464,7 @@
 
 .profileAvatarHotspot {
   left: 143px;
-  top: 210px;
+  top: 174px;
   width: 26.666667%;
   height: 9.269162%;
   border-radius: 20px;
@@ -471,7 +472,7 @@
 
 .profileButtonHotspot {
   left: 24px;
-  top: 330px;
+  top: 294px;
   width: 342px;
   height: 3.921569%;
   border: 1px solid #7200ff;
@@ -494,7 +495,7 @@
 .nameInputField {
   position: absolute;
   left: 24px;
-  top: 390px;
+  top: 354px;
   width: 342px;
   height: 3.743316%;
   border: 0;
@@ -529,7 +530,7 @@
 .loginBlock {
   position: absolute;
   left: 8px;
-  top: 840px;
+  top: 744px;
   width: 374px;
   height: 111px;
   border-radius: 12px;
@@ -709,7 +710,7 @@
 .top3Block {
   position: absolute;
   left: 8px;
-  top: 959px;
+  top: 863px;
   width: 374px;
   height: 236px;
   border-radius: 12px;
@@ -881,7 +882,7 @@
 .documentsRow {
   position: absolute;
   left: 8px;
-  top: 1203px;
+  top: 1107px;
   width: 374px;
   height: 50px;
   display: flex;
