@@ -1152,6 +1152,8 @@ export default function JoinView() {
                   : row.tier === "silver"
                     ? styles.top3RowSilver
                     : styles.top3RowBronze;
+              const rowAvatarSrc =
+                getAvatarImageUrl(row.avatarId ?? row.name) ?? selectedAvatarSrc;
               return (
                 <article
                   key={row.id}
@@ -1164,7 +1166,7 @@ export default function JoinView() {
                     </div>
                     <div className={styles.playerIdentity}>
                       <span className={styles.playerAvatar} aria-hidden="true">
-                        <img src={row.avatarId ? getAvatarImageUrl(row.avatarId) ?? selectedAvatarSrc : selectedAvatarSrc} alt="" />
+                        <img src={rowAvatarSrc} alt="" />
                       </span>
                       <span className={styles.playerName}>{row.name}</span>
                     </div>

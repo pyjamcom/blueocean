@@ -7,11 +7,11 @@ export type LeaderboardEntry = {
 };
 
 export const FALLBACK_WEEKLY_LEADERBOARD: ReadonlyArray<LeaderboardEntry> = [
-  { displayName: "Nova", funScore: 1200, progressPercent: 100 },
-  { displayName: "Atlas", funScore: 950, progressPercent: 90 },
-  { displayName: "Pixel", funScore: 800, progressPercent: 70 },
-  { displayName: "Mara", funScore: 650, progressPercent: 55 },
-  { displayName: "Echo", funScore: 500, progressPercent: 40 },
+  { displayName: "Nova", avatarId: "leaderboard_nova", funScore: 1200, progressPercent: 100 },
+  { displayName: "Atlas", avatarId: "leaderboard_atlas", funScore: 950, progressPercent: 90 },
+  { displayName: "Pixel", avatarId: "leaderboard_pixel", funScore: 800, progressPercent: 70 },
+  { displayName: "Mara", avatarId: "leaderboard_mara", funScore: 650, progressPercent: 55 },
+  { displayName: "Echo", avatarId: "leaderboard_echo", funScore: 500, progressPercent: 40 },
 ];
 
 export function toWeeklyPercentLabel(entry: Pick<LeaderboardEntry, "progressPercent" | "deltaPoints" | "funScore">) {

@@ -345,7 +345,7 @@ export default function LeaderboardView() {
                 {topList.map((entry, index) => {
                   const rank = index + 1;
                   const tone = rowTone(rank);
-                  const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+                  const avatarSrc = getAvatarImageUrl(entry.avatarId ?? entry.displayName);
                   const entryMetric = metricValue(entry);
                   const entryRatio = Math.min(1, entryMetric / maxMetric);
                   const valueLabel =
