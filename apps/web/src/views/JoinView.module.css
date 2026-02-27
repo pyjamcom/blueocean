@@ -394,7 +394,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: -8px;
+  margin-top: 0;
 }
 
 .questActionButton {
@@ -427,8 +427,8 @@
   position: absolute;
   left: 143px;
   top: 174px;
-  width: 26.666667%;
-  height: 9.269162%;
+  width: 104px;
+  height: 104px;
   border: 4px solid #ffffff;
   border-radius: 20px;
   overflow: hidden;
@@ -465,8 +465,8 @@
 .profileAvatarHotspot {
   left: 143px;
   top: 174px;
-  width: 26.666667%;
-  height: 9.269162%;
+  width: 104px;
+  height: 104px;
   border-radius: 20px;
 }
 
