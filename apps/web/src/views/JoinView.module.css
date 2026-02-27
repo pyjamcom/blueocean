@@ -1233,3 +1233,463 @@
   background: linear-gradient(90deg, #830edc 0%, #380063 100%);
   cursor: pointer;
 }
+
+@media (min-width: 1024px) {
+  .page {
+    padding-bottom: calc(144px + env(safe-area-inset-bottom));
+  }
+
+  .join {
+    width: min(1200px, calc(100vw - 80px));
+    height: 2020px;
+    background: transparent;
+  }
+
+  .heroBlock {
+    left: 0;
+    top: 40px;
+    width: 100%;
+    height: 182px;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .heroTitle {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 41.6px;
+    letter-spacing: -0.96px;
+  }
+
+  .heroSubtitle {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 36.4px;
+  }
+
+  .avatarBlock {
+    left: 0;
+    top: 246px;
+    width: 100%;
+    height: 524px;
+  }
+
+  .profileAvatarVisual,
+  .profileAvatarHotspot {
+    left: calc(50% - 119px);
+    top: 286px;
+    width: 238px;
+    height: 238px;
+    border-radius: 20px;
+  }
+
+  .profileButtonHotspot {
+    left: 40px;
+    top: 548px;
+    width: calc(100% - 80px);
+    height: 79px;
+    font-size: 24px;
+    line-height: 31.2px;
+  }
+
+  .nameInputField {
+    left: 40px;
+    top: 651px;
+    width: calc(100% - 80px);
+    height: 79px;
+    padding: 0 32px;
+    font-size: 24px;
+    line-height: 31.2px;
+    text-align: left;
+  }
+
+  .nameInputField::placeholder {
+    text-align: left;
+  }
+
+  .questsBlock {
+    left: 0;
+    top: 794px;
+    width: 100%;
+    height: 515px;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .questsHeader {
+    width: calc(100% - 80px);
+    height: 36px;
+    align-items: flex-end;
+  }
+
+  .questsTitle {
+    width: auto;
+    height: 36px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 36.4px;
+    letter-spacing: -0.84px;
+  }
+
+  .questsTotal {
+    width: auto;
+    height: 29px;
+    font-size: 24px;
+    line-height: 29.05px;
+    letter-spacing: -0.72px;
+  }
+
+  .questStatusGrid {
+    width: calc(100% - 80px);
+    height: 40px;
+    flex-wrap: nowrap;
+  }
+
+  .questStatusChip {
+    height: 40px;
+    padding: 8px 16px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .questStatusChip[data-chip="season"] {
+    width: 82px !important;
+  }
+
+  .questStatusChip[data-chip="crew-code"] {
+    width: 108px !important;
+  }
+
+  .questStatusChip[data-chip="crew-streak"],
+  .questStatusChip[data-chip="shield"],
+  .questStatusChip[data-chip="streak"] {
+    width: 69px !important;
+  }
+
+  .questStatusChip[data-chip="notifications"] {
+    width: 82px !important;
+  }
+
+  .questStatusValue {
+    line-height: 24.2px;
+  }
+
+  .questProgressRow {
+    width: calc(100% - 80px);
+  }
+
+  .questProgressCard {
+    width: 100%;
+    height: 77px;
+    padding: 16px 24px;
+    gap: 8px;
+  }
+
+  .questProgressContent {
+    width: 100%;
+    height: 35px;
+    align-items: center;
+  }
+
+  .questProgressTitleWrap {
+    width: auto;
+    height: 31px;
+  }
+
+  .questProgressTitle {
+    font-size: 24px;
+    line-height: 31.2px;
+    letter-spacing: -0.72px;
+  }
+
+  .questProgressActions {
+    width: auto;
+    height: 35px;
+  }
+
+  .questProgressRewardBadge {
+    width: 86px;
+    height: 35px;
+    padding: 6px 12px;
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
+  }
+
+  .questProgressBadge {
+    width: 116px;
+    height: 35px;
+    padding: 6px 24px;
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
+  }
+
+  .questProgressBar {
+    width: 100%;
+    height: 2px;
+    gap: 2px;
+  }
+
+  .questProgressBarOn,
+  .questProgressBarOff {
+    flex: 1 1 0;
+  }
+
+  .questActionRow {
+    width: calc(100% - 80px);
+    height: 40px;
+    margin-top: 0;
+  }
+
+  .questActionButton {
+    height: 40px;
+    padding: 8px 16px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .loginBlock {
+    left: 0;
+    top: 1333px;
+    width: 100%;
+    height: 212px;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .loginTitle {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 36.4px;
+    letter-spacing: -0.84px;
+  }
+
+  .loginAuthorizedRow {
+    width: calc(100% - 80px);
+    height: 72px;
+    gap: 12px;
+  }
+
+  .loginAuthorizedIcon,
+  .loginAuthorizedX {
+    width: 72px;
+    height: 72px;
+  }
+
+  .loginAuthorizedXBg {
+    left: 9px;
+    top: 9px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .loginAuthorizedXGlyph {
+    left: 15.5px;
+    top: 15.5px;
+    width: 41px;
+    height: 41px;
+  }
+
+  .loginAuthorizedText {
+    max-width: calc(100% - 96px);
+    font-size: 28px;
+    line-height: 36.4px;
+    letter-spacing: -0.84px;
+  }
+
+  .loginIconsWrap {
+    width: calc(100% - 80px);
+    height: 72px;
+    flex: 0 0 72px;
+  }
+
+  .loginVisualLayer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .loginIcon {
+    position: static;
+    width: 72px;
+    height: 72px;
+  }
+
+  .loginIconGoogle,
+  .loginIconApple,
+  .loginIconFacebook,
+  .loginIconX,
+  .loginIconTwitch {
+    left: auto;
+  }
+
+  .loginIconX {
+    position: relative;
+  }
+
+  .loginIconXBg {
+    left: 9px;
+    top: 9px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .loginIconXGlyph {
+    left: 15.5px;
+    top: 15.5px;
+    width: 41px;
+    height: 41px;
+  }
+
+  .loginHitLayer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .loginHit {
+    position: static;
+    width: 72px;
+    height: 72px;
+  }
+
+  .hitGoogle,
+  .hitApple,
+  .hitFacebook,
+  .hitTwitter,
+  .hitTwitch {
+    left: auto;
+  }
+
+  .top3Block {
+    left: 0;
+    top: 1569px;
+    width: 100%;
+    height: 364px;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .top3Header {
+    width: calc(100% - 80px);
+    height: 36px;
+  }
+
+  .top3Title {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 36.4px;
+    letter-spacing: -0.84px;
+  }
+
+  .top3Rows {
+    width: calc(100% - 80px);
+    height: 224px;
+  }
+
+  .top3Row,
+  .top3RowTall {
+    width: 100%;
+    height: 72px;
+    padding: 12px 24px;
+  }
+
+  .top3RowLeft {
+    gap: 24px;
+  }
+
+  .rankChip {
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .rankIcon {
+    width: 24px;
+    height: 24px;
+    background-size: 18px 18px;
+  }
+
+  .playerAvatar,
+  .top3RowTall .playerAvatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .playerName {
+    font-size: 24px;
+    line-height: 31.2px;
+    letter-spacing: -0.72px;
+  }
+
+  .documentsRow {
+    left: 0;
+    top: 1957px;
+    width: 100%;
+    height: 63px;
+    gap: 24px;
+  }
+
+  .documentLink {
+    font-size: 24px;
+    line-height: 31.2px;
+    letter-spacing: -0.72px;
+  }
+
+  .documentDivider {
+    width: 2px;
+    height: 31px;
+  }
+
+  .downBar {
+    width: min(1200px, calc(100vw - 80px));
+    height: calc(104px + env(safe-area-inset-bottom));
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+    gap: 8px;
+    z-index: 80;
+  }
+
+  .downButton {
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+    gap: 12px;
+  }
+
+  .downButtonCreate,
+  .downButtonJoin {
+    width: calc((100% - 118px) / 2);
+    height: 56px;
+  }
+
+  .downButtonCreate {
+    padding: 8px 12px;
+  }
+
+  .downButtonJoin {
+    padding: 8px;
+  }
+
+  .downButtonHelp,
+  .downButtonLogout {
+    width: 51px;
+    height: 56px;
+    padding: 12px;
+  }
+
+  .downIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .downIconHelp,
+  .downIconLogout {
+    width: 32px;
+    height: 32px;
+  }
+}

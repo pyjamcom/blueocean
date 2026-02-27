@@ -941,6 +941,7 @@ export default function JoinView() {
                 key={chip.id}
                 type="button"
                 className={styles.questStatusChip}
+                data-chip={chip.id}
                 style={{ width: `${chip.width}px` }}
                 onClick={() => {
                   if (chip.id === "notifications" && flags.notifications) {
