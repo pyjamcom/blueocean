@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
 
 .root {
-  font-family: "Montserrat", "Segoe UI", sans-serif;
+  font-family: Geist, "Montserrat", "Segoe UI", sans-serif;
   color: #ffffff;
   min-height: 100svh;
   width: 100%;
@@ -10,18 +10,58 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  padding: max(12px, env(safe-area-inset-top)) 0 16px;
-  gap: 8px;
+  padding: 0;
+  gap: 0;
+}
+
+.designLock {
+  width: 390px;
+  min-width: 390px;
+  max-width: 390px;
+  height: 844px;
+  min-height: 844px;
+  max-height: 844px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .background {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(63, 169, 255, 0.3), transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(255, 77, 109, 0.3), transparent 45%),
-    linear-gradient(160deg, #1a1335, #0a0a14 65%);
+  overflow: hidden;
+  background-image:
+    linear-gradient(180deg, #3e4186 0%, #0c0822 30.3%, #0c0822 75%, #853e86 100%),
+    var(--game-bg-image, url("/figma/game/bg-163-5233.png"));
+  background-size: cover, cover;
+  background-position: center top, center top;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.designLock .background {
+  position: absolute;
+}
+
+.waitPhase .background::before,
+.waitPhase .background::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 191px);
+  width: 383px;
+  height: 383px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(250px);
+  -webkit-backdrop-filter: blur(250px);
+  pointer-events: none;
+}
+
+.waitPhase .background::before {
+  top: -173px;
+}
+
+.waitPhase .background::after {
+  top: 749px;
 }
 
 
@@ -39,15 +79,38 @@
 .centerWrap {
   margin: 0 auto;
   width: min(100%, 390px);
-  max-width: 80rem;
   box-sizing: border-box;
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 0 16px;
+}
+
+.phaseWait {
+  padding: max(256px, calc(env(safe-area-inset-top) + 240px)) 20px 32px;
+  gap: 24px;
+}
+
+.phasePrepared {
+  padding: max(308px, calc(env(safe-area-inset-top) + 292px)) 20px 32px;
+  gap: 24px;
+}
+
+.phaseResult {
+  padding: max(322px, calc(env(safe-area-inset-top) + 306px)) 20px 32px;
+  gap: 24px;
+}
+
+.designLock .phaseWait {
+  padding: 256px 20px 32px;
+}
+
+.designLock .phasePrepared {
+  padding: 308px 20px 32px;
+}
+
+.designLock .phaseResult {
+  padding: 322px 20px 32px;
 }
 
 .loader {
@@ -97,6 +160,13 @@
   border-radius: 12px;
   background: rgba(32, 0, 66, 0.8);
   padding: 10px;
+}
+
+.preparedHeroImage {
+  width: 236px;
+  height: 128px;
+  border-radius: 12px;
+  object-fit: fill;
 }
 
 .quizButton {
@@ -423,6 +493,7 @@
   width: min(100%, 350px);
   display: grid;
   gap: 8px;
+  margin-top: 44px;
 }
 
 .roundTitleCard,
@@ -442,12 +513,12 @@
 
 .roundTitle {
   margin: 0;
-  font-weight: 700;
-  font-size: clamp(1.2rem, 1.5vw + 0.9rem, 1.6rem);
-  line-height: 1.2;
+  font-family: Geist, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.6px;
 }
 
 .roundPromptCard {
@@ -503,8 +574,11 @@
 .roundTimerText {
   margin: 0;
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-family: Geist, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20.8px;
+  letter-spacing: -0.48px;
 }
 
 .roundPhase .progressTrack {
@@ -551,7 +625,7 @@
   min-height: 134px;
   padding: 0;
   border-radius: 8px;
-  background: rgba(7, 0, 20, 0.56);
+  background: transparent;
   box-shadow: none;
   display: block;
   overflow: hidden;
@@ -579,7 +653,7 @@
   width: 100%;
   height: 100%;
   max-height: none;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0;
 }
 
@@ -598,7 +672,7 @@
   width: 20px;
   height: 20px;
   border-radius: 999px;
-  background: rgba(92, 92, 92, 0.95);
+  background: #5c5c5c;
   display: grid;
   place-items: center;
 }
@@ -606,6 +680,25 @@
 .answerPickIcon {
   width: 10px;
   height: 10px;
+}
+
+.answerPickTick {
+  position: relative;
+  width: 10px;
+  height: 10px;
+}
+
+.answerPickTick::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 4px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg);
 }
 
 .roundUtilityRow {
@@ -635,11 +728,16 @@
 .chromeButtons {
   width: min(100%, 390px);
   height: 72px;
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 16px 20px;
+  padding: 16px;
   box-sizing: border-box;
+}
+
+.roundPhase .chromeButtons {
+  margin-top: 38px;
 }
 
 .chromeActionButton {
@@ -648,53 +746,13 @@
   border: none;
   border-radius: 8px;
   background-color: #240000;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4'/><path d='M16 17l5-5-5-5'/><path d='M21 12H9'/></svg>");
+  border: 1px solid #510000;
+  background-image: url("/figma/game/logout-163-5311.svg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 50%;
-}
-
-.chromeTabBar {
-  width: min(100%, 390px);
-  height: 52px;
-  background: #111111;
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  padding-top: 10px;
-  gap: 9px;
-  box-sizing: border-box;
-}
-
-.chromeUrlWrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 16px;
-  font-family: "SF Pro Display", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-}
-
-.chromeLock {
-  width: 6px;
-  height: 9px;
-  opacity: 0.6;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 9' fill='none'><path d='M1 4V2.5a2 2 0 1 1 4 0V4' stroke='white' stroke-opacity='.6' stroke-width='1'/><rect x='.8' y='4' width='4.4' height='4' rx='1' fill='white' fill-opacity='.6'/></svg>");
-}
-
-.chromeUrl {
-  opacity: 0.95;
-}
-
-.chromeHomeIndicator {
-  width: 134px;
-  height: 5px;
-  border-radius: 999px;
-  background: #fff;
+  background-size: 20px 20px;
+  backdrop-filter: blur(100.7px);
+  -webkit-backdrop-filter: blur(100.7px);
 }
 
 .animShow {
@@ -715,6 +773,15 @@
 
 .animTimer {
   animation: timer 1s ease-out infinite;
+}
+
+.designLock .loaderSpin,
+.designLock .animShow,
+.designLock .animQuizz,
+.designLock .animTimer {
+  animation: none !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .progressBar {
@@ -806,10 +873,6 @@
 }
 
 @media (max-width: 540px) {
-  .root {
-    padding: max(12px, env(safe-area-inset-top)) 0 16px;
-  }
-
   .questionBadge {
     font-size: 16px;
     padding: 6px 12px;

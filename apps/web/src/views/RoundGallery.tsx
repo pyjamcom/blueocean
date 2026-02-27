@@ -1,5 +1,5 @@
-import { ElementType, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AnswerOption } from "../components/AnswerGrid";
 import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
@@ -9,25 +9,27 @@ import { mapStageToQuestionIndex, shuffleQuestionAnswers } from "../utils/questi
 import { prefetchImage } from "../utils/prefetch";
 import { playTap } from "../utils/sfx";
 import { playLoop, playOneShot, stopLoop, SFX } from "../utils/sounds";
-import Triangle from "../components/rahoot/icons/Triangle";
-import Rhombus from "../components/rahoot/icons/Rhombus";
-import Circle from "../components/rahoot/icons/Circle";
-import Square from "../components/rahoot/icons/Square";
-import CricleCheck from "../components/rahoot/icons/CricleCheck";
-import CricleXmark from "../components/rahoot/icons/CricleXmark";
-import loader from "../assets/rahoot/loader.svg";
 import styles from "./rahootGame.module.css";
 
 const fallbackSrc = "/icons/icon-192.svg";
 const MAX_QUESTIONS = Math.min(15, questionBank.length);
-const ANSWER_ICONS: ElementType[] = [Triangle, Rhombus, Circle, Square];
-const ANSWER_COLORS = [
-  styles.answerRed,
-  styles.answerBlue,
-  styles.answerYellow,
-  styles.answerGreen,
-];
 const REVEAL_ANSWERS_DURATION_MS = 2200;
+type DesignState =
+  | "wait"
+  | "prepared"
+  | "round"
+  | "round-wrong"
+  | "round-correct"
+  | "result-wrong"
+  | "result-correct";
+
+const DESIGN_LOCK_PROMPT = "/figma/game/round-prompt-163-5288.png";
+const DESIGN_LOCK_ANSWERS: [AnswerOption, AnswerOption, AnswerOption, AnswerOption] = [
+  { id: "figma-a1", src: "/figma/game/round-answer-1-163-5298.png" },
+  { id: "figma-a2", src: "/figma/game/round-answer-2-163-5303.png" },
+  { id: "figma-a3", src: "/figma/game/round-answer-3-163-5306.png" },
+  { id: "figma-a4", src: "/figma/game/round-answer-4-163-5308.png" },
+];
 const CATEGORY_TITLE_OVERRIDES: Record<string, string> = {
   visual_provocation: "Choose the most meme",
   absurd_sum: "Find the absurd match",
@@ -58,11 +60,13 @@ function titleCase(value: string) {
 
 export default function RoundGallery() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     phase,
     questionIndex,
     roundStartAt,
     sendAnswer,
+    resetRoom,
     roomCode,
     currentQuestion,
     players,
@@ -75,6 +79,30 @@ export default function RoundGallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [revealStep, setRevealStep] = useState<"answers" | "result">("answers");
   const recordedRoundRef = useRef<number | null>(null);
+  const designLock = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("mode") === "design" || params.get("design") === "1";
+  }, [location.search]);
+  const designState = useMemo<DesignState | null>(() => {
+    if (!designLock) {
+      return null;
+    }
+    const params = new URLSearchParams(location.search);
+    const raw = (params.get("state") ?? params.get("phase") ?? "").toLowerCase();
+    const normalized = raw.replace(/_/g, "-");
+    switch (normalized) {
+      case "wait":
+      case "prepared":
+      case "round":
+      case "round-wrong":
+      case "round-correct":
+      case "result-wrong":
+      case "result-correct":
+        return normalized;
+      default:
+        return "round";
+    }
+  }, [designLock, location.search]);
   const resolvedIndex = mapStageToQuestionIndex(roomCode, questionIndex, questionBank.length);
   const baseQuestion = questionBank[resolvedIndex];
   const activeQuestion = useMemo(() => {
@@ -138,8 +166,11 @@ export default function RoundGallery() {
     return () => window.clearInterval(intervalId);
   }, [durationMs, phase, timerStartAt]);
 
-  const answers = useMemo(
-    () => (activeQuestion
+  const answers = useMemo(() => {
+    if (designLock) {
+      return DESIGN_LOCK_ANSWERS;
+    }
+    return activeQuestion
       ? buildAnswers(activeQuestion)
       : buildAnswers({
           id: "fallback",
@@ -148,11 +179,16 @@ export default function RoundGallery() {
           answers: [],
           correct_index: 0,
           duration_ms: 15000,
-        })),
-    [activeQuestion],
-  );
+        });
+  }, [activeQuestion, designLock]);
 
   useEffect(() => {
+    if (designLock) {
+      [DESIGN_LOCK_PROMPT, ...DESIGN_LOCK_ANSWERS.map((answer) => answer.src)].forEach((src) =>
+        prefetchImage(src),
+      );
+      return;
+    }
     if (!activeQuestion) {
       prefetchImage(fallbackSrc);
       return;
@@ -172,14 +208,29 @@ export default function RoundGallery() {
       ...extraPromptAssets,
     ];
     assetsToPrefetch.forEach((src) => prefetchImage(src));
-  }, [activeQuestion, answers]);
+  }, [activeQuestion, answers, designLock]);
 
-  const correctIndex = activeQuestion?.correct_index ?? 0;
-  const hasAnswer = selectedIndex !== null;
-  const isCorrect = hasAnswer && selectedIndex === correctIndex;
+  const correctIndex = useMemo(() => {
+    if (designState === "round-wrong") {
+      return 3;
+    }
+    if (designState === "round-correct" || designState === "round") {
+      return 0;
+    }
+    return activeQuestion?.correct_index ?? 0;
+  }, [activeQuestion?.correct_index, designState]);
+  const displaySelectedIndex = useMemo(() => {
+    if (designState === "round" || designState === "round-wrong" || designState === "round-correct") {
+      return 0;
+    }
+    return selectedIndex;
+  }, [designState, selectedIndex]);
+  const hasAnswer = displaySelectedIndex !== null;
+  const isCorrect = hasAnswer && displaySelectedIndex === correctIndex;
   const safeRoundPoints = Math.max(0, Number(lastSelfPoints ?? 0));
+  const displayRoundPoints = designState === "result-correct" ? 70 : safeRoundPoints;
   const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct answer" : "Wrong answer";
-  const revealCorrectMessage = safeRoundPoints > 0 ? `Correct answer\n+${safeRoundPoints}` : "Correct answer";
+  const revealCorrectMessage = displayRoundPoints > 0 ? `Correct answer\n+${displayRoundPoints}` : "Correct answer";
   const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`;
   const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
   const elapsedRatio = Math.min(1, Math.max(0, 1 - secondsLeft / timerTotalSeconds));
@@ -219,14 +270,23 @@ export default function RoundGallery() {
     lastAnsweredRef.current = totalAnswered;
   }, [phase, totalAnswered]);
 
-  const questionTitle = activeQuestion?.category
-    ? CATEGORY_TITLE_OVERRIDES[activeQuestion.category] ?? titleCase(activeQuestion.category)
-    : activeQuestion?.humor_tag
-      ? titleCase(activeQuestion.humor_tag)
-      : `Question ${Math.min(questionIndex + 1, MAX_QUESTIONS)}`;
+  const questionTitle = designLock
+    ? "Choose the most meme"
+    : activeQuestion?.category
+      ? CATEGORY_TITLE_OVERRIDES[activeQuestion.category] ?? titleCase(activeQuestion.category)
+      : activeQuestion?.humor_tag
+        ? titleCase(activeQuestion.humor_tag)
+        : `Question ${Math.min(questionIndex + 1, MAX_QUESTIONS)}`;
 
-  const promptSrc = activeQuestion ? resolveAssetRef(activeQuestion.prompt_image, fallbackSrc) : fallbackSrc;
+  const promptSrc = designLock
+    ? DESIGN_LOCK_PROMPT
+    : activeQuestion
+      ? resolveAssetRef(activeQuestion.prompt_image, fallbackSrc)
+      : fallbackSrc;
   const renderPrompt = () => {
+    if (designLock) {
+      return <img alt={questionTitle} src={promptSrc} className={styles.questionImage} />;
+    }
     if (!activeQuestion) {
       return null;
     }
@@ -341,45 +401,66 @@ export default function RoundGallery() {
     sendAnswer(index);
   };
 
-  const showWait = wsStatus !== "open" || phase === "join" || phase === "lobby";
-  const showPrepared = phase === "prepared";
-  const showRound = phase === "round";
-  const showReveal = phase === "reveal";
-  const showRevealAnswers = showReveal && revealStep === "answers";
-  const showRevealResult = showReveal && revealStep === "result";
+  const showWait = designState
+    ? designState === "wait"
+    : wsStatus !== "open" || phase === "join" || phase === "lobby";
+  const showPrepared = designState ? designState === "prepared" : phase === "prepared";
+  const showRound = designState ? designState === "round" : phase === "round";
+  const showReveal = designState
+    ? designState === "round-wrong" ||
+      designState === "round-correct" ||
+      designState === "result-wrong" ||
+      designState === "result-correct"
+    : phase === "reveal";
+  const showRoundFamily = designState
+    ? designState !== "wait" && designState !== "prepared"
+    : showRound || showReveal || phase === "leaderboard" || phase === "end";
+  const showRevealAnswers = designState
+    ? designState === "round-wrong" || designState === "round-correct"
+    : showReveal && revealStep === "answers";
+  const showRevealResult = designState
+    ? designState === "result-wrong" || designState === "result-correct"
+    : showReveal && revealStep === "result";
   const showRoundLayout = showRound || showRevealAnswers;
-  const timerDisplaySeconds = showRevealAnswers ? 12 : secondsLeft;
-  const progressDisplayPercent = showRevealAnswers ? 22 : progressPercent;
+  const timerDisplaySeconds = designLock ? 12 : showRevealAnswers ? 12 : secondsLeft;
+  const progressDisplayPercent = designLock ? (168 / 318) * 100 : showRevealAnswers ? (168 / 318) * 100 : progressPercent;
+  const backgroundImage = showRoundFamily
+    ? "/figma/game/bg-163-5283.png"
+    : "/figma/game/bg-163-5233.png";
 
   return (
-    <section className={`${styles.root} ${showRound ? styles.roundPhase : ""}`}>
-      <div className={styles.background} aria-hidden="true">
-      </div>
+    <section
+      className={[
+        styles.root,
+        showRoundLayout ? styles.roundPhase : "",
+        showWait ? styles.waitPhase : "",
+        designLock ? styles.designLock : "",
+      ].filter(Boolean).join(" ")}
+    >
+      <div
+        className={styles.background}
+        style={{ "--game-bg-image": `url(${backgroundImage})` } as React.CSSProperties}
+        aria-hidden="true"
+      />
 
       {showWait && (
-        <section className={styles.centerWrap}>
-          <img className={`${styles.loader} ${styles.loaderSpin}`} src={loader} alt="loader" />
-          <h2 className={styles.waitTitle}>
-            {wsStatus !== "open" ? "Connecting..." : "Waiting for the other players..."}
-          </h2>
+        <section className={`${styles.centerWrap} ${styles.phaseWait}`}>
+          <img
+            className={`${styles.loader} ${styles.loaderSpin}`}
+            src="/figma/game/loader-163-5237.png"
+            alt="loader"
+          />
+          <h2 className={styles.waitTitle}>Waiting for the other players...</h2>
         </section>
       )}
 
       {showPrepared && (
-        <section className={`${styles.centerWrap} ${styles.animShow}`}>
-          <div className={`${styles.preparedHero} ${styles.animQuizz}`}>
-            {[...Array(4)].map((_, index) => {
-              const Icon = ANSWER_ICONS[index] ?? Triangle;
-              return (
-                <div
-                  key={index}
-                  className={`${styles.quizButton} ${styles.preparedTile} ${ANSWER_COLORS[index]}`}
-                >
-                  <Icon className={styles.preparedIcon} />
-                </div>
-              );
-            })}
-          </div>
+        <section className={`${styles.centerWrap} ${styles.phasePrepared} ${styles.animShow}`}>
+          <img
+            className={styles.preparedHeroImage}
+            src="/figma/game/prepared-163-5250.png"
+            alt="Quiz options preview"
+          />
           <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
             Let&apos;s play!
           </h2>
@@ -410,10 +491,9 @@ export default function RoundGallery() {
           </section>
 
           <section className={styles.roundAnswersCard}>
-            <div className={styles.answersGrid}>
+              <div className={styles.answersGrid}>
               {answers.map((answer, index) => {
-                const Icon = ANSWER_ICONS[index] ?? Triangle;
-                const isSelected = selectedIndex === index;
+                const isSelected = displaySelectedIndex === index;
                 const isCorrectAnswer = index === correctIndex;
                 const showWrongState = showRevealAnswers && isSelected && !isCorrect;
                 const showCorrectState = showRevealAnswers && isCorrectAnswer;
@@ -431,7 +511,7 @@ export default function RoundGallery() {
                     key={answer.id}
                     className={answerClassName}
                     onClick={() => handleSelect(index)}
-                    disabled={!showRound || selectedIndex !== null}
+                    disabled={!showRound || displaySelectedIndex !== null}
                   >
                     <img
                       className={`${styles.answerMedia} ${showRevealState ? styles.answerMediaInset : ""}`}
@@ -440,7 +520,7 @@ export default function RoundGallery() {
                     />
                     {isSelected ? (
                       <span className={styles.answerPickBadge}>
-                        <Icon className={styles.answerPickIcon} />
+                        <span className={styles.answerPickTick} />
                       </span>
                     ) : null}
                   </button>
@@ -452,11 +532,19 @@ export default function RoundGallery() {
       )}
 
       {!showRound && showRevealResult && (
-        <section className={`${styles.centerWrap} ${styles.animShow}`}>
+        <section className={`${styles.centerWrap} ${styles.phaseResult} ${styles.animShow}`}>
           {isCorrect ? (
-            <CricleCheck className={styles.resultIcon} />
+            <img
+              className={styles.resultIcon}
+              src="/figma/game/correct-163-5275.png"
+              alt="Correct answer"
+            />
           ) : (
-            <CricleXmark className={styles.resultIcon} />
+            <img
+              className={styles.resultIcon}
+              src="/figma/game/wrong-163-5262.png"
+              alt="Wrong answer"
+            />
           )}
           <h2 className={`${styles.resultMessage} ${isCorrect ? styles.resultMessageCenter : styles.resultMessageLeft}`}>
             {isCorrect ? revealCorrectMessage : revealMessage}
@@ -468,16 +556,12 @@ export default function RoundGallery() {
         <button
           type="button"
           className={styles.chromeActionButton}
-          aria-label="open leaderboard"
-          onClick={() => navigate("/leaderboard")}
+          aria-label="leave game"
+          onClick={() => {
+            resetRoom();
+            navigate("/join", { replace: true });
+          }}
         />
-      </div>
-      <div className={styles.chromeTabBar}>
-        <div className={styles.chromeUrlWrap}>
-          <span className={styles.chromeLock} />
-          <span className={styles.chromeUrl}>escapers.app</span>
-        </div>
-        <div className={styles.chromeHomeIndicator} />
       </div>
       {false && (
         <div className={styles.bottomBar}>
