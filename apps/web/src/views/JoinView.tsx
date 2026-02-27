@@ -42,47 +42,36 @@ const JOIN_STATUS_CHIP_LAYOUT = [
     id: "season",
     icon: "⏳",
     width: 69,
-    title: "Season",
-    body: "Time left in the current season sprint",
   },
   {
     id: "crew-code",
     icon: "👥",
     width: 89,
-    title: "Crew code",
-    body: "Your current crew invite code",
   },
   {
     id: "crew-streak",
     icon: "🤝",
     width: 58,
-    title: "Crew streak",
-    body: "Current shared crew streak",
   },
   {
     id: "shield",
     icon: "🛡️",
     width: 59,
-    title: "Shield",
-    body: "Grace shield count for your streak",
   },
   {
     id: "notifications",
     icon: "🔔",
     width: 69,
-    title: "Notifications",
-    body: "Reminder notifications toggle state",
   },
   {
     id: "streak",
     icon: "🔥",
     width: 58,
-    title: "Streak",
-    body: "Current personal streak",
   },
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
+const BADGE_LABEL_BY_ID = new Map(BADGE_DEFINITIONS.map((item) => [item.id, item.label]));
 const JOIN_TOP3_ROWS = [
   { id: "top-1", rank: 1, name: "Ярик", score: "2445", tier: "gold", tall: true },
   { id: "top-2", rank: 2, name: "Ярик", score: "2445", tier: "silver", tall: false },
@@ -606,10 +595,51 @@ export default function JoinView() {
                   ? "On"
                   : "Off"
                 : String(engagement.streak.current);
+    if (chip.id === "season") {
+      return {
+        ...chip,
+        value,
+        title: "Season Sprint",
+        body: `Time left in current season: ${value}\nSeason resets automatically at end.`,
+      };
+    }
+    if (chip.id === "crew-code") {
+      return {
+        ...chip,
+        value,
+        title: "Crew",
+        body: `Current crew code: ${value}\nShare this code so friends can join your crew.`,
+      };
+    }
+    if (chip.id === "crew-streak") {
+      return {
+        ...chip,
+        value,
+        title: "Crew Streak",
+        body: `Current crew streak: ${value}\nThis grows when enough crew members stay active.`,
+      };
+    }
+    if (chip.id === "shield") {
+      return {
+        ...chip,
+        value,
+        title: "Shield/Grace",
+        body: `Grace shields left: ${value}\nA shield protects your streak for one missed day.`,
+      };
+    }
+    if (chip.id === "notifications") {
+      return {
+        ...chip,
+        value,
+        title: "Reminder settings",
+        body: `Reminders are ${value}\nTurn on reminders to keep streak and quests on track.`,
+      };
+    }
     return {
       ...chip,
       value,
-      body: `${chip.body}: ${value}`,
+      title: "Hot Streak",
+      body: `Current personal streak: ${value}\nPlay daily to increase it.`,
     };
   });
   const joinQuestRows = sourceJoinQuests.map((quest) => {
@@ -631,7 +661,7 @@ export default function JoinView() {
       label: "Badges",
       info: {
         title: "Badges",
-        body: `Unlocked badges: ${engagement.badges.unlocked.length}/${BADGE_DEFINITIONS.length}`,
+        body: `Unlocked: ${engagement.badges.unlocked.length}/${BADGE_DEFINITIONS.length}\nLast earned: ${engagement.badges.lastEarned ? BADGE_LABEL_BY_ID.get(engagement.badges.lastEarned) ?? engagement.badges.lastEarned : "none"}`,
       },
     },
     {
@@ -639,7 +669,7 @@ export default function JoinView() {
       label: "Crew",
       info: {
         title: "Crew",
-        body: `Code: ${engagement.group?.code ?? "none"}, streak: ${engagement.teamStreak.current}`,
+        body: `Code: ${engagement.group?.code ?? roomCode ?? codeParam ?? "none"}\nRole: ${engagement.group?.role ?? "solo"}\nStreak: ${engagement.teamStreak.current}\nCompletion: ${Math.round((engagement.teamStreak.completionRate ?? 0) * 100)}%`,
       },
     },
     {
@@ -647,7 +677,7 @@ export default function JoinView() {
       label: "Style",
       info: {
         title: "Style",
-        body: `Unlocked styles: ${engagement.cosmetics.unlocked.length}, equipped: ${engagement.cosmetics.equipped.frame ?? "none"}`,
+        body: `Unlocked styles: ${engagement.cosmetics.unlocked.length}\nEquipped frame: ${engagement.cosmetics.equipped.frame ? COSMETIC_LABEL_BY_ID.get(engagement.cosmetics.equipped.frame) ?? engagement.cosmetics.equipped.frame : "none"}`,
       },
     },
   ] as const;
