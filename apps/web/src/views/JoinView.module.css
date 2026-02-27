@@ -394,7 +394,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: -12px;
+  margin-top: -8px;
 }
 
 .questActionButton {
