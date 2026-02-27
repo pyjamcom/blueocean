@@ -117,8 +117,10 @@ function resolveTimerProgress(params: {
   if (designLock) {
     return { seconds: 12, percent: (168 / 318) * 100 };
   }
-  const clampedSeconds = Math.max(0, Math.ceil(secondsLeft));
-  const elapsedRatio = Math.min(1, Math.max(0, 1 - clampedSeconds / Math.max(1, totalSeconds)));
+  const safeTotal = Math.max(1, totalSeconds);
+  const clampedRemaining = Math.min(safeTotal, Math.max(0, secondsLeft));
+  const clampedSeconds = Math.ceil(clampedRemaining);
+  const elapsedRatio = Math.min(1, Math.max(0, 1 - clampedRemaining / safeTotal));
   const percent = Math.max(2, Math.min(100, elapsedRatio * 100));
   return { seconds: clampedSeconds, percent };
 }
@@ -288,7 +290,7 @@ export default function RoundGallery() {
     const startAt = timerStartAt;
     const tick = () => {
       const remaining = Math.max(0, durationMs - (Date.now() - startAt));
-      setSecondsLeft(Math.ceil(remaining / 1000));
+      setSecondsLeft(remaining / 1000);
     };
     tick();
     const intervalId = window.setInterval(tick, 100);

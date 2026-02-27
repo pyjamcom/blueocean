@@ -92,12 +92,12 @@
 }
 
 .phasePrepared {
-  padding: max(308px, calc(env(safe-area-inset-top) + 292px)) 20px 32px;
+  padding: max(256px, calc(env(safe-area-inset-top) + 240px)) 20px 32px;
   gap: 24px;
 }
 
 .phaseResult {
-  padding: max(322px, calc(env(safe-area-inset-top) + 306px)) 20px 32px;
+  padding: max(256px, calc(env(safe-area-inset-top) + 240px)) 20px 32px;
   gap: 24px;
 }
 
@@ -106,11 +106,11 @@
 }
 
 .designLock .phasePrepared {
-  padding: 308px 20px 32px;
+  padding: 256px 20px 32px;
 }
 
 .designLock .phaseResult {
-  padding: 322px 20px 32px;
+  padding: 256px 20px 32px;
 }
 
 .loader {
@@ -538,9 +538,8 @@
 
 .roundPromptCard {
   min-height: 308px;
-  padding: 16px;
+  padding: 16px 12px;
   display: grid;
-  gap: 16px;
   align-content: start;
 }
 
@@ -549,7 +548,6 @@
   min-height: 223px;
   border-radius: 8px;
   overflow: hidden;
-  background: rgba(8, 1, 20, 0.55);
   display: grid;
   place-items: center;
 }
@@ -582,12 +580,15 @@
 }
 
 .roundTimerWrap {
+  margin-top: 16px;
   display: grid;
   gap: 12px;
 }
 
 .roundTimerText {
-  margin: 0;
+  width: 318px;
+  max-width: 100%;
+  margin: 0 auto;
   text-align: center;
   font-family: Geist, sans-serif;
   font-size: 16px;
@@ -597,15 +598,17 @@
 }
 
 .roundPhase .progressTrack {
-  width: 100%;
+  width: 318px;
+  max-width: 100%;
+  margin: 0 auto;
   height: 4px;
-  background: rgba(255, 255, 255, 0.25);
+  background: #ffffff;
 }
 
 .progressFill {
   height: 100%;
   border-radius: inherit;
-  background: #ffffff;
+  background: linear-gradient(90deg, rgba(224, 6, 244, 0.16) 0%, #e006f4 100%);
 }
 
 .progressKnob {
@@ -616,7 +619,6 @@
   border-radius: 999px;
   transform: translateY(-50%);
   background: #e006f4;
-  border: 2px solid rgba(255, 255, 255, 0.25);
   pointer-events: none;
 }
 
@@ -752,7 +754,7 @@
 }
 
 .roundPhase .chromeButtons {
-  margin-top: 38px;
+  margin-top: auto;
 }
 
 .chromeActionButton {
