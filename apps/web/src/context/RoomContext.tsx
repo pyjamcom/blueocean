@@ -37,9 +37,11 @@ interface RoomState {
   answerCounts: [number, number, number, number];
   lastSelfPoints: number;
   wsStatus: string;
+  selfAnswerIndex: number | null;
   errors: unknown[];
   joinRoom: (roomCode?: string, avatarId?: string, playerName?: string) => void;
   resetRoom: () => void;
+  reconnectWs: () => void;
   sendStage: (payload: Omit<StagePayload, "roomCode">) => void;
   startGame: () => void;
   sendAnswer: (answerIndex: number) => void;
@@ -65,6 +67,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [answerCounts, setAnswerCounts] = useState<[number, number, number, number]>([0, 0, 0, 0]);
   const [lastSelfPoints, setLastSelfPoints] = useState(0);
+  const [selfAnswerIndex, setSelfAnswerIndex] = useState<number | null>(null);
   const [errors, setErrors] = useState<unknown[]>([]);
   const playerId = useMemo(() => getOrCreateClientId(), []);
   const joinSentRef = useRef(false);
@@ -128,7 +131,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const { status: wsStatus, send, disconnect } = useWsClient({
+  const { status: wsStatus, send, disconnect, connect } = useWsClient({
     url: wsUrl,
     onMessage: (message) => {
       if (message.type === "joined") {
@@ -193,6 +196,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
         answeredByQuestionRef.current[effectiveIndex] = answeredSet;
 
         if (effectiveIndex === questionIndex) {
+          if (payload.playerId === playerId) {
+            setSelfAnswerIndex(payload.answerIndex);
+          }
           setAnswerCounts((prev) => {
             const next = [...prev] as [number, number, number, number];
             const idx = payload.answerIndex;
@@ -324,6 +330,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setPlayers([]);
     setAnswerCounts([0, 0, 0, 0]);
     setLastSelfPoints(0);
+    setSelfAnswerIndex(null);
     setErrors([]);
     sentQuestionsRef.current.clear();
     answeredByQuestionRef.current = {};
@@ -464,6 +471,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setJoinedAt(null);
     setPlayers([]);
     setAnswerCounts([0, 0, 0, 0]);
+    setSelfAnswerIndex(null);
     setErrors([]);
     joinSentRef.current = false;
     pendingJoinRef.current = null;
@@ -520,7 +528,13 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     answeredByQuestionRef.current[questionIndex] = new Set();
     setAnswerCounts([0, 0, 0, 0]);
     setLastSelfPoints(0);
+    setSelfAnswerIndex(null);
   }, [questionIndex]);
+
+  const reconnectWs = useCallback(() => {
+    if (wsStatus === "open") return;
+    connect();
+  }, [connect, wsStatus]);
 
 
   const value: RoomState = {
@@ -536,9 +550,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     answerCounts,
     lastSelfPoints,
     wsStatus,
+    selfAnswerIndex,
     errors,
     joinRoom,
     resetRoom,
+    reconnectWs,
     sendStage,
     startGame,
     sendAnswer,

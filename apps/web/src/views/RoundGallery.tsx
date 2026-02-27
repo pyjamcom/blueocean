@@ -23,6 +23,123 @@ type DesignState =
   | "result-wrong"
   | "result-correct";
 
+type GameVisualState =
+  | "wait"
+  | "connecting"
+  | "reconnecting"
+  | "connection-lost"
+  | "prepared"
+  | "round"
+  | "round-wrong"
+  | "round-correct"
+  | "result-wrong"
+  | "result-correct";
+
+interface TimerProgress {
+  seconds: number;
+  percent: number;
+}
+
+function resolveVisualState(params: {
+  designState: DesignState | null;
+  phase: string;
+  wsStatus: string;
+  revealStep: "answers" | "result";
+  hasAnswer: boolean;
+  isCorrect: boolean;
+  wasConnectedOnce: boolean;
+}): GameVisualState {
+  const {
+    designState,
+    phase,
+    wsStatus,
+    revealStep,
+    hasAnswer,
+    isCorrect,
+    wasConnectedOnce,
+  } = params;
+
+  if (designState) {
+    return designState;
+  }
+
+  if (wsStatus !== "open") {
+    if (wsStatus === "connecting") {
+      return wasConnectedOnce ? "reconnecting" : "connecting";
+    }
+    if (wsStatus === "closed" || wsStatus === "error") {
+      return wasConnectedOnce ? "connection-lost" : "connecting";
+    }
+    return "connecting";
+  }
+
+  if (phase === "join" || phase === "lobby") {
+    return "wait";
+  }
+  if (phase === "prepared") {
+    return "prepared";
+  }
+  if (phase === "round") {
+    return "round";
+  }
+  if (phase === "reveal") {
+    if (revealStep === "answers") {
+      return isCorrect ? "round-correct" : "round-wrong";
+    }
+    if (!hasAnswer) {
+      return "result-wrong";
+    }
+    return isCorrect ? "result-correct" : "result-wrong";
+  }
+  if (phase === "leaderboard" || phase === "end") {
+    return isCorrect ? "result-correct" : "result-wrong";
+  }
+  return "wait";
+}
+
+function resolveWaitText(state: GameVisualState) {
+  if (state === "connecting") return "Connecting...";
+  if (state === "reconnecting") return "Reconnecting...";
+  if (state === "connection-lost") return "Connection lost. Retrying...";
+  return "Waiting for the other players...";
+}
+
+function shouldShowRetry(state: GameVisualState) {
+  return state === "connecting" || state === "reconnecting" || state === "connection-lost";
+}
+
+function resolveTimerProgress(params: {
+  designLock: boolean;
+  secondsLeft: number;
+  totalSeconds: number;
+}): TimerProgress {
+  const { designLock, secondsLeft, totalSeconds } = params;
+  if (designLock) {
+    return { seconds: 12, percent: (168 / 318) * 100 };
+  }
+  const clampedSeconds = Math.max(0, Math.ceil(secondsLeft));
+  const elapsedRatio = Math.min(1, Math.max(0, 1 - clampedSeconds / Math.max(1, totalSeconds)));
+  const percent = Math.max(2, Math.min(100, elapsedRatio * 100));
+  return { seconds: clampedSeconds, percent };
+}
+
+function resolveResultText(params: {
+  hasAnswer: boolean;
+  isCorrect: boolean;
+  points: number;
+  designState: DesignState | null;
+}): string {
+  const { hasAnswer, isCorrect, points, designState } = params;
+  if (!hasAnswer) {
+    return "No answer";
+  }
+  if (!isCorrect) {
+    return "Wrong answer";
+  }
+  const displayPoints = designState === "result-correct" ? 70 : Math.max(0, points);
+  return displayPoints > 0 ? `Correct answer\n+${displayPoints}` : "Correct answer";
+}
+
 const DESIGN_LOCK_PROMPT = "/figma/game/round-prompt-163-5288.png";
 const DESIGN_LOCK_ANSWERS: [AnswerOption, AnswerOption, AnswerOption, AnswerOption] = [
   { id: "figma-a1", src: "/figma/game/round-answer-1-163-5298.png" },
@@ -66,11 +183,13 @@ export default function RoundGallery() {
     questionIndex,
     roundStartAt,
     sendAnswer,
+    reconnectWs,
     resetRoom,
     roomCode,
     currentQuestion,
     players,
     playerId,
+    selfAnswerIndex,
     lastSelfPoints,
     answerCounts,
     wsStatus,
@@ -78,6 +197,7 @@ export default function RoundGallery() {
   const { actions: engagementActions } = useEngagement();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [revealStep, setRevealStep] = useState<"answers" | "result">("answers");
+  const [wasConnectedOnce, setWasConnectedOnce] = useState(false);
   const recordedRoundRef = useRef<number | null>(null);
   const designLock = useMemo(() => {
     const params = new URLSearchParams(location.search);
@@ -114,12 +234,22 @@ export default function RoundGallery() {
     return baseQuestion ? shuffleQuestionAnswers(baseQuestion, roomCode, questionIndex) : undefined;
   }, [baseQuestion, currentQuestion, questionIndex, roomCode]);
   const durationMs = 15000;
+  const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
   const timerStartAt = useMemo(() => roundStartAt ?? Date.now(), [roundStartAt, questionIndex, phase]);
-  const [secondsLeft, setSecondsLeft] = useState<number>(Math.ceil(durationMs / 1000));
+  const [secondsLeft, setSecondsLeft] = useState<number>(timerTotalSeconds);
+  const [frozenSecondsLeft, setFrozenSecondsLeft] = useState<number>(timerTotalSeconds);
 
   useEffect(() => {
     setSelectedIndex(null);
-  }, [questionIndex]);
+    setSecondsLeft(timerTotalSeconds);
+    setFrozenSecondsLeft(timerTotalSeconds);
+  }, [questionIndex, timerTotalSeconds]);
+
+  useEffect(() => {
+    if (wsStatus === "open") {
+      setWasConnectedOnce(true);
+    }
+  }, [wsStatus]);
 
   useEffect(() => {
     if (phase !== "reveal" && phase !== "leaderboard") {
@@ -153,7 +283,6 @@ export default function RoundGallery() {
 
   useEffect(() => {
     if (phase !== "round") {
-      setSecondsLeft(0);
       return;
     }
     const startAt = timerStartAt;
@@ -165,6 +294,12 @@ export default function RoundGallery() {
     const intervalId = window.setInterval(tick, 100);
     return () => window.clearInterval(intervalId);
   }, [durationMs, phase, timerStartAt]);
+
+  useEffect(() => {
+    if (phase === "round") {
+      setFrozenSecondsLeft(secondsLeft);
+    }
+  }, [phase, secondsLeft]);
 
   const answers = useMemo(() => {
     if (designLock) {
@@ -211,30 +346,39 @@ export default function RoundGallery() {
   }, [activeQuestion, answers, designLock]);
 
   const correctIndex = useMemo(() => {
-    if (designState === "round-wrong") {
+    if (designState === "round-wrong" || designState === "result-wrong") {
       return 3;
     }
-    if (designState === "round-correct" || designState === "round") {
+    if (
+      designState === "round-correct" ||
+      designState === "result-correct" ||
+      designState === "round"
+    ) {
       return 0;
     }
     return activeQuestion?.correct_index ?? 0;
   }, [activeQuestion?.correct_index, designState]);
   const displaySelectedIndex = useMemo(() => {
-    if (designState === "round" || designState === "round-wrong" || designState === "round-correct") {
+    if (
+      designState === "round" ||
+      designState === "round-wrong" ||
+      designState === "round-correct" ||
+      designState === "result-wrong" ||
+      designState === "result-correct"
+    ) {
       return 0;
     }
-    return selectedIndex;
-  }, [designState, selectedIndex]);
+    return selectedIndex ?? selfAnswerIndex;
+  }, [designState, selfAnswerIndex, selectedIndex]);
   const hasAnswer = displaySelectedIndex !== null;
   const isCorrect = hasAnswer && displaySelectedIndex === correctIndex;
   const safeRoundPoints = Math.max(0, Number(lastSelfPoints ?? 0));
-  const displayRoundPoints = designState === "result-correct" ? 70 : safeRoundPoints;
-  const revealMessage = !hasAnswer ? "No answer" : isCorrect ? "Correct answer" : "Wrong answer";
-  const revealCorrectMessage = displayRoundPoints > 0 ? `Correct answer\n+${displayRoundPoints}` : "Correct answer";
-  const questionLabel = `${Math.min(questionIndex + 1, MAX_QUESTIONS)} / ${MAX_QUESTIONS}`;
-  const timerTotalSeconds = Math.max(1, Math.ceil(durationMs / 1000));
-  const elapsedRatio = Math.min(1, Math.max(0, 1 - secondsLeft / timerTotalSeconds));
-  const progressPercent = Math.max(2, elapsedRatio * 100);
+  const revealText = resolveResultText({
+    hasAnswer,
+    isCorrect,
+    points: safeRoundPoints,
+    designState,
+  });
   const totalAnswered = answerCounts.reduce((sum, count) => sum + count, 0);
   const lastAnsweredRef = useRef(0);
 
@@ -382,7 +526,7 @@ export default function RoundGallery() {
   };
 
   const handleSelect = (index: number) => {
-    if (phase !== "round" || selectedIndex !== null) {
+    if (phase !== "round" || selectedIndex !== null || selfAnswerIndex !== null) {
       return;
     }
     setSelectedIndex(index);
@@ -401,29 +545,31 @@ export default function RoundGallery() {
     sendAnswer(index);
   };
 
-  const showWait = designState
-    ? designState === "wait"
-    : wsStatus !== "open" || phase === "join" || phase === "lobby";
-  const showPrepared = designState ? designState === "prepared" : phase === "prepared";
-  const showRound = designState ? designState === "round" : phase === "round";
-  const showReveal = designState
-    ? designState === "round-wrong" ||
-      designState === "round-correct" ||
-      designState === "result-wrong" ||
-      designState === "result-correct"
-    : phase === "reveal";
-  const showRoundFamily = designState
-    ? designState !== "wait" && designState !== "prepared"
-    : showRound || showReveal || phase === "leaderboard" || phase === "end";
-  const showRevealAnswers = designState
-    ? designState === "round-wrong" || designState === "round-correct"
-    : showReveal && revealStep === "answers";
-  const showRevealResult = designState
-    ? designState === "result-wrong" || designState === "result-correct"
-    : showReveal && revealStep === "result";
+  const visualState = resolveVisualState({
+    designState,
+    phase,
+    wsStatus,
+    revealStep,
+    hasAnswer,
+    isCorrect,
+    wasConnectedOnce,
+  });
+  const showWait = visualState === "wait" || visualState === "connecting" || visualState === "reconnecting" || visualState === "connection-lost";
+  const showPrepared = visualState === "prepared";
+  const showRound = visualState === "round";
+  const showRevealAnswers = visualState === "round-wrong" || visualState === "round-correct";
+  const showRevealResult = visualState === "result-wrong" || visualState === "result-correct";
+  const showRoundFamily = !showWait && !showPrepared;
   const showRoundLayout = showRound || showRevealAnswers;
-  const timerDisplaySeconds = designLock ? 12 : showRevealAnswers ? 12 : secondsLeft;
-  const progressDisplayPercent = designLock ? (168 / 318) * 100 : showRevealAnswers ? (168 / 318) * 100 : progressPercent;
+  const timerProgress = resolveTimerProgress({
+    designLock,
+    secondsLeft: showRound ? secondsLeft : frozenSecondsLeft,
+    totalSeconds: timerTotalSeconds,
+  });
+  const timerDisplaySeconds = timerProgress.seconds;
+  const progressDisplayPercent = timerProgress.percent;
+  const waitText = resolveWaitText(visualState);
+  const showRetryNow = shouldShowRetry(visualState) && wsStatus !== "open";
   const backgroundImage = showRoundFamily
     ? "/figma/game/bg-163-5283.png"
     : "/figma/game/bg-163-5233.png";
@@ -446,11 +592,16 @@ export default function RoundGallery() {
       {showWait && (
         <section className={`${styles.centerWrap} ${styles.phaseWait}`}>
           <img
-            className={`${styles.loader} ${styles.loaderSpin}`}
+            className={`${styles.loader} ${visualState !== "connection-lost" ? styles.loaderSpin : ""}`}
             src="/figma/game/loader-163-5237.png"
             alt="loader"
           />
-          <h2 className={styles.waitTitle}>Waiting for the other players...</h2>
+          <h2 className={styles.waitTitle}>{waitText}</h2>
+          {showRetryNow ? (
+            <button type="button" className={styles.retryButton} onClick={reconnectWs}>
+              Retry now
+            </button>
+          ) : null}
         </section>
       )}
 
@@ -547,7 +698,7 @@ export default function RoundGallery() {
             />
           )}
           <h2 className={`${styles.resultMessage} ${isCorrect ? styles.resultMessageCenter : styles.resultMessageLeft}`}>
-            {isCorrect ? revealCorrectMessage : revealMessage}
+            {revealText}
           </h2>
         </section>
       )}

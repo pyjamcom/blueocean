@@ -140,6 +140,21 @@
   text-align: center;
 }
 
+.retryButton {
+  margin-top: 8px;
+  min-width: 132px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: linear-gradient(180deg, rgba(131, 31, 221, 0.98) 0%, rgba(102, 12, 177, 0.98) 100%);
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .preparedTitle {
   margin: 24px 0 0;
   margin-bottom: 0;
