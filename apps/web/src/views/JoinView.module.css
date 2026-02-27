@@ -56,7 +56,7 @@
   display: block;
 }
 
-@media (min-width: 768px) {
+@media (orientation: landscape) and (min-width: 740px) {
   .join {
     width: 75vw;
   }
@@ -1234,7 +1234,7 @@
   cursor: pointer;
 }
 
-@media (min-width: 1024px) {
+@media (orientation: landscape) and (min-width: 740px) {
   .page {
     padding-bottom: calc(144px + env(safe-area-inset-bottom));
   }
