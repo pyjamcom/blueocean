@@ -673,7 +673,7 @@ export default function RoundGallery() {
                 />
                 <span
                   className={styles.progressKnob}
-                  style={{ left: `calc(${progressDisplayPercent}% - 11px)` }}
+                  style={{ left: `calc(${progressDisplayPercent}% - 13px)` }}
                 />
               </div>
             </div>
@@ -687,7 +687,6 @@ export default function RoundGallery() {
                 const showWrongState = showRevealAnswers && isSelected && !isCorrect;
                 const showCorrectState = showRevealAnswers && isCorrectAnswer;
                 const showRevealState = showWrongState || showCorrectState;
-                const showCorrectInsetCompact = showCorrectState && !isSelected;
                 const answerClassName = [
                   styles.answerButton,
                   isSelected ? styles.answerSelected : "",
@@ -707,7 +706,6 @@ export default function RoundGallery() {
                       className={[
                         styles.answerMedia,
                         showRevealState ? styles.answerMediaInset : "",
-                        showCorrectInsetCompact ? styles.answerMediaInsetCompact : "",
                       ]
                         .filter(Boolean)
                         .join(" ")}

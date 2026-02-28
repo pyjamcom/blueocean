@@ -33,7 +33,7 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, #3e4186 0%, #0c0822 30.288%, #0c0822 75%, #853e86 100%);
+  background: linear-gradient(136.47deg, #3e4186 0%, #0c0822 30.288%, #0c0822 75%, #853e86 100%);
 }
 
 .backgroundImage {
@@ -647,11 +647,15 @@
 }
 
 .roundPhase .answerButton.answerRevealWrong {
+  padding: 8px;
+  box-sizing: border-box;
   background: #530000;
   box-shadow: inset 0 0 0 1px #c50000;
 }
 
 .roundPhase .answerButton.answerRevealCorrect {
+  padding: 8px;
+  box-sizing: border-box;
   background: #003d0f;
   box-shadow: inset 0 0 0 1px #06f441;
 }
@@ -665,18 +669,11 @@
 }
 
 .roundPhase .answerMedia.answerMediaInset {
-  width: calc(100% - 16px);
-  height: calc(100% - 16px);
-  margin: 8px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   border-radius: 0;
-  object-fit: cover;
-}
-
-.roundPhase .answerMedia.answerMediaInsetCompact {
-  width: calc(100% - 16px);
-  height: calc(100% - 42px);
-  margin: 21px 8px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .answerPickBadgeImage {
