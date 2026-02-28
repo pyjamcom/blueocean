@@ -149,6 +149,32 @@ const DESIGN_LOCK_ANSWERS: [AnswerOption, AnswerOption, AnswerOption, AnswerOpti
   { id: "figma-a3", src: "/figma/game/round-answer-3-163-5306.png" },
   { id: "figma-a4", src: "/figma/game/round-answer-4-163-5308.png" },
 ];
+const DESIGN_REVEAL_ANSWER_OVERRIDES: Record<
+  "round-wrong" | "round-correct",
+  Partial<Record<number, string>>
+> = {
+  "round-wrong": {
+    0: "/figma/game/round-answer-1-reveal-wrong-163-5329.png",
+    3: "/figma/game/round-answer-4-reveal-wrong-163-5339.png",
+  },
+  "round-correct": {
+    0: "/figma/game/round-answer-1-reveal-correct-163-5360.png",
+  },
+};
+
+const DESIGN_BADGE_ASSETS: Record<
+  "default" | "correct",
+  { dot: string; glow: string }
+> = {
+  default: {
+    dot: "/figma/game/badge-163-5299.png",
+    glow: "/figma/game/badge-163-5300.png",
+  },
+  correct: {
+    dot: "/figma/game/badge-163-5361.png",
+    glow: "/figma/game/badge-163-5362.png",
+  },
+};
 const CATEGORY_TITLE_OVERRIDES: Record<string, string> = {
   visual_provocation: "Choose the most meme",
   absurd_sum: "Find the absurd match",
@@ -575,6 +601,8 @@ export default function RoundGallery() {
   const backgroundImage = showRoundFamily
     ? "/figma/game/bg-163-5283.png"
     : "/figma/game/bg-163-5233.png";
+  const backgroundImageSize = showRoundFamily ? "562px 843px" : "528px 792px";
+  const backgroundImagePosition = showRoundFamily ? "center 1px" : "center top";
 
   return (
     <section
@@ -587,9 +615,17 @@ export default function RoundGallery() {
     >
       <div
         className={styles.background}
-        style={{ "--game-bg-image": `url(${backgroundImage})` } as React.CSSProperties}
+        style={
+          {
+            "--game-bg-image": `url(${backgroundImage})`,
+            "--game-bg-image-size": backgroundImageSize,
+            "--game-bg-image-position": backgroundImagePosition,
+          } as React.CSSProperties
+        }
         aria-hidden="true"
-      />
+      >
+        <div className={styles.backgroundImage} />
+      </div>
 
       {showWait && (
         <section className={`${styles.centerWrap} ${styles.phaseWait}`}>
@@ -615,7 +651,7 @@ export default function RoundGallery() {
             alt="Quiz options preview"
           />
           <h2 className={`${styles.preparedTitle} ${styles.animShow}`}>
-            Let&apos;s play!
+            Let{"\u2019"}s play!
           </h2>
         </section>
       )}
@@ -651,6 +687,7 @@ export default function RoundGallery() {
                 const showWrongState = showRevealAnswers && isSelected && !isCorrect;
                 const showCorrectState = showRevealAnswers && isCorrectAnswer;
                 const showRevealState = showWrongState || showCorrectState;
+                const showCorrectInsetCompact = showCorrectState && !isSelected;
                 const answerClassName = [
                   styles.answerButton,
                   isSelected ? styles.answerSelected : "",
@@ -667,14 +704,45 @@ export default function RoundGallery() {
                     disabled={!showRound || displaySelectedIndex !== null}
                   >
                     <img
-                      className={`${styles.answerMedia} ${showRevealState ? styles.answerMediaInset : ""}`}
-                      src={answer.src}
+                      className={[
+                        styles.answerMedia,
+                        showRevealState ? styles.answerMediaInset : "",
+                        showCorrectInsetCompact ? styles.answerMediaInsetCompact : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      src={
+                        designLock && showRevealAnswers
+                          ? DESIGN_REVEAL_ANSWER_OVERRIDES[visualState as "round-wrong" | "round-correct"]?.[
+                              index
+                            ] ?? answer.src
+                          : answer.src
+                      }
                       alt={`Answer ${index + 1}`}
                     />
                     {isSelected ? (
-                      <span className={styles.answerPickBadge}>
-                        <span className={styles.answerPickTick} />
-                      </span>
+                      <>
+                        <img
+                          className={styles.answerPickBadgeImage}
+                          src={
+                            designLock && showRevealAnswers && isCorrect
+                              ? DESIGN_BADGE_ASSETS.correct.dot
+                              : DESIGN_BADGE_ASSETS.default.dot
+                          }
+                          alt=""
+                          aria-hidden="true"
+                        />
+                        <img
+                          className={styles.answerPickBadgeGlowImage}
+                          src={
+                            designLock && showRevealAnswers && isCorrect
+                              ? DESIGN_BADGE_ASSETS.correct.glow
+                              : DESIGN_BADGE_ASSETS.default.glow
+                          }
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      </>
                     ) : null}
                   </button>
                 );

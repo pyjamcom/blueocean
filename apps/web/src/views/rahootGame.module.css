@@ -1,8 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
-
 .root {
-  font-family: Geist, "Montserrat", "Segoe UI", sans-serif;
+  font-family: Geist, "Segoe UI", sans-serif;
   color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   min-height: 100svh;
   width: 100%;
   display: flex;
@@ -12,6 +13,8 @@
   position: relative;
   padding: 0;
   gap: 0;
+  isolation: isolate;
+  overflow: hidden;
 }
 
 .designLock {
@@ -26,45 +29,28 @@
 }
 
 .background {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
-  background-image:
-    linear-gradient(180deg, #3e4186 0%, #0c0822 30.3%, #0c0822 75%, #853e86 100%),
-    var(--game-bg-image, url("/figma/game/bg-163-5233.png"));
-  background-size: cover, cover;
-  background-position: center top, center top;
-  background-repeat: no-repeat, no-repeat;
+  background: linear-gradient(135deg, #3e4186 0%, #0c0822 30.288%, #0c0822 75%, #853e86 100%);
 }
 
-.designLock .background {
+.backgroundImage {
   position: absolute;
-}
-
-.waitPhase .background::before,
-.waitPhase .background::after {
-  content: "";
-  position: absolute;
-  left: calc(50% - 191px);
-  width: 383px;
-  height: 383px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(250px);
-  -webkit-backdrop-filter: blur(250px);
+  inset: 0;
+  z-index: 0;
+  background-image: var(--game-bg-image, url("/figma/game/bg-163-5233.png"));
+  background-size: var(--game-bg-image-size, cover);
+  background-position: var(--game-bg-image-position, center top);
+  background-repeat: no-repeat;
   pointer-events: none;
 }
 
-.waitPhase .background::before {
-  top: -173px;
+.root > :not(.background) {
+  position: relative;
+  z-index: 1;
 }
-
-.waitPhase .background::after {
-  top: 749px;
-}
-
-
 
 .questionBadge {
   background: #ffffff;
@@ -130,7 +116,7 @@
 }
 
 .waitTitle {
-  margin: 24px 0 0;
+  margin: 0;
   width: min(314px, 100%);
   font-family: Geist, sans-serif;
   font-size: 24px;
@@ -156,8 +142,7 @@
 }
 
 .preparedTitle {
-  margin: 24px 0 0;
-  margin-bottom: 0;
+  margin: 0;
   font-family: Geist, sans-serif;
   font-size: 24px;
   font-weight: 500;
@@ -442,7 +427,7 @@
 }
 
 .resultMessage {
-  margin-top: 24px;
+  margin: 0;
   font-family: Geist, sans-serif;
   font-size: 32px;
   font-weight: 600;
@@ -517,9 +502,11 @@
   border-radius: 12px;
   background: #200042;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .roundTitleCard {
+  height: 58px;
   min-height: 58px;
   display: grid;
   place-items: center;
@@ -537,6 +524,7 @@
 }
 
 .roundPromptCard {
+  height: 308px;
   min-height: 308px;
   padding: 16px 12px;
   display: grid;
@@ -602,7 +590,8 @@
   max-width: 100%;
   margin: 0 auto;
   height: 4px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: visible;
 }
 
 .progressFill {
@@ -623,6 +612,7 @@
 }
 
 .roundAnswersCard {
+  height: 316px;
   min-height: 316px;
   padding: 16px;
 }
@@ -670,7 +660,7 @@
   width: 100%;
   height: 100%;
   max-height: none;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 0;
 }
 
@@ -679,43 +669,31 @@
   height: calc(100% - 16px);
   margin: 8px;
   border-radius: 0;
-  object-fit: contain;
+  object-fit: cover;
 }
 
-.answerPickBadge {
+.roundPhase .answerMedia.answerMediaInsetCompact {
+  width: calc(100% - 16px);
+  height: calc(100% - 42px);
+  margin: 21px 8px;
+  object-fit: cover;
+}
+
+.answerPickBadgeImage {
   position: absolute;
   top: 8px;
   right: 8px;
   width: 20px;
   height: 20px;
-  border-radius: 999px;
-  background: #5c5c5c;
-  display: grid;
-  place-items: center;
 }
 
-.answerPickIcon {
-  width: 10px;
-  height: 10px;
-}
-
-.answerPickTick {
-  position: relative;
-  width: 10px;
-  height: 10px;
-}
-
-.answerPickTick::before {
-  content: "";
+.answerPickBadgeGlowImage {
   position: absolute;
-  left: 2px;
-  top: 0;
-  width: 4px;
-  height: 8px;
-  border: 2px solid #fff;
-  border-top: 0;
-  border-left: 0;
-  transform: rotate(45deg);
+  top: -6px;
+  right: -6px;
+  width: 47px;
+  height: 47px;
+  pointer-events: none;
 }
 
 .roundUtilityRow {
@@ -749,7 +727,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 16px;
+  padding: 16px 20px;
   box-sizing: border-box;
 }
 
