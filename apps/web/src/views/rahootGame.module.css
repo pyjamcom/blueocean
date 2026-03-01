@@ -44,6 +44,7 @@
   background-size: var(--game-bg-image-size, cover);
   background-position: var(--game-bg-image-position, center top);
   background-repeat: no-repeat;
+  opacity: 0.1;
   pointer-events: none;
 }
 
@@ -679,15 +680,15 @@
 .answerPickBadgeImage {
   position: absolute;
   top: 8px;
-  right: 8px;
+  right: 16px;
   width: 20px;
   height: 20px;
 }
 
 .answerPickBadgeGlowImage {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: -5px;
+  right: 3px;
   width: 47px;
   height: 47px;
   pointer-events: none;
