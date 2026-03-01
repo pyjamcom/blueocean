@@ -51,6 +51,14 @@ const phaseRoutes: Record<RoomPhase, string> = {
 
 const MIN_PLAYERS = 3;
 
+function isDesignPreviewMode() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  const params = new URLSearchParams(window.location.search);
+  return params.get("mode") === "design" || params.get("design") === "1";
+}
+
 function ExternalPageRedirect({ to }: { to: string }) {
   useEffect(() => {
     window.location.replace(to);
@@ -257,6 +265,10 @@ export default function App() {
   const [gateStatus, setGateStatus] = useState<"prompt" | "accepted" | "blocked">("prompt");
 
   useEffect(() => {
+    if (isDesignPreviewMode()) {
+      setGateStatus("accepted");
+      return;
+    }
     const stored = window.localStorage.getItem("age_gate");
     if (stored === "accepted") {
       setGateStatus("accepted");
