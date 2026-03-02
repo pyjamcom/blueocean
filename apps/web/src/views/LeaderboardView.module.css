@@ -354,7 +354,7 @@
 }
 
 .rowTall {
-  min-height: 52px;
+  min-height: 48px;
 }
 
 .rowLeft {
@@ -369,6 +369,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0;
+  width: 23px;
+  flex: 0 0 23px;
   color: #ffffff;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -392,6 +394,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  width: 79px;
+  min-width: 0;
+  flex: 0 0 79px;
 }
 
 .avatar {
@@ -409,8 +414,8 @@
 }
 
 .rowTall .avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .avatar img {
@@ -420,7 +425,7 @@
 }
 
 .rowName {
-  max-width: 132px;
+  max-width: 39px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -433,13 +438,13 @@
 }
 
 .badgePill {
-  width: 24px;
-  min-width: 24px;
-  max-width: 24px;
+  width: auto;
+  min-width: 102px;
+  max-width: 102px;
   height: 24px;
   border: 1px solid #6e00e4;
   border-radius: 8px;
-  padding: 4px;
+  padding: 4px 8px;
   box-sizing: border-box;
   background: #46038c;
   -webkit-backdrop-filter: blur(100.7px) brightness(100%);
@@ -447,8 +452,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  flex: 0 0 24px;
+  gap: 4px;
+  flex: 0 0 auto;
 }
 
 .badgePillIcon {
@@ -464,7 +469,7 @@
 }
 
 .badgePillLabel {
-  display: none;
+  display: inline;
   max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -586,6 +591,11 @@
     font-size: 20px;
     line-height: 26px;
     letter-spacing: -0.6px;
+  }
+
+  .rowIdentity {
+    width: auto;
+    flex: 0 1 auto;
   }
 
   .badgePill {
@@ -808,19 +818,6 @@
 }
 
 @media (max-width: 1023px) and (hover: none) and (pointer: coarse) {
-  .badgePill {
-    width: 24px;
-    min-width: 24px;
-    max-width: 24px;
-    padding: 4px;
-    gap: 0;
-    flex: 0 0 24px;
-  }
-
-  .badgePillLabel {
-    display: none;
-  }
-
   .scoreBadge {
     margin-left: auto;
   }
