@@ -56,7 +56,7 @@
   display: block;
 }
 
-@media (orientation: landscape) and (min-width: 740px) {
+@media (min-width: 1024px) {
   .baseBackgroundImageMobile {
     display: none;
   }
@@ -1373,14 +1373,14 @@
   cursor: pointer;
 }
 
-@media (orientation: landscape) and (min-width: 740px) {
+@media (min-width: 1024px) {
   .page {
-    padding-bottom: calc(136px + env(safe-area-inset-bottom));
+    padding-bottom: 24px;
   }
 
   .join {
     width: min(800px, calc(100vw - 80px));
-    height: 1690px;
+    height: 1853px;
     background: transparent;
   }
 
@@ -1478,8 +1478,8 @@
     left: 0;
     top: 488px;
     width: 100%;
-    height: 160px;
-    padding: 32px;
+    height: 237px;
+    padding: 71px 32px;
     gap: 24px;
   }
 
@@ -1565,9 +1565,9 @@
 
   .questsBlock {
     left: 0;
-    top: 672px;
+    top: 749px;
     width: 100%;
-    height: 410px;
+    height: 494px;
     padding: 32px;
     gap: 24px;
   }
@@ -1711,7 +1711,7 @@
 
   .top3Block {
     left: 0;
-    top: 1106px;
+    top: 1267px;
     width: 100%;
     height: 344px;
     padding: 32px;
@@ -1781,7 +1781,7 @@
 
   .documentsRow {
     left: 50%;
-    top: 1474px;
+    top: 1635px;
     width: min(1200px, calc(100vw - 80px));
     height: 58px;
     gap: 24px;
@@ -1800,36 +1800,50 @@
   }
 
   .downBar {
-    width: min(800px, calc(100vw - 80px));
-    height: calc(96px + env(safe-area-inset-bottom));
-    padding: 20px 32px calc(20px + env(safe-area-inset-bottom));
-    gap: 8px;
-    z-index: 80;
+    position: absolute;
+    left: 50%;
+    top: 1717px;
+    transform: translateX(-50%);
+    width: 640px;
+    height: 96px;
+    padding: 0;
+    z-index: 40;
+    display: block;
+    overflow: visible;
   }
 
   .downButton {
+    position: absolute;
+    top: 20px;
     font-size: 20px;
     line-height: 24.2px;
     letter-spacing: -0.6px;
     gap: 12px;
   }
 
-  .downButtonCreate,
-  .downButtonJoin {
-    width: calc((100% - 118px) / 2);
-    height: 56px;
-  }
-
   .downButtonCreate {
+    left: -48px;
+    width: 305px;
+    height: 56px;
     padding: 8px 12px;
   }
 
   .downButtonJoin {
+    left: 265px;
+    width: 305px;
+    height: 56px;
     padding: 8px;
   }
 
-  .downButtonHelp,
   .downButtonLogout {
+    left: 578px;
+    width: 51px;
+    height: 56px;
+    padding: 12px;
+  }
+
+  .downButtonHelp {
+    left: 637px;
     width: 51px;
     height: 56px;
     padding: 12px;

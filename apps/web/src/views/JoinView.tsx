@@ -41,6 +41,7 @@ const LAST_AUTH_PROVIDER_KEY = "escapers_last_auth_provider";
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
+const DESKTOP_LAYOUT_QUERY = "(min-width: 1024px)";
 const JOIN_STATUS_CHIP_LAYOUT = [
   {
     id: "season",
@@ -374,6 +375,23 @@ export default function JoinView() {
   const selfId = getOrCreateClientId();
   const isOwner = engagement.group?.role === "owner";
   const isManagerRoute = location.pathname === "/manager";
+  const [isDesktopLayout, setIsDesktopLayout] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia(DESKTOP_LAYOUT_QUERY).matches : false,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia(DESKTOP_LAYOUT_QUERY);
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsDesktopLayout(event.matches);
+    };
+    setIsDesktopLayout(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (!codeParam) return;
     joinRoom(codeParam, initialAvatarId, playerName);
@@ -874,9 +892,18 @@ export default function JoinView() {
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
   const equippedFrameLabel = equippedFrame ? (COSMETIC_LABEL_BY_ID.get(equippedFrame) ?? "Quick Hatch") : "Quick Hatch";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
-  const sourceJoinQuests = engagement.quests.daily.length
-    ? engagement.quests.daily.slice(0, 2)
-    : QUEST_DEFINITIONS.slice(0, 2).map((quest) => ({ ...quest, progress: 0 }));
+  const sourceJoinQuests = useMemo(() => {
+    const targetCount = isDesktopLayout ? 3 : 2;
+    const daily = engagement.quests.daily.slice(0, targetCount);
+    if (daily.length >= targetCount) {
+      return daily;
+    }
+    const usedIds = new Set(daily.map((quest) => quest.id));
+    const fallback = QUEST_DEFINITIONS.filter((quest) => !usedIds.has(quest.id))
+      .slice(0, targetCount - daily.length)
+      .map((quest) => ({ ...quest, progress: 0 }));
+    return [...daily, ...fallback];
+  }, [engagement.quests.daily, isDesktopLayout]);
   const completedQuests = sourceJoinQuests.filter((quest) => (quest.progress ?? 0) >= quest.target).length;
   const joinQuestsTotal = `${completedQuests}/${sourceJoinQuests.length}`;
   const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
