@@ -614,6 +614,16 @@ export default function LobbyView() {
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            className={styles.quickRoundButton}
+            onClick={() => {
+              if (designLock) return;
+              openInfo(CHIP_INFO.reminder);
+            }}
+          >
+            Play one quick round?
+          </button>
         </section>
       </main>
 

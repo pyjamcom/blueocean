@@ -14,15 +14,15 @@
 }
 
 .designLock {
-  min-height: 844px;
-  height: 844px;
+  min-height: 1174px;
+  height: 1174px;
   overflow: hidden;
 }
 
 .designLock .lobby {
-  min-height: 844px;
-  height: 844px;
-  padding: 44px 20px 96px;
+  min-height: 1174px;
+  height: 1174px;
+  padding: 44px 20px 84px;
 }
 
 .designLock .buttonsRow {
@@ -325,7 +325,7 @@
 }
 
 .questCard {
-  min-height: 376px;
+  min-height: 431px;
 }
 
 .questHeader {
@@ -541,6 +541,28 @@
   cursor: pointer;
 }
 
+.quickRoundButton {
+  width: 183px;
+  height: 39px;
+  border: 1px solid #e400e0;
+  border-radius: 8px;
+  background: #92006d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  color: rgb(255 255 255 / 70%);
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.48px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
 .downBar {
   position: fixed;
   left: 50%;
@@ -559,10 +581,8 @@
   gap: 8px;
   padding: 16px 20px max(16px, calc(16px + env(safe-area-inset-bottom)));
   box-sizing: border-box;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  border: 1px solid rgb(255 255 255 / 15%);
   background: #111;
-  box-shadow: inset 0 -1px 0 rgb(255 255 255 / 15%);
 }
 
 .iconButton {
