@@ -459,12 +459,48 @@
 }
 
 .avatarFrameChip {
-  display: none;
+  position: absolute;
+  left: 143px;
+  top: 286px;
+  width: 104px;
+  height: 24px;
+  border: 0;
+  border-radius: 8px;
+  padding: 2px 6px 2px 4px;
+  box-sizing: border-box;
+  background: rgb(39 39 39 / 70%);
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15.6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 4;
+  cursor: pointer;
 }
 
 .avatarFrameChipIcon {
-  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 52%);
+  background: rgb(11 12 27 / 78%);
+  display: inline-grid;
+  place-items: center;
+  font-size: 10px;
   line-height: 1;
+  color: #ffe566;
+  flex-shrink: 0;
+}
+
+.avatarFrameChipLabel {
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profileAvatarHotspot,
@@ -847,6 +883,14 @@
   gap: 8px;
 }
 
+.playerMeta {
+  min-width: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
 .playerAvatar {
   width: 32px;
   height: 32px;
@@ -869,6 +913,10 @@
 }
 
 .playerName {
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #ffffff;
   font-family: Geist, sans-serif;
   font-size: 16px;
@@ -877,21 +925,137 @@
   letter-spacing: -0.48px;
 }
 
-.scoreBadge {
-  min-width: 51px;
-  height: 24px;
-  border-radius: 8px;
+.playerBadgeMeta {
+  max-width: 132px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.playerBadgeMetaIcon {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 52%);
+  background: rgb(11 12 27 / 78%);
   display: inline-grid;
   place-items: center;
-  padding: 4px 8px;
-  background: linear-gradient(270deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
-  color: #fffdfd;
-  font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 9px;
+  line-height: 1;
+  color: #ffe566;
+  flex-shrink: 0;
+}
+
+.playerBadgeMetaLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(255 255 255 / 70%);
+  font-family: Geist, sans-serif;
+  font-size: 11px;
   font-weight: 500;
-  line-height: 16px;
-  letter-spacing: -0.42px;
+  line-height: 14.3px;
+  letter-spacing: -0.33px;
+}
+
+.scoreBadge {
+  min-width: 64px;
+  max-width: 132px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid #6e00e4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 6px 2px 4px;
+  background: #46038c;
   box-sizing: border-box;
+}
+
+.scoreBadgeIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 52%);
+  background: rgb(11 12 27 / 78%);
+  display: inline-grid;
+  place-items: center;
+  font-size: 10px;
+  line-height: 1;
+  color: #ffe566;
+  flex-shrink: 0;
+}
+
+.scoreBadgeValue {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15.6px;
+}
+
+.partyPingToast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(86px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(var(--join-shell-width) - 24px);
+  min-height: 32px;
+  border-radius: 999px;
+  background: rgb(255 120 170 / 92%);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 25%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  box-sizing: border-box;
+  z-index: 130;
+  pointer-events: none;
+  animation: partyPingToastIn 2200ms ease;
+}
+
+.partyPingToastIcon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.partyPingToastLabel {
+  color: #0b0b12;
+  font-family: Geist, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16.9px;
+  letter-spacing: -0.39px;
+  white-space: nowrap;
+}
+
+@keyframes partyPingToastIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.95);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -6px) scale(0.98);
+  }
 }
 
 .documentsRow {
@@ -1461,8 +1625,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    z-index: 3;
+    z-index: 4;
     cursor: pointer;
+  }
+
+  .avatarFrameChipIcon {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .avatarFrameChipLabel {
+    line-height: 20.8px;
   }
 
   .profileButtonHotspot {
@@ -1782,18 +1956,51 @@
   }
 
   .playerName {
+    max-width: min(240px, 34vw);
     font-size: 20px;
     line-height: 26px;
     letter-spacing: -0.6px;
   }
 
+  .playerMeta {
+    gap: 3px;
+  }
+
+  .playerBadgeMeta {
+    max-width: min(240px, 34vw);
+    gap: 6px;
+  }
+
+  .playerBadgeMetaIcon {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .playerBadgeMetaLabel {
+    font-size: 16px;
+    line-height: 20.8px;
+    letter-spacing: -0.48px;
+  }
+
   .scoreBadge {
-    min-width: 65px;
-    height: 24px;
-    padding: 4px 8px;
-    font-size: 20px;
-    line-height: 16px;
-    letter-spacing: -0.6px;
+    min-width: 88px;
+    max-width: 160px;
+    height: 32px;
+    gap: 6px;
+    padding: 4px 10px 4px 6px;
+  }
+
+  .scoreBadgeIcon {
+    width: 22px;
+    height: 22px;
+    font-size: 13px;
+  }
+
+  .scoreBadgeValue {
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
   }
 
   .documentsRow {
@@ -1803,6 +2010,24 @@
     height: 58px;
     gap: 24px;
     transform: translateX(-50%);
+  }
+
+  .partyPingToast {
+    bottom: calc(104px + env(safe-area-inset-bottom));
+    min-height: 40px;
+    gap: 8px;
+    padding: 8px 16px;
+    max-width: min(680px, calc(100vw - 64px));
+  }
+
+  .partyPingToastIcon {
+    font-size: 18px;
+  }
+
+  .partyPingToastLabel {
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
   }
 
   .documentLink {

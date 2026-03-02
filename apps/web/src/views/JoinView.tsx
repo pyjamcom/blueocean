@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext";
@@ -41,6 +41,7 @@ const LAST_AUTH_PROVIDER_KEY = "escapers_last_auth_provider";
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
+const TOP3_BADGE_FALLBACK_LABEL = "Quick Hatch";
 const DESKTOP_LAYOUT_QUERY = "(min-width: 1024px)";
 const JOIN_STATUS_CHIP_LAYOUT = [
   {
@@ -372,6 +373,8 @@ export default function JoinView() {
   const [info, setInfo] = useState<InfoPayload | null>(null);
   const [rewardModal, setRewardModal] = useState<RewardModalPayload | null>(null);
   const [joinTopRows, setJoinTopRows] = useState<JoinTopRow[]>(() => buildFallbackTopRows());
+  const [showPartyPingToast, setShowPartyPingToast] = useState(false);
+  const partyPingTimerRef = useRef<number | null>(null);
   const selfId = getOrCreateClientId();
   const isOwner = engagement.group?.role === "owner";
   const isManagerRoute = location.pathname === "/manager";
@@ -391,6 +394,26 @@ export default function JoinView() {
       mediaQuery.removeEventListener("change", handleChange);
     };
   }, []);
+
+  const triggerPartyPingToast = useCallback(() => {
+    setShowPartyPingToast(true);
+    if (partyPingTimerRef.current !== null) {
+      window.clearTimeout(partyPingTimerRef.current);
+    }
+    partyPingTimerRef.current = window.setTimeout(() => {
+      setShowPartyPingToast(false);
+      partyPingTimerRef.current = null;
+    }, 2200);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (partyPingTimerRef.current !== null) {
+        window.clearTimeout(partyPingTimerRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!codeParam) return;
@@ -889,6 +912,19 @@ export default function JoinView() {
         : null;
   const todayKey = formatDayKey(new Date());
   const notificationsEnabled = engagement.notifications.enabled;
+  const quietStart = engagement.notifications.quietStart;
+  const quietEnd = engagement.notifications.quietEnd;
+  const hour = new Date().getHours();
+  const isQuietHours =
+    quietStart < quietEnd
+      ? hour >= quietStart && hour < quietEnd
+      : hour >= quietStart || hour < quietEnd;
+  const shouldPromptPartyPing =
+    flags.notifications &&
+    notificationsEnabled &&
+    !isQuietHours &&
+    engagement.stats.lastRoundDay !== todayKey &&
+    engagement.notifications.lastPromptDay !== todayKey;
   const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
   const equippedBadge = equippedBadgeId
     ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
@@ -957,6 +993,12 @@ export default function JoinView() {
     styleRows.push(styleFrameItems.slice(i, i + 2));
   }
 
+  useEffect(() => {
+    if (!shouldPromptPartyPing) return;
+    triggerPartyPingToast();
+    actions.markReminderPrompted(todayKey);
+  }, [actions, shouldPromptPartyPing, todayKey, triggerPartyPingToast]);
+
   return (
     <div className={styles.page}>
       <div className={styles.pageDesktopBackground} aria-hidden="true" />
@@ -987,7 +1029,11 @@ export default function JoinView() {
                 style={{ width: `${chip.width}px` }}
                 onClick={() => {
                   if (chip.id === "notifications" && flags.notifications) {
-                    actions.setNotificationsEnabled(!notificationsEnabled);
+                    const nextNotificationsEnabled = !notificationsEnabled;
+                    actions.setNotificationsEnabled(nextNotificationsEnabled);
+                    if (nextNotificationsEnabled) {
+                      triggerPartyPingToast();
+                    }
                   }
                   openInfo(chip.info);
                 }}
@@ -1091,7 +1137,7 @@ export default function JoinView() {
           <span className={styles.avatarFrameChipIcon} aria-hidden="true">
             {equippedBadge?.emoji ?? "⚡"}
           </span>
-          <span>{equippedFrameLabel}</span>
+          <span className={styles.avatarFrameChipLabel}>{equippedFrameLabel}</span>
         </button>
         <button
           type="button"
@@ -1234,15 +1280,36 @@ export default function JoinView() {
                       <span className={styles.playerAvatar} aria-hidden="true">
                         <img src={rowAvatarSrc} alt="" />
                       </span>
-                      <span className={styles.playerName}>{row.name}</span>
+                      <span className={styles.playerMeta}>
+                        <span className={styles.playerName}>{row.name}</span>
+                        <span className={styles.playerBadgeMeta}>
+                          <span className={styles.playerBadgeMetaIcon} aria-hidden="true">
+                            ⚡
+                          </span>
+                          <span className={styles.playerBadgeMetaLabel}>{TOP3_BADGE_FALLBACK_LABEL}</span>
+                        </span>
+                      </span>
                     </div>
                   </div>
-                  <span className={styles.scoreBadge}>{row.score}</span>
+                  <span className={styles.scoreBadge}>
+                    <span className={styles.scoreBadgeIcon} aria-hidden="true">
+                      ⚡
+                    </span>
+                    <span className={styles.scoreBadgeValue}>{row.score}</span>
+                  </span>
                 </article>
               );
             })}
           </div>
         </section>
+        {showPartyPingToast ? (
+          <div className={styles.partyPingToast} role="status" aria-live="polite">
+            <span className={styles.partyPingToastIcon} aria-hidden="true">
+              🕺
+            </span>
+            <span className={styles.partyPingToastLabel}>One quick round?</span>
+          </div>
+        ) : null}
         <nav className={styles.documentsRow} aria-label="Legal links">
           <a href="/legal/privacy" className={styles.documentLink}>
             Privacy
