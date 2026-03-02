@@ -34,12 +34,12 @@ const DESIGN_QUEST_ROWS = [
   { id: "design-q-3", title: "2 hits", reward: "+Buddy", claim: "Claim", progressLabel: "3/5", activeSegments: 3 },
 ] as const;
 const STATUS_CHIP_LAYOUT = [
-  { id: "season", icon: "⏳", width: 69 },
-  { id: "crew-code", icon: "👥", width: 89 },
-  { id: "crew-streak", icon: "🤝", width: 58 },
-  { id: "shield", icon: "🛡️", width: 59 },
-  { id: "notifications", icon: "🔔", width: 69 },
-  { id: "streak", icon: "🔥", width: 58 },
+  { id: "season", iconSrc: "/figma/lobby/473-2289.svg", width: 69 },
+  { id: "crew-code", iconSrc: "/figma/lobby/473-2292.svg", width: 89 },
+  { id: "crew-streak", iconSrc: "/figma/lobby/473-2295.svg", width: 58 },
+  { id: "shield", iconSrc: "/figma/lobby/473-2298.svg", width: 59 },
+  { id: "notifications", iconSrc: "/figma/lobby/473-2301.svg", width: 69 },
+  { id: "streak", iconSrc: "/figma/lobby/473-2304.svg", width: 58 },
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
@@ -487,7 +487,9 @@ export default function LobbyView() {
               <img src={selfAssetSrc} alt="" className={styles.avatarImage} />
             </div>
             <span className={styles.quickBadge}>
-              <span className={styles.quickBadgeIcon}>⚡️</span>
+              <span className={styles.quickBadgeIcon} aria-hidden="true">
+                <img src="/figma/lobby/767-1569.svg" alt="" className={styles.quickBadgeIconSvg} />
+              </span>
               <span className={styles.quickBadgeLabel}>{quickBadgeLabel}</span>
             </span>
           </div>
@@ -547,7 +549,9 @@ export default function LobbyView() {
                   openInfo(chip.info);
                 }}
               >
-                <span className={styles.statusIcon}>{chip.icon}</span>
+                <span className={styles.statusIcon} aria-hidden="true">
+                  <img src={chip.iconSrc} alt="" className={styles.statusIconSvg} />
+                </span>
                 <span className={styles.statusValue}>{chip.value}</span>
               </button>
             ))}
