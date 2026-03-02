@@ -314,8 +314,9 @@ export default function LeaderboardView() {
 
   return (
     <div className={styles.wrap}>
+      <div className={styles.pageDesktopBackground} aria-hidden="true" />
       <section className={styles.phone} aria-label="Leaderboard screen">
-        <img className={styles.bgPattern} src="/figma/join/image-931.png" alt="" aria-hidden="true" />
+        <img className={styles.bgPattern} src="/figma/leaderboard/tg-bg-mobile.webp" alt="" aria-hidden="true" />
         <header className={styles.header}>
           <h1 className={styles.headerTitle}>Leaderboard</h1>
           <div className={styles.segmentPicker}>
