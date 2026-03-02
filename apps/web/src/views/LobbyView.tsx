@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import EngagementPanel from "../components/engagement/EngagementPanel";
+import { useEffect, useMemo, useRef, useState } from "react";
+import QRCode from "qrcode";
+import { useNavigate } from "react-router-dom";
 import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
+import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
+import { diffDays, formatDayKey } from "../engagement/time";
 import {
   AVATAR_IDS,
   avatarIconIndex,
@@ -11,28 +13,74 @@ import {
   setStoredAvatarId,
 } from "../utils/avatar";
 import { assetIds, getAssetUrl } from "../utils/assets";
-import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
-import frames from "../engagement/frames.module.css";
 import styles from "./LobbyView.module.css";
 
-type PulseVariant = "fast" | "mid" | "slow";
+const PROFILE_AVATAR_FALLBACK = "/figma/lobby/767-1567.png";
+const STATUS_CHIP_LAYOUT = [
+  { id: "season", icon: "⏳", width: 69 },
+  { id: "crew-code", icon: "👥", width: 89 },
+  { id: "crew-streak", icon: "🤝", width: 58 },
+  { id: "shield", icon: "🛡️", width: 59 },
+  { id: "notifications", icon: "🔔", width: 69 },
+  { id: "streak", icon: "🔥", width: 58 },
+] as const;
 
-function resolveVariant(age?: number): PulseVariant {
-  if (!age) return "mid";
-  if (age <= 30) return "fast";
-  if (age <= 40) return "mid";
-  return "slow";
+const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
+
+type InfoPayload = Readonly<{
+  title: string;
+  lines: ReadonlyArray<string>;
+}>;
+
+type RewardPayload = Readonly<{
+  title: string;
+  rewardLabel: string;
+  progress: string;
+}>;
+
+const CHIP_INFO = {
+  season: {
+    title: "Season Sprint",
+    lines: ["Global sprint window", "Resets automatically", "Cosmetics stay unlocked"],
+  },
+  crew: {
+    title: "Crew",
+    lines: ["Your squad room", "Code for invite", "Shared crew progress"],
+  },
+  crewStreak: {
+    title: "Crew Streak",
+    lines: ["Consecutive crew days", "Needs active players", "Drops if crew sleeps"],
+  },
+  shield: {
+    title: "Shield / Grace",
+    lines: ["Forgives one missed day", "Refills by week", "Protects streak reset"],
+  },
+  reminder: {
+    title: "Reminder settings",
+    lines: ["Daily reminder flag", "Tap to toggle On/Off", "Quiet hours respected"],
+  },
+  streak: {
+    title: "Hot Streak",
+    lines: ["Current personal streak", "Increases after active day", "Breaks on missed day"],
+  },
+  badges: {
+    title: "Badges",
+    lines: ["Unlocked mastery marks", "Earned in rounds", "Affects status and style"],
+  },
+  style: {
+    title: "Style",
+    lines: ["Unlocked cosmetics", "Equipable visual frame", "Linked to quests and badges"],
+  },
+} as const;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
 }
 
 export default function LobbyView() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-  const age = params.get("age") ? Number(params.get("age")) : undefined;
-  const variant = resolveVariant(age);
-  const { roomCode, players, playerId, setReady, setAvatar, setName, resetRoom } = useRoom();
-  const { state: engagement } = useEngagement();
-
+  const { roomCode, players, playerId, setReady, setAvatar, resetRoom } = useRoom();
+  const { state: engagement, actions, flags } = useEngagement();
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -46,15 +94,18 @@ export default function LobbyView() {
     }
     return Math.floor(Math.random() * AVATAR_IDS.length);
   });
+  const [info, setInfo] = useState<InfoPayload | null>(null);
+  const [rewardModal, setRewardModal] = useState<RewardPayload | null>(null);
+  const [qrVisible, setQrVisible] = useState(false);
+  const [qrSrc, setQrSrc] = useState("");
   const touchStart = useRef<number | null>(null);
-  const [nameDraft, setNameDraft] = useState(() => getStoredPlayerName() || "Player");
-  const [editingName, setEditingName] = useState(false);
+
+  useEffect(() => {
+    actions.refresh();
+  }, [actions.refresh]);
 
   const handleAvatarCycle = (direction: number) => {
-    setAvatarIndex((prev) => {
-      const next = (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length;
-      return next;
-    });
+    setAvatarIndex((prev) => (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length);
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -83,18 +134,14 @@ export default function LobbyView() {
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length] ?? lobbyAssets[0]
     : undefined;
-  const selfAssetSrc = getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId);
-  const startLabel = selfReady ? "Join game" : "Ready to play";
-  const startCardTitle = selfReady ? "Waiting for the other players..." : "Let's play!";
+  const selfAssetSrc =
+    getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const badgeLabel = (selfPlayer?.name ?? "WEEEP").slice(0, 12);
   const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
-  const topPreview = scoreSorted.slice(0, 3);
-  const previewQuests = engagement.quests.daily.slice(0, 3);
-  const completedQuests = engagement.quests.daily.filter((quest) => quest.progress >= quest.target).length;
-  const questTotal = engagement.quests.daily.length;
-  const frameClass = engagement.cosmetics.equipped.frame
-    ? frames[engagement.cosmetics.equipped.frame] ?? ""
-    : "";
+  const rankValue = String(selfRank || Math.max(1, players.length || 3));
+
+  const quickBadgeLabel =
+    BADGE_DEFINITIONS.find((item) => item.id === engagement.badges.lastEarned)?.label ?? "Quick Hatch";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -103,238 +150,344 @@ export default function LobbyView() {
     }
   }, [roomCode, selfAvatar, setAvatar]);
 
-  useEffect(() => {
-    if (editingName) return;
-    const resolved = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
-    setNameDraft(resolved);
-  }, [editingName, selfPlayer?.name]);
-
-  const commitName = (nextName?: string) => {
-    const safeName = (nextName ?? nameDraft).trim().slice(0, 18);
-    if (!safeName) {
-      const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
-      setNameDraft(fallback);
-      return;
+  const displayPlayers = useMemo(() => {
+    if (players.length) {
+      return players.slice(0, 12);
     }
-    setNameDraft(safeName);
-    setStoredPlayerName(safeName);
-    setName(safeName);
+    return [
+      { id: "fallback-1", avatarId: selfAvatar, name: "Ярик", ready: false, score: 0, correctCount: 0, streak: 0 },
+      { id: "fallback-2", avatarId: selfAvatar, name: "Павел Невский", ready: false, score: 0, correctCount: 0, streak: 0 },
+      { id: "fallback-3", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+      { id: "fallback-4", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+      { id: "fallback-5", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+      { id: "fallback-6", avatarId: selfAvatar, name: "Имя клевое", ready: false, score: 0, correctCount: 0, streak: 0 },
+    ];
+  }, [players, selfAvatar]);
+
+  const todayKey = formatDayKey(new Date());
+  const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
+  const notificationsEnabled = engagement.notifications.enabled;
+  const sourceQuests = engagement.quests.daily.length
+    ? engagement.quests.daily.slice(0, 3)
+    : QUEST_DEFINITIONS.slice(0, 3).map((quest) => ({ ...quest, progress: 0 }));
+  const completedQuests = (engagement.quests.daily.length ? engagement.quests.daily : sourceQuests).filter(
+    (quest) => (quest.progress ?? 0) >= quest.target,
+  ).length;
+  const questTotalCount = (engagement.quests.daily.length || 5);
+  const questTotal = `${clamp(completedQuests, 0, questTotalCount)}/${questTotalCount}`;
+
+  const statusChips = STATUS_CHIP_LAYOUT.map((chip) => {
+    if (chip.id === "season") {
+      return { ...chip, value: `${seasonDaysLeft}d`, info: CHIP_INFO.season };
+    }
+    if (chip.id === "crew-code") {
+      return {
+        ...chip,
+        value: engagement.group?.code ?? roomCode ?? "----",
+        info: CHIP_INFO.crew,
+      };
+    }
+    if (chip.id === "crew-streak") {
+      return { ...chip, value: String(engagement.teamStreak.current), info: CHIP_INFO.crewStreak };
+    }
+    if (chip.id === "shield") {
+      return { ...chip, value: String(engagement.streak.graceLeft), info: CHIP_INFO.shield };
+    }
+    if (chip.id === "notifications") {
+      return { ...chip, value: notificationsEnabled ? "On" : "Off", info: CHIP_INFO.reminder };
+    }
+    return { ...chip, value: String(engagement.streak.current), info: CHIP_INFO.streak };
+  });
+
+  const questRows = sourceQuests.map((quest) => {
+    const target = Math.max(1, quest.target ?? 1);
+    const progress = clamp(quest.progress ?? 0, 0, target);
+    const rewardLabel = quest.rewardId ? COSMETIC_LABEL_BY_ID.get(quest.rewardId) : null;
+    const claimed = progress >= target;
+    return {
+      id: quest.id,
+      title: quest.label,
+      reward: `+${rewardLabel ?? "Buddy"}`,
+      claim: claimed ? "Claimed" : "Claim",
+      progressLabel: `${progress}/${target}`,
+      activeSegments: clamp(Math.round((progress / target) * 5), 0, 5),
+    };
+  });
+
+  const actionChips = [
+    { id: "badges", label: "Badges", info: CHIP_INFO.badges },
+    { id: "crew", label: "Crew", info: CHIP_INFO.crew },
+    { id: "style", label: "Style", info: CHIP_INFO.style },
+  ] as const;
+
+  const joinUrl = roomCode ? `https://d0.do/${roomCode}` : "";
+
+  useEffect(() => {
+    if (!qrVisible || !joinUrl || qrSrc) return;
+    let active = true;
+    QRCode.toDataURL(joinUrl, {
+      width: 300,
+      margin: 1,
+      color: { dark: "#101010", light: "#ffffff" },
+    }).then((value) => {
+      if (active) setQrSrc(value);
+    });
+    return () => {
+      active = false;
+    };
+  }, [joinUrl, qrSrc, qrVisible]);
+
+  useEffect(() => {
+    if (!qrVisible) {
+      setQrSrc("");
+    }
+  }, [qrVisible]);
+
+  const closeOverlay = () => {
+    setInfo(null);
+    setRewardModal(null);
+    setQrVisible(false);
+  };
+
+  const openInfo = (payload: InfoPayload) => {
+    setRewardModal(null);
+    setQrVisible(false);
+    setInfo(payload);
   };
 
   return (
-    <div className={`${styles.wrap} ${styles[variant]}`}>
-      <EngagementPanel mode="lobby" />
-      <section className={`${styles.sectionCard} ${styles.startCard}`}>
-        <div className={styles.startCardTitle}>{startCardTitle}</div>
-        <div className={styles.startCardMeta}>
-          <span className={styles.metaPill}>#{selfRank || 3}</span>
-          <span className={styles.metaPill}>{badgeLabel}</span>
-          <span className={styles.metaPill}>{profileTag}</span>
-        </div>
-      </section>
+    <div className={styles.page}>
+      <main className={styles.lobby}>
+        <img className={styles.baseBackgroundImage} src="/figma/lobby/325-2796.png" alt="" aria-hidden="true" />
 
-      {selfReady ? (
-        <>
-          <section className={`${styles.sectionCard} ${styles.profileCard}`}>
-            <div
-              className={styles.profileAvatar}
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onClick={() => handleAvatarCycle(1)}
-              aria-label={selfAvatar}
-            >
-              <div className={`${styles.profileAvatarCore} ${frameClass}`}>
-                {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
-              </div>
-              <span className={styles.selfPulse} />
+        <section className={`${styles.card} ${styles.startCard}`}>
+          <h1 className={styles.startTitle}>Waiting for other players</h1>
+          <div className={styles.metaRow}>
+            <span className={`${styles.metaPill} ${styles.metaPillDark}`}>
+              <img src="/figma/lobby/325-2801.svg" alt="" aria-hidden="true" className={styles.metaIcon} />
+              {rankValue}
+            </span>
+            <span className={`${styles.metaPill} ${styles.metaPillBadge}`}>{badgeLabel}</span>
+            <span className={`${styles.metaPill} ${styles.metaPillDark}`}>{profileTag}</span>
+          </div>
+        </section>
+
+        <section className={`${styles.card} ${styles.avatarCard}`}>
+          <div
+            className={styles.avatarWrap}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onClick={() => handleAvatarCycle(1)}
+            aria-label={selfAvatar}
+          >
+            <div className={styles.avatarFrame}>
+              <img src={selfAssetSrc} alt="" className={styles.avatarImage} />
             </div>
-            <button type="button" className={styles.profileButton} onClick={() => handleAvatarCycle(1)}>
-              Choose avatar
-            </button>
-          </section>
+            <span className={styles.quickBadge}>
+              <span className={styles.quickBadgeIcon}>⚡️</span>
+              <span className={styles.quickBadgeLabel}>{quickBadgeLabel}</span>
+            </span>
+          </div>
+          <button type="button" className={styles.avatarButton} onClick={() => handleAvatarCycle(1)}>
+            Choose avatar
+          </button>
+        </section>
 
-          <section className={`${styles.sectionCard} ${styles.playerListCard}`}>
-            <header className={styles.questHead}>
-              <span className={styles.questTitle}>Player list</span>
-              <span className={styles.questBadge}>{players.length}</span>
-            </header>
-            <div className={styles.playerListGrid}>
-              {players.map((player) => {
-                const playerAssetId = lobbyAssets.length
-                  ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
-                  : undefined;
-                const playerAssetSrc = getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId);
-                return (
-                  <div key={player.id} className={`${styles.player} ${styles.playerPulse}`}>
-                    <div className={styles.playerAvatar} aria-label={player.avatarId}>
-                      {playerAssetSrc ? (
-                        <img src={playerAssetSrc} alt="" className={styles.avatarImage} />
-                      ) : null}
-                    </div>
-                    <span className={styles.playerName}>{player.name ?? "Player"}</span>
-                    {player.ready && <span className={styles.readyRing} />}
+        <section className={`${styles.card} ${styles.playerListCard}`}>
+          <header className={styles.listHeader}>
+            <h2 className={styles.listTitle}>Player list</h2>
+            <span className={styles.listCount}>{displayPlayers.length}</span>
+          </header>
+          <div className={styles.playerGrid}>
+            {displayPlayers.map((player) => {
+              const playerAssetId = lobbyAssets.length
+                ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
+                : undefined;
+              const playerSrc = getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
+              return (
+                <article key={player.id} className={styles.playerCard}>
+                  <div className={styles.playerAvatarWrap}>
+                    <img src={playerSrc} alt="" className={styles.playerAvatar} />
                   </div>
-                );
-              })}
-            </div>
-          </section>
-        </>
-      ) : (
-        <>
-          <section className={`${styles.sectionCard} ${styles.questCard}`}>
-            <header className={styles.questHead}>
-              <span className={styles.questTitle}>Quests for the game</span>
-              <span className={styles.questBadge}>
-                {completedQuests}/{questTotal || 5}
-              </span>
-            </header>
-            <ul className={styles.questList}>
-              {previewQuests.length
-                ? previewQuests.map((quest) => {
-                    const done = quest.progress >= quest.target;
-                    return (
-                      <li key={quest.id} className={styles.questItem}>
-                        <span className={styles.questProgress}>
-                          {quest.progress}/{quest.target}
-                        </span>
-                        <span className={styles.questLabel}>{quest.label}</span>
-                        <span className={styles.questAction}>{done ? "Claim" : "In progress"}</span>
-                      </li>
-                    );
-                  })
-                : (
-                  <li className={styles.questItem}>
-                    <span className={styles.questProgress}>0/5</span>
-                    <span className={styles.questLabel}>Inviting 5 friends</span>
-                    <span className={styles.questAction}>Claim</span>
-                  </li>
-                )}
-            </ul>
-          </section>
+                  <span className={styles.playerName}>{player.name ?? "Player"}</span>
+                </article>
+              );
+            })}
+          </div>
+        </section>
 
-          <section className={`${styles.sectionCard} ${styles.profileCard}`}>
-            <div
-              className={styles.profileAvatar}
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onClick={() => handleAvatarCycle(1)}
-              aria-label={selfAvatar}
-            >
-              <div className={`${styles.profileAvatarCore} ${frameClass}`}>
-                {selfAssetSrc ? <img src={selfAssetSrc} alt="" className={styles.avatarImage} /> : null}
-              </div>
-              <span className={styles.selfPulse} />
-            </div>
-            <button type="button" className={styles.profileButton} onClick={() => handleAvatarCycle(1)}>
-              Choose avatar
-            </button>
-            <input
-              type="text"
-              value={nameDraft}
-              onFocus={() => setEditingName(true)}
-              onBlur={() => {
-                setEditingName(false);
-                commitName();
-              }}
-              onChange={(event) => setNameDraft(event.target.value.slice(0, 18))}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.currentTarget.blur();
-                }
-                if (event.key === "Escape") {
-                  const fallback = selfPlayer?.name ?? getStoredPlayerName() ?? "Player";
-                  setEditingName(false);
-                  setNameDraft(fallback);
-                  event.currentTarget.blur();
-                }
-              }}
-              className={styles.selfNameInput}
-              placeholder="Your name"
-              aria-label="player name"
-            />
-          </section>
+        <section className={`${styles.card} ${styles.questCard}`}>
+          <header className={styles.questHeader}>
+            <h2 className={styles.questTitle}>Quests for the game</h2>
+            <span className={styles.questTotal}>{questTotal}</span>
+          </header>
 
-          <section className={`${styles.sectionCard} ${styles.topCard}`}>
-            <header className={styles.topCardHead}>
-              <span className={styles.topCardTitle}>Top 3 Leaderboard</span>
-            </header>
-            <ul className={styles.topList}>
-              {(topPreview.length
-                ? topPreview
-                : [
-                    { id: "fallback-1", name: "Nova", score: 2445 },
-                    { id: "fallback-2", name: "Atlas", score: 2445 },
-                    { id: "fallback-3", name: "Pixel", score: 2445 },
-                  ]
-              ).map((player, index) => (
-                <li key={player.id} className={styles.topItem}>
-                  <span className={styles.topRank}>#{index + 1}</span>
-                  <span className={styles.topName}>{player.name ?? "Player"}</span>
-                  <span className={styles.topScore}>{player.score}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </>
-      )}
+          <div className={styles.statusGrid}>
+            {statusChips.map((chip) => (
+              <button
+                key={chip.id}
+                type="button"
+                className={styles.statusChip}
+                style={{ width: `${chip.width}px` }}
+                onClick={() => {
+                  if (chip.id === "notifications" && flags.notifications) {
+                    actions.setNotificationsEnabled(!notificationsEnabled);
+                  }
+                  openInfo(chip.info);
+                }}
+              >
+                <span className={styles.statusIcon}>{chip.icon}</span>
+                <span className={styles.statusValue}>{chip.value}</span>
+              </button>
+            ))}
+          </div>
 
-      <div className={styles.legalFooter}>
-        <a href="/legal/privacy">Privacy</a>
-        <span className={styles.legalDot}>•</span>
-        <a href="/legal/terms">Terms</a>
-        <span className={styles.legalDot}>•</span>
-        <a href="/legal/data-deletion">Data</a>
-      </div>
+          <div className={styles.questRows}>
+            {questRows.map((quest) => (
+              <button
+                key={quest.id}
+                type="button"
+                className={styles.questRow}
+                onClick={() => {
+                  setInfo(null);
+                  setQrVisible(false);
+                  setRewardModal({
+                    title: quest.title,
+                    rewardLabel: quest.reward,
+                    progress: quest.progressLabel,
+                  });
+                }}
+              >
+                <span className={styles.questRowContent}>
+                  <span className={styles.questName}>{quest.title}</span>
+                  <span className={styles.questActions}>
+                    <span className={styles.questReward}>{quest.reward}</span>
+                    <span className={styles.questClaim}>{quest.claim}</span>
+                  </span>
+                </span>
+                <span className={styles.questProgressBar}>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <span
+                      key={`${quest.id}-${index}`}
+                      className={index < quest.activeSegments ? styles.progressOn : styles.progressOff}
+                    />
+                  ))}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.actionRow}>
+            {actionChips.map((chip) => (
+              <button
+                key={chip.id}
+                type="button"
+                className={styles.actionChip}
+                onClick={() => openInfo(chip.info)}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        </section>
+      </main>
 
       <footer className={styles.downBar}>
-        <div className={styles.bottomBar}>
+        <div className={styles.buttonsRow}>
           <button
             type="button"
-            className={styles.primaryJoin}
-            onClick={() => {
-              setReady(!selfReady);
-            }}
-            aria-label="join game"
+            className={`${styles.iconButton} ${styles.iconButtonNeutral}`}
+            onClick={() => setQrVisible(true)}
+            disabled={!roomCode}
+            aria-label="Show room QR"
           >
-            <span className={styles.actionIconJoin} aria-hidden="true" />
-            <span>{startLabel}</span>
+            <img src="/figma/lobby/325-2880.svg" alt="" className={styles.icon} aria-hidden="true" />
           </button>
           <button
-            className={`${styles.iconActionSound} ${soundOn ? styles.soundOn : styles.soundOff}`}
-            onClick={() =>
+            type="button"
+            className={`${styles.iconButton} ${soundOn ? styles.iconButtonNeutral : styles.iconButtonDanger}`}
+            onClick={() => {
               setSoundOn((prev) => {
                 const next = !prev;
                 if (typeof window !== "undefined") {
                   window.localStorage.setItem("sound_enabled", next ? "1" : "0");
                 }
                 return next;
-              })
-            }
-            aria-label="sound"
-          />
+              });
+            }}
+            aria-label={soundOn ? "Disable sound" : "Enable sound"}
+          >
+            <img
+              src={soundOn ? "/figma/join/lets-icons-sound-max-fill.svg" : "/figma/lobby/325-2883.svg"}
+              alt=""
+              className={styles.icon}
+              aria-hidden="true"
+            />
+          </button>
           <button
-            className={styles.iconActionHelp}
-            onClick={() => navigate("/leaderboard")}
-            aria-label="help"
-          />
+            type="button"
+            className={styles.joinButton}
+            onClick={() => setReady(!selfReady)}
+            aria-label="Join game"
+          >
+            <img src="/figma/lobby/325-2888.svg" alt="" className={styles.joinIcon} aria-hidden="true" />
+            <span>Join game</span>
+          </button>
           <button
-            className={styles.iconActionLogout}
+            type="button"
+            className={`${styles.iconButton} ${styles.iconButtonDanger}`}
             onClick={() => {
               resetRoom();
               navigate("/join", { replace: true });
             }}
-            aria-label="logout"
-          />
-        </div>
-        <div className={styles.tabBar}>
-          <div className={styles.urlRow}>
-            <span className={styles.lockIcon} aria-hidden="true" />
-            <span className={styles.url}>escapers.app</span>
-          </div>
-          <span className={styles.homeIndicator} aria-hidden="true" />
+            aria-label="Logout"
+          >
+            <img src="/figma/lobby/325-2897.svg" alt="" className={styles.icon} aria-hidden="true" />
+          </button>
         </div>
       </footer>
 
+      {qrVisible ? (
+        <div className={styles.overlay} role="dialog" aria-modal="true" onClick={closeOverlay}>
+          <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+            <h3 className={styles.modalTitle}>Room QR</h3>
+            <p className={styles.modalText}>{joinUrl || "Room link is not ready"}</p>
+            <div className={styles.qrFrame}>{qrSrc ? <img src={qrSrc} alt="Room QR" className={styles.qrImage} /> : "…"}</div>
+            <button type="button" className={styles.modalClose} onClick={closeOverlay}>
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {info ? (
+        <div className={styles.overlay} role="dialog" aria-modal="true" onClick={closeOverlay}>
+          <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+            <h3 className={styles.modalTitle}>{info.title}</h3>
+            <div className={styles.modalList}>
+              {info.lines.map((line) => (
+                <p key={line} className={styles.modalText}>{line}</p>
+              ))}
+            </div>
+            <button type="button" className={styles.modalClose} onClick={closeOverlay}>
+              Got it
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {rewardModal ? (
+        <div className={styles.overlay} role="dialog" aria-modal="true" onClick={closeOverlay}>
+          <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+            <h3 className={styles.modalTitle}>{rewardModal.title}</h3>
+            <p className={styles.modalText}>Reward: {rewardModal.rewardLabel}</p>
+            <p className={styles.modalText}>Progress: {rewardModal.progress}</p>
+            <button type="button" className={styles.modalClose} onClick={closeOverlay}>
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
