@@ -29,6 +29,8 @@ interface RowTone {
 
 const LAST_GAME_TOP3_KEY = "escapers_last_game_top3";
 const LAST_GAME_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const LEADERBOARD_BADGE_FALLBACK_LABEL = "Quick hands";
+const LEADERBOARD_BADGE_FALLBACK_EMOJI = "⚡";
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
   if (!raw) return null;
@@ -41,6 +43,9 @@ function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
     funScore,
     deltaPoints: raw.deltaPoints ?? raw.delta_points ?? null,
     progressPercent: raw.progressPercent ?? raw.progress_percent ?? null,
+    badgeId: raw.badgeId ?? raw.badge_id ?? null,
+    badgeLabel: raw.badgeLabel ?? raw.badge_label ?? null,
+    badgeEmoji: raw.badgeEmoji ?? raw.badge_emoji ?? null,
   };
 }
 
@@ -421,10 +426,12 @@ export default function LeaderboardView() {
                     period === "weekly"
                       ? `${Math.max(0, Math.round(entryMetric))}%`
                       : `${Math.round(entryRatio * 100)}%`;
+                  const badgeLabel = entry.badgeLabel ?? LEADERBOARD_BADGE_FALLBACK_LABEL;
+                  const badgeEmoji = entry.badgeEmoji ?? LEADERBOARD_BADGE_FALLBACK_EMOJI;
                   return (
                     <article
                       key={`${entry.displayName}-${index}`}
-                      className={styles.row}
+                      className={`${styles.row} ${rank === 1 ? styles.rowTall : ""}`}
                       style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
                     >
                       <div className={styles.rowLeft}>
@@ -450,7 +457,15 @@ export default function LeaderboardView() {
                           <span className={styles.rowName}>{entry.displayName}</span>
                         </div>
                       </div>
-                      <span className={styles.scoreBadge}>{valueLabel}</span>
+                      <span className={styles.badgePill}>
+                        <span className={styles.badgePillIcon} aria-hidden="true">
+                          {badgeEmoji}
+                        </span>
+                        <span className={styles.badgePillLabel}>{badgeLabel}</span>
+                      </span>
+                      <span className={styles.scoreBadge}>
+                        <span className={styles.scoreBadgeValue}>{valueLabel}</span>
+                      </span>
                     </article>
                   );
                 })}

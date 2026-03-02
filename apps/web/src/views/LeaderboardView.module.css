@@ -92,7 +92,7 @@
   z-index: 1;
   width: 390px;
   height: 720px;
-  padding: 24px 20px calc(96px + env(safe-area-inset-bottom));
+  padding: 24px 8px calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -102,7 +102,7 @@
 }
 
 .topBlock {
-  width: 350px;
+  width: 374px;
   min-height: 694px;
   border-radius: 8px;
   display: flex;
@@ -113,7 +113,7 @@
 }
 
 .vibeCard {
-  width: 350px;
+  width: 374px;
   min-height: 75px;
   border-radius: 12px;
   background: #200042;
@@ -125,7 +125,7 @@
 }
 
 .vibeRow {
-  width: 318px;
+  width: 342px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,7 +138,7 @@
 }
 
 .vibeIdentity {
-  width: 318px;
+  width: 342px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -190,7 +190,7 @@
 
 .progressTrack {
   position: relative;
-  width: 318px;
+  width: 342px;
   height: 4px;
   border-radius: 12px;
   background: rgb(255 255 255 / 25%);
@@ -215,7 +215,7 @@
 }
 
 .shareCard {
-  width: 350px;
+  width: 374px;
   min-height: 111px;
   border-radius: 12px;
   background: #200042;
@@ -238,7 +238,7 @@
 }
 
 .shareRow {
-  width: 318px;
+  width: 342px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -314,7 +314,7 @@
 }
 
 .listCard {
-  width: 350px;
+  width: 374px;
   height: 476px;
   border-radius: 12px;
   background: #200042;
@@ -323,15 +323,15 @@
 }
 
 .listRows {
-  width: 318px;
+  width: 342px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .row {
-  width: 318px;
-  min-height: 52px;
+  width: 342px;
+  min-height: 48px;
   border-radius: 9px;
   border: 1px solid transparent;
   display: flex;
@@ -339,6 +339,10 @@
   justify-content: space-between;
   padding: 8px;
   box-sizing: border-box;
+}
+
+.rowTall {
+  min-height: 52px;
 }
 
 .rowLeft {
@@ -379,9 +383,9 @@
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -390,6 +394,11 @@
   font-size: 15px;
   font-weight: 500;
   color: #ffffff;
+}
+
+.rowTall .avatar {
+  width: 36px;
+  height: 36px;
 }
 
 .avatar img {
@@ -411,20 +420,191 @@
   letter-spacing: -0.48px;
 }
 
+.badgePill {
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  border: 1px solid #6e00e4;
+  border-radius: 8px;
+  padding: 4px;
+  box-sizing: border-box;
+  background: #46038c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex: 0 0 24px;
+}
+
+.badgePillIcon {
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badgePillLabel {
+  display: none;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15.6px;
+  letter-spacing: 0;
+}
+
 .scoreBadge {
   min-width: 51px;
+  max-width: 51px;
   height: 24px;
   border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 4px 8px;
   background: linear-gradient(270deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
-  display: inline-grid;
-  place-items: center;
-  color: #fffdfd;
+  box-sizing: border-box;
+  flex: 0 0 51px;
+  margin-left: auto;
+}
+
+.scoreBadgeValue {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 16px;
   letter-spacing: -0.42px;
+}
+
+@media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  .phone {
+    width: min(800px, calc(100vw - 80px));
+    min-height: 100dvh;
+  }
+
+  .header {
+    width: 100%;
+    padding: 44px 32px 16px;
+  }
+
+  .mobile {
+    width: 100%;
+    min-height: calc(100dvh - 124px);
+    padding: 24px 32px calc(112px + env(safe-area-inset-bottom));
+  }
+
+  .topBlock {
+    width: 100%;
+  }
+
+  .vibeCard,
+  .shareCard,
+  .listCard {
+    width: 100%;
+    padding: 32px;
+  }
+
+  .vibeRow,
+  .vibeIdentity,
+  .progressTrack,
+  .shareRow,
+  .listRows {
+    width: 100%;
+  }
+
+  .listCard {
+    height: auto;
+    min-height: 344px;
+  }
+
+  .row,
+  .rowTall {
+    width: 100%;
+    min-height: 72px;
+    padding: 12px 24px;
+  }
+
+  .rowLeft {
+    gap: 24px;
+  }
+
+  .rankChip {
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .rankIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .avatar,
+  .rowTall .avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .rowName {
+    max-width: min(240px, 34vw);
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: -0.6px;
+  }
+
+  .badgePill {
+    width: auto;
+    min-width: 148px;
+    max-width: none;
+    height: 32px;
+    gap: 6px;
+    padding: 6px 12px;
+    flex: 0 0 auto;
+  }
+
+  .badgePillIcon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  .badgePillLabel {
+    display: inline;
+    max-width: 100%;
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
+  }
+
+  .scoreBadge {
+    min-width: 88px;
+    max-width: 160px;
+    height: 32px;
+    padding: 8px 12px;
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+
+  .scoreBadgeValue {
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
+  }
 }
 
 .downBar {
@@ -553,5 +733,24 @@
   .phone {
     width: 100vw;
     min-height: 100dvh;
+  }
+}
+
+@media (max-width: 1023px) and (hover: none) and (pointer: coarse) {
+  .badgePill {
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    padding: 4px;
+    gap: 0;
+    flex: 0 0 24px;
+  }
+
+  .badgePillLabel {
+    display: none;
+  }
+
+  .scoreBadge {
+    margin-left: auto;
   }
 }

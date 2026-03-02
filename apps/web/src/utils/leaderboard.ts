@@ -4,6 +4,9 @@ export type LeaderboardEntry = {
   funScore: number;
   deltaPoints?: number | null;
   progressPercent?: number | null;
+  badgeId?: string | null;
+  badgeLabel?: string | null;
+  badgeEmoji?: string | null;
 };
 
 export const FALLBACK_WEEKLY_LEADERBOARD: ReadonlyArray<LeaderboardEntry> = [

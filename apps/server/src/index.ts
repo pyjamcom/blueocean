@@ -792,30 +792,42 @@ app.get("/leaderboard", async (req, res) => {
         ? scored.sort((a, b) => b.progressPercent - a.progressPercent || b.weeklyDelta - a.weeklyDelta)
         : scored.sort((a, b) => b.funScore - a.funScore);
     const total = sorted.length;
-    const top = sorted.slice(0, limit).map((entry, index) => ({
-      displayName: entry.member.name,
-      avatarId: entry.member.avatarId,
-      funScore: entry.funScore,
-      deltaPoints: period === "weekly" ? entry.weeklyDelta : null,
-      progressPercent: period === "weekly" ? entry.progressPercent : null,
-      percentileBand: bandForIndex(index, total),
-    }));
+    const top = sorted.slice(0, limit).map((entry, index) => {
+      const badge = resolveLeaderboardBadge(entry.member);
+      return {
+        displayName: entry.member.name,
+        avatarId: entry.member.avatarId,
+        funScore: entry.funScore,
+        deltaPoints: period === "weekly" ? entry.weeklyDelta : null,
+        progressPercent: period === "weekly" ? entry.progressPercent : null,
+        percentileBand: bandForIndex(index, total),
+        badgeId: badge.id,
+        badgeLabel: badge.label,
+        badgeEmoji: badge.emoji,
+      };
+    });
     const selfIndex = playerId
       ? scoredAll.findIndex((entry) => entry.member.id === playerId)
       : -1;
     const selfEntry = selfIndex >= 0 ? scoredAll[selfIndex] : undefined;
     const self = selfEntry
-      ? {
-          displayName: selfEntry.member.name,
-          avatarId: selfEntry.member.avatarId,
-          funScore: selfEntry.funScore,
-          deltaPoints: period === "weekly" ? selfEntry.weeklyDelta : null,
-          progressPercent: period === "weekly" ? selfEntry.progressPercent : null,
-          percentileBand:
-            total > 0 && selfEntry.funScore > 0
-              ? bandForIndex(selfIndex, total)
-              : "Rising",
-        }
+      ? (() => {
+          const badge = resolveLeaderboardBadge(selfEntry.member);
+          return {
+            displayName: selfEntry.member.name,
+            avatarId: selfEntry.member.avatarId,
+            funScore: selfEntry.funScore,
+            deltaPoints: period === "weekly" ? selfEntry.weeklyDelta : null,
+            progressPercent: period === "weekly" ? selfEntry.progressPercent : null,
+            percentileBand:
+              total > 0 && selfEntry.funScore > 0
+                ? bandForIndex(selfIndex, total)
+                : "Rising",
+            badgeId: badge.id,
+            badgeLabel: badge.label,
+            badgeEmoji: badge.emoji,
+          };
+        })()
       : null;
     return { top, self };
   };
@@ -1009,6 +1021,34 @@ interface CrewMember {
   role: CrewRole;
   title?: string;
   updatedAt: number;
+}
+
+type LeaderboardBadgeMeta = {
+  id: string;
+  label: string;
+  emoji: string;
+};
+
+const LEADERBOARD_BADGES = {
+  badge_sharp: { id: "badge_sharp", label: "Clean run", emoji: "🧼" },
+  badge_speedy: { id: "badge_speedy", label: "Quick hands", emoji: "⚡" },
+  badge_marksman: { id: "badge_marksman", label: "Sure shot", emoji: "🎯" },
+  badge_hot_streak: { id: "badge_hot_streak", label: "Hot streak", emoji: "🔥" },
+  badge_lightning: { id: "badge_lightning", label: "Turbo tap", emoji: "💨" },
+  badge_combo: { id: "badge_combo", label: "Combo wizard", emoji: "🌀" },
+  badge_blaze: { id: "badge_blaze", label: "Blaze mode", emoji: "🌋" },
+  badge_sniper: { id: "badge_sniper", label: "Laser eyes", emoji: "🧿" },
+} as const satisfies Record<string, LeaderboardBadgeMeta>;
+
+function resolveLeaderboardBadge(member: CrewMember): LeaderboardBadgeMeta {
+  const points = Math.max(member.seasonPoints ?? 0, member.weeklyPoints ?? 0);
+  if ((member.streak ?? 0) >= 8) return LEADERBOARD_BADGES.badge_blaze;
+  if ((member.streak ?? 0) >= 5) return LEADERBOARD_BADGES.badge_hot_streak;
+  if ((member.streak ?? 0) >= 3) return LEADERBOARD_BADGES.badge_sharp;
+  if ((member.correctCount ?? 0) >= 20) return LEADERBOARD_BADGES.badge_sniper;
+  if (points >= 2000) return LEADERBOARD_BADGES.badge_combo;
+  if (points >= 1000) return LEADERBOARD_BADGES.badge_lightning;
+  return LEADERBOARD_BADGES.badge_speedy;
 }
 
 interface CrewTeamStreak {

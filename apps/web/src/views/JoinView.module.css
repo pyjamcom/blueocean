@@ -760,9 +760,9 @@
 
 .top3Block {
   position: absolute;
-  left: 8px;
+  left: 20px;
   top: 863px;
-  width: 374px;
+  width: 350px;
   height: 232px;
   border-radius: 12px;
   background: #200042;
@@ -780,7 +780,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  align-self: center;
+  align-self: flex-start;
 }
 
 .top3Title {
@@ -813,7 +813,7 @@
   height: 152px;
   display: grid;
   gap: 4px;
-  align-self: center;
+  align-self: flex-start;
 }
 
 .top3Row {
@@ -929,11 +929,13 @@
 }
 
 .top3BadgePill {
-  width: 102px;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
   height: 24px;
   border: 1px solid #6e00e4;
   border-radius: 8px;
-  padding: 4px 8px;
+  padding: 4px;
   box-sizing: border-box;
   background: #46038c;
   -webkit-backdrop-filter: blur(100.7px) brightness(100%);
@@ -941,8 +943,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  flex: 0 0 102px;
+  gap: 0;
+  flex: 0 0 24px;
 }
 
 .top3BadgePillIcon {
@@ -953,11 +955,11 @@
   justify-content: center;
   font-size: 12px;
   line-height: 1;
-  color: #ffffff;
   flex-shrink: 0;
 }
 
 .top3BadgePillLabel {
+  display: none;
   max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -983,6 +985,7 @@
   background: linear-gradient(270deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
   box-sizing: border-box;
   flex: 0 0 51px;
+  margin-left: auto;
 }
 
 .scoreBadgeValue {
@@ -1971,6 +1974,7 @@
   .top3BadgePill {
     width: auto;
     min-width: 148px;
+    max-width: none;
     height: 32px;
     gap: 6px;
     padding: 6px 12px;
@@ -1984,6 +1988,7 @@
   }
 
   .top3BadgePillLabel {
+    display: inline;
     max-width: 100%;
     font-size: 18px;
     line-height: 23.4px;
@@ -1996,6 +2001,7 @@
     height: 32px;
     padding: 8px 12px;
     flex: 0 0 auto;
+    margin-left: 0;
   }
 
   .scoreBadgeValue {
@@ -2106,5 +2112,24 @@
   .downIconLogout {
     width: 24px;
     height: 24px;
+  }
+}
+
+@media (max-width: 1023px) and (hover: none) and (pointer: coarse) {
+  .top3BadgePill {
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    padding: 4px;
+    gap: 0;
+    flex: 0 0 24px;
+  }
+
+  .top3BadgePillLabel {
+    display: none;
+  }
+
+  .scoreBadge {
+    margin-left: auto;
   }
 }

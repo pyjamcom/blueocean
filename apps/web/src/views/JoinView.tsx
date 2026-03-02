@@ -41,7 +41,8 @@ const LAST_AUTH_PROVIDER_KEY = "escapers_last_auth_provider";
 const JOIN_HERO_TITLE = "Party Games & Meme Quiz - Join Escapers";
 const JOIN_HERO_SUBTITLE = "Funny party quiz with friends: icebreaker games and online group game rooms.";
 const JOIN_QUESTS_TITLE = "Quests for the game";
-const TOP3_BADGE_FALLBACK_LABEL = "Quick Hatch";
+const TOP3_BADGE_FALLBACK_LABEL = "Quick hands";
+const TOP3_BADGE_FALLBACK_EMOJI = "⚡";
 const DESKTOP_LAYOUT_QUERY = "(min-width: 1024px)";
 const JOIN_STATUS_CHIP_LAYOUT = [
   {
@@ -82,6 +83,8 @@ type JoinTopRow = {
   rank: number;
   name: string;
   score: string;
+  badgeLabel: string;
+  badgeEmoji: string;
   tier: "gold" | "silver" | "bronze";
   tall: boolean;
   avatarId?: string | null;
@@ -117,6 +120,9 @@ function normalizeJoinLeaderboardEntry(raw: any): JoinLeaderboardEntry | null {
     funScore,
     deltaPoints: raw.deltaPoints ?? raw.delta_points ?? null,
     progressPercent: raw.progressPercent ?? raw.progress_percent ?? null,
+    badgeId: raw.badgeId ?? raw.badge_id ?? null,
+    badgeLabel: raw.badgeLabel ?? raw.badge_label ?? null,
+    badgeEmoji: raw.badgeEmoji ?? raw.badge_emoji ?? null,
   };
 }
 
@@ -126,6 +132,8 @@ function buildFallbackTopRows(): JoinTopRow[] {
     rank: index + 1,
     name: entry.displayName,
     score: toWeeklyPercentLabel(entry),
+    badgeLabel: TOP3_BADGE_FALLBACK_LABEL,
+    badgeEmoji: TOP3_BADGE_FALLBACK_EMOJI,
     avatarId: entry.avatarId ?? null,
     tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
     tall: index === 0,
@@ -547,6 +555,8 @@ export default function JoinView() {
           rank: index + 1,
           name: entry.displayName,
           score: toWeeklyPercentLabel(entry),
+          badgeLabel: entry.badgeLabel ?? TOP3_BADGE_FALLBACK_LABEL,
+          badgeEmoji: entry.badgeEmoji ?? TOP3_BADGE_FALLBACK_EMOJI,
           avatarId: entry.avatarId,
           tier: index === 0 ? "gold" : index === 1 ? "silver" : "bronze",
           tall: index === 0,
@@ -1285,9 +1295,9 @@ export default function JoinView() {
                   </div>
                   <span className={styles.top3BadgePill}>
                     <span className={styles.top3BadgePillIcon} aria-hidden="true">
-                      ⚡
+                      {row.badgeEmoji}
                     </span>
-                    <span className={styles.top3BadgePillLabel}>{TOP3_BADGE_FALLBACK_LABEL}</span>
+                    <span className={styles.top3BadgePillLabel}>{row.badgeLabel}</span>
                   </span>
                   <span className={styles.scoreBadge}>
                     <span className={styles.scoreBadgeValue}>{row.score}</span>
