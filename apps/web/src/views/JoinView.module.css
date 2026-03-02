@@ -1,4 +1,5 @@
 .page {
+  --join-shell-width: min(390px, 100vw);
   position: relative;
   height: 100vh;
   min-height: 100vh;
@@ -25,7 +26,7 @@
 
 .join {
   position: relative;
-  width: min(390px, 100vw);
+  width: var(--join-shell-width);
   height: 1337px;
   overflow: visible;
   flex: 0 0 auto;
@@ -912,7 +913,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: min(390px, 100vw);
+  width: var(--join-shell-width);
   height: calc(76px + env(safe-area-inset-bottom));
   border-radius: 16px 16px 0 0;
   border: 0;
@@ -1375,12 +1376,13 @@
 
 @media (min-width: 1024px) {
   .page {
+    --join-shell-width: min(800px, calc(100vw - 80px));
     padding-bottom: 24px;
   }
 
   .join {
     width: min(800px, calc(100vw - 80px));
-    height: 1853px;
+    height: 1776px;
     background: transparent;
   }
 
@@ -1478,8 +1480,8 @@
     left: 0;
     top: 488px;
     width: 100%;
-    height: 237px;
-    padding: 71px 32px;
+    height: 160px;
+    padding: 32px;
     gap: 24px;
   }
 
@@ -1565,7 +1567,7 @@
 
   .questsBlock {
     left: 0;
-    top: 749px;
+    top: 672px;
     width: 100%;
     height: 494px;
     padding: 32px;
@@ -1711,7 +1713,7 @@
 
   .top3Block {
     left: 0;
-    top: 1267px;
+    top: 1190px;
     width: 100%;
     height: 344px;
     padding: 32px;
@@ -1781,7 +1783,7 @@
 
   .documentsRow {
     left: 50%;
-    top: 1635px;
+    top: 1558px;
     width: min(1200px, calc(100vw - 80px));
     height: 58px;
     gap: 24px;
@@ -1800,21 +1802,26 @@
   }
 
   .downBar {
-    position: absolute;
+    position: fixed;
     left: 50%;
-    top: 1717px;
+    right: auto;
+    top: auto;
+    bottom: 0;
     transform: translateX(-50%);
-    width: 640px;
-    height: 96px;
-    padding: 0;
-    z-index: 40;
-    display: block;
+    width: var(--join-shell-width);
+    max-width: 100vw;
+    height: calc(96px + env(safe-area-inset-bottom));
+    padding: 20px 32px calc(20px + env(safe-area-inset-bottom));
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     overflow: visible;
   }
 
   .downButton {
-    position: absolute;
-    top: 20px;
+    position: static;
+    top: auto;
     font-size: 20px;
     line-height: 24.2px;
     letter-spacing: -0.6px;
@@ -1822,28 +1829,28 @@
   }
 
   .downButtonCreate {
-    left: -48px;
-    width: 305px;
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
     height: 56px;
     padding: 8px 12px;
   }
 
   .downButtonJoin {
-    left: 265px;
-    width: 305px;
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
     height: 56px;
     padding: 8px;
   }
 
   .downButtonLogout {
-    left: 578px;
     width: 51px;
     height: 56px;
     padding: 12px;
   }
 
   .downButtonHelp {
-    left: 637px;
     width: 51px;
     height: 56px;
     padding: 12px;
