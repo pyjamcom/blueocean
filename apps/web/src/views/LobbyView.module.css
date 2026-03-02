@@ -1081,7 +1081,7 @@
 
   .avatarWrap {
     width: 166px;
-    height: 203px;
+    height: 173px;
   }
 
   .avatarFrame {
@@ -1100,22 +1100,37 @@
   .quickBadge {
     width: 166px;
     height: 37px;
-    margin-top: -6px;
+    margin-top: -30px;
+    border: 0;
     padding: 8px 16px;
+    background: rgb(39 39 39 / 70%);
     font-size: 16px;
     line-height: 20.8px;
+    letter-spacing: 0;
+    gap: 8px;
   }
 
   .quickBadgeIcon {
     width: 18px;
     height: 18px;
+    border: 1px solid rgb(255 255 255 / 52%);
+    background: rgb(11 12 27 / 78%);
+    font-size: 11px;
+    color: #ffe566;
+  }
+
+  .quickBadgeLabel {
+    line-height: 20.8px;
   }
 
   .avatarButton {
-    width: calc(100% - 64px);
-    height: 56px;
+    width: 50%;
+    max-width: 400px;
+    height: 64px;
+    border: 1px solid #7200ff;
+    background: linear-gradient(90deg, #830edc 0%, #380063 100%);
     font-size: 20px;
-    line-height: 24.2px;
+    line-height: 26px;
     letter-spacing: -0.6px;
   }
 

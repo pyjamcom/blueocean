@@ -241,6 +241,7 @@ export default function LobbyView() {
   const [groupInput, setGroupInput] = useState("");
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [crewLoading, setCrewLoading] = useState(false);
+  const [weeklyLeaderboardRank, setWeeklyLeaderboardRank] = useState<number | null>(null);
   const [info, setInfo] = useState<InfoPayload | null>(null);
   const [rewardModal, setRewardModal] = useState<RewardPayload | null>(null);
   const [qrVisible, setQrVisible] = useState(false);
@@ -273,6 +274,41 @@ export default function LobbyView() {
       active = false;
     };
   }, [apiBase, showGroup, engagement.group?.code]);
+
+  useEffect(() => {
+    if (designLock) {
+      setWeeklyLeaderboardRank(null);
+      return;
+    }
+    let active = true;
+    const url = new URL(`${apiBase}/leaderboard`);
+    url.searchParams.set("period", "weekly");
+    url.searchParams.set("scope", engagement.group ? "group" : "global");
+    if (engagement.group) {
+      url.searchParams.set("crewCode", engagement.group.code);
+    }
+    url.searchParams.set("playerId", selfId);
+    url.searchParams.set("limit", "1");
+
+    fetch(url.toString())
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!active) return;
+        const rankRaw = json?.self?.rank;
+        const nextRank =
+          typeof rankRaw === "number" && Number.isFinite(rankRaw) && rankRaw > 0
+            ? Math.floor(rankRaw)
+            : null;
+        setWeeklyLeaderboardRank(nextRank);
+      })
+      .catch(() => {
+        if (active) setWeeklyLeaderboardRank(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [apiBase, designLock, engagement.group, selfId]);
 
   const handleAvatarCycle = (direction: number) => {
     setAvatarIndex((prev) => (prev + direction + AVATAR_IDS.length) % AVATAR_IDS.length);
@@ -311,7 +347,9 @@ export default function LobbyView() {
   const badgeLabel = badgeLabelRaw.slice(0, 20);
   const profileTag = designLock
     ? "#124"
-    : `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
+    : weeklyLeaderboardRank
+      ? `#${weeklyLeaderboardRank}`
+      : "#--";
   const rankValue = designLock ? "3" : String(selfRank || Math.max(1, players.length || 3));
   const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
   const equippedBadge = equippedBadgeId

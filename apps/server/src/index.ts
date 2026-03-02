@@ -783,6 +783,11 @@ app.get("/leaderboard", async (req, res) => {
       const funScore = period === "season" ? seasonPoints : weeklyDelta;
       return { member, funScore, weeklyDelta, progressPercent };
     });
+    const rankedAll = [...scoredAll].sort((a, b) =>
+      period === "weekly"
+        ? b.progressPercent - a.progressPercent || b.weeklyDelta - a.weeklyDelta
+        : b.funScore - a.funScore,
+    );
     const scored =
       period === "weekly"
         ? scoredAll.filter((entry) => entry.weeklyDelta > 0 || entry.progressPercent > 0)
@@ -807,9 +812,10 @@ app.get("/leaderboard", async (req, res) => {
       };
     });
     const selfIndex = playerId
-      ? scoredAll.findIndex((entry) => entry.member.id === playerId)
+      ? rankedAll.findIndex((entry) => entry.member.id === playerId)
       : -1;
-    const selfEntry = selfIndex >= 0 ? scoredAll[selfIndex] : undefined;
+    const selfEntry = selfIndex >= 0 ? rankedAll[selfIndex] : undefined;
+    const selfRank = selfIndex >= 0 ? selfIndex + 1 : null;
     const self = selfEntry
       ? (() => {
           const badge = resolveLeaderboardBadge(selfEntry.member);
@@ -819,9 +825,10 @@ app.get("/leaderboard", async (req, res) => {
             funScore: selfEntry.funScore,
             deltaPoints: period === "weekly" ? selfEntry.weeklyDelta : null,
             progressPercent: period === "weekly" ? selfEntry.progressPercent : null,
+            rank: selfRank,
             percentileBand:
-              total > 0 && selfEntry.funScore > 0
-                ? bandForIndex(selfIndex, total)
+              rankedAll.length > 0 && selfEntry.funScore > 0
+                ? bandForIndex(selfIndex, rankedAll.length)
                 : "Rising",
             badgeId: badge.id,
             badgeLabel: badge.label,
