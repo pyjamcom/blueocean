@@ -1,4 +1,5 @@
 import { getOrCreateClientId, randomId } from "./ids";
+import { getApiBaseUrl } from "./api";
 
 const SESSION_KEY = "analytics_session";
 
@@ -13,7 +14,7 @@ function getSessionId() {
 }
 
 export function trackEvent(event: string, meta: Record<string, unknown> = {}) {
-  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiBase = getApiBaseUrl();
   const payload = {
     event,
     at: Date.now(),

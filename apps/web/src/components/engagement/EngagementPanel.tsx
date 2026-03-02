@@ -5,6 +5,7 @@ import frames from "../../engagement/frames.module.css";
 import styles from "./EngagementPanel.module.css";
 import { formatDayKey } from "../../engagement/time";
 import { avatarColor, getAvatarImageUrl } from "../../utils/avatar";
+import { getApiBaseUrl } from "../../utils/api";
 import { getOrCreateClientId } from "../../utils/ids";
 
 type PanelMode = "lobby" | "result";
@@ -259,7 +260,7 @@ const FRAME_INFO: Record<string, { title: string; lines: string[] }> = {
 
 export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   const { state, actions, flags } = useEngagement();
-  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiBase = getApiBaseUrl();
   const [showCosmetics, setShowCosmetics] = useState(false);
   const [showBadges, setShowBadges] = useState(false);
   const [showGroup, setShowGroup] = useState(false);

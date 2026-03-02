@@ -19,6 +19,7 @@ import { trackEvent } from "../utils/analytics";
 import { getOrCreateClientId } from "../utils/ids";
 import { getStoredAvatarId, randomAvatarId } from "../utils/avatar";
 import { getStoredPlayerName } from "../utils/playerName";
+import { getApiBaseUrl } from "../utils/api";
 
 interface EngagementActions {
   recordRoundComplete: (input: RoundCompleteInput) => void;
@@ -214,7 +215,7 @@ function updateQuestProgress(state: EngagementState, type: string, amount: numbe
 export function EngagementProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<EngagementState>(() => loadEngagementState());
   const [flags, setFlags] = useState(() => FEATURE_FLAGS);
-  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiBase = getApiBaseUrl();
   const lastSyncRef = useRef<{
     points: number;
     lastWeekPoints: number;

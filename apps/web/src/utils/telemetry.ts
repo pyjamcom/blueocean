@@ -1,8 +1,10 @@
+import { getApiBaseUrl } from "./api";
+
 const ERROR_THROTTLE_MS = 2000;
 let lastErrorAt = 0;
 
 function sendClientError(payload: Record<string, unknown>) {
-  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiBase = getApiBaseUrl();
   const body = JSON.stringify(payload);
   if (navigator.sendBeacon) {
     const blob = new Blob([body], { type: "application/json" });

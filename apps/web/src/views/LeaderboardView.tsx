@@ -5,6 +5,7 @@ import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
 import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
 import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
+import { getApiBaseUrl } from "../utils/api";
 import { FALLBACK_WEEKLY_LEADERBOARD, type LeaderboardEntry } from "../utils/leaderboard";
 import styles from "./LeaderboardView.module.css";
 
@@ -24,6 +25,9 @@ interface RowTone {
   rowGradient: string;
   rowBorder: string;
 }
+
+const LAST_GAME_TOP3_KEY = "escapers_last_game_top3";
+const LAST_GAME_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function normalizeEntry(raw: any): PublicLeaderboardEntry | null {
   if (!raw) return null;
@@ -85,6 +89,7 @@ export default function LeaderboardView() {
   const [period, setPeriod] = useState<Period>("weekly");
   const [data, setData] = useState<PublicLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [recentTop, setRecentTop] = useState<PublicLeaderboardEntry[]>([]);
   const [soundOn, setSoundOn] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("sound_enabled") !== "0";
@@ -96,9 +101,34 @@ export default function LeaderboardView() {
   }, [period]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(LAST_GAME_TOP3_KEY);
+      if (!raw) {
+        setRecentTop([]);
+        return;
+      }
+      const parsed = JSON.parse(raw) as {
+        savedAt?: number;
+        entries?: unknown[];
+      };
+      if (typeof parsed.savedAt !== "number" || Date.now() - parsed.savedAt > LAST_GAME_MAX_AGE_MS) {
+        setRecentTop([]);
+        return;
+      }
+      const entries = Array.isArray(parsed.entries)
+        ? parsed.entries.map((entry) => normalizeEntry(entry)).filter(Boolean)
+        : [];
+      setRecentTop(entries as PublicLeaderboardEntry[]);
+    } catch {
+      setRecentTop([]);
+    }
+  }, []);
+
+  useEffect(() => {
     let active = true;
     setLoading(true);
-    const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+    const apiBase = getApiBaseUrl();
     const url = new URL(`${apiBase}/leaderboard`);
     url.searchParams.set("period", period);
     url.searchParams.set("scope", engagement.group ? "group" : "global");
@@ -144,7 +174,26 @@ export default function LeaderboardView() {
     };
   }, [engagement.group, period]);
 
-  const topList = (data?.top?.length ? data.top : fallbackTop).slice(0, 200);
+  const baseTop = data?.top?.length ? data.top : fallbackTop;
+  const mergedTop = (() => {
+    if (!recentTop.length) return baseTop;
+    const seen = new Set<string>();
+    const out: PublicLeaderboardEntry[] = [];
+    for (const entry of recentTop) {
+      const key = `${entry.displayName}:${entry.avatarId ?? ""}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(entry);
+    }
+    for (const entry of baseTop) {
+      const key = `${entry.displayName}:${entry.avatarId ?? ""}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(entry);
+    }
+    return out;
+  })();
+  const topList = mergedTop.slice(0, 200);
 
   const computeProgressPercent = (current: number, previous: number) => {
     if (previous <= 0) return current > 0 ? 100 : 0;

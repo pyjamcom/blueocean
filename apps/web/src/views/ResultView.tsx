@@ -19,6 +19,8 @@ interface RowTone {
   rowBorder: string;
 }
 
+const LAST_GAME_TOP3_KEY = "escapers_last_game_top3";
+
 function rowTone(rank: number): RowTone {
   if (rank === 1) {
     return {
@@ -81,6 +83,25 @@ export default function ResultView() {
   useEffect(() => {
     trackEvent("leaderboard_view", { source: "result" });
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!leaderboard.length) return;
+    const entries = leaderboard.slice(0, 3).map((entry) => ({
+      displayName: entry.name,
+      avatarId: entry.avatarId ?? null,
+      funScore: entry.score,
+      deltaPoints: entry.score,
+      progressPercent: null,
+    }));
+    window.localStorage.setItem(
+      LAST_GAME_TOP3_KEY,
+      JSON.stringify({
+        savedAt: Date.now(),
+        entries,
+      }),
+    );
+  }, [leaderboard]);
 
   const shareUrl = "https://escapers.app/leaderboard";
   const shareTitle = LEADERBOARD_SHARE_TITLE;

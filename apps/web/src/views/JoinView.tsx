@@ -16,6 +16,7 @@ import { assetIds, getAssetUrl } from "../utils/assets";
 import { getOrCreateClientId, randomId } from "../utils/ids";
 import { FALLBACK_WEEKLY_LEADERBOARD, type LeaderboardEntry, toWeeklyPercentLabel } from "../utils/leaderboard";
 import { getStoredPlayerName, setStoredPlayerName } from "../utils/playerName";
+import { getApiBaseUrl } from "../utils/api";
 import {
   isFirebaseEnabled,
   onFirebaseUser,
@@ -324,7 +325,7 @@ export default function JoinView() {
   const downbarAction = params.get("downbar");
   const rawCode = (params.get("code") ?? codeFromPath)?.toUpperCase();
   const codeParam = rawCode && /^[A-Z0-9]{4}$/.test(rawCode) ? rawCode : undefined;
-  const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+  const apiBase = getApiBaseUrl();
   const apiOrigin = useMemo(() => {
     try {
       return new URL(apiBase).origin;
