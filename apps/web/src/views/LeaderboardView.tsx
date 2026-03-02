@@ -377,10 +377,7 @@ export default function LeaderboardView() {
               <h2 className={styles.cardTitle}>Share on:</h2>
               <div className={styles.shareRow}>
                 <button type="button" className={styles.shareButton} onClick={() => openShare(redditUrl, "reddit")} aria-label="Share on Reddit">
-                  <span className={styles.shareRedditIcon} aria-hidden="true">
-                    <img src="/figma/join/ant-design-google-circle-filled.svg" alt="" className={styles.shareRedditBg} />
-                    <img src="/figma/join/ic-baseline-reddit.svg" alt="" className={styles.shareRedditGlyph} />
-                  </span>
+                  <img src="/figma/join/ic-baseline-reddit.svg" alt="" className={styles.shareIconImage} />
                 </button>
                 <button
                   type="button"
