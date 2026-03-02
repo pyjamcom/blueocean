@@ -153,10 +153,13 @@
 }
 
 .metaPillBadge {
-  min-width: 63px;
+  min-width: 0;
+  max-width: calc(20ch + 16px);
   padding: 4px 8px;
   font-weight: 500;
   background: linear-gradient(270deg, #7300ff 0%, #0698f4 100%);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .metaIcon {
@@ -349,6 +352,7 @@
   width: 64px;
   height: 64px;
   border-radius: 12px;
+  position: relative;
   overflow: hidden;
   border: 1.5px solid rgb(255 255 255 / 35%);
   background: rgb(255 255 255 / 6%);
@@ -365,6 +369,10 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.playerAvatarBadgeMark {
+  pointer-events: none;
 }
 
 .playerName {

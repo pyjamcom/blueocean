@@ -43,6 +43,27 @@ const STATUS_CHIP_LAYOUT = [
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
+const BADGE_BY_ID = new Map(BADGE_DEFINITIONS.map((item) => [item.id, item]));
+
+type BadgeView = (typeof BADGE_DEFINITIONS)[number];
+
+function getBadgeById(id: string, fallbackId = "badge_speedy"): BadgeView {
+  return BADGE_BY_ID.get(id) ?? BADGE_BY_ID.get(fallbackId) ?? BADGE_DEFINITIONS[0]!;
+}
+
+function resolvePlayerBadge(
+  player: { streak?: number; correctCount?: number; score?: number },
+  equippedBadge: BadgeView | null,
+): BadgeView {
+  if (equippedBadge) return equippedBadge;
+  if ((player.streak ?? 0) >= 8) return getBadgeById("badge_blaze");
+  if ((player.streak ?? 0) >= 5) return getBadgeById("badge_hot_streak");
+  if ((player.streak ?? 0) >= 3) return getBadgeById("badge_sharp");
+  if ((player.correctCount ?? 0) >= 20) return getBadgeById("badge_sniper");
+  if ((player.score ?? 0) >= 2000) return getBadgeById("badge_combo");
+  if ((player.score ?? 0) >= 1000) return getBadgeById("badge_lightning");
+  return getBadgeById("badge_speedy");
+}
 
 type InfoPayload = Readonly<{
   title: string;
@@ -286,7 +307,8 @@ export default function LobbyView() {
   const selfAssetSrc = designLock
     ? PROFILE_AVATAR_FALLBACK
     : getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId) ?? PROFILE_AVATAR_FALLBACK;
-  const badgeLabel = designLock ? "WEEEP" : (selfPlayer?.name ?? "WEEEP").slice(0, 12);
+  const badgeLabelRaw = designLock ? "WEEEP" : (selfPlayer?.name ?? "WEEEP");
+  const badgeLabel = badgeLabelRaw.slice(0, 20);
   const profileTag = designLock
     ? "#124"
     : `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
@@ -467,7 +489,9 @@ export default function LobbyView() {
               <img src="/figma/lobby/325-2801.svg" alt="" aria-hidden="true" className={styles.metaIcon} />
               {rankValue}
             </span>
-            <span className={`${styles.metaPill} ${styles.metaPillBadge}`}>{badgeLabel}</span>
+            <span className={`${styles.metaPill} ${styles.metaPillBadge}`} title={badgeLabelRaw}>
+              {badgeLabel}
+            </span>
             <span className={`${styles.metaPill} ${styles.metaPillDark}`}>{profileTag}</span>
           </div>
         </section>
@@ -519,10 +543,17 @@ export default function LobbyView() {
                 ? PROFILE_AVATAR_FALLBACK
                 : getAvatarImageUrl(avatarKey) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
               const playerReady = player.ready === true;
+              const isSelfPlayer = player.id === playerId;
+              const playerBadge = designLock
+                ? getBadgeById(BADGE_DEFINITIONS[avatarIconIndex(player.id) % BADGE_DEFINITIONS.length]?.id ?? "badge_speedy")
+                : resolvePlayerBadge(player, isSelfPlayer ? equippedBadge : null);
               return (
                 <article key={player.id} className={styles.playerCard}>
                   <div className={`${styles.playerAvatarWrap} ${playerReady ? styles.playerAvatarWrapReady : ""}`}>
                     <img src={playerSrc} alt="" className={styles.playerAvatar} />
+                    <span className={`${styles.avatarBadgeMark} ${styles.playerAvatarBadgeMark}`} title={playerBadge.label} aria-hidden="true">
+                      {playerBadge.emoji}
+                    </span>
                   </div>
                   <span className={styles.playerName}>{player.name ?? "Player"}</span>
                 </article>
