@@ -1,9 +1,15 @@
 .page {
+  --lobby-shell-width: min(390px, 100vw);
   position: relative;
-  min-height: 100svh;
+  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
   background: linear-gradient(
     136.4764deg,
     #3e4186 0%,
@@ -36,9 +42,9 @@
 
 .lobby {
   position: relative;
-  width: min(390px, 100vw);
-  min-height: 100svh;
-  padding: calc(44px + env(safe-area-inset-top)) 20px calc(96px + env(safe-area-inset-bottom));
+  width: var(--lobby-shell-width);
+  min-height: 100vh;
+  padding: calc(44px + env(safe-area-inset-top)) 8px calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -92,7 +98,7 @@
 .card {
   position: relative;
   z-index: 1;
-  width: 350px;
+  width: 374px;
   max-width: 100%;
   border-radius: 12px;
   background: #200042;
@@ -269,7 +275,7 @@
 }
 
 .avatarButton {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   height: 44px;
   border: 1px solid #7300ff;
@@ -291,7 +297,7 @@
 }
 
 .listHeader {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   display: flex;
   align-items: center;
@@ -321,7 +327,7 @@
 }
 
 .playerGrid {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   min-height: 198px;
   max-height: 198px;
@@ -339,7 +345,7 @@
 }
 
 .playerCard {
-  width: 102px;
+  width: 110px;
   max-width: 100%;
   min-height: 93px;
   display: flex;
@@ -395,7 +401,7 @@
 }
 
 .questHeader {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   display: flex;
   align-items: flex-end;
@@ -425,7 +431,7 @@
 }
 
 .statusGrid {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   display: flex;
   align-items: flex-start;
@@ -483,7 +489,7 @@
 }
 
 .questRows {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -491,7 +497,7 @@
 }
 
 .questRow {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   min-height: 52px;
   border: 1px solid rgb(153 0 255 / 50%);
@@ -508,7 +514,7 @@
 }
 
 .questRowContent {
-  width: 294px;
+  width: 318px;
   max-width: 100%;
   min-height: 26px;
   display: flex;
@@ -575,7 +581,7 @@
 }
 
 .questProgressBar {
-  width: 294px;
+  width: 318px;
   max-width: 100%;
   height: 2px;
   display: grid;
@@ -598,7 +604,7 @@
 }
 
 .actionRow {
-  width: 318px;
+  width: 342px;
   max-width: 100%;
   display: flex;
   align-items: center;
@@ -648,7 +654,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: min(390px, 100vw);
+  width: var(--lobby-shell-width);
   z-index: 20;
 }
 
@@ -1020,13 +1026,255 @@
   background: linear-gradient(119deg, #f4a106 0%, #6c4702 100%);
 }
 
+@media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  .page {
+    --lobby-shell-width: min(800px, calc(100vw - 80px));
+    padding-bottom: 24px;
+  }
+
+  .lobby {
+    width: var(--lobby-shell-width);
+    padding: 40px 0 24px;
+    gap: 16px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 32px;
+  }
+
+  .startCard {
+    min-height: 120px;
+  }
+
+  .startTitle {
+    font-size: 24px;
+    line-height: 31.2px;
+    letter-spacing: -0.72px;
+  }
+
+  .metaRow {
+    width: auto;
+    gap: 8px;
+  }
+
+  .metaPill {
+    height: 32px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .metaPillDark,
+  .metaPillBadge {
+    padding: 8px 12px;
+  }
+
+  .metaIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .avatarCard {
+    min-height: 320px;
+  }
+
+  .avatarWrap {
+    width: 166px;
+    height: 203px;
+  }
+
+  .avatarFrame {
+    width: 166px;
+    height: 166px;
+  }
+
+  .avatarBadgeMark {
+    right: 8px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  .quickBadge {
+    width: 166px;
+    height: 37px;
+    margin-top: -6px;
+    padding: 8px 16px;
+    font-size: 16px;
+    line-height: 20.8px;
+  }
+
+  .quickBadgeIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .avatarButton {
+    width: calc(100% - 64px);
+    height: 56px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .listHeader,
+  .playerGrid,
+  .questHeader,
+  .statusGrid,
+  .questRows,
+  .actionRow {
+    width: calc(100% - 64px);
+    max-width: none;
+  }
+
+  .listTitle,
+  .questTitle {
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: -0.6px;
+  }
+
+  .listCount,
+  .questTotal {
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .playerGrid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: 120px;
+    max-height: none;
+    column-gap: 8px;
+    row-gap: 16px;
+  }
+
+  .playerCard {
+    width: 100%;
+    min-height: 120px;
+    gap: 12px;
+  }
+
+  .playerAvatarWrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+  }
+
+  .playerName {
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: -0.6px;
+  }
+
+  .questRow {
+    width: 100%;
+    min-height: 72px;
+    padding: 12px 16px;
+  }
+
+  .questRowContent {
+    width: 100%;
+    min-height: 35px;
+  }
+
+  .questName {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .questActions {
+    width: auto;
+    gap: 8px;
+  }
+
+  .questReward,
+  .questClaim {
+    height: 35px;
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
+  }
+
+  .questReward {
+    width: auto;
+    min-width: 86px;
+    padding: 6px 12px;
+  }
+
+  .questClaim {
+    width: auto;
+    min-width: 96px;
+    padding: 6px 24px;
+  }
+
+  .questProgressBar {
+    width: 100%;
+  }
+
+  .actionChip {
+    height: 40px;
+    padding: 8px 16px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .quickRoundButton {
+    width: auto;
+    height: 40px;
+    padding: 8px 16px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .downBar {
+    width: var(--lobby-shell-width);
+    z-index: 50;
+  }
+
+  .buttonsRow {
+    min-height: 96px;
+    grid-template-columns: 51px 51px minmax(0, 1fr) 51px;
+    padding: 20px 32px max(20px, calc(20px + env(safe-area-inset-bottom)));
+  }
+
+  .iconButton {
+    width: 51px;
+    height: 56px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .joinButton {
+    width: auto;
+    height: 56px;
+    padding: 8px 12px;
+    gap: 12px;
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+  }
+
+  .joinIcon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 @media (max-width: 420px) {
   .card,
   .startCard,
   .avatarCard,
   .playerListCard,
   .questCard {
-    width: calc(100vw - 40px);
+    width: calc(100vw - 16px);
   }
 
   .startTitle,

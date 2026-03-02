@@ -1,18 +1,30 @@
 .wrap {
+  --leaderboard-shell-width: min(390px, 100vw);
+  position: relative;
+  height: 100vh;
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  background: #090715;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: linear-gradient(
+    136.4764deg,
+    rgb(62 65 134) 0%,
+    rgb(12 8 34) 30.2884608507%,
+    rgb(12 8 34) 75%,
+    rgb(133 62 134) 100%
+  );
   color: #ffffff;
 }
 
 .phone {
   position: relative;
-  width: min(390px, 100vw);
-  height: min(844px, 100dvh);
-  min-height: 844px;
-  overflow: hidden;
+  width: var(--leaderboard-shell-width);
+  min-height: 100vh;
+  overflow: visible;
   background: linear-gradient(
     136.4764deg,
     rgb(62 65 134) 0%,
@@ -430,6 +442,8 @@
   padding: 4px;
   box-sizing: border-box;
   background: #46038c;
+  -webkit-backdrop-filter: blur(100.7px) brightness(100%);
+  backdrop-filter: blur(100.7px) brightness(100%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -445,6 +459,7 @@
   justify-content: center;
   font-size: 12px;
   line-height: 1;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
@@ -492,9 +507,15 @@
 }
 
 @media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  .wrap {
+    --leaderboard-shell-width: min(800px, calc(100vw - 80px));
+    padding-bottom: 24px;
+  }
+
   .phone {
-    width: min(800px, calc(100vw - 80px));
+    width: var(--leaderboard-shell-width);
     min-height: 100dvh;
+    background: transparent;
   }
 
   .header {
@@ -612,7 +633,7 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: min(390px, 100vw);
+  width: var(--leaderboard-shell-width);
   height: calc(76px + env(safe-area-inset-bottom));
   border-radius: 16px 16px 0 0;
   background: #111111;
@@ -727,6 +748,56 @@
   width: 20px;
   height: 20px;
   background-image: url("/figma/join/mynaui-logout.svg");
+}
+
+@media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  .downBar {
+    width: var(--leaderboard-shell-width);
+    height: calc(96px + env(safe-area-inset-bottom));
+    padding: 20px 32px calc(20px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+
+  .downButton {
+    font-size: 20px;
+    line-height: 24.2px;
+    letter-spacing: -0.6px;
+    gap: 12px;
+  }
+
+  .downButtonCreate,
+  .downButtonJoin {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+    height: 56px;
+  }
+
+  .downButtonCreate {
+    padding: 8px 12px;
+  }
+
+  .downButtonJoin {
+    padding: 8px;
+  }
+
+  .downButtonSound,
+  .downButtonLogout {
+    width: 51px;
+    height: 56px;
+    padding: 12px;
+  }
+
+  .downIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .downIconSound,
+  .downIconLogout {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 @media (max-width: 420px) {
