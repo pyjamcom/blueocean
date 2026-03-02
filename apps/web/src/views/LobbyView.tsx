@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import engageStyles from "../components/engagement/EngagementPanel.module.css";
 import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
-import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
+import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS } from "../engagement/config";
 import { diffDays, formatDayKey } from "../engagement/time";
 import {
   AVATAR_IDS,
@@ -34,12 +34,12 @@ const DESIGN_QUEST_ROWS = [
   { id: "design-q-3", title: "2 hits", reward: "+Buddy", claim: "Claim", progressLabel: "3/5", activeSegments: 3 },
 ] as const;
 const STATUS_CHIP_LAYOUT = [
-  { id: "season", width: 69 },
-  { id: "crew-code", width: 89 },
-  { id: "crew-streak", width: 58 },
-  { id: "shield", width: 59 },
-  { id: "notifications", width: 69 },
-  { id: "streak", width: 58 },
+  { id: "season", icon: "⏳", width: 69 },
+  { id: "crew-code", icon: "👥", width: 89 },
+  { id: "crew-streak", icon: "🤝", width: 58 },
+  { id: "shield", icon: "🛡️", width: 59 },
+  { id: "notifications", icon: "🔔", width: 69 },
+  { id: "streak", icon: "🔥", width: 58 },
 ] as const;
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
@@ -317,13 +317,9 @@ export default function LobbyView() {
   const todayKey = formatDayKey(new Date());
   const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
   const notificationsEnabled = engagement.notifications.enabled;
-  const sourceQuests = engagement.quests.daily.length
-    ? engagement.quests.daily.slice(0, 3)
-    : QUEST_DEFINITIONS.slice(0, 3).map((quest) => ({ ...quest, progress: 0 }));
-  const completedQuests = (engagement.quests.daily.length ? engagement.quests.daily : sourceQuests).filter(
-    (quest) => (quest.progress ?? 0) >= quest.target,
-  ).length;
-  const questTotalCount = engagement.quests.daily.length || 5;
+  const sourceQuests = engagement.quests.daily.slice(0, 3);
+  const completedQuests = sourceQuests.filter((quest) => (quest.progress ?? 0) >= quest.target).length;
+  const questTotalCount = sourceQuests.length;
   const questTotal = designLock ? "5/5" : `${clamp(completedQuests, 0, questTotalCount)}/${questTotalCount}`;
 
   const dynamicStatusChips = STATUS_CHIP_LAYOUT.map((chip) => {
@@ -556,6 +552,7 @@ export default function LobbyView() {
                   openInfo(chip.info);
                 }}
               >
+                <span className={styles.statusIcon}>{chip.icon}</span>
                 <span className={styles.statusValue}>{chip.value}</span>
               </button>
             ))}
