@@ -137,6 +137,57 @@
   letter-spacing: -0.54px;
 }
 
+.vibeIdentity {
+  width: 318px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vibeAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  position: relative;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.vibeAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vibeBadgeMark {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(11, 12, 27, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.vibeName {
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.42px;
+}
+
 .progressTrack {
   position: relative;
   width: 318px;
@@ -301,7 +352,7 @@
 .rankChip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 0;
   color: #ffffff;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -334,6 +385,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
+  position: relative;
   font-family: Geist, sans-serif;
   font-size: 15px;
   font-weight: 500;
@@ -364,7 +416,7 @@
   height: 24px;
   border-radius: 8px;
   padding: 4px 8px;
-  background: linear-gradient(90deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
+  background: linear-gradient(270deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
   display: inline-grid;
   place-items: center;
   color: #fffdfd;

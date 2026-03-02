@@ -443,6 +443,21 @@
   filter: brightness(0.82);
 }
 
+.profileBadgeMark {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(11, 12, 27, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
 .avatarFrameChip {
   display: none;
 }

@@ -56,7 +56,7 @@ function isDesignPreviewMode() {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return params.get("mode") === "design" || params.get("design") === "1" || window.location.pathname === "/lobby";
+  return params.get("mode") === "design" || params.get("design") === "1";
 }
 
 function ExternalPageRedirect({ to }: { to: string }) {
@@ -206,7 +206,6 @@ function StageNavigator() {
     const isLeaderboardPath = location.pathname === "/leaderboard";
     const isLobbyPath = location.pathname === "/lobby";
     const isLobbyDesignPath = isLobbyPath && new URLSearchParams(location.search).get("mode") === "design";
-    const isLobbyNoRoomPreview = isLobbyPath && !roomCode;
     const isManagerPath = location.pathname === "/manager";
     const isLegalPath = location.pathname.startsWith("/legal");
     const isSystemPath =
@@ -222,7 +221,6 @@ function StageNavigator() {
 
     if (
       isLobbyDesignPath ||
-      isLobbyNoRoomPreview ||
       (isDebugPath && allowPreview) ||
       isLeaderboardPath ||
       isLegalPath ||

@@ -45,6 +45,7 @@ export function buildDefaultState(now = new Date()): EngagementState {
     badges: {
       unlocked: [],
       lastEarned: null,
+      equipped: null,
     },
     quests: {
       daily: buildDailyQuests(today),
@@ -95,6 +96,11 @@ export function loadEngagementState(): EngagementState {
     if (!parsed || typeof parsed !== "object") {
       return base;
     }
+    const mergedBadges = { ...base.badges, ...(parsed.badges ?? {}) };
+    const resolvedBadgeEquipped =
+      typeof mergedBadges.equipped === "string" || mergedBadges.equipped === null
+        ? mergedBadges.equipped
+        : mergedBadges.lastEarned ?? null;
     return {
       ...base,
       ...parsed,
@@ -103,7 +109,10 @@ export function loadEngagementState(): EngagementState {
       week: { ...base.week, ...(parsed.week ?? {}) },
       streak: { ...base.streak, ...(parsed.streak ?? {}) },
       teamStreak: { ...base.teamStreak, ...(parsed.teamStreak ?? {}) },
-      badges: { ...base.badges, ...(parsed.badges ?? {}) },
+      badges: {
+        ...mergedBadges,
+        equipped: resolvedBadgeEquipped,
+      },
       quests: {
         ...base.quests,
         ...(parsed.quests ?? {}),

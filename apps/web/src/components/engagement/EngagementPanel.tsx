@@ -356,6 +356,7 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
   }, [state.season.endDay]);
 
   const quests = state.quests.daily.filter((quest) => !dismissedQuestIds.includes(quest.id)).slice(0, 2);
+  const equippedBadgeId = state.badges.equipped ?? state.badges.lastEarned ?? null;
   const equippedFrame = state.cosmetics.equipped.frame ?? null;
   const isSeasonStart = formatDayKey(new Date()) === state.season.startDay;
   const showQuest = mode === "lobby";
@@ -681,19 +682,25 @@ export default function EngagementPanel({ mode }: { mode: PanelMode }) {
             <div className={styles.grid}>
               {BADGE_DEFINITIONS.map((badge) => {
                 const unlocked = state.badges.unlocked.includes(badge.id);
+                const active = equippedBadgeId === badge.id;
                 const rareClass = badge.rarity === "rare" ? styles.gridRare : "";
                 return (
                   <button
                     key={badge.id}
                     type="button"
-                    className={`${styles.gridItem} ${rareClass} ${unlocked ? "" : styles.gridLocked}`}
+                    className={`${styles.gridItem} ${rareClass} ${unlocked ? "" : styles.gridLocked} ${
+                      active ? styles.gridActive : ""
+                    }`}
                     onClick={() => {
-                      const info = BADGE_INFO[badge.id];
-                      if (info) {
-                        openInfo(info);
-                      } else {
-                        openInfo({ title: badge.label, lines: [] });
-                      }
+                      const base = BADGE_INFO[badge.id] ?? { title: badge.label, lines: [] };
+                      const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                      const onCta = unlocked
+                        ? () => {
+                            actions.equipBadge(active ? null : badge.id);
+                            closeInfo();
+                          }
+                        : undefined;
+                      openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
                     }}
                   >
                     <span className={styles.badgeEmoji}>{badge.emoji}</span>

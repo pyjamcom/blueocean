@@ -153,6 +153,22 @@
   position: relative;
 }
 
+.avatarBadgeMark {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(11, 12, 27, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+  z-index: 2;
+}
+
 .avatarImage {
   position: absolute;
   left: 50%;
@@ -193,6 +209,19 @@
   font-weight: 500;
   line-height: 15.6px;
   box-sizing: border-box;
+}
+
+.quickBadgeIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(11, 12, 27, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .quickBadgeLabel {

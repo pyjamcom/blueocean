@@ -199,9 +199,8 @@ export default function LobbyView() {
   const isOwner = engagement.group?.role === "owner";
   const designLock = useMemo(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get("mode") === "design") return true;
-    return location.pathname === "/lobby" && !roomCode;
-  }, [location.pathname, location.search, roomCode]);
+    return params.get("mode") === "design" || params.get("design") === "1";
+  }, [location.search]);
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -292,10 +291,14 @@ export default function LobbyView() {
     ? "#124"
     : `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
   const rankValue = designLock ? "3" : String(selfRank || Math.max(1, players.length || 3));
+  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadge = equippedBadgeId
+    ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
+    : null;
 
   const quickBadgeLabel = designLock
     ? "Quick Hatch"
-    : BADGE_DEFINITIONS.find((item) => item.id === engagement.badges.lastEarned)?.label ?? "Quick Hatch";
+    : equippedBadge?.label ?? "Quick Hatch";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -308,18 +311,8 @@ export default function LobbyView() {
     if (designLock) {
       return DESIGN_PLAYER_LIST;
     }
-    if (players.length) {
-      return players.slice(0, 12);
-    }
-    return [
-      { id: "fallback-1", avatarId: selfAvatar, name: "Ярик", ready: false, score: 0, correctCount: 0, streak: 0 },
-      { id: "fallback-2", avatarId: selfAvatar, name: "Павел Невский", ready: false, score: 0, correctCount: 0, streak: 0 },
-      { id: "fallback-3", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
-      { id: "fallback-4", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
-      { id: "fallback-5", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
-      { id: "fallback-6", avatarId: selfAvatar, name: "Имя клевое", ready: false, score: 0, correctCount: 0, streak: 0 },
-    ];
-  }, [designLock, players, selfAvatar]);
+    return players.slice(0, 12);
+  }, [designLock, players]);
 
   const todayKey = formatDayKey(new Date());
   const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
@@ -391,7 +384,7 @@ export default function LobbyView() {
   for (let i = 0; i < styleFrameItems.length; i += 2) {
     styleRows.push(styleFrameItems.slice(i, i + 2));
   }
-  const playerListCount = designLock ? 12 : displayPlayers.length;
+  const playerListCount = designLock ? 12 : players.length;
 
   const joinUrl = roomCode ? `https://d0.do/${roomCode}` : "";
 
@@ -486,8 +479,16 @@ export default function LobbyView() {
           >
             <div className={styles.avatarFrame}>
               <img src={selfAssetSrc} alt="" className={styles.avatarImage} />
+              {equippedBadge ? (
+                <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                  {equippedBadge.emoji}
+                </span>
+              ) : null}
             </div>
             <span className={styles.quickBadge}>
+              <span className={styles.quickBadgeIcon} aria-hidden="true">
+                {equippedBadge?.emoji ?? "⚡"}
+              </span>
               <span className={styles.quickBadgeLabel}>{quickBadgeLabel}</span>
             </span>
           </div>
@@ -507,12 +508,13 @@ export default function LobbyView() {
           </header>
           <div className={styles.playerGrid}>
             {displayPlayers.map((player) => {
+              const avatarKey = player.avatarId ?? player.id;
               const playerAssetId = lobbyAssets.length
-                ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
+                ? lobbyAssets[avatarIconIndex(avatarKey) % lobbyAssets.length]
                 : undefined;
               const playerSrc = designLock
                 ? PROFILE_AVATAR_FALLBACK
-                : getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
+                : getAvatarImageUrl(avatarKey) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
               const playerReady = player.ready === true;
               return (
                 <article key={player.id} className={styles.playerCard}>
@@ -768,19 +770,25 @@ export default function LobbyView() {
             <div className={engageStyles.grid}>
               {BADGE_DEFINITIONS.map((badge) => {
                 const unlocked = engagement.badges.unlocked.includes(badge.id);
+                const active = equippedBadgeId === badge.id;
                 const rareClass = badge.rarity === "rare" ? engageStyles.gridRare : "";
                 return (
                   <button
                     key={badge.id}
                     type="button"
-                    className={`${engageStyles.gridItem} ${rareClass} ${unlocked ? "" : engageStyles.gridLocked}`}
+                    className={`${engageStyles.gridItem} ${rareClass} ${unlocked ? "" : engageStyles.gridLocked} ${
+                      active ? engageStyles.gridActive : ""
+                    }`}
                     onClick={() => {
-                      const badgeInfo = BADGE_INFO[badge.id];
-                      if (badgeInfo) {
-                        openInfo(badgeInfo);
-                      } else {
-                        openInfo({ title: badge.label, lines: [] });
-                      }
+                      const base = BADGE_INFO[badge.id] ?? { title: badge.label, lines: [] };
+                      const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                      const onCta = unlocked
+                        ? () => {
+                            actions.equipBadge(active ? null : badge.id);
+                            closeInfo();
+                          }
+                        : undefined;
+                      openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
                     }}
                   >
                     <span className={engageStyles.badgeEmoji}>{badge.emoji}</span>

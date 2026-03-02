@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEngagement } from "../context/EngagementContext";
+import { BADGE_DEFINITIONS } from "../engagement/config";
 import { useRoom } from "../context/RoomContext";
 import {
   AVATAR_IDS,
@@ -13,6 +15,7 @@ import styles from "./JoinWaitView.module.css";
 export default function JoinWaitView() {
   const navigate = useNavigate();
   const { roomCode, players, playerId, setAvatar, setReady, resetRoom } = useRoom();
+  const { state: engagement } = useEngagement();
   const touchStart = useRef<number | null>(null);
   const [avatarIndex, setAvatarIndex] = useState(() => {
     const stored = getStoredAvatarId();
@@ -34,6 +37,10 @@ export default function JoinWaitView() {
   const badgeLabel = (selfPlayer?.name ?? "WEEEP").slice(0, 12);
   const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
   const selfAvatarSrc = getAvatarImageUrl(selfAvatar);
+  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadge = equippedBadgeId
+    ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
+    : null;
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -88,6 +95,11 @@ export default function JoinWaitView() {
               aria-label={selfAvatar}
             >
               {selfAvatarSrc ? <img src={selfAvatarSrc} alt="" className={styles.avatarImage} /> : null}
+              {equippedBadge ? (
+                <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                  {equippedBadge.emoji}
+                </span>
+              ) : null}
             </div>
             <button type="button" className={styles.chooseAvatar} onClick={() => handleAvatarCycle(1)}>
               Choose avatar

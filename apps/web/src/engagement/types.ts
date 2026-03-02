@@ -72,6 +72,7 @@ export interface TeamStreak {
 export interface EngagementBadges {
   unlocked: string[];
   lastEarned?: string | null;
+  equipped?: string | null;
 }
 
 export interface EngagementQuests {

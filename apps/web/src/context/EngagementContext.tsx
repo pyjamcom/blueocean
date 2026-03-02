@@ -25,6 +25,7 @@ interface EngagementActions {
   recordRoundComplete: (input: RoundCompleteInput) => void;
   recordAnswerResult: (input: AnswerResultInput) => void;
   recordScoreDelta: (points: number) => void;
+  equipBadge: (badgeId: string | null) => void;
   equipCosmetic: (frameId: string | null) => void;
   markCosmeticSeen: () => void;
   setNotificationsEnabled: (enabled: boolean) => void;
@@ -150,6 +151,7 @@ function unlockBadge(state: EngagementState, badgeId: string) {
       ...state.badges,
       unlocked: [...state.badges.unlocked, badgeId],
       lastEarned: badgeId,
+      equipped: state.badges.equipped ?? badgeId,
     },
   };
   const cosmetics = COSMETIC_UNLOCKS[badgeId] ?? [];
@@ -422,6 +424,23 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
     });
   }, []);
 
+  const equipBadge = useCallback((badgeId: string | null) => {
+    if (badgeId && !BADGE_DEFINITIONS.some((item) => item.id === badgeId)) return;
+    setState((prev) => {
+      if (badgeId && !prev.badges.unlocked.includes(badgeId)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        badges: {
+          ...prev.badges,
+          equipped: badgeId,
+        },
+      };
+    });
+    trackEvent("badge_equipped", { badgeId });
+  }, []);
+
   const equipCosmetic = useCallback((frameId: string | null) => {
     setState((prev) => ({
       ...prev,
@@ -644,6 +663,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
         recordRoundComplete,
         recordAnswerResult,
         recordScoreDelta,
+        equipBadge,
         equipCosmetic,
         markCosmeticSeen,
         setNotificationsEnabled,
@@ -661,6 +681,7 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       recordAnswerResult,
       recordRoundComplete,
       recordScoreDelta,
+      equipBadge,
       equipCosmetic,
       markCosmeticSeen,
       setNotificationsEnabled,

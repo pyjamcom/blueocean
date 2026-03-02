@@ -889,6 +889,10 @@ export default function JoinView() {
         : null;
   const todayKey = formatDayKey(new Date());
   const notificationsEnabled = engagement.notifications.enabled;
+  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadge = equippedBadgeId
+    ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
+    : null;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
   const equippedFrameLabel = equippedFrame ? (COSMETIC_LABEL_BY_ID.get(equippedFrame) ?? "Quick Hatch") : "Quick Hatch";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
@@ -1063,6 +1067,11 @@ export default function JoinView() {
           aria-hidden="true"
         >
           <img src={selectedAvatarSrc} alt="" />
+          {equippedBadge ? (
+            <span className={styles.profileBadgeMark} title={equippedBadge.label} aria-hidden="true">
+              {equippedBadge.emoji}
+            </span>
+          ) : null}
         </div>
         <button
           type="button"
@@ -1080,7 +1089,7 @@ export default function JoinView() {
           aria-label="Open style"
         >
           <span className={styles.avatarFrameChipIcon} aria-hidden="true">
-            ⚡
+            {equippedBadge?.emoji ?? "⚡"}
           </span>
           <span>{equippedFrameLabel}</span>
         </button>
@@ -1408,6 +1417,7 @@ export default function JoinView() {
               <div className={engageStyles.grid}>
                 {BADGE_DEFINITIONS.map((badge) => {
                   const unlocked = engagement.badges.unlocked.includes(badge.id);
+                  const active = equippedBadgeId === badge.id;
                   const rareClass = badge.rarity === "rare" ? engageStyles.gridRare : "";
                   return (
                     <button
@@ -1415,14 +1425,17 @@ export default function JoinView() {
                       type="button"
                       className={`${engageStyles.gridItem} ${rareClass} ${
                         unlocked ? "" : engageStyles.gridLocked
-                      }`}
+                      } ${active ? engageStyles.gridActive : ""}`}
                       onClick={() => {
-                        const badgeInfo = BADGE_INFO[badge.id];
-                        if (badgeInfo) {
-                          openInfo(badgeInfo);
-                        } else {
-                          openInfo({ title: badge.label, lines: [] });
-                        }
+                        const base = BADGE_INFO[badge.id] ?? { title: badge.label, lines: [] };
+                        const ctaLabel = unlocked ? (active ? "Unequip" : "Equip") : undefined;
+                        const onCta = unlocked
+                          ? () => {
+                              actions.equipBadge(active ? null : badge.id);
+                              closeInfo();
+                            }
+                          : undefined;
+                        openInfo({ title: base.title, lines: base.lines, ctaLabel, onCta });
                       }}
                     >
                       <span className={engageStyles.badgeEmoji}>{badge.emoji}</span>

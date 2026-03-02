@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEngagement } from "../context/EngagementContext";
+import { BADGE_DEFINITIONS } from "../engagement/config";
 import { getOrCreateClientId } from "../utils/ids";
 import { trackEvent } from "../utils/analytics";
 import { JOIN_META_DESCRIPTION, LEADERBOARD_SHARE_TITLE } from "../utils/seo";
@@ -239,6 +240,11 @@ export default function LeaderboardView() {
   const selfMetric = metricValue(selfEntry);
   const selfRatio = Math.min(1, selfMetric / maxMetric);
   const selfPercent = period === "weekly" ? Math.round(selfMetric) : Math.round(selfRatio * 100);
+  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadge = equippedBadgeId
+    ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
+    : null;
+  const selfAvatarSrc = getAvatarImageUrl(selfEntry.avatarId ?? selfEntry.displayName);
 
   useEffect(() => {
     const score = selfEntry?.funScore ?? 0;
@@ -334,6 +340,20 @@ export default function LeaderboardView() {
               <div className={styles.vibeRow}>
                 <span>Your vibe:</span>
                 <span>{loading ? "..." : `${selfPercent}%`}</span>
+              </div>
+              <div className={styles.vibeIdentity}>
+                <span
+                  className={styles.vibeAvatar}
+                  style={{ background: avatarColor(selfEntry.avatarId ?? selfEntry.displayName) }}
+                >
+                  {selfAvatarSrc ? <img src={selfAvatarSrc} alt="" /> : <span>{selfEntry.displayName.charAt(0).toUpperCase()}</span>}
+                  {equippedBadge ? (
+                    <span className={styles.vibeBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                      {equippedBadge.emoji}
+                    </span>
+                  ) : null}
+                </span>
+                <span className={styles.vibeName}>{selfEntry.displayName}</span>
               </div>
               <div className={styles.progressTrack}>
                 <span className={styles.progressFill} style={{ width: `${selfRatio * 100}%` }} />

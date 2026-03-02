@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BADGE_DEFINITIONS } from "../engagement/config";
+import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
 import { trackEvent } from "../utils/analytics";
 import { avatarColor, getAvatarImageUrl } from "../utils/avatar";
@@ -47,7 +49,8 @@ function rowTone(rank: number): RowTone {
 }
 
 export default function ResultView() {
-  const { players, phase, resetRoom } = useRoom();
+  const { players, phase, playerId, resetRoom } = useRoom();
+  const { state: engagement } = useEngagement();
   const navigate = useNavigate();
   const isFinal = phase === "end";
   const [shareHint, setShareHint] = useState<string | null>(null);
@@ -110,6 +113,10 @@ export default function ResultView() {
   const shareTextReddit = "I just hit the podium in Escapers 🏆 Meme quiz chaos — come play:";
   const shareTextInstagram = "I just hit the podium in Escapers 🏆 Meme quiz chaos. Join us:";
   const shareTextTwitch = "Podium secured in Escapers 🏆 Meme quiz chaos. Hop in:";
+  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadge = equippedBadgeId
+    ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
+    : null;
 
   const setHint = (message: string) => {
     setShareHint(message);
@@ -188,7 +195,7 @@ export default function ResultView() {
     navigate("/join", { replace: true });
   };
 
-  const renderAvatar = (entry: ResultEntry | null, className?: string) => {
+  const renderAvatar = (entry: ResultEntry | null, className?: string, showBadge = false) => {
     if (!entry) {
       return <span className={`${styles.avatar} ${className}`} />;
     }
@@ -199,6 +206,11 @@ export default function ResultView() {
         style={{ background: avatarColor(entry.avatarId ?? entry.playerId) }}
       >
         {src ? <img src={src} alt="" /> : <span>{entry.name.charAt(0).toUpperCase()}</span>}
+        {showBadge && equippedBadge ? (
+          <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+            {equippedBadge.emoji}
+          </span>
+        ) : null}
       </span>
     );
   };
@@ -211,7 +223,7 @@ export default function ResultView() {
   ) => (
     <div className={`${styles.podiumLane} ${laneClass ?? ""}`}>
       <div className={styles.podiumAvatarBlock}>
-        {renderAvatar(entry, styles.avatarLarge)}
+        {renderAvatar(entry, styles.avatarLarge, entry?.playerId === playerId)}
         <span className={styles.podiumName}>{entry?.name ?? "—"}</span>
       </div>
       <div className={`${styles.podiumBadge} ${badgeClass ?? ""}`}>
@@ -230,6 +242,7 @@ export default function ResultView() {
   ) => {
     const avatarSrc = entry?.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
     const fallbackChar = (entry?.name ?? "—").charAt(0).toUpperCase();
+    const isSelf = entry?.playerId === playerId;
     return (
       <article className={`${styles.finalPodiumLane} ${laneClass ?? ""}`}>
         <div className={`${styles.finalAvatarShell} ${shellClass ?? ""}`}>
@@ -238,6 +251,11 @@ export default function ResultView() {
             style={{ background: avatarColor(entry?.avatarId ?? entry?.playerId ?? rankLabel) }}
           >
             {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{fallbackChar}</span>}
+            {isSelf && equippedBadge ? (
+              <span className={styles.finalAvatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                {equippedBadge.emoji}
+              </span>
+            ) : null}
           </div>
           <span className={styles.finalRankChip}>{rankLabel}</span>
         </div>
@@ -326,8 +344,13 @@ export default function ResultView() {
               <div className={styles.finalListRows}>
                 {finalRows.map((entry) => {
                   const avatarSrc = entry.avatarId ? getAvatarImageUrl(entry.avatarId) : null;
+                  const tone = rowTone(entry.rank);
                   return (
-                    <article key={entry.playerId} className={styles.finalListRow}>
+                    <article
+                      key={entry.playerId}
+                      className={styles.finalListRow}
+                      style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
+                    >
                       <div className={styles.finalRowLeft}>
                         <div className={styles.finalRankBlock}>
                           <span className={styles.finalRankIcon} aria-hidden="true" />
@@ -339,6 +362,11 @@ export default function ResultView() {
                             style={{ background: avatarColor(entry.avatarId ?? entry.playerId) }}
                           >
                             {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{entry.name.charAt(0)}</span>}
+                            {entry.playerId === playerId && equippedBadge ? (
+                              <span className={styles.finalAvatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                                {equippedBadge.emoji}
+                              </span>
+                            ) : null}
                           </span>
                           <span className={styles.finalRowName}>{entry.name}</span>
                         </div>
@@ -457,13 +485,21 @@ export default function ResultView() {
                     style={{ background: tone.rowGradient, borderColor: tone.rowBorder }}
                   >
                     <div className={styles.rowLeft}>
-                      <span className={styles.rankChip}>🏆 {entry.rank}</span>
+                      <span className={styles.rankChip}>
+                        <span className={styles.rankIcon} aria-hidden="true" />
+                        <span className={styles.rankNumber}>{entry.rank}</span>
+                      </span>
                       <div className={styles.rowIdentity}>
                         <span
                           className={styles.avatar}
                           style={{ background: avatarColor(entry.avatarId ?? entry.playerId) }}
                         >
                           {avatarSrc ? <img src={avatarSrc} alt="" /> : <span>{entry.name.charAt(0)}</span>}
+                          {entry.playerId === playerId && equippedBadge ? (
+                            <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
+                              {equippedBadge.emoji}
+                            </span>
+                          ) : null}
                         </span>
                         <span className={styles.rowName}>{entry.name}</span>
                       </div>
