@@ -763,7 +763,7 @@
   left: 8px;
   top: 863px;
   width: 374px;
-  height: 236px;
+  height: 232px;
   border-radius: 12px;
   background: #200042;
   display: flex;
@@ -775,11 +775,12 @@
 }
 
 .top3Header {
-  width: 342px;
+  width: 318px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  align-self: center;
 }
 
 .top3Title {
@@ -808,26 +809,28 @@
 }
 
 .top3Rows {
-  width: 342px;
-  height: 156px;
+  width: 318px;
+  height: 152px;
   display: grid;
   gap: 4px;
+  align-self: center;
 }
 
 .top3Row {
-  width: 342px;
+  width: 318px;
   height: 48px;
   border-radius: 9px;
   border: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 12px;
   padding: 8px;
   box-sizing: border-box;
 }
 
 .top3RowTall {
-  height: 52px;
+  height: 48px;
 }
 
 .top3RowGold {
@@ -849,12 +852,17 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 125px;
+  flex: 0 0 125px;
+  min-width: 0;
 }
 
 .rankChip {
   display: inline-flex;
   align-items: center;
   gap: 0;
+  width: 23px;
+  flex: 0 0 23px;
   color: #ffffff;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -881,14 +889,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.playerMeta {
+  width: 79px;
   min-width: 0;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  flex: 0 0 79px;
 }
 
 .playerAvatar {
@@ -902,8 +905,8 @@
 }
 
 .top3RowTall .playerAvatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .playerAvatar img {
@@ -913,7 +916,7 @@
 }
 
 .playerName {
-  max-width: 132px;
+  max-width: 39px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -925,71 +928,37 @@
   letter-spacing: -0.48px;
 }
 
-.playerBadgeMeta {
-  max-width: 132px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.playerBadgeMetaIcon {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 52%);
-  background: rgb(11 12 27 / 78%);
-  display: inline-grid;
-  place-items: center;
-  font-size: 9px;
-  line-height: 1;
-  color: #ffe566;
-  flex-shrink: 0;
-}
-
-.playerBadgeMetaLabel {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgb(255 255 255 / 70%);
-  font-family: Geist, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14.3px;
-  letter-spacing: -0.33px;
-}
-
-.scoreBadge {
-  min-width: 64px;
-  max-width: 132px;
+.top3BadgePill {
+  width: 102px;
   height: 24px;
-  border-radius: 8px;
   border: 1px solid #6e00e4;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  background: #46038c;
+  -webkit-backdrop-filter: blur(100.7px) brightness(100%);
+  backdrop-filter: blur(100.7px) brightness(100%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 2px 6px 2px 4px;
-  background: #46038c;
-  box-sizing: border-box;
+  flex: 0 0 102px;
 }
 
-.scoreBadgeIcon {
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 52%);
-  background: rgb(11 12 27 / 78%);
-  display: inline-grid;
-  place-items: center;
-  font-size: 10px;
+.top3BadgePillIcon {
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
   line-height: 1;
-  color: #ffe566;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
-.scoreBadgeValue {
-  max-width: 100%;
+.top3BadgePillLabel {
+  max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -998,6 +967,35 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 15.6px;
+  letter-spacing: 0;
+}
+
+.scoreBadge {
+  min-width: 51px;
+  max-width: 51px;
+  height: 24px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: linear-gradient(270deg, rgb(115 0 255 / 25%) 0%, rgb(6 153 244 / 25%) 100%);
+  box-sizing: border-box;
+  flex: 0 0 51px;
+}
+
+.scoreBadgeValue {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.42px;
+  font-family: Inter, sans-serif;
 }
 
 .partyPingToast {
@@ -1934,6 +1932,9 @@
   }
 
   .top3RowLeft {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: 24px;
   }
 
@@ -1955,6 +1956,11 @@
     height: 48px;
   }
 
+  .playerIdentity {
+    width: auto;
+    flex: 0 1 auto;
+  }
+
   .playerName {
     max-width: min(240px, 34vw);
     font-size: 20px;
@@ -1962,39 +1968,34 @@
     letter-spacing: -0.6px;
   }
 
-  .playerMeta {
-    gap: 3px;
-  }
-
-  .playerBadgeMeta {
-    max-width: min(240px, 34vw);
+  .top3BadgePill {
+    width: auto;
+    min-width: 148px;
+    height: 32px;
     gap: 6px;
+    padding: 6px 12px;
+    flex: 0 0 auto;
   }
 
-  .playerBadgeMetaIcon {
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
-  }
-
-  .playerBadgeMetaLabel {
+  .top3BadgePillIcon {
+    width: 16px;
+    height: 16px;
     font-size: 16px;
-    line-height: 20.8px;
-    letter-spacing: -0.48px;
+  }
+
+  .top3BadgePillLabel {
+    max-width: 100%;
+    font-size: 18px;
+    line-height: 23.4px;
+    letter-spacing: -0.54px;
   }
 
   .scoreBadge {
     min-width: 88px;
     max-width: 160px;
     height: 32px;
-    gap: 6px;
-    padding: 4px 10px 4px 6px;
-  }
-
-  .scoreBadgeIcon {
-    width: 22px;
-    height: 22px;
-    font-size: 13px;
+    padding: 8px 12px;
+    flex: 0 0 auto;
   }
 
   .scoreBadgeValue {

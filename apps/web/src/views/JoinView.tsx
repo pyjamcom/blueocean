@@ -1280,21 +1280,16 @@ export default function JoinView() {
                       <span className={styles.playerAvatar} aria-hidden="true">
                         <img src={rowAvatarSrc} alt="" />
                       </span>
-                      <span className={styles.playerMeta}>
-                        <span className={styles.playerName}>{row.name}</span>
-                        <span className={styles.playerBadgeMeta}>
-                          <span className={styles.playerBadgeMetaIcon} aria-hidden="true">
-                            ⚡
-                          </span>
-                          <span className={styles.playerBadgeMetaLabel}>{TOP3_BADGE_FALLBACK_LABEL}</span>
-                        </span>
-                      </span>
+                      <span className={styles.playerName}>{row.name}</span>
                     </div>
                   </div>
-                  <span className={styles.scoreBadge}>
-                    <span className={styles.scoreBadgeIcon} aria-hidden="true">
+                  <span className={styles.top3BadgePill}>
+                    <span className={styles.top3BadgePillIcon} aria-hidden="true">
                       ⚡
                     </span>
+                    <span className={styles.top3BadgePillLabel}>{TOP3_BADGE_FALLBACK_LABEL}</span>
+                  </span>
+                  <span className={styles.scoreBadge}>
                     <span className={styles.scoreBadgeValue}>{row.score}</span>
                   </span>
                 </article>
