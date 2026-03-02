@@ -161,8 +161,9 @@ export default function LobbyView() {
     : `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
   const rankValue = designLock ? "3" : String(selfRank || Math.max(1, players.length || 3));
 
-  const quickBadgeLabel =
-    BADGE_DEFINITIONS.find((item) => item.id === engagement.badges.lastEarned)?.label ?? "Quick Hatch";
+  const quickBadgeLabel = designLock
+    ? "Quick Hatch"
+    : BADGE_DEFINITIONS.find((item) => item.id === engagement.badges.lastEarned)?.label ?? "Quick Hatch";
 
   useEffect(() => {
     setStoredAvatarId(selfAvatar);
@@ -286,13 +287,14 @@ export default function LobbyView() {
   };
 
   const openInfo = (payload: InfoPayload) => {
+    if (designLock) return;
     setRewardModal(null);
     setQrVisible(false);
     setInfo(payload);
   };
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${designLock ? styles.designLock : ""}`}>
       <main className={styles.lobby}>
         <img className={styles.baseBackgroundImage} src="/figma/lobby/325-2796.png" alt="" aria-hidden="true" />
 
@@ -311,9 +313,9 @@ export default function LobbyView() {
         <section className={`${styles.card} ${styles.avatarCard}`}>
           <div
             className={styles.avatarWrap}
-            onPointerDown={handlePointerDown}
-            onPointerUp={handlePointerUp}
-            onClick={() => handleAvatarCycle(1)}
+            onPointerDown={designLock ? undefined : handlePointerDown}
+            onPointerUp={designLock ? undefined : handlePointerUp}
+            onClick={designLock ? undefined : () => handleAvatarCycle(1)}
             aria-label={selfAvatar}
           >
             <div className={styles.avatarFrame}>
@@ -324,7 +326,11 @@ export default function LobbyView() {
               <span className={styles.quickBadgeLabel}>{quickBadgeLabel}</span>
             </span>
           </div>
-          <button type="button" className={styles.avatarButton} onClick={() => handleAvatarCycle(1)}>
+          <button
+            type="button"
+            className={styles.avatarButton}
+            onClick={designLock ? undefined : () => handleAvatarCycle(1)}
+          >
             Choose avatar
           </button>
         </section>
@@ -368,6 +374,7 @@ export default function LobbyView() {
                 className={styles.statusChip}
                 style={{ width: `${chip.width}px` }}
                 onClick={() => {
+                  if (designLock) return;
                   if (chip.id === "notifications" && flags.notifications) {
                     actions.setNotificationsEnabled(!notificationsEnabled);
                   }
@@ -387,6 +394,7 @@ export default function LobbyView() {
                 type="button"
                 className={styles.questRow}
                 onClick={() => {
+                  if (designLock) return;
                   setInfo(null);
                   setQrVisible(false);
                   setRewardModal({
@@ -421,7 +429,7 @@ export default function LobbyView() {
                 key={chip.id}
                 type="button"
                 className={styles.actionChip}
-                onClick={() => openInfo(chip.info)}
+                onClick={designLock ? undefined : () => openInfo(chip.info)}
               >
                 {chip.label}
               </button>
@@ -435,7 +443,7 @@ export default function LobbyView() {
           <button
             type="button"
             className={`${styles.iconButton} ${styles.iconButtonNeutral}`}
-            onClick={() => setQrVisible(true)}
+            onClick={designLock ? undefined : () => setQrVisible(true)}
             disabled={!designLock && !roomCode}
             aria-label="Show room QR"
           >
@@ -443,8 +451,11 @@ export default function LobbyView() {
           </button>
           <button
             type="button"
-            className={`${styles.iconButton} ${soundOn ? styles.iconButtonNeutral : styles.iconButtonDanger}`}
+            className={`${styles.iconButton} ${
+              designLock ? styles.iconButtonNeutral : soundOn ? styles.iconButtonNeutral : styles.iconButtonDanger
+            }`}
             onClick={() => {
+              if (designLock) return;
               setSoundOn((prev) => {
                 const next = !prev;
                 if (typeof window !== "undefined") {
@@ -465,7 +476,7 @@ export default function LobbyView() {
           <button
             type="button"
             className={styles.joinButton}
-            onClick={() => setReady(!selfReady)}
+            onClick={designLock ? undefined : () => setReady(!selfReady)}
             aria-label="Join game"
           >
             <img src="/figma/lobby/325-2888.svg" alt="" className={styles.joinIcon} aria-hidden="true" />
@@ -475,6 +486,7 @@ export default function LobbyView() {
             type="button"
             className={`${styles.iconButton} ${styles.iconButtonDanger}`}
             onClick={() => {
+              if (designLock) return;
               resetRoom();
               navigate("/join", { replace: true });
             }}

@@ -204,6 +204,8 @@ function StageNavigator() {
     const path = location.pathname.toUpperCase();
     const isDebugPath = location.pathname.startsWith("/debug");
     const isLeaderboardPath = location.pathname === "/leaderboard";
+    const isLobbyDesignPath =
+      location.pathname === "/lobby" && new URLSearchParams(location.search).get("mode") === "design";
     const isManagerPath = location.pathname === "/manager";
     const isLegalPath = location.pathname.startsWith("/legal");
     const isSystemPath =
@@ -217,7 +219,13 @@ function StageNavigator() {
     const allowPreview = searchParams.get("preview") === "1";
     const isPublicRoom = roomCode === "PLAY";
 
-    if ((isDebugPath && allowPreview) || isLeaderboardPath || isLegalPath || isSystemPath) {
+    if (
+      isLobbyDesignPath ||
+      (isDebugPath && allowPreview) ||
+      isLeaderboardPath ||
+      isLegalPath ||
+      isSystemPath
+    ) {
       return;
     }
 
