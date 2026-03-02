@@ -195,24 +195,8 @@
   box-sizing: border-box;
 }
 
-.quickBadgeIcon {
-  width: 11px;
-  height: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.quickBadgeIconSvg {
-  width: 11px;
-  height: 14px;
-  display: block;
-  color: #fff;
-}
-
 .quickBadgeLabel {
-  max-width: 86px;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -387,26 +371,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   padding: 4px 12px;
   box-sizing: border-box;
   cursor: pointer;
-}
-
-.statusIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  color: rgb(255 255 255 / 70%);
-}
-
-.statusIconSvg {
-  width: 16px;
-  height: 16px;
-  display: block;
 }
 
 .statusValue {

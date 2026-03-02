@@ -56,7 +56,7 @@ function isDesignPreviewMode() {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return params.get("mode") === "design" || params.get("design") === "1";
+  return params.get("mode") === "design" || params.get("design") === "1" || window.location.pathname === "/lobby";
 }
 
 function ExternalPageRedirect({ to }: { to: string }) {
@@ -204,8 +204,9 @@ function StageNavigator() {
     const path = location.pathname.toUpperCase();
     const isDebugPath = location.pathname.startsWith("/debug");
     const isLeaderboardPath = location.pathname === "/leaderboard";
-    const isLobbyDesignPath =
-      location.pathname === "/lobby" && new URLSearchParams(location.search).get("mode") === "design";
+    const isLobbyPath = location.pathname === "/lobby";
+    const isLobbyDesignPath = isLobbyPath && new URLSearchParams(location.search).get("mode") === "design";
+    const isLobbyNoRoomPreview = isLobbyPath && !roomCode;
     const isManagerPath = location.pathname === "/manager";
     const isLegalPath = location.pathname.startsWith("/legal");
     const isSystemPath =
@@ -221,6 +222,7 @@ function StageNavigator() {
 
     if (
       isLobbyDesignPath ||
+      isLobbyNoRoomPreview ||
       (isDebugPath && allowPreview) ||
       isLeaderboardPath ||
       isLegalPath ||
