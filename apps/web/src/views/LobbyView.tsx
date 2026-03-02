@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEngagement } from "../context/EngagementContext";
 import { useRoom } from "../context/RoomContext";
 import { BADGE_DEFINITIONS, COSMETIC_DEFINITIONS, QUEST_DEFINITIONS } from "../engagement/config";
@@ -16,6 +16,19 @@ import { assetIds, getAssetUrl } from "../utils/assets";
 import styles from "./LobbyView.module.css";
 
 const PROFILE_AVATAR_FALLBACK = "/figma/lobby/767-1567.png";
+const DESIGN_PLAYER_LIST = [
+  { id: "design-1", avatarId: "avatar_raccoon_dj", name: "Ярик", ready: false, score: 0, correctCount: 0, streak: 0 },
+  { id: "design-2", avatarId: "avatar_raccoon_dj", name: "Павел Невский", ready: false, score: 0, correctCount: 0, streak: 0 },
+  { id: "design-3", avatarId: "avatar_raccoon_dj", name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+  { id: "design-4", avatarId: "avatar_raccoon_dj", name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+  { id: "design-5", avatarId: "avatar_raccoon_dj", name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
+  { id: "design-6", avatarId: "avatar_raccoon_dj", name: "Имя клевое", ready: false, score: 0, correctCount: 0, streak: 0 },
+];
+const DESIGN_QUEST_ROWS = [
+  { id: "design-q-1", title: "2 hits", reward: "+Buddy", claim: "Claim", progressLabel: "3/5", activeSegments: 3 },
+  { id: "design-q-2", title: "2 hits", reward: "+Buddy", claim: "Claim", progressLabel: "3/5", activeSegments: 3 },
+  { id: "design-q-3", title: "2 hits", reward: "+Buddy", claim: "Claim", progressLabel: "3/5", activeSegments: 3 },
+] as const;
 const STATUS_CHIP_LAYOUT = [
   { id: "season", icon: "⏳", width: 69 },
   { id: "crew-code", icon: "👥", width: 89 },
@@ -78,9 +91,14 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export default function LobbyView() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { roomCode, players, playerId, setReady, setAvatar, resetRoom } = useRoom();
   const { state: engagement, actions, flags } = useEngagement();
+  const designLock = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("mode") === "design";
+  }, [location.search]);
   const lobbyAssets = assetIds.length ? assetIds : [];
   const [soundOn, setSoundOn] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -134,11 +152,14 @@ export default function LobbyView() {
   const selfAssetId = lobbyAssets.length
     ? lobbyAssets[avatarIconIndex(selfAvatar) % lobbyAssets.length] ?? lobbyAssets[0]
     : undefined;
-  const selfAssetSrc =
-    getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId) ?? PROFILE_AVATAR_FALLBACK;
-  const badgeLabel = (selfPlayer?.name ?? "WEEEP").slice(0, 12);
-  const profileTag = `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
-  const rankValue = String(selfRank || Math.max(1, players.length || 3));
+  const selfAssetSrc = designLock
+    ? PROFILE_AVATAR_FALLBACK
+    : getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId) ?? PROFILE_AVATAR_FALLBACK;
+  const badgeLabel = designLock ? "WEEEP" : (selfPlayer?.name ?? "WEEEP").slice(0, 12);
+  const profileTag = designLock
+    ? "#124"
+    : `#${(playerId ?? "124").replace(/[^0-9]/g, "").slice(-3) || "124"}`;
+  const rankValue = designLock ? "3" : String(selfRank || Math.max(1, players.length || 3));
 
   const quickBadgeLabel =
     BADGE_DEFINITIONS.find((item) => item.id === engagement.badges.lastEarned)?.label ?? "Quick Hatch";
@@ -151,6 +172,9 @@ export default function LobbyView() {
   }, [roomCode, selfAvatar, setAvatar]);
 
   const displayPlayers = useMemo(() => {
+    if (designLock) {
+      return DESIGN_PLAYER_LIST;
+    }
     if (players.length) {
       return players.slice(0, 12);
     }
@@ -162,7 +186,7 @@ export default function LobbyView() {
       { id: "fallback-5", avatarId: selfAvatar, name: "Иван Иванович", ready: false, score: 0, correctCount: 0, streak: 0 },
       { id: "fallback-6", avatarId: selfAvatar, name: "Имя клевое", ready: false, score: 0, correctCount: 0, streak: 0 },
     ];
-  }, [players, selfAvatar]);
+  }, [designLock, players, selfAvatar]);
 
   const todayKey = formatDayKey(new Date());
   const seasonDaysLeft = Math.max(0, diffDays(todayKey, engagement.season.endDay) + 1);
@@ -173,10 +197,10 @@ export default function LobbyView() {
   const completedQuests = (engagement.quests.daily.length ? engagement.quests.daily : sourceQuests).filter(
     (quest) => (quest.progress ?? 0) >= quest.target,
   ).length;
-  const questTotalCount = (engagement.quests.daily.length || 5);
-  const questTotal = `${clamp(completedQuests, 0, questTotalCount)}/${questTotalCount}`;
+  const questTotalCount = engagement.quests.daily.length || 5;
+  const questTotal = designLock ? "5/5" : `${clamp(completedQuests, 0, questTotalCount)}/${questTotalCount}`;
 
-  const statusChips = STATUS_CHIP_LAYOUT.map((chip) => {
+  const dynamicStatusChips = STATUS_CHIP_LAYOUT.map((chip) => {
     if (chip.id === "season") {
       return { ...chip, value: `${seasonDaysLeft}d`, info: CHIP_INFO.season };
     }
@@ -198,8 +222,18 @@ export default function LobbyView() {
     }
     return { ...chip, value: String(engagement.streak.current), info: CHIP_INFO.streak };
   });
+  const statusChips = designLock
+    ? [
+        { ...STATUS_CHIP_LAYOUT[0], value: "4d", info: CHIP_INFO.season },
+        { ...STATUS_CHIP_LAYOUT[1], value: "G7YP", info: CHIP_INFO.crew },
+        { ...STATUS_CHIP_LAYOUT[2], value: "5", info: CHIP_INFO.crewStreak },
+        { ...STATUS_CHIP_LAYOUT[3], value: "3", info: CHIP_INFO.shield },
+        { ...STATUS_CHIP_LAYOUT[4], value: "off", info: CHIP_INFO.reminder },
+        { ...STATUS_CHIP_LAYOUT[5], value: "5", info: CHIP_INFO.streak },
+      ]
+    : dynamicStatusChips;
 
-  const questRows = sourceQuests.map((quest) => {
+  const dynamicQuestRows = sourceQuests.map((quest) => {
     const target = Math.max(1, quest.target ?? 1);
     const progress = clamp(quest.progress ?? 0, 0, target);
     const rewardLabel = quest.rewardId ? COSMETIC_LABEL_BY_ID.get(quest.rewardId) : null;
@@ -213,12 +247,14 @@ export default function LobbyView() {
       activeSegments: clamp(Math.round((progress / target) * 5), 0, 5),
     };
   });
+  const questRows = designLock ? DESIGN_QUEST_ROWS : dynamicQuestRows;
 
   const actionChips = [
     { id: "badges", label: "Badges", info: CHIP_INFO.badges },
     { id: "crew", label: "Crew", info: CHIP_INFO.crew },
     { id: "style", label: "Style", info: CHIP_INFO.style },
   ] as const;
+  const playerListCount = designLock ? 12 : displayPlayers.length;
 
   const joinUrl = roomCode ? `https://d0.do/${roomCode}` : "";
 
@@ -296,14 +332,16 @@ export default function LobbyView() {
         <section className={`${styles.card} ${styles.playerListCard}`}>
           <header className={styles.listHeader}>
             <h2 className={styles.listTitle}>Player list</h2>
-            <span className={styles.listCount}>{displayPlayers.length}</span>
+            <span className={styles.listCount}>{playerListCount}</span>
           </header>
           <div className={styles.playerGrid}>
             {displayPlayers.map((player) => {
               const playerAssetId = lobbyAssets.length
                 ? lobbyAssets[avatarIconIndex(player.avatarId) % lobbyAssets.length]
                 : undefined;
-              const playerSrc = getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
+              const playerSrc = designLock
+                ? PROFILE_AVATAR_FALLBACK
+                : getAvatarImageUrl(player.avatarId) ?? getAssetUrl(playerAssetId) ?? PROFILE_AVATAR_FALLBACK;
               return (
                 <article key={player.id} className={styles.playerCard}>
                   <div className={styles.playerAvatarWrap}>
@@ -398,7 +436,7 @@ export default function LobbyView() {
             type="button"
             className={`${styles.iconButton} ${styles.iconButtonNeutral}`}
             onClick={() => setQrVisible(true)}
-            disabled={!roomCode}
+            disabled={!designLock && !roomCode}
             aria-label="Show room QR"
           >
             <img src="/figma/lobby/325-2880.svg" alt="" className={styles.icon} aria-hidden="true" />
@@ -418,7 +456,7 @@ export default function LobbyView() {
             aria-label={soundOn ? "Disable sound" : "Enable sound"}
           >
             <img
-              src={soundOn ? "/figma/join/lets-icons-sound-max-fill.svg" : "/figma/lobby/325-2883.svg"}
+              src={designLock ? "/figma/lobby/325-2883.svg" : soundOn ? "/figma/join/lets-icons-sound-max-fill.svg" : "/figma/lobby/325-2883.svg"}
               alt=""
               className={styles.icon}
               aria-hidden="true"
