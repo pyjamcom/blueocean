@@ -454,8 +454,15 @@ export default function LobbyView() {
 
   return (
     <div className={`${styles.page} ${designLock ? styles.designLock : ""}`}>
+      <div className={styles.pageDesktopBackground} aria-hidden="true" />
+      <div className={styles.pageDesktopGradient} aria-hidden="true" />
       <main className={styles.lobby}>
-        <img className={styles.baseBackgroundImage} src="/figma/lobby/325-2796.png" alt="" aria-hidden="true" />
+        <img
+          className={`${styles.baseBackgroundImage} ${styles.baseBackgroundImageMobile}`}
+          src="/figma/join/image-931.png"
+          alt=""
+          aria-hidden="true"
+        />
 
         <section className={`${styles.card} ${styles.startCard}`}>
           <h1 className={styles.startTitle}>Waiting for other players</h1>

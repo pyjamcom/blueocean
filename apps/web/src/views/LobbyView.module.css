@@ -13,6 +13,11 @@
   );
 }
 
+.pageDesktopBackground,
+.pageDesktopGradient {
+  display: none;
+}
+
 .designLock {
   min-height: 1174px;
   height: 1174px;
@@ -43,16 +48,45 @@
 
 .baseBackgroundImage {
   position: absolute;
-  left: 50%;
-  top: 1px;
-  width: 562px;
-  height: 843px;
-  transform: translateX(-50%);
+  left: -39.487179%;
+  top: 0.080515%;
+  width: 178.461538%;
+  height: 84.138486%;
   opacity: 0.1;
   pointer-events: none;
   user-select: none;
-  object-fit: fill;
+  object-fit: cover;
   z-index: 0;
+}
+
+.baseBackgroundImageMobile {
+  display: block;
+}
+
+@media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  .baseBackgroundImageMobile {
+    display: none;
+  }
+
+  .pageDesktopBackground {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 1280px;
+    display: block;
+    background-image: url("/figma/lobby/lobby-bg-desktop.png");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .pageDesktopGradient {
+    display: none;
+  }
 }
 
 .card {
