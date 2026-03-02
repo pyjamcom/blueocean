@@ -1380,7 +1380,7 @@
 
   .join {
     width: min(800px, calc(100vw - 80px));
-    height: 1853px;
+    height: 1690px;
     background: transparent;
   }
 
@@ -1478,7 +1478,7 @@
     left: 0;
     top: 488px;
     width: 100%;
-    height: 237px;
+    height: 160px;
     padding: 32px;
     gap: 24px;
   }
@@ -1565,9 +1565,9 @@
 
   .questsBlock {
     left: 0;
-    top: 749px;
+    top: 672px;
     width: 100%;
-    height: 494px;
+    height: 410px;
     padding: 32px;
     gap: 24px;
   }
@@ -1711,7 +1711,7 @@
 
   .top3Block {
     left: 0;
-    top: 1267px;
+    top: 1106px;
     width: 100%;
     height: 344px;
     padding: 32px;
@@ -1781,7 +1781,7 @@
 
   .documentsRow {
     left: 50%;
-    top: 1635px;
+    top: 1474px;
     width: min(1200px, calc(100vw - 80px));
     height: 58px;
     gap: 24px;
