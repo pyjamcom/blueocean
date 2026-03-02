@@ -871,6 +871,7 @@ export default function JoinView() {
   const todayKey = formatDayKey(new Date());
   const notificationsEnabled = engagement.notifications.enabled;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
+  const equippedFrameLabel = equippedFrame ? (COSMETIC_LABEL_BY_ID.get(equippedFrame) ?? "Quick Hatch") : "Quick Hatch";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
   const sourceJoinQuests = engagement.quests.daily.length
     ? engagement.quests.daily.slice(0, 2)
@@ -1041,6 +1042,20 @@ export default function JoinView() {
           onClick={handleAvatarClick}
           aria-label="Choose avatar"
         />
+        <button
+          type="button"
+          className={styles.avatarFrameChip}
+          onClick={() => {
+            closeSheets();
+            setShowCosmetics(true);
+          }}
+          aria-label="Open style"
+        >
+          <span className={styles.avatarFrameChipIcon} aria-hidden="true">
+            ⚡
+          </span>
+          <span>{equippedFrameLabel}</span>
+        </button>
         <button
           type="button"
           className={styles.profileButtonHotspot}
