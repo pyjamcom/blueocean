@@ -1047,6 +1047,10 @@ const LEADERBOARD_BADGES = {
   badge_sniper: { id: "badge_sniper", label: "Laser eyes", emoji: "🧿" },
 } as const satisfies Record<string, LeaderboardBadgeMeta>;
 
+const ROOM_BADGE_BY_ID = new Map<string, LeaderboardBadgeMeta>(
+  Object.values(LEADERBOARD_BADGES).map((badge) => [badge.id, badge]),
+);
+
 function resolveLeaderboardBadge(member: CrewMember): LeaderboardBadgeMeta {
   const points = Math.max(member.seasonPoints ?? 0, member.weeklyPoints ?? 0);
   if ((member.streak ?? 0) >= 8) return LEADERBOARD_BADGES.badge_blaze;
@@ -1055,6 +1059,32 @@ function resolveLeaderboardBadge(member: CrewMember): LeaderboardBadgeMeta {
   if ((member.correctCount ?? 0) >= 20) return LEADERBOARD_BADGES.badge_sniper;
   if (points >= 2000) return LEADERBOARD_BADGES.badge_combo;
   if (points >= 1000) return LEADERBOARD_BADGES.badge_lightning;
+  return LEADERBOARD_BADGES.badge_speedy;
+}
+
+function normalizeRoomBadgeId(raw: unknown): string | null {
+  if (typeof raw !== "string") {
+    return null;
+  }
+  return ROOM_BADGE_BY_ID.has(raw) ? raw : null;
+}
+
+function resolveRoomBadge(player: {
+  badgeId?: string | null;
+  score?: number;
+  correctCount?: number;
+  streak?: number;
+}): LeaderboardBadgeMeta {
+  const explicitBadgeId = normalizeRoomBadgeId(player.badgeId);
+  if (explicitBadgeId) {
+    return ROOM_BADGE_BY_ID.get(explicitBadgeId) ?? LEADERBOARD_BADGES.badge_speedy;
+  }
+  if ((player.streak ?? 0) >= 8) return LEADERBOARD_BADGES.badge_blaze;
+  if ((player.streak ?? 0) >= 5) return LEADERBOARD_BADGES.badge_hot_streak;
+  if ((player.streak ?? 0) >= 3) return LEADERBOARD_BADGES.badge_sharp;
+  if ((player.correctCount ?? 0) >= 20) return LEADERBOARD_BADGES.badge_sniper;
+  if ((player.score ?? 0) >= 2000) return LEADERBOARD_BADGES.badge_combo;
+  if ((player.score ?? 0) >= 1000) return LEADERBOARD_BADGES.badge_lightning;
   return LEADERBOARD_BADGES.badge_speedy;
 }
 
@@ -1941,6 +1971,7 @@ interface Player {
   score: number;
   correctCount: number;
   streak: number;
+  badgeId?: string | null;
   connectionId?: string;
   lastAnswerAt?: number;
   lastSeen?: number;
@@ -2266,15 +2297,21 @@ function send(ws: WebSocket, payload: unknown) {
 }
 
 function buildRoster(room: Room) {
-  return Array.from(room.players.values()).map((player) => ({
-    id: player.id,
-    avatarId: player.avatarId,
-    name: player.name,
-    ready: player.ready,
-    score: player.score,
-    correctCount: player.correctCount,
-    streak: player.streak,
-  }));
+  return Array.from(room.players.values()).map((player) => {
+    const badge = resolveRoomBadge(player);
+    return {
+      id: player.id,
+      avatarId: player.avatarId,
+      name: player.name,
+      ready: player.ready,
+      score: player.score,
+      correctCount: player.correctCount,
+      streak: player.streak,
+      badgeId: badge.id,
+      badgeLabel: badge.label,
+      badgeEmoji: badge.emoji,
+    };
+  });
 }
 
 function broadcastRoster(room: Room) {
@@ -2577,15 +2614,21 @@ function buildScorePayload(room: Room) {
   return {
     roomCode: room.code,
     mode: "speed",
-    players: players.map((player) => ({
-      id: player.id,
-      avatarId: player.avatarId,
-      name: player.name,
-      ready: player.ready,
-      score: player.score,
-      correctCount: player.correctCount,
-      streak: player.streak,
-    })),
+    players: players.map((player) => {
+      const badge = resolveRoomBadge(player);
+      return {
+        id: player.id,
+        avatarId: player.avatarId,
+        name: player.name,
+        ready: player.ready,
+        score: player.score,
+        correctCount: player.correctCount,
+        streak: player.streak,
+        badgeId: badge.id,
+        badgeLabel: badge.label,
+        badgeEmoji: badge.emoji,
+      };
+    }),
     leaderboardTop5,
     podiumTop3,
   };
@@ -2675,6 +2718,7 @@ function addOrUpdatePlayer(
   ready = true,
   name?: string,
   connectionId?: string,
+  badgeId?: string | null,
 ) {
   const existing = room.players.get(playerId);
   if (existing) {
@@ -2685,6 +2729,9 @@ function addOrUpdatePlayer(
     }
     if (connectionId) {
       existing.connectionId = connectionId;
+    }
+    if (typeof badgeId === "string" || badgeId === null) {
+      existing.badgeId = normalizeRoomBadgeId(badgeId);
     }
     existing.lastSeen = Date.now();
     return;
@@ -2697,6 +2744,7 @@ function addOrUpdatePlayer(
     score: 0,
     correctCount: 0,
     streak: 0,
+    badgeId: normalizeRoomBadgeId(badgeId),
     connectionId,
     lastSeen: Date.now(),
   });
@@ -3332,6 +3380,7 @@ wss.on("connection", (socket, request) => {
           let joinRoomCode = roomCodeForJoin;
           const playerName =
             typeof joinPayload.playerName === "string" ? joinPayload.playerName.trim().slice(0, 18) : undefined;
+          const joinBadgeId = normalizeRoomBadgeId(joinPayload.badgeId);
           const room = await updateRoom(
             joinRoomCode,
             (roomValue) => {
@@ -3353,6 +3402,7 @@ wss.on("connection", (socket, request) => {
                 false,
                 playerName,
                 connectionId,
+                joinBadgeId,
               );
               ensureRoomStage(roomValue);
             },
@@ -3596,6 +3646,44 @@ wss.on("connection", (socket, request) => {
               return;
             }
             player.avatarId = avatarId;
+            player.lastSeen = Date.now();
+          },
+          { createIfMissing: false },
+        );
+        if (room) {
+          broadcastRoster(room);
+        }
+        return;
+      }
+
+      if (type === "badge") {
+        const badgePayload = payload as any;
+        const roomCode = badgePayload?.roomCode as string | undefined;
+        const playerId = badgePayload?.playerId as string | undefined;
+        const rawBadgeId = badgePayload?.badgeId;
+        if (
+          !roomCode ||
+          !playerId ||
+          !(
+            typeof rawBadgeId === "string" ||
+            rawBadgeId === null ||
+            typeof rawBadgeId === "undefined"
+          )
+        ) {
+          logIncident({ at: Date.now(), type: "invalid_payload", ip: state.ip, detail: "badge" });
+          return;
+        }
+        const room = await updateRoom(
+          roomCode,
+          (roomValue) => {
+            const player = roomValue.players.get(playerId);
+            if (!player) {
+              return;
+            }
+            if (!isCurrentConnection(roomValue, playerId, state.connectionId)) {
+              return;
+            }
+            player.badgeId = normalizeRoomBadgeId(rawBadgeId);
             player.lastSeen = Date.now();
           },
           { createIfMissing: false },

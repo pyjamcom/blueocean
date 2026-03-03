@@ -64,10 +64,13 @@ function getBadgeById(id: string, fallbackId = "badge_speedy"): BadgeView {
 }
 
 function resolvePlayerBadge(
-  player: { streak?: number; correctCount?: number; score?: number },
+  player: { badgeId?: string | null; streak?: number; correctCount?: number; score?: number },
   equippedBadge: BadgeView | null,
 ): BadgeView {
   if (equippedBadge) return equippedBadge;
+  if (typeof player.badgeId === "string" && BADGE_BY_ID.has(player.badgeId)) {
+    return getBadgeById(player.badgeId);
+  }
   if ((player.streak ?? 0) >= 8) return getBadgeById("badge_blaze");
   if ((player.streak ?? 0) >= 5) return getBadgeById("badge_hot_streak");
   if ((player.streak ?? 0) >= 3) return getBadgeById("badge_sharp");
@@ -225,7 +228,7 @@ function clamp(value: number, min: number, max: number) {
 export default function LobbyView() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { roomCode, players, playerId, setReady, setAvatar, resetRoom } = useRoom();
+  const { roomCode, players, playerId, setReady, setAvatar, setBadge, resetRoom } = useRoom();
   const { state: engagement, actions, flags } = useEngagement();
   const apiBase = getApiBaseUrl();
   const selfId = getOrCreateClientId();
@@ -367,6 +370,10 @@ export default function LobbyView() {
   const equippedBadge = equippedBadgeId
     ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
     : null;
+  useEffect(() => {
+    if (designLock) return;
+    setBadge(equippedBadgeId);
+  }, [designLock, equippedBadgeId, setBadge]);
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
   const bubbleFrameActive = !designLock && equippedFrame === "frame_bubble";
   const gummyFrameActive = !designLock && equippedFrame === "frame_gummy";

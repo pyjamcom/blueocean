@@ -343,7 +343,7 @@ export default function JoinView() {
       return typeof window === "undefined" ? "http://localhost:3001" : window.location.origin;
     }
   }, [apiBase]);
-  const { roomCode, joinRoom, setAvatar, setName, isHost, players, resetRoom } = useRoom();
+  const { roomCode, joinRoom, setAvatar, setName, setBadge, isHost, players, resetRoom } = useRoom();
   const firebaseEnabled = isFirebaseEnabled();
   const storedAvatarId = useMemo(() => getStoredAvatarId(), []);
   const initialAvatarId = useMemo(() => storedAvatarId ?? randomAvatarId(), [storedAvatarId]);
@@ -389,6 +389,7 @@ export default function JoinView() {
   const [isDesktopLayout, setIsDesktopLayout] = useState(() =>
     typeof window !== "undefined" ? window.matchMedia(DESKTOP_LAYOUT_QUERY).matches : false,
   );
+  const selectedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -425,8 +426,8 @@ export default function JoinView() {
 
   useEffect(() => {
     if (!codeParam) return;
-    joinRoom(codeParam, initialAvatarId, playerName);
-  }, [codeParam, initialAvatarId, joinRoom, playerName]);
+    joinRoom(codeParam, initialAvatarId, playerName, selectedBadgeId);
+  }, [codeParam, initialAvatarId, joinRoom, playerName, selectedBadgeId]);
 
   useEffect(() => {
     actions.refresh();
@@ -446,6 +447,11 @@ export default function JoinView() {
   }, [isManagerRoute, joinPending, navigate, roomCode]);
 
   useEffect(() => {
+    if (!roomCode) return;
+    setBadge(selectedBadgeId);
+  }, [roomCode, selectedBadgeId, setBadge]);
+
+  useEffect(() => {
     if (!joinPending || roomCode) {
       joinRetryRef.current = 0;
     }
@@ -458,12 +464,12 @@ export default function JoinView() {
       if (roomCode || !joinPending) return;
       joinRetryRef.current += 1;
       const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
-      joinRoom(target, avatarId, playerName);
+      joinRoom(target, avatarId, playerName, selectedBadgeId);
     }, 2000);
     return () => {
       window.clearTimeout(timer);
     };
-  }, [avatarId, codeParam, joinPending, joinRoom, playerName, roomCode]);
+  }, [avatarId, codeParam, joinPending, joinRoom, playerName, roomCode, selectedBadgeId]);
 
   useEffect(() => {
     if (!roomCode || !isHost) return;
@@ -682,7 +688,7 @@ export default function JoinView() {
     if (!roomCode) {
       const nextCode = pendingRoomCode ?? randomId(4);
       setPendingRoomCode(nextCode);
-      joinRoom(nextCode, avatarId, playerName);
+      joinRoom(nextCode, avatarId, playerName, selectedBadgeId);
       window.localStorage.setItem(HOST_WAIT_KEY, nextCode);
     }
     setQrVisible(true);
@@ -726,7 +732,7 @@ export default function JoinView() {
     clearHostWait();
     if (!roomCode) {
       const target = codeParam ?? DEFAULT_PUBLIC_ROOM;
-      joinRoom(target, avatarId, playerName);
+      joinRoom(target, avatarId, playerName, selectedBadgeId);
     }
     setJoinPending(true);
   };
@@ -935,7 +941,7 @@ export default function JoinView() {
     !isQuietHours &&
     engagement.stats.lastRoundDay !== todayKey &&
     engagement.notifications.lastPromptDay !== todayKey;
-  const equippedBadgeId = engagement.badges.equipped ?? engagement.badges.lastEarned ?? null;
+  const equippedBadgeId = selectedBadgeId;
   const equippedBadge = equippedBadgeId
     ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
     : null;

@@ -22,6 +22,9 @@ export interface RoomPlayer {
   score: number;
   correctCount: number;
   streak: number;
+  badgeId?: string | null;
+  badgeLabel?: string | null;
+  badgeEmoji?: string | null;
 }
 
 interface RoomState {
@@ -39,7 +42,7 @@ interface RoomState {
   wsStatus: string;
   selfAnswerIndex: number | null;
   errors: unknown[];
-  joinRoom: (roomCode?: string, avatarId?: string, playerName?: string) => void;
+  joinRoom: (roomCode?: string, avatarId?: string, playerName?: string, badgeId?: string | null) => void;
   resetRoom: () => void;
   reconnectWs: () => void;
   sendStage: (payload: Omit<StagePayload, "roomCode">) => void;
@@ -48,6 +51,7 @@ interface RoomState {
   setReady: (ready: boolean) => void;
   setAvatar: (avatarId: string) => void;
   setName: (name: string) => void;
+  setBadge: (badgeId: string | null) => void;
   createNextRoom: (roomCode?: string, avatarId?: string, playerName?: string) => void;
 }
 
@@ -71,7 +75,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   const [errors, setErrors] = useState<unknown[]>([]);
   const playerId = useMemo(() => getOrCreateClientId(), []);
   const joinSentRef = useRef(false);
-  const pendingJoinRef = useRef<{ roomCode: string; avatarId: string; playerName?: string } | null>(null);
+  const pendingJoinRef = useRef<{ roomCode: string; avatarId: string; playerName?: string; badgeId?: string | null } | null>(null);
   const awaitingLeaveRef = useRef(false);
   const hostTimersRef = useRef<number[]>([]);
   const answeredByQuestionRef = useRef<Record<number, Set<string>>>({});
@@ -108,6 +112,12 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
               score?: number;
               correctCount?: number;
               streak?: number;
+              badgeId?: string | null;
+              badgeLabel?: string | null;
+              badgeEmoji?: string | null;
+              badge_id?: string | null;
+              badge_label?: string | null;
+              badge_emoji?: string | null;
             }>;
           }
         | undefined,
@@ -126,6 +136,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
           score: player.score ?? existing?.score ?? 0,
           correctCount: player.correctCount ?? existing?.correctCount ?? 0,
           streak: player.streak ?? existing?.streak ?? 0,
+          badgeId: player.badgeId ?? player.badge_id ?? existing?.badgeId ?? null,
+          badgeLabel: player.badgeLabel ?? player.badge_label ?? existing?.badgeLabel ?? null,
+          badgeEmoji: player.badgeEmoji ?? player.badge_emoji ?? existing?.badgeEmoji ?? null,
         };
       });
     });
@@ -153,7 +166,24 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       }
       if (message.type === "roster") {
         const payload = message.payload as
-          | { players?: Array<{ id: string; avatarId: string; ready?: boolean }>; hostId?: string }
+          | {
+              players?: Array<{
+                id: string;
+                avatarId: string;
+                name?: string;
+                ready?: boolean;
+                score?: number;
+                correctCount?: number;
+                streak?: number;
+                badgeId?: string | null;
+                badgeLabel?: string | null;
+                badgeEmoji?: string | null;
+                badge_id?: string | null;
+                badge_label?: string | null;
+                badge_emoji?: string | null;
+              }>;
+              hostId?: string;
+            }
           | undefined;
         mergeRoster(payload);
         if (payload?.hostId) {
@@ -231,7 +261,23 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       }
       if (message.type === "score") {
         const payload = message.payload as
-          | { players?: Array<{ id: string; avatarId: string; name?: string; ready?: boolean; score?: number; correctCount?: number; streak?: number }> }
+          | {
+              players?: Array<{
+                id: string;
+                avatarId: string;
+                name?: string;
+                ready?: boolean;
+                score?: number;
+                correctCount?: number;
+                streak?: number;
+                badgeId?: string | null;
+                badgeLabel?: string | null;
+                badgeEmoji?: string | null;
+                badge_id?: string | null;
+                badge_label?: string | null;
+                badge_emoji?: string | null;
+              }>;
+            }
           | undefined;
         const incomingPlayers = payload?.players;
         if (!incomingPlayers) {
@@ -247,6 +293,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
             score: player.score ?? 0,
             correctCount: player.correctCount ?? 0,
             streak: player.streak ?? 0,
+            badgeId: player.badgeId ?? player.badge_id ?? null,
+            badgeLabel: player.badgeLabel ?? player.badge_label ?? null,
+            badgeEmoji: player.badgeEmoji ?? player.badge_emoji ?? null,
           }));
           const prevSelf = prevMap.get(playerId);
           const nextSelf = nextPlayers.find((player) => player.id === playerId);
@@ -280,6 +329,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       playerId: string;
       avatarId: string;
       playerName?: string;
+      badgeId?: string | null;
     } = {
       roomCode: pending.roomCode,
       playerId,
@@ -287,6 +337,9 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     };
     if (safeName) {
       payload.playerName = safeName.slice(0, 18);
+    }
+    if (typeof pending.badgeId === "string" || pending.badgeId === null) {
+      payload.badgeId = pending.badgeId;
     }
     send({
       type: "join",
@@ -302,10 +355,10 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
   }, [flushJoin, wsStatus]);
 
   const joinRoom = useCallback(
-    (requestedRoom?: string, avatarId?: string, playerName?: string) => {
+    (requestedRoom?: string, avatarId?: string, playerName?: string, badgeId?: string | null) => {
       const room = requestedRoom ?? randomId(4);
       const resolvedAvatar = avatarId ?? getStoredAvatarId() ?? randomAvatarId();
-      pendingJoinRef.current = { roomCode: room, avatarId: resolvedAvatar, playerName };
+      pendingJoinRef.current = { roomCode: room, avatarId: resolvedAvatar, playerName, badgeId };
       setErrors([]);
       joinSentRef.current = false;
       flushJoin();
@@ -439,6 +492,31 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     [playerId, roomCode, send],
   );
 
+  const setBadge = useCallback(
+    (badgeId: string | null) => {
+      if (!roomCode) return;
+      send({
+        type: "badge",
+        payload: {
+          roomCode,
+          playerId,
+          badgeId,
+        },
+      });
+      setPlayers((prev) =>
+        prev.map((player) =>
+          player.id === playerId
+            ? {
+                ...player,
+                badgeId,
+              }
+            : player,
+        ),
+      );
+    },
+    [playerId, roomCode, send],
+  );
+
   const setReady = useCallback(
     (ready: boolean) => {
       if (!roomCode) return;
@@ -561,6 +639,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     setReady,
     setAvatar,
     setName,
+    setBadge,
     createNextRoom,
   };
 
