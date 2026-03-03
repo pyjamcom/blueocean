@@ -232,7 +232,7 @@ function StageNavigator() {
     }
 
     if (!roomCode) {
-      if (!isJoinPath && !isManagerPath) {
+      if (!isJoinPath && !isManagerPath && !isLobbyPath) {
         navigate("/join", { replace: true });
       }
       return;
