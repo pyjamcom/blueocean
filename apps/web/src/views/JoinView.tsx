@@ -941,6 +941,13 @@ export default function JoinView() {
     : null;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
   const bubbleFrameActive = equippedFrame === "frame_bubble";
+  const gummyFrameActive = equippedFrame === "frame_gummy";
+  const sparkFrameActive = equippedFrame === "frame_spark";
+  const mintFrameActive = equippedFrame === "frame_mint";
+  const neonFrameActive = equippedFrame === "frame_neon";
+  const cometFrameActive = equippedFrame === "frame_comet";
+  const vortexFrameActive = equippedFrame === "frame_vortex";
+  const frostFrameActive = equippedFrame === "frame_frost";
   const equippedFrameLabel = equippedFrame ? (COSMETIC_LABEL_BY_ID.get(equippedFrame) ?? "Quick Hatch") : "Quick Hatch";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
   const sourceJoinQuests = useMemo(() => {
@@ -1122,7 +1129,13 @@ export default function JoinView() {
         <div
           className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""} ${
             bubbleFrameActive ? styles.profileAvatarVisualBubble : ""
-          }`}
+          } ${gummyFrameActive ? styles.profileAvatarVisualGummy : ""} ${
+            sparkFrameActive ? styles.profileAvatarVisualSpark : ""
+          } ${mintFrameActive ? styles.profileAvatarVisualMint : ""} ${
+            neonFrameActive ? styles.profileAvatarVisualNeon : ""
+          } ${
+            cometFrameActive ? styles.profileAvatarVisualComet : ""
+          } ${vortexFrameActive ? styles.profileAvatarVisualVortex : ""} ${frostFrameActive ? styles.profileAvatarVisualFrost : ""}`}
           aria-hidden="true"
         >
           <img src={selectedAvatarSrc} alt="" />

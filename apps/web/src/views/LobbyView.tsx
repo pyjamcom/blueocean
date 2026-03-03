@@ -369,6 +369,13 @@ export default function LobbyView() {
     : null;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
   const bubbleFrameActive = !designLock && equippedFrame === "frame_bubble";
+  const gummyFrameActive = !designLock && equippedFrame === "frame_gummy";
+  const sparkFrameActive = !designLock && equippedFrame === "frame_spark";
+  const mintFrameActive = !designLock && equippedFrame === "frame_mint";
+  const neonFrameActive = !designLock && equippedFrame === "frame_neon";
+  const cometFrameActive = !designLock && equippedFrame === "frame_comet";
+  const vortexFrameActive = !designLock && equippedFrame === "frame_vortex";
+  const frostFrameActive = !designLock && equippedFrame === "frame_frost";
 
   const quickBadgeLabel = designLock
     ? "Quick Hatch"
@@ -556,11 +563,41 @@ export default function LobbyView() {
             onClick={designLock ? undefined : () => handleAvatarCycle(1)}
             aria-label={selfAvatar}
           >
-            <div className={`${styles.avatarFrame} ${bubbleFrameActive ? styles.avatarFrameBubble : ""}`}>
+            <div
+              className={`${styles.avatarFrame} ${bubbleFrameActive ? styles.avatarFrameBubble : ""} ${
+                gummyFrameActive ? styles.avatarFrameGummy : ""
+              } ${
+                sparkFrameActive ? styles.avatarFrameSpark : ""
+              } ${
+                mintFrameActive ? styles.avatarFrameMint : ""
+              } ${
+                neonFrameActive ? styles.avatarFrameNeon : ""
+              } ${
+                cometFrameActive ? styles.avatarFrameComet : ""
+              } ${
+                vortexFrameActive ? styles.avatarFrameVortex : ""
+              } ${
+                frostFrameActive ? styles.avatarFrameFrost : ""
+              }`}
+            >
               <img
                 src={selfAssetSrc}
                 alt=""
-                className={`${styles.avatarImage} ${bubbleFrameActive ? styles.avatarImageBubble : ""}`}
+                className={`${styles.avatarImage} ${bubbleFrameActive ? styles.avatarImageBubble : ""} ${
+                  gummyFrameActive ? styles.avatarImageGummy : ""
+                } ${
+                  sparkFrameActive ? styles.avatarImageSpark : ""
+                } ${
+                  mintFrameActive ? styles.avatarImageMint : ""
+                } ${
+                  neonFrameActive ? styles.avatarImageNeon : ""
+                } ${
+                  cometFrameActive ? styles.avatarImageComet : ""
+                } ${
+                  vortexFrameActive ? styles.avatarImageVortex : ""
+                } ${
+                  frostFrameActive ? styles.avatarImageFrost : ""
+                }`}
               />
               {equippedBadge ? (
                 <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
