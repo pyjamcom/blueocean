@@ -324,11 +324,52 @@
 }
 
 .questProgressBarOn {
-  background: #b515ff;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #9618ff 0%, #db46ff 52%, #8c11e8 100%);
+  box-shadow: 0 0 6px rgb(181 21 255 / 55%);
+}
+
+.questProgressBarOn::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -55%;
+  width: 45%;
+  height: 6px;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0%), rgb(255 255 255 / 85%), rgb(255 255 255 / 0%));
+  transform: translateX(-180%);
+  animation: questScaleShimmerJoin 2.6s linear infinite;
+  pointer-events: none;
+}
+
+.questProgressBarOn:nth-child(2)::after {
+  animation-delay: 0.14s;
+}
+
+.questProgressBarOn:nth-child(3)::after {
+  animation-delay: 0.28s;
+}
+
+.questProgressBarOn:nth-child(4)::after {
+  animation-delay: 0.42s;
+}
+
+.questProgressBarOn:nth-child(5)::after {
+  animation-delay: 0.56s;
 }
 
 .questProgressBarOff {
   background: rgb(255 255 255 / 60%);
+}
+
+@keyframes questScaleShimmerJoin {
+  0% {
+    transform: translateX(-180%);
+  }
+  100% {
+    transform: translateX(420%);
+  }
 }
 
 .questStatusGrid {
@@ -2452,6 +2493,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .questProgressBarOn::after {
+    animation: none !important;
+  }
+
   .profileAvatarVisualBubble,
   .profileAvatarVisualBubble img,
   .profileAvatarVisualGummy,
