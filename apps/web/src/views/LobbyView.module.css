@@ -992,8 +992,9 @@
   background: #37075b;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 12px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px 40px 12px 12px;
   cursor: pointer;
 }
 
@@ -1010,13 +1011,29 @@
   width: 16px;
   height: 16px;
   position: absolute;
-  left: 12px;
+  right: 12px;
   top: 14px;
   opacity: 0.5;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 10.66px 13.99px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='14' viewBox='0 0 11 14' fill='none'%3E%3Cpath d='M9.17637 5.10217H8.39554V3.54063C8.39554 1.81651 7.00121 0.42218 5.2771 0.42218C3.55298 0.42218 2.15865 1.81651 2.15865 3.54063V5.10217H1.37787C0.518366 5.10217 -0.183594 5.80413 -0.183594 6.66364V11.3431C-0.183594 12.2026 0.518366 12.9046 1.37787 12.9046H9.17637C10.0359 12.9046 10.7378 12.2026 10.7378 11.3431V6.66364C10.7378 5.80413 10.0359 5.10217 9.17637 5.10217ZM3.64243 3.54063C3.64243 2.63745 4.37392 1.90596 5.2771 1.90596C6.18027 1.90596 6.91176 2.63745 6.91176 3.54063V5.10217H3.64243V3.54063Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.styleModalItemVisual {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 52%);
+  background: rgb(11 12 27 / 78%);
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+}
+
+.styleModalItemVisualGlyph {
+  font-size: 12px;
+  line-height: 1;
 }
 
 .styleModalItemLabel {
@@ -1031,6 +1048,10 @@
 
 .styleModalItemLocked .styleModalItemLabel {
   color: rgb(255 255 255 / 50%);
+}
+
+.styleModalItemLocked .styleModalItemVisual {
+  opacity: 0.55;
 }
 
 .styleModalItemTag {

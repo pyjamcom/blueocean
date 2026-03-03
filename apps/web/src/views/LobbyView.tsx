@@ -17,6 +17,7 @@ import {
 import { assetIds, getAssetUrl } from "../utils/assets";
 import { getApiBaseUrl } from "../utils/api";
 import { getOrCreateClientId } from "../utils/ids";
+import frameStyles from "../engagement/frames.module.css";
 import styles from "./LobbyView.module.css";
 
 const PROFILE_AVATAR_FALLBACK = "/figma/lobby/767-1567.png";
@@ -44,6 +45,17 @@ const STATUS_CHIP_LAYOUT = [
 
 const COSMETIC_LABEL_BY_ID = new Map(COSMETIC_DEFINITIONS.map((item) => [item.id, item.label]));
 const BADGE_BY_ID = new Map(BADGE_DEFINITIONS.map((item) => [item.id, item]));
+const FRAME_ICON_BY_ID: Record<string, string> = {
+  frame_bubble: "🫧",
+  frame_gummy: "🍬",
+  frame_spark: "✨",
+  frame_mint: "🌿",
+  frame_comet: "☄️",
+  frame_neon: "💡",
+  frame_blaze: "🔥",
+  frame_frost: "❄️",
+  frame_vortex: "🌀",
+};
 
 type BadgeView = (typeof BADGE_DEFINITIONS)[number];
 
@@ -795,6 +807,7 @@ export default function LobbyView() {
                   const active = engagement.cosmetics.equipped.frame === item.id;
                   const isNew = unlocked && engagement.cosmetics.lastUnlocked === item.id;
                   const tagLabel = active ? "Active" : isNew ? "New" : null;
+                  const frameIcon = FRAME_ICON_BY_ID[item.id] ?? "✨";
                   return (
                     <button
                       key={item.id}
@@ -815,6 +828,9 @@ export default function LobbyView() {
                       }}
                     >
                       {!unlocked ? <span className={styles.styleModalLockIcon} aria-hidden="true" /> : null}
+                      <span className={`${styles.styleModalItemVisual} ${frameStyles[item.id] ?? ""}`} aria-hidden="true">
+                        <span className={styles.styleModalItemVisualGlyph}>{frameIcon}</span>
+                      </span>
                       <span className={styles.styleModalItemLabel}>{item.label}</span>
                       {tagLabel ? (
                         <span
