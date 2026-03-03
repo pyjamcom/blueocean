@@ -769,19 +769,12 @@
 }
 
 .downIconSoundMuted {
-  opacity: 0.45;
+  opacity: 1;
+  background-image: url("/figma/lobby/325-2883.svg");
 }
 
 .downIconSoundMuted::after {
-  content: "";
-  position: absolute;
-  left: -1px;
-  right: -1px;
-  top: 9px;
-  height: 2px;
-  border-radius: 2px;
-  background: #ffffff;
-  transform: rotate(-35deg);
+  content: none;
 }
 
 .downIconLogout {

@@ -2153,6 +2153,26 @@
 }
 
 @media (max-width: 1023px) and (hover: none) and (pointer: coarse) {
+  .top3Row {
+    gap: 6px;
+  }
+
+  .top3RowLeft {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .playerIdentity {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .playerName {
+    max-width: 100%;
+  }
+
   .top3BadgePill {
     width: 24px;
     min-width: 24px;
@@ -2160,6 +2180,7 @@
     padding: 4px;
     gap: 0;
     flex: 0 0 24px;
+    margin-left: auto;
   }
 
   .top3BadgePillLabel {
@@ -2167,7 +2188,7 @@
   }
 
   .scoreBadge {
-    margin-left: auto;
+    margin-left: 4px;
   }
 }
 
