@@ -329,7 +329,6 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
       playerId: string;
       avatarId: string;
       playerName?: string;
-      badgeId?: string | null;
     } = {
       roomCode: pending.roomCode,
       playerId,
@@ -337,9 +336,6 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     };
     if (safeName) {
       payload.playerName = safeName.slice(0, 18);
-    }
-    if (typeof pending.badgeId === "string" || pending.badgeId === null) {
-      payload.badgeId = pending.badgeId;
     }
     send({
       type: "join",
