@@ -3,6 +3,7 @@ import { EngagementState, QuestDefinition, QuestProgress } from "./types";
 import { formatDayKey, getSeasonInfo, getWeekKey } from "./time";
 
 const STORAGE_KEY = "escapers_engagement_v1";
+const DEFAULT_FRAME_ID = "frame_bubble";
 
 function buildDailyQuests(seedDay: string, lastQuestIds: string[] = []): QuestProgress[] {
   const pool = QUEST_DEFINITIONS.filter((quest) => !lastQuestIds.includes(quest.id));
@@ -53,7 +54,7 @@ export function buildDefaultState(now = new Date()): EngagementState {
       lastQuestIds: [],
     },
     cosmetics: {
-      unlocked: [],
+      unlocked: [DEFAULT_FRAME_ID],
       equipped: {
         frame: null,
         effect: null,
@@ -101,6 +102,9 @@ export function loadEngagementState(): EngagementState {
       typeof mergedBadges.equipped === "string" || mergedBadges.equipped === null
         ? mergedBadges.equipped
         : mergedBadges.lastEarned ?? null;
+    const cosmeticsUnlocked = Array.from(
+      new Set([...(parsed.cosmetics?.unlocked ?? base.cosmetics.unlocked), DEFAULT_FRAME_ID]),
+    );
     return {
       ...base,
       ...parsed,
@@ -123,6 +127,7 @@ export function loadEngagementState(): EngagementState {
       cosmetics: {
         ...base.cosmetics,
         ...(parsed.cosmetics ?? {}),
+        unlocked: cosmeticsUnlocked,
         equipped: { ...base.cosmetics.equipped, ...(parsed.cosmetics?.equipped ?? {}) },
         lastUnlocked: parsed.cosmetics?.lastUnlocked ?? base.cosmetics.lastUnlocked,
       },

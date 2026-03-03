@@ -940,6 +940,7 @@ export default function JoinView() {
     ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
     : null;
   const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
+  const bubbleFrameActive = equippedFrame === "frame_bubble";
   const equippedFrameLabel = equippedFrame ? (COSMETIC_LABEL_BY_ID.get(equippedFrame) ?? "Quick Hatch") : "Quick Hatch";
   const cosmeticNewId = engagement.cosmetics.lastUnlocked ?? null;
   const sourceJoinQuests = useMemo(() => {
@@ -1119,7 +1120,9 @@ export default function JoinView() {
         </section>
         <section className={styles.avatarBlock} aria-hidden="true" />
         <div
-          className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""}`}
+          className={`${styles.profileAvatarVisual} ${isAuthorized ? styles.profileAvatarVisualLoggedIn : ""} ${
+            bubbleFrameActive ? styles.profileAvatarVisualBubble : ""
+          }`}
           aria-hidden="true"
         >
           <img src={selectedAvatarSrc} alt="" />

@@ -355,6 +355,8 @@ export default function LobbyView() {
   const equippedBadge = equippedBadgeId
     ? BADGE_DEFINITIONS.find((item) => item.id === equippedBadgeId) ?? null
     : null;
+  const equippedFrame = engagement.cosmetics.equipped.frame ?? null;
+  const bubbleFrameActive = !designLock && equippedFrame === "frame_bubble";
 
   const quickBadgeLabel = designLock
     ? "Quick Hatch"
@@ -542,8 +544,12 @@ export default function LobbyView() {
             onClick={designLock ? undefined : () => handleAvatarCycle(1)}
             aria-label={selfAvatar}
           >
-            <div className={styles.avatarFrame}>
-              <img src={selfAssetSrc} alt="" className={styles.avatarImage} />
+            <div className={`${styles.avatarFrame} ${bubbleFrameActive ? styles.avatarFrameBubble : ""}`}>
+              <img
+                src={selfAssetSrc}
+                alt=""
+                className={`${styles.avatarImage} ${bubbleFrameActive ? styles.avatarImageBubble : ""}`}
+              />
               {equippedBadge ? (
                 <span className={styles.avatarBadgeMark} title={equippedBadge.label} aria-hidden="true">
                   {equippedBadge.emoji}

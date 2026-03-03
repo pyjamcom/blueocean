@@ -443,6 +443,43 @@
   filter: brightness(0.82);
 }
 
+.profileAvatarVisualBubble {
+  box-shadow: 0 0 0 0 rgba(151, 239, 255, 0), 0 0 0 0 rgba(125, 197, 255, 0);
+  animation: bubbleAvatarFramePulse 2.4s ease-in-out infinite;
+}
+
+.profileAvatarVisualBubble img {
+  transform-origin: center bottom;
+  animation: bubbleAvatarScalePulse 2.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bubbleAvatarFramePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(151, 239, 255, 0), 0 0 0 0 rgba(125, 197, 255, 0);
+  }
+  33.333% {
+    box-shadow: 0 0 0 3px rgba(151, 239, 255, 0.62), 0 0 18px rgba(125, 197, 255, 0.5);
+  }
+  66.666% {
+    box-shadow: 0 0 0 1px rgba(169, 247, 255, 0.38), 0 0 10px rgba(133, 189, 255, 0.32);
+  }
+}
+
+@keyframes bubbleAvatarScalePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  33.333% {
+    transform: scale(1.06);
+  }
+  66.666% {
+    transform: scale(0.95);
+  }
+}
+
 .profileBadgeMark {
   position: absolute;
   right: 4px;
@@ -2131,5 +2168,12 @@
 
   .scoreBadge {
     margin-left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profileAvatarVisualBubble,
+  .profileAvatarVisualBubble img {
+    animation: none !important;
   }
 }
