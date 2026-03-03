@@ -1,66 +1,612 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Support</title>
+    <title>Support | Escapers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600&display=swap" rel="stylesheet" />
     <style>
+      :root {
+        --support-shell-width: min(390px, 100vw);
+        --support-page-gradient: linear-gradient(
+          136.4764deg,
+          rgba(62, 65, 134, 1) 0%,
+          rgba(12, 8, 34, 1) 30.2884608507%,
+          rgba(12, 8, 34, 1) 75%,
+          rgba(133, 62, 134, 1) 100%
+        );
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 32px;
-        background: #0b0b10;
-        color: #f1f1f1;
-      }
-      .card {
-        max-width: 520px;
-        margin: 0 auto;
-        padding: 24px;
-        border-radius: 16px;
-        background: #151520;
-      }
-      label {
-        display: block;
-        margin: 12px 0 6px;
-      }
-      input,
-      textarea {
         width: 100%;
-        padding: 10px 12px;
-        border-radius: 8px;
-        border: 1px solid #2a2a38;
-        background: #0f0f16;
-        color: #f1f1f1;
+        height: 100%;
+        margin: 0;
+        overflow-x: hidden;
+        background: rgba(12, 8, 34, 1);
       }
-      button {
-        margin-top: 16px;
-        padding: 10px 16px;
-        border: none;
+
+      body {
+        color: #ffffff;
+        font-family: "Geist", "Segoe UI", sans-serif;
+      }
+
+      .desktop-bg {
+        display: none;
+      }
+
+      .page {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-bottom: calc(76px + env(safe-area-inset-bottom));
+        background: var(--support-page-gradient);
+      }
+
+      .shell {
+        position: relative;
+        width: var(--support-shell-width);
+        min-height: max(844px, 100vh);
+        padding: 44px 20px calc(157px + env(safe-area-inset-bottom));
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 0 0 auto;
+        overflow: hidden;
+        background: var(--support-page-gradient);
+      }
+
+      .shell::before {
+        content: "";
+        position: absolute;
+        left: -86px;
+        top: 0;
+        width: 562px;
+        height: 843px;
+        opacity: 0.1;
+        background-image: url("/figma/join/image-931.png");
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-size: cover;
+        pointer-events: none;
+      }
+
+      .card {
+        position: relative;
+        z-index: 1;
+        width: 350px;
+        max-width: 100%;
+        margin: 0 auto;
+        border-radius: 12px;
+        background: rgba(32, 0, 66, 1);
+      }
+
+      .hero-card {
+        padding: 16px;
+      }
+
+      .hero-title {
+        margin: 0 0 8px;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 26px;
+        letter-spacing: -0.6px;
+      }
+
+      .hero-subtitle {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 20.8px;
+        letter-spacing: 0;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .form-card {
+        padding: 16px;
+      }
+
+      .field {
+        margin: 0 0 16px;
+      }
+
+      .field:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .label {
+        display: block;
+        margin: 0 0 8px;
+        padding-left: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18.2px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .input,
+      .textarea {
+        width: 100%;
+        display: block;
+        border: 1px solid rgba(50, 50, 50, 1);
         border-radius: 8px;
-        background: #4dabf7;
-        color: #0b0b10;
-        font-weight: bold;
+        background: rgba(39, 39, 39, 1);
+        color: rgba(255, 255, 255, 0.95);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18.2px;
+        outline: none;
+      }
+
+      .input {
+        height: 42px;
+        padding: 12px;
+      }
+
+      .textarea {
+        height: 146px;
+        resize: none;
+        padding: 12px;
+      }
+
+      .input::placeholder,
+      .textarea::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+
+      .input:focus-visible,
+      .textarea:focus-visible {
+        border-color: rgba(115, 0, 255, 1);
+      }
+
+      .support-email {
+        margin: 0;
+        padding-left: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18.2px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .send-button {
+        width: 100%;
+        height: 44px;
+        margin-top: 16px;
+        border: 1px solid rgba(115, 0, 255, 1);
+        border-radius: 8px;
+        background: linear-gradient(90deg, rgba(131, 14, 220, 1) 0%, rgba(56, 0, 99, 1) 100%);
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18.2px;
         cursor: pointer;
       }
-      .note {
-        margin-top: 16px;
-        font-size: 14px;
-        color: #a1a1b3;
+
+      .send-button:focus-visible {
+        outline: 1px solid rgba(255, 255, 255, 0.55);
+        outline-offset: 1px;
+      }
+
+      .send-button:active {
+        transform: translateY(1px);
+      }
+
+      .down-bar {
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        width: var(--support-shell-width);
+        height: calc(76px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+        background: rgba(17, 17, 17, 1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 0;
+        border-radius: 16px 16px 0 0;
+        z-index: 25;
+      }
+
+      .down-button {
+        height: 44px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: #ffffff;
+        text-decoration: none;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 14.52px;
+        letter-spacing: -0.36px;
+        background: none;
+        cursor: pointer;
+      }
+
+      .down-button-icon {
+        width: 40px;
+        padding: 12px;
+      }
+
+      .down-button-neutral {
+        border-color: rgba(50, 50, 50, 1);
+        background: rgba(39, 39, 39, 1);
+      }
+
+      .down-button-danger {
+        border-color: rgba(81, 0, 0, 1);
+        background: rgba(36, 0, 0, 1);
+      }
+
+      .down-button-join {
+        flex: 1 1 auto;
+        min-width: 0;
+        border-color: rgba(14, 220, 45, 1);
+        background: linear-gradient(90deg, rgba(14, 220, 45, 1) 0%, rgba(0, 99, 3, 1) 100%);
+        padding: 8px 12px;
+      }
+
+      .down-icon {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .down-icon-play {
+        width: 15px;
+        height: 15px;
+        background: url("/figma/join/mingcute-play-fill.svg") center/contain no-repeat;
+      }
+
+      .down-icon-logout {
+        width: 20px;
+        height: 20px;
+        background: url("/figma/join/mynaui-logout.svg") center/contain no-repeat;
+      }
+
+      .sound-on {
+        width: 20px;
+        height: 20px;
+        background: url("/figma/join/lets-icons-sound-max-fill.svg") center/contain no-repeat;
+      }
+
+      .sound-off {
+        width: 20px;
+        height: 20px;
+      }
+
+      .sound-off svg,
+      .qr-icon svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
+
+      .status {
+        position: fixed;
+        left: 50%;
+        bottom: calc(86px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        width: calc(var(--support-shell-width) - 40px);
+        max-width: 350px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(17, 17, 17, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+        z-index: 30;
+      }
+
+      .status.show {
+        opacity: 1;
+      }
+
+      @media (min-width: 1024px), (max-width: 1023px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+        :root {
+          --support-shell-width: min(800px, calc(100vw - 80px));
+        }
+
+        .desktop-bg {
+          display: block;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100vw;
+          height: 1280px;
+          background: url("/figma/join/image-931-desktop.webp") center top / cover no-repeat;
+          opacity: 0.1;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .page {
+          padding-bottom: 24px;
+        }
+
+        .shell {
+          min-height: max(844px, 100vh);
+          padding-top: 40px;
+          padding-bottom: calc(164px + env(safe-area-inset-bottom));
+          background: transparent;
+        }
+
+        .shell::before {
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-image: url("/figma/join/image-931-desktop.webp");
+          background-position: center top;
+          opacity: 0.08;
+        }
+
+        .card {
+          width: calc(100% - 40px);
+          max-width: none;
+        }
+
+        .hero-card,
+        .form-card {
+          padding: 32px;
+        }
+
+        .hero-title {
+          margin-bottom: 16px;
+          font-size: 24px;
+          line-height: 31.2px;
+          letter-spacing: -0.72px;
+        }
+
+        .hero-subtitle {
+          font-size: 20px;
+          line-height: 26px;
+        }
+
+        .field {
+          margin-bottom: 20px;
+        }
+
+        .label {
+          margin-bottom: 10px;
+          font-size: 18px;
+          line-height: 23.4px;
+          letter-spacing: -0.54px;
+        }
+
+        .input,
+        .textarea {
+          border-radius: 12px;
+          font-size: 20px;
+          line-height: 24.2px;
+          letter-spacing: -0.6px;
+        }
+
+        .input {
+          height: 56px;
+          padding: 16px;
+        }
+
+        .textarea {
+          height: 184px;
+          padding: 16px;
+        }
+
+        .support-email {
+          font-size: 18px;
+          line-height: 23.4px;
+          letter-spacing: -0.54px;
+        }
+
+        .send-button {
+          height: 56px;
+          margin-top: 20px;
+          font-size: 20px;
+          line-height: 24.2px;
+          letter-spacing: -0.6px;
+        }
+
+        .down-bar {
+          height: calc(96px + env(safe-area-inset-bottom));
+          padding: 20px 32px calc(20px + env(safe-area-inset-bottom));
+        }
+
+        .down-button {
+          height: 56px;
+          font-size: 20px;
+          line-height: 24.2px;
+          letter-spacing: -0.6px;
+          gap: 12px;
+        }
+
+        .down-button-icon {
+          width: 51px;
+          padding: 12px;
+        }
+
+        .down-icon-play {
+          width: 20px;
+          height: 20px;
+        }
+
+        .status {
+          bottom: calc(104px + env(safe-area-inset-bottom));
+          width: calc(var(--support-shell-width) - 80px);
+          max-width: 720px;
+          font-size: 14px;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>Support</h1>
-      <p>Свяжитесь с нами через форму или по почте.</p>
-      <form>
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required />
-        <label for="message">Сообщение</label>
-        <textarea id="message" name="message" rows="4" required></textarea>
-        <button type="submit">Отправить</button>
-      </form>
-      <div class="note">support@escapers.app</div>
-    </div>
+    <div class="desktop-bg" aria-hidden="true"></div>
+    <main class="page">
+      <section class="shell">
+        <article class="card hero-card">
+          <h1 class="hero-title">Support</h1>
+          <p class="hero-subtitle">Contact us via the form or by email</p>
+        </article>
+
+        <article class="card form-card">
+          <form id="support-form" novalidate>
+            <div class="field">
+              <label class="label" for="support-email">E-mail</label>
+              <input
+                class="input"
+                id="support-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="example@mail.ru"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label class="label" for="support-message">Your message</label>
+              <textarea
+                class="textarea"
+                id="support-message"
+                name="message"
+                placeholder="Please write here messages about problems or suggestions for our service"
+                required
+              ></textarea>
+            </div>
+
+            <p class="support-email">support@escapers.app</p>
+            <button class="send-button" type="submit">Send</button>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <nav class="down-bar" aria-label="Support quick actions">
+      <a class="down-button down-button-icon down-button-neutral" href="/join" aria-label="Open join page">
+        <span class="down-icon qr-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14ZM14 14H16V16H14V14ZM18 14H20V16H18V14ZM16 16H18V18H16V16ZM18 18H20V20H18V18ZM14 18H16V20H14V18Z" fill="white" />
+          </svg>
+        </span>
+      </a>
+
+      <button id="sound-toggle" class="down-button down-button-icon down-button-danger" type="button" aria-label="Mute sound">
+        <span id="sound-on-icon" class="down-icon sound-on" aria-hidden="true" hidden></span>
+        <span id="sound-off-icon" class="down-icon sound-off" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M11 5L6 9H3V15H6L11 19V5Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M22 9L16 15" stroke="white" stroke-width="1.75" stroke-linecap="round" />
+            <path d="M16 9L22 15" stroke="white" stroke-width="1.75" stroke-linecap="round" />
+          </svg>
+        </span>
+      </button>
+
+      <a class="down-button down-button-join" href="/join">
+        <span class="down-icon down-icon-play" aria-hidden="true"></span>
+        <span>Join game</span>
+      </a>
+
+      <button id="logout-button" class="down-button down-button-icon down-button-danger" type="button" aria-label="Logout and back to join">
+        <span class="down-icon down-icon-logout" aria-hidden="true"></span>
+      </button>
+    </nav>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        var form = document.getElementById("support-form");
+        var emailInput = document.getElementById("support-email");
+        var messageInput = document.getElementById("support-message");
+        var status = document.getElementById("status");
+        var soundToggle = document.getElementById("sound-toggle");
+        var soundOnIcon = document.getElementById("sound-on-icon");
+        var soundOffIcon = document.getElementById("sound-off-icon");
+        var logoutButton = document.getElementById("logout-button");
+        var SOUND_KEY = "sound_enabled";
+        var SOUND_ON_CLASS = "down-button-neutral";
+        var SOUND_OFF_CLASS = "down-button-danger";
+
+        function showStatus(text) {
+          status.textContent = text;
+          status.classList.add("show");
+          window.clearTimeout(showStatus._timer);
+          showStatus._timer = window.setTimeout(function () {
+            status.classList.remove("show");
+          }, 2200);
+        }
+
+        function renderSound(enabled) {
+          soundToggle.classList.remove(SOUND_ON_CLASS, SOUND_OFF_CLASS);
+          soundToggle.classList.add(enabled ? SOUND_ON_CLASS : SOUND_OFF_CLASS);
+          soundToggle.setAttribute("aria-label", enabled ? "Mute sound" : "Enable sound");
+          soundOnIcon.hidden = !enabled;
+          soundOffIcon.hidden = enabled;
+        }
+
+        var soundEnabled = window.localStorage.getItem(SOUND_KEY) !== "0";
+        renderSound(soundEnabled);
+
+        soundToggle.addEventListener("click", function () {
+          soundEnabled = !soundEnabled;
+          window.localStorage.setItem(SOUND_KEY, soundEnabled ? "1" : "0");
+          renderSound(soundEnabled);
+          showStatus(soundEnabled ? "Sound enabled" : "Sound disabled");
+        });
+
+        logoutButton.addEventListener("click", function () {
+          [
+            "escapers_host_wait",
+            "escapers_room_code",
+            "escapers_room",
+            "escapers_join_name",
+            "escapers_last_auth_provider",
+            "escapers_avatar",
+          ].forEach(function (key) {
+            window.localStorage.removeItem(key);
+          });
+          window.location.href = "/join";
+        });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          if (!form.reportValidity()) {
+            return;
+          }
+          var sender = emailInput.value.trim();
+          var message = messageInput.value.trim();
+          var subject = "Escapers support request";
+          var body = "From: " + sender + "\\n\\n" + message;
+          window.location.href =
+            "mailto:support@escapers.app?subject=" +
+            encodeURIComponent(subject) +
+            "&body=" +
+            encodeURIComponent(body);
+        });
+      })();
+    </script>
   </body>
 </html>
