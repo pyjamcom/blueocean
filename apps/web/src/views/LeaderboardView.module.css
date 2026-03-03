@@ -110,7 +110,7 @@
   z-index: 1;
   width: 390px;
   height: 720px;
-  padding: 24px 8px calc(96px + env(safe-area-inset-bottom));
+  padding: 24px 0 calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -120,7 +120,7 @@
 }
 
 .topBlock {
-  width: 374px;
+  width: 100%;
   min-height: 694px;
   border-radius: 8px;
   display: flex;
@@ -129,7 +129,7 @@
 }
 
 .vibeCard {
-  width: 374px;
+  width: 100%;
   min-height: 75px;
   border-radius: 12px;
   background: #200042;
@@ -141,7 +141,7 @@
 }
 
 .vibeRow {
-  width: 342px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -154,7 +154,7 @@
 }
 
 .vibeIdentity {
-  width: 342px;
+  width: 100%;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -206,7 +206,7 @@
 
 .progressTrack {
   position: relative;
-  width: 342px;
+  width: 100%;
   height: 4px;
   border-radius: 12px;
   background: rgb(255 255 255 / 25%);
@@ -231,7 +231,7 @@
 }
 
 .shareCard {
-  width: 374px;
+  width: 100%;
   min-height: 111px;
   border-radius: 12px;
   background: #200042;
@@ -254,7 +254,7 @@
 }
 
 .shareRow {
-  width: 342px;
+  width: 100%;
   height: 40px;
   display: flex;
   align-items: center;
@@ -330,7 +330,7 @@
 }
 
 .listCard {
-  width: 374px;
+  width: 100%;
   height: 476px;
   border-radius: 12px;
   background: #200042;
@@ -339,14 +339,14 @@
 }
 
 .listRows {
-  width: 342px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .row {
-  width: 342px;
+  width: 100%;
   min-height: 48px;
   border-radius: 9px;
   border: 1px solid transparent;
@@ -555,13 +555,13 @@
   .mobile {
     width: 100%;
     min-height: calc(100dvh - 124px);
-    padding: 24px 32px calc(112px + env(safe-area-inset-bottom));
+    padding: 24px 0 calc(112px + env(safe-area-inset-bottom));
   }
 
   .topBlock {
-    width: calc(100% - 64px);
-    max-width: 736px;
-    align-self: center;
+    width: 100%;
+    max-width: none;
+    align-self: stretch;
   }
 
   .vibeCard,

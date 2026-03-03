@@ -228,7 +228,12 @@ export default function ResultView() {
       </div>
       <div className={`${styles.podiumBadge} ${badgeClass ?? ""}`}>
         <span className={styles.medalChip}>{rankLabel}</span>
-        <span className={styles.podiumScore}>{entry?.score ?? 0}</span>
+        <span className={styles.podiumScore}>
+          <span className={styles.podiumScoreIcon} aria-hidden="true">
+            ⚡
+          </span>
+          <span className={styles.podiumScoreValue}>{entry?.score ?? 0}</span>
+        </span>
       </div>
     </div>
   );
@@ -261,7 +266,12 @@ export default function ResultView() {
         </div>
         <div className={`${styles.finalBadge} ${badgeClass ?? ""}`}>
           <span className={styles.finalBadgeName}>{entry?.name ?? "—"}</span>
-          <span className={styles.finalScorePill}>{entry?.score ?? 0}</span>
+          <span className={styles.finalScorePill}>
+            <span className={styles.finalScoreIcon} aria-hidden="true">
+              ⚡
+            </span>
+            <span className={styles.finalScoreValue}>{entry?.score ?? 0}</span>
+          </span>
           {rankLabel === "1" ? <span className={styles.finalKingIcon}>♔</span> : null}
         </div>
       </article>
@@ -504,7 +514,12 @@ export default function ResultView() {
                         <span className={styles.rowName}>{entry.name}</span>
                       </div>
                     </div>
-                    <span className={styles.scoreBadge}>{entry.score}</span>
+                    <span className={styles.scoreBadge}>
+                      <span className={styles.scoreBadgeIcon} aria-hidden="true">
+                        ⚡
+                      </span>
+                      <span className={styles.scoreBadgeValue}>{entry.score}</span>
+                    </span>
                   </article>
                 );
               })}
