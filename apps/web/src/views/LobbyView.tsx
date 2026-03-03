@@ -356,7 +356,7 @@ export default function LobbyView() {
     ? PROFILE_AVATAR_FALLBACK
     : getAvatarImageUrl(selfAvatar) ?? getAssetUrl(selfAssetId) ?? PROFILE_AVATAR_FALLBACK;
   const badgeLabelRaw = designLock ? "WEEEP" : (selfPlayer?.name ?? "WEEEP");
-  const badgeLabel = badgeLabelRaw.slice(0, 20);
+  const badgeLabel = badgeLabelRaw.slice(0, 30);
   const profileTag = designLock
     ? "#124"
     : weeklyLeaderboardRank

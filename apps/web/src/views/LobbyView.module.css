@@ -128,7 +128,8 @@
 }
 
 .metaRow {
-  width: 166px;
+  width: auto;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -160,7 +161,7 @@
 
 .metaPillBadge {
   min-width: 0;
-  max-width: calc(20ch + 16px);
+  max-width: calc(30ch + 16px);
   padding: 4px 8px;
   font-weight: 500;
   background: linear-gradient(270deg, #7300ff 0%, #0698f4 100%);
