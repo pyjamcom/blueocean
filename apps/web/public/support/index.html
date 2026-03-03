@@ -6,7 +6,7 @@
     <title>Support | Escapers</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600&family=Inter:wght@500;600&display=swap" rel="stylesheet" />
     <style>
       :root {
         --support-shell-width: min(390px, 100vw);
@@ -215,10 +215,18 @@
         gap: 8px;
         padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
         background: rgba(17, 17, 17, 1);
+        border-radius: 16px 16px 0 0;
+        z-index: 50;
+      }
+
+      .down-bar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-bottom: 0;
-        border-radius: 16px 16px 0 0;
-        z-index: 25;
+        border-radius: inherit;
+        pointer-events: none;
       }
 
       .down-button {
@@ -231,11 +239,13 @@
         gap: 4px;
         color: #ffffff;
         text-decoration: none;
-        font-family: inherit;
+        font-family: "Inter", "Segoe UI", sans-serif;
         font-size: 12px;
         font-weight: 600;
         line-height: 14.52px;
         letter-spacing: -0.36px;
+        -webkit-backdrop-filter: blur(50.35px) brightness(100%);
+        backdrop-filter: blur(50.35px) brightness(100%);
         background: none;
         cursor: pointer;
       }
@@ -243,6 +253,7 @@
       .down-button-icon {
         width: 40px;
         padding: 12px;
+        gap: 8px;
       }
 
       .down-button-neutral {
@@ -260,7 +271,7 @@
         min-width: 0;
         border-color: rgba(14, 220, 45, 1);
         background: linear-gradient(90deg, rgba(14, 220, 45, 1) 0%, rgba(0, 99, 3, 1) 100%);
-        padding: 8px 12px;
+        padding: 8px;
       }
 
       .down-icon {
@@ -275,6 +286,12 @@
         width: 15px;
         height: 15px;
         background: url("/figma/join/mingcute-play-fill.svg") center/contain no-repeat;
+      }
+
+      .down-icon-qr {
+        width: 20px;
+        height: 20px;
+        background: url("/figma/support/boxicons-qr.svg") center/contain no-repeat;
       }
 
       .down-icon-logout {
@@ -292,13 +309,7 @@
       .sound-off {
         width: 20px;
         height: 20px;
-      }
-
-      .sound-off svg,
-      .qr-icon svg {
-        width: 20px;
-        height: 20px;
-        display: block;
+        background: url("/figma/support/lucide-volume-x.svg") center/contain no-repeat;
       }
 
       .status {
@@ -351,22 +362,19 @@
         .shell {
           min-height: max(844px, 100vh);
           padding-top: 40px;
+          padding-left: 0;
+          padding-right: 0;
           padding-bottom: calc(164px + env(safe-area-inset-bottom));
           background: transparent;
         }
 
         .shell::before {
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background-image: url("/figma/join/image-931-desktop.webp");
-          background-position: center top;
-          opacity: 0.08;
+          content: none;
         }
 
         .card {
-          width: calc(100% - 40px);
+          width: 100%;
+          margin: 0;
           max-width: none;
         }
 
@@ -506,22 +514,12 @@
 
     <nav class="down-bar" aria-label="Support quick actions">
       <a class="down-button down-button-icon down-button-neutral" href="/join" aria-label="Open join page">
-        <span class="down-icon qr-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14ZM14 14H16V16H14V14ZM18 14H20V16H18V14ZM16 16H18V18H16V16ZM18 18H20V20H18V18ZM14 18H16V20H14V18Z" fill="white" />
-          </svg>
-        </span>
+        <span class="down-icon down-icon-qr" aria-hidden="true"></span>
       </a>
 
       <button id="sound-toggle" class="down-button down-button-icon down-button-danger" type="button" aria-label="Mute sound">
         <span id="sound-on-icon" class="down-icon sound-on" aria-hidden="true" hidden></span>
-        <span id="sound-off-icon" class="down-icon sound-off" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M11 5L6 9H3V15H6L11 19V5Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M22 9L16 15" stroke="white" stroke-width="1.75" stroke-linecap="round" />
-            <path d="M16 9L22 15" stroke="white" stroke-width="1.75" stroke-linecap="round" />
-          </svg>
-        </span>
+        <span id="sound-off-icon" class="down-icon sound-off" aria-hidden="true"></span>
       </button>
 
       <a class="down-button down-button-join" href="/join">
@@ -567,7 +565,7 @@
           soundOffIcon.hidden = enabled;
         }
 
-        var soundEnabled = window.localStorage.getItem(SOUND_KEY) !== "0";
+        var soundEnabled = window.localStorage.getItem(SOUND_KEY) === "1";
         renderSound(soundEnabled);
 
         soundToggle.addEventListener("click", function () {
