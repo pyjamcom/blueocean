@@ -40,7 +40,7 @@ export default function HelpButton() {
 
   return (
     <div className={styles.wrap}>
-      <a className={`${styles.button} ${styles.support}`} href="/support/" target="_blank" rel="noreferrer" aria-label="support">
+      <a className={`${styles.button} ${styles.support}`} href="/support/index.html" target="_blank" rel="noreferrer" aria-label="support">
         <span className={styles.icon} />
       </a>
       <button type="button" className={`${styles.button} ${styles.exit}`} onClick={handleExit} aria-label="exit">

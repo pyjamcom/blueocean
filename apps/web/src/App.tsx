@@ -212,7 +212,9 @@ function StageNavigator() {
       location.pathname === "/support" ||
       location.pathname === "/status" ||
       location.pathname === "/support/" ||
-      location.pathname === "/status/";
+      location.pathname === "/status/" ||
+      location.pathname === "/support/index.html" ||
+      location.pathname === "/status/index.html";
     const isJoinPath =
       location.pathname === "/join" || /^\/[A-Z0-9]{4}$/.test(path);
     const searchParams = new URLSearchParams(location.search);
@@ -341,8 +343,10 @@ export default function App() {
             <StageNavigator />
             <Routes>
               <Route path="/join" element={<JoinView />} />
-              <Route path="/support" element={<ExternalPageRedirect to="/support/" />} />
-              <Route path="/status" element={<ExternalPageRedirect to="/status/" />} />
+              <Route path="/support" element={<ExternalPageRedirect to="/support/index.html" />} />
+              <Route path="/support/" element={<ExternalPageRedirect to="/support/index.html" />} />
+              <Route path="/status" element={<ExternalPageRedirect to="/status/index.html" />} />
+              <Route path="/status/" element={<ExternalPageRedirect to="/status/index.html" />} />
               <Route path="/lobby" element={<LobbyView />} />
               <Route path="/game" element={<RoundGallery />} />
               <Route path="/result" element={<ResultView />} />
