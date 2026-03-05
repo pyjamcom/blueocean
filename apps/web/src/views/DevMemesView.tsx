@@ -23,9 +23,11 @@ type DevMemesManifest = {
 
 type DevMemeModerationEntry = {
   favorite?: boolean;
+  avatar?: boolean;
   deleted?: boolean;
   updatedAt?: number;
   favoritedAt?: number;
+  avatarAt?: number;
   deletedAt?: number;
 };
 
@@ -44,6 +46,7 @@ type DevMemeActionResponse = {
 };
 
 const ADMIN_TOKEN_STORAGE_KEY = "escapers.devMemesAdminToken";
+type DevMemeModerationAction = "favorite" | "avatar" | "delete";
 
 function formatRangeLabel(pageNumber: number, pageSize: number, totalItems: number) {
   if (totalItems === 0) {
@@ -64,7 +67,7 @@ export default function DevMemesView() {
   const [error, setError] = useState<string>("");
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [pendingRowId, setPendingRowId] = useState<string | null>(null);
-  const [pendingAction, setPendingAction] = useState<"favorite" | "delete" | null>(null);
+  const [pendingAction, setPendingAction] = useState<DevMemeModerationAction | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -85,7 +88,7 @@ export default function DevMemesView() {
           }
           moderationPayload = (await moderationResponse.json()) as DevMemesModerationResponse;
           if (moderationPayload.writeEnabled === true) {
-            nextStatusMessage = "Use ★ to mark favorite and ✕ to mark delete and remove a meme from the published grid.";
+            nextStatusMessage = "Use ★ to mark favorite, 👤 to mark avatar, and ✕ to mark delete and remove a meme from the published grid.";
           }
         } catch (moderationError: unknown) {
           nextStatusMessage =
@@ -131,7 +134,7 @@ export default function DevMemesView() {
     window.sessionStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
   }
 
-  async function handleModerationAction(rowId: string, action: "favorite" | "delete") {
+  async function handleModerationAction(rowId: string, action: DevMemeModerationAction) {
     if (pendingRowId) {
       return;
     }
@@ -172,6 +175,7 @@ export default function DevMemesView() {
       }
       const entry = payload?.entry ?? {
         favorite: action === "favorite" ? true : moderation[rowId]?.favorite,
+        avatar: action === "avatar" ? true : moderation[rowId]?.avatar,
         deleted: action === "delete" ? true : moderation[rowId]?.deleted,
         updatedAt: Date.now(),
       };
@@ -180,7 +184,11 @@ export default function DevMemesView() {
         [rowId]: entry,
       }));
       setStatusMessage(
-        action === "favorite" ? "Favorite saved for this meme." : "Meme marked delete and removed from the published gallery.",
+        action === "favorite"
+          ? "Favorite saved for this meme."
+          : action === "avatar"
+            ? "Avatar saved for this meme."
+            : "Meme marked delete and removed from the published gallery.",
       );
     } catch (actionError: unknown) {
       setStatusMessage(actionError instanceof Error ? actionError.message : "Unknown moderation error.");
@@ -247,6 +255,7 @@ export default function DevMemesView() {
           <div className={styles.grid}>
             {pageItems.map((item, index) => {
               const isFavorite = moderation[item.rowId]?.favorite === true;
+              const isAvatar = moderation[item.rowId]?.avatar === true;
               const isPending = pendingRowId === item.rowId;
               return (
                 <figure className={`${styles.card} ${isFavorite ? styles.cardFavorite : ""}`.trim()} key={item.rowId}>
@@ -257,14 +266,25 @@ export default function DevMemesView() {
                   <div className={styles.actionBar}>
                     <button
                       type="button"
-                      className={`${styles.iconButton} ${styles.favoriteButton} ${isFavorite ? styles.favoriteActive : ""}`.trim()}
+                      className={`${styles.iconButton} ${styles.favoriteButton} ${isFavorite ? styles.selectedAction : ""}`.trim()}
                       onClick={() => void handleModerationAction(item.rowId, "favorite")}
-                      disabled={isPending || isFavorite}
+                      disabled={isPending}
                       aria-label={isFavorite ? "Favorite saved" : "Mark as favorite"}
                       aria-pressed={isFavorite}
                       title={isFavorite ? "Favorite saved" : "Mark as favorite"}
                     >
                       ★
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.iconButton} ${styles.avatarButton} ${isAvatar ? styles.selectedAction : ""}`.trim()}
+                      onClick={() => void handleModerationAction(item.rowId, "avatar")}
+                      disabled={isPending}
+                      aria-label={isAvatar ? "Avatar saved" : "Mark as avatar"}
+                      aria-pressed={isAvatar}
+                      title={isAvatar ? "Avatar saved" : "Mark as avatar"}
+                    >
+                      👤
                     </button>
                     <button
                       type="button"
@@ -276,7 +296,11 @@ export default function DevMemesView() {
                     >
                       ✕
                     </button>
-                    {isPending ? <span className={styles.pendingLabel}>{pendingAction === "delete" ? "Deleting..." : "Saving..."}</span> : null}
+                    {isPending ? (
+                      <span className={styles.pendingLabel}>
+                        {pendingAction === "delete" ? "Deleting..." : pendingAction === "avatar" ? "Avatar..." : "Saving..."}
+                      </span>
+                    ) : null}
                   </div>
                 </figure>
               );

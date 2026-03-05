@@ -162,7 +162,19 @@
   color: #c78e00;
 }
 
-.favoriteActive {
+.avatarButton {
+  background: rgba(236, 181, 45, 0.16);
+  color: #a17000;
+  font-family:
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji",
+    sans-serif;
+  font-size: 17px;
+}
+
+.selectedAction {
   background: rgba(236, 181, 45, 0.26);
   color: #9d6e00;
 }

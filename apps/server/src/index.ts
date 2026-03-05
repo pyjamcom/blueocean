@@ -258,9 +258,11 @@ app.use("/test", testRouter);
 
 type DevMemeModerationEntry = {
   favorite?: boolean;
+  avatar?: boolean;
   deleted?: boolean;
   updatedAt: number;
   favoritedAt?: number;
+  avatarAt?: number;
   deletedAt?: number;
 };
 
@@ -296,16 +298,22 @@ function normalizeDevMemeModerationEntry(
   if (entry.favorite === true) {
     normalized.favorite = true;
   }
+  if (entry.avatar === true) {
+    normalized.avatar = true;
+  }
   if (entry.deleted === true) {
     normalized.deleted = true;
   }
   if (typeof entry.favoritedAt === "number") {
     normalized.favoritedAt = entry.favoritedAt;
   }
+  if (typeof entry.avatarAt === "number") {
+    normalized.avatarAt = entry.avatarAt;
+  }
   if (typeof entry.deletedAt === "number") {
     normalized.deletedAt = entry.deletedAt;
   }
-  if (!normalized.favorite && !normalized.deleted) {
+  if (!normalized.favorite && !normalized.avatar && !normalized.deleted) {
     return null;
   }
   return normalized;
@@ -674,9 +682,11 @@ app.post("/dev-memes/favorite", async (req, res) => {
     const now = Date.now();
     const entry = await updateDevMemeModeration(rowId, (current) => ({
       favorite: true,
+      avatar: current?.avatar === true ? true : undefined,
       deleted: current?.deleted === true ? true : undefined,
       updatedAt: now,
       favoritedAt: current?.favoritedAt ?? now,
+      avatarAt: current?.avatarAt,
       deletedAt: current?.deletedAt,
     }));
     res.setHeader("Cache-Control", "no-store");
@@ -684,6 +694,39 @@ app.post("/dev-memes/favorite", async (req, res) => {
   } catch (err) {
     console.error("dev_memes:moderation:favorite_error", rowId, err);
     res.status(500).json({ ok: false, error: "favorite_failed" });
+  }
+});
+
+app.post("/dev-memes/avatar", async (req, res) => {
+  const rowId = req.body?.rowId;
+  if (!isDevMemeRowId(rowId)) {
+    res.status(400).json({ ok: false, error: "rowId_required" });
+    return;
+  }
+  if (!canWriteDevMemesModeration()) {
+    res.status(503).json({ ok: false, error: "admin_token_not_configured" });
+    return;
+  }
+  if (!isDevMemesAuthorized(req)) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+  try {
+    const now = Date.now();
+    const entry = await updateDevMemeModeration(rowId, (current) => ({
+      favorite: current?.favorite === true ? true : undefined,
+      avatar: true,
+      deleted: current?.deleted === true ? true : undefined,
+      updatedAt: now,
+      favoritedAt: current?.favoritedAt,
+      avatarAt: current?.avatarAt ?? now,
+      deletedAt: current?.deletedAt,
+    }));
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ok: true, rowId, entry });
+  } catch (err) {
+    console.error("dev_memes:moderation:avatar_error", rowId, err);
+    res.status(500).json({ ok: false, error: "avatar_failed" });
   }
 });
 
@@ -705,9 +748,11 @@ app.post("/dev-memes/delete", async (req, res) => {
     const now = Date.now();
     const entry = await updateDevMemeModeration(rowId, (current) => ({
       favorite: current?.favorite === true ? true : undefined,
+      avatar: current?.avatar === true ? true : undefined,
       deleted: true,
       updatedAt: now,
       favoritedAt: current?.favoritedAt,
+      avatarAt: current?.avatarAt,
       deletedAt: current?.deletedAt ?? now,
     }));
     res.setHeader("Cache-Control", "no-store");
