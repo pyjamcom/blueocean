@@ -25,7 +25,8 @@ export default function HelpButton() {
 
   if (
     HIDDEN_ON_ROUTES.has(location.pathname) ||
-    location.pathname.startsWith("/legal")
+    location.pathname.startsWith("/legal") ||
+    location.pathname.startsWith("/dev/memes")
   ) {
     return null;
   }

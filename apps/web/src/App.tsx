@@ -15,6 +15,7 @@ import ManagerView from "./views/ManagerView";
 import DebugLeaderboardView from "./views/DebugLeaderboardView";
 import LeaderboardView from "./views/LeaderboardView";
 import LegalView from "./views/LegalView";
+import DevMemesView from "./views/DevMemesView";
 import { JOIN_META_DESCRIPTION, JOIN_SHARE_IMAGE, LEADERBOARD_SHARE_IMAGE } from "./utils/seo";
 
 const sceneStyles: Record<string, React.CSSProperties> = {
@@ -202,6 +203,7 @@ function StageNavigator() {
 
   useEffect(() => {
     const path = location.pathname.toUpperCase();
+    const isDevMemesPath = location.pathname === "/dev/memes" || /^\/dev\/memes\/\d+$/.test(location.pathname);
     const isDebugPath = location.pathname.startsWith("/debug");
     const isLeaderboardPath = location.pathname === "/leaderboard";
     const isLobbyPath = location.pathname === "/lobby";
@@ -222,6 +224,7 @@ function StageNavigator() {
     const isPublicRoom = roomCode === "PLAY";
 
     if (
+      isDevMemesPath ||
       isLobbyDesignPath ||
       (isDebugPath && allowPreview) ||
       isLeaderboardPath ||
@@ -276,6 +279,10 @@ export default function App() {
 
   useEffect(() => {
     if (isDesignPreviewMode()) {
+      setGateStatus("accepted");
+      return;
+    }
+    if (window.location.pathname === "/dev/memes" || /^\/dev\/memes\/\d+$/.test(window.location.pathname)) {
       setGateStatus("accepted");
       return;
     }
@@ -357,6 +364,8 @@ export default function App() {
               <Route path="/debug/leaderboard" element={<DebugLeaderboardView />} />
               <Route path="/debug/podium" element={<DebugPodiumView />} />
               <Route path="/leaderboard" element={<LeaderboardView />} />
+              <Route path="/dev/memes" element={<DevMemesView />} />
+              <Route path="/dev/memes/:pageNumber" element={<DevMemesView />} />
               <Route path="/wait" element={<JoinWaitView />} />
               <Route path="/:code" element={<JoinView />} />
               <Route path="*" element={<Navigate to="/join" replace />} />

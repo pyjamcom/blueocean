@@ -1,0 +1,171 @@
+.page {
+  min-height: 100vh;
+  padding: 36px 24px 56px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 120, 66, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(0, 127, 126, 0.16), transparent 24%),
+    linear-gradient(180deg, #fff8ef 0%, #f4efe3 100%);
+  color: #162124;
+}
+
+.hero {
+  max-width: 1120px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.kicker {
+  margin: 0 0 10px;
+  font-family: "Geist", "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #b3532d;
+}
+
+.title {
+  margin: 0;
+  font-family: "Bungee", "Sora", sans-serif;
+  font-size: clamp(32px, 4vw, 58px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  max-width: 820px;
+  margin: 16px auto 0;
+  font-family: "Sora", "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(22, 33, 36, 0.78);
+}
+
+.galleryShell {
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.grid {
+  width: min(100%, 1760px);
+  min-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 238, 230, 0.96));
+  border: 1px solid rgba(22, 33, 36, 0.1);
+  box-shadow:
+    0 18px 30px rgba(22, 33, 36, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  min-width: 42px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(22, 33, 36, 0.84);
+  color: #fff8ef;
+  font-family: "Geist", "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  padding: 18px;
+}
+
+.footer {
+  max-width: 1120px;
+  margin: 34px auto 0;
+  text-align: center;
+}
+
+.footerMeta {
+  margin: 0 0 18px;
+  font-family: "Sora", "Segoe UI", sans-serif;
+  font-size: 14px;
+  color: rgba(22, 33, 36, 0.72);
+}
+
+.navigation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primaryLink,
+.secondaryLink,
+.primaryGhost,
+.secondaryGhost {
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-family: "Geist", "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.primaryLink {
+  background: #f26a3d;
+  color: #fff8ef;
+  box-shadow: 0 12px 24px rgba(242, 106, 61, 0.28);
+}
+
+.primaryLink:hover {
+  background: #de5a2f;
+}
+
+.secondaryLink {
+  background: rgba(22, 33, 36, 0.08);
+  color: #162124;
+}
+
+.secondaryLink:hover {
+  background: rgba(22, 33, 36, 0.14);
+}
+
+.primaryGhost,
+.secondaryGhost {
+  background: rgba(22, 33, 36, 0.06);
+  color: rgba(22, 33, 36, 0.52);
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 28px 16px 40px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .grid {
+    gap: 10px;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+}

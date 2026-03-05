@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspace apps/web && npm run typecheck --workspace apps/server",
     "test": "node tests/validate_questions.spec.js && node tests/ws_payloads.spec.js && node tests/validate_assets.spec.js && node tests/no_text_config.spec.js",
+    "generate:dev-memes-gallery": "python3 scripts/generate_dev_memes_gallery.py",
     "load:ws": "node scripts/load_simulator.js",
     "figma:file": "node scripts/fetch_figma_file.js",
     "anima:figma": "node scripts/anima_codegen_from_figma.js",
