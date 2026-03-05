@@ -199,7 +199,7 @@ export default function DevMemesView() {
       <main className={styles.page}>
         <div className={styles.hero}>
           <p className={styles.kicker}>Dev Gallery</p>
-          <h1 className={styles.title}>PNGEgg Meme Originals</h1>
+          <h1 className={styles.title}>Meme Originals</h1>
           <p className={styles.subtitle}>Loading gallery manifest...</p>
         </div>
       </main>
@@ -211,7 +211,7 @@ export default function DevMemesView() {
       <main className={styles.page}>
         <div className={styles.hero}>
           <p className={styles.kicker}>Dev Gallery</p>
-          <h1 className={styles.title}>PNGEgg Meme Originals</h1>
+          <h1 className={styles.title}>Meme Originals</h1>
           <p className={styles.subtitle}>Manifest load failed: {error}</p>
         </div>
       </main>
@@ -234,10 +234,10 @@ export default function DevMemesView() {
     <main className={styles.page}>
       <div className={styles.hero}>
         <p className={styles.kicker}>Dev Gallery</p>
-        <h1 className={styles.title}>PNGEgg Meme Originals</h1>
+        <h1 className={styles.title}>Meme Originals</h1>
         <p className={styles.subtitle}>
           Page {currentPage} of {pageCount}. Showing {formatRangeLabel(currentPage, manifest.pageSize, visibleItems.length)} of{" "}
-          {visibleItems.length} published transparent originals in CSV order.
+          {visibleItems.length} transparent originals.
         </p>
         <p className={styles.statusBanner}>{statusMessage}</p>
       </div>
