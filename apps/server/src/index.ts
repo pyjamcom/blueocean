@@ -16,6 +16,10 @@ const COMPLIANCE_LOG_LIMIT = 1000;
 const LOG_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const TEST_API_ENABLED = process.env.TEST_API_ENABLED === "true";
 const TEST_API_TOKEN = process.env.TEST_API_TOKEN;
+const DEV_MEMES_ADMIN_TOKEN = process.env.DEV_MEMES_ADMIN_TOKEN ?? TEST_API_TOKEN;
+const DEV_MEMES_MODERATION_HASH = "dev_memes:moderation";
+const DEV_MEMES_STATE_FILE =
+  process.env.DEV_MEMES_STATE_FILE ?? path.join(process.cwd(), "data", "dev-memes-moderation.json");
 const REDIS_URL = process.env.REDIS_URL;
 const REDIS_ENABLED = Boolean(REDIS_URL);
 const REDIS_CHANNEL = "escapers:broadcast";
@@ -252,13 +256,168 @@ testRouter.use((req, res, next) => {
 });
 app.use("/test", testRouter);
 
+type DevMemeModerationEntry = {
+  favorite?: boolean;
+  deleted?: boolean;
+  updatedAt: number;
+  favoritedAt?: number;
+  deletedAt?: number;
+};
+
+let devMemesModerationMemory: Record<string, DevMemeModerationEntry> | null = null;
+
+function canWriteDevMemesModeration() {
+  return Boolean(DEV_MEMES_ADMIN_TOKEN);
+}
+
+function isDevMemesAuthorized(req: express.Request) {
+  if (!DEV_MEMES_ADMIN_TOKEN) {
+    return false;
+  }
+  const headerToken = req.header("x-dev-memes-admin-token");
+  const authHeader = req.header("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
+  return headerToken === DEV_MEMES_ADMIN_TOKEN || bearerToken === DEV_MEMES_ADMIN_TOKEN;
+}
+
+function isDevMemeRowId(value: unknown): value is string {
+  return typeof value === "string" && /^[a-z0-9_]{6,80}$/i.test(value);
+}
+
+function normalizeDevMemeModerationEntry(
+  entry: Partial<DevMemeModerationEntry> | null | undefined,
+): DevMemeModerationEntry | null {
+  if (!entry) {
+    return null;
+  }
+  const normalized: DevMemeModerationEntry = {
+    updatedAt: typeof entry.updatedAt === "number" ? entry.updatedAt : Date.now(),
+  };
+  if (entry.favorite === true) {
+    normalized.favorite = true;
+  }
+  if (entry.deleted === true) {
+    normalized.deleted = true;
+  }
+  if (typeof entry.favoritedAt === "number") {
+    normalized.favoritedAt = entry.favoritedAt;
+  }
+  if (typeof entry.deletedAt === "number") {
+    normalized.deletedAt = entry.deletedAt;
+  }
+  if (!normalized.favorite && !normalized.deleted) {
+    return null;
+  }
+  return normalized;
+}
+
+function cloneDevMemesModeration(
+  items: Record<string, DevMemeModerationEntry>,
+): Record<string, DevMemeModerationEntry> {
+  return Object.fromEntries(Object.entries(items).map(([rowId, entry]) => [rowId, { ...entry }]));
+}
+
+function loadDevMemesModerationFromFile() {
+  if (!fs.existsSync(DEV_MEMES_STATE_FILE)) {
+    return {};
+  }
+  try {
+    const raw = fs.readFileSync(DEV_MEMES_STATE_FILE, "utf-8");
+    const parsed = JSON.parse(raw) as Record<string, Partial<DevMemeModerationEntry>>;
+    const normalized: Record<string, DevMemeModerationEntry> = {};
+    Object.entries(parsed).forEach(([rowId, entry]) => {
+      const clean = normalizeDevMemeModerationEntry(entry);
+      if (clean) {
+        normalized[rowId] = clean;
+      }
+    });
+    return normalized;
+  } catch (err) {
+    console.error("dev_memes:moderation:file_read_error", err);
+    return {};
+  }
+}
+
+function writeDevMemesModerationToFile(items: Record<string, DevMemeModerationEntry>) {
+  try {
+    fs.mkdirSync(path.dirname(DEV_MEMES_STATE_FILE), { recursive: true });
+    const tmpPath = `${DEV_MEMES_STATE_FILE}.tmp`;
+    fs.writeFileSync(tmpPath, JSON.stringify(items, null, 2) + "\n", "utf-8");
+    fs.renameSync(tmpPath, DEV_MEMES_STATE_FILE);
+  } catch (err) {
+    console.error("dev_memes:moderation:file_write_error", err);
+    throw err;
+  }
+}
+
+async function readDevMemesModeration(): Promise<Record<string, DevMemeModerationEntry>> {
+  if (redis) {
+    const raw = await redis.hgetall(DEV_MEMES_MODERATION_HASH);
+    const items: Record<string, DevMemeModerationEntry> = {};
+    Object.entries(raw).forEach(([rowId, value]) => {
+      try {
+        const parsed = JSON.parse(value) as Partial<DevMemeModerationEntry>;
+        const normalized = normalizeDevMemeModerationEntry(parsed);
+        if (normalized) {
+          items[rowId] = normalized;
+        }
+      } catch (err) {
+        console.error("dev_memes:moderation:redis_parse_error", rowId, err);
+      }
+    });
+    return items;
+  }
+  if (!devMemesModerationMemory) {
+    devMemesModerationMemory = loadDevMemesModerationFromFile();
+  }
+  return cloneDevMemesModeration(devMemesModerationMemory);
+}
+
+async function writeDevMemesModeration(items: Record<string, DevMemeModerationEntry>) {
+  devMemesModerationMemory = cloneDevMemesModeration(items);
+  writeDevMemesModerationToFile(devMemesModerationMemory);
+}
+
+async function updateDevMemeModeration(
+  rowId: string,
+  updater: (current: DevMemeModerationEntry | null) => Partial<DevMemeModerationEntry> | null,
+) {
+  if (redis) {
+    const raw = await redis.hget(DEV_MEMES_MODERATION_HASH, rowId);
+    let current: DevMemeModerationEntry | null = null;
+    if (raw) {
+      try {
+        current = normalizeDevMemeModerationEntry(JSON.parse(raw) as Partial<DevMemeModerationEntry>);
+      } catch (err) {
+        console.error("dev_memes:moderation:redis_current_parse_error", rowId, err);
+      }
+    }
+    const next = normalizeDevMemeModerationEntry(updater(current));
+    if (next) {
+      await redis.hset(DEV_MEMES_MODERATION_HASH, rowId, JSON.stringify(next));
+      return next;
+    }
+    await redis.hdel(DEV_MEMES_MODERATION_HASH, rowId);
+    return null;
+  }
+  const items = await readDevMemesModeration();
+  const next = normalizeDevMemeModerationEntry(updater(items[rowId] ?? null));
+  if (next) {
+    items[rowId] = next;
+  } else {
+    delete items[rowId];
+  }
+  await writeDevMemesModeration(items);
+  return next;
+}
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin && allowedCorsOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Dev-Memes-Admin-Token");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   }
   if (req.method === "OPTIONS") {
@@ -480,6 +639,83 @@ app.post("/client-error", (req, res) => {
     });
   }
   res.json({ ok: true });
+});
+
+app.get("/dev-memes/moderation", async (_req, res) => {
+  try {
+    const items = await readDevMemesModeration();
+    res.setHeader("Cache-Control", "no-store");
+    res.json({
+      ok: true,
+      writeEnabled: canWriteDevMemesModeration(),
+      items,
+    });
+  } catch (err) {
+    console.error("dev_memes:moderation:list_error", err);
+    res.status(500).json({ ok: false, error: "dev_memes_moderation_unavailable" });
+  }
+});
+
+app.post("/dev-memes/favorite", async (req, res) => {
+  const rowId = req.body?.rowId;
+  if (!isDevMemeRowId(rowId)) {
+    res.status(400).json({ ok: false, error: "rowId_required" });
+    return;
+  }
+  if (!canWriteDevMemesModeration()) {
+    res.status(503).json({ ok: false, error: "admin_token_not_configured" });
+    return;
+  }
+  if (!isDevMemesAuthorized(req)) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+  try {
+    const now = Date.now();
+    const entry = await updateDevMemeModeration(rowId, (current) => ({
+      favorite: true,
+      deleted: current?.deleted === true ? true : undefined,
+      updatedAt: now,
+      favoritedAt: current?.favoritedAt ?? now,
+      deletedAt: current?.deletedAt,
+    }));
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ok: true, rowId, entry });
+  } catch (err) {
+    console.error("dev_memes:moderation:favorite_error", rowId, err);
+    res.status(500).json({ ok: false, error: "favorite_failed" });
+  }
+});
+
+app.post("/dev-memes/delete", async (req, res) => {
+  const rowId = req.body?.rowId;
+  if (!isDevMemeRowId(rowId)) {
+    res.status(400).json({ ok: false, error: "rowId_required" });
+    return;
+  }
+  if (!canWriteDevMemesModeration()) {
+    res.status(503).json({ ok: false, error: "admin_token_not_configured" });
+    return;
+  }
+  if (!isDevMemesAuthorized(req)) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+  try {
+    const now = Date.now();
+    const entry = await updateDevMemeModeration(rowId, (current) => ({
+      favorite: current?.favorite === true ? true : undefined,
+      deleted: true,
+      updatedAt: now,
+      favoritedAt: current?.favoritedAt,
+      deletedAt: current?.deletedAt ?? now,
+    }));
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ok: true, rowId, entry });
+  } catch (err) {
+    console.error("dev_memes:moderation:delete_error", rowId, err);
+    res.status(500).json({ ok: false, error: "delete_failed" });
+  }
 });
 
 app.post("/crew/create", async (req, res) => {

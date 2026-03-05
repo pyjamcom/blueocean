@@ -41,6 +41,18 @@
   color: rgba(22, 33, 36, 0.78);
 }
 
+.statusBanner {
+  max-width: 860px;
+  margin: 14px auto 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(22, 33, 36, 0.08);
+  font-family: "Geist", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(22, 33, 36, 0.84);
+}
+
 .galleryShell {
   max-width: 100%;
   overflow-x: auto;
@@ -59,7 +71,8 @@
 .card {
   position: relative;
   margin: 0;
-  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
   border-radius: 20px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 238, 230, 0.96));
@@ -68,6 +81,19 @@
     0 18px 30px rgba(22, 33, 36, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
   overflow: hidden;
+}
+
+.cardFavorite {
+  border-color: rgba(236, 181, 45, 0.8);
+  box-shadow:
+    0 18px 30px rgba(22, 33, 36, 0.08),
+    0 0 0 2px rgba(236, 181, 45, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.imageShell {
+  position: relative;
+  aspect-ratio: 1 / 1;
 }
 
 .badge {
@@ -92,6 +118,81 @@
   display: block;
   object-fit: contain;
   padding: 18px;
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgba(22, 33, 36, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.iconButton {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Bungee", "Sora", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    background 120ms ease;
+}
+
+.iconButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.iconButton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.favoriteButton {
+  background: rgba(236, 181, 45, 0.16);
+  color: #c78e00;
+}
+
+.favoriteActive {
+  background: rgba(236, 181, 45, 0.26);
+  color: #9d6e00;
+}
+
+.deleteButton {
+  background: rgba(214, 50, 52, 0.14);
+  color: #d63234;
+}
+
+.pendingLabel {
+  min-width: 62px;
+  font-family: "Geist", "Segoe UI", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(22, 33, 36, 0.56);
+}
+
+.emptyState {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 28px 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(22, 33, 36, 0.08);
+  text-align: center;
+  font-family: "Sora", "Segoe UI", sans-serif;
+  font-size: 16px;
+  color: rgba(22, 33, 36, 0.78);
 }
 
 .footer {
